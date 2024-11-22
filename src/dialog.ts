@@ -1,11 +1,14 @@
-import { ApplicationClosingOptions } from "foundry-pf2e/foundry/client-esm/applications/_types.js";
+import {
+    ApplicationClosingOptions,
+    ApplicationConfiguration,
+} from "foundry-pf2e/foundry/client-esm/applications/_types.js";
 import {
     DialogV2Button,
     DialogV2ButtonCallback,
-    DialogV2PromptOptions,
+    DialogV2Configuration,
     DialogV2RenderCallback,
     DialogV2WaitOptions,
-} from "foundry-pf2e/foundry/client-esm/applications/api/application.js";
+} from "foundry-pf2e/foundry/client-esm/applications/api/dialog.js";
 import { createFormData } from ".";
 import { render } from "./handlebars";
 
@@ -66,7 +69,7 @@ async function waitDialog<T extends any>(
         },
     ];
 
-    const options: DialogV2WaitOptions = {
+    const options: DialogWaitOptions = {
         window: {
             title,
             contentClasses: classes ?? [],
@@ -113,7 +116,7 @@ async function promptDialog<T extends Record<string, unknown>>(
 ): Promise<T | null> {
     content = await assureDialogContent(content, data);
 
-    const ok: DialogV2PromptOptions["ok"] = {
+    const ok: DialogPromptOptions["ok"] = {
         callback:
             typeof callback === "function"
                 ? callback
@@ -124,7 +127,7 @@ async function promptDialog<T extends Record<string, unknown>>(
 
     if (label) ok.label = label;
 
-    const options: DialogV2PromptOptions = {
+    const options: DialogPromptOptions = {
         content,
         window: { title, contentClasses: classes ?? [] },
         position: { width },
@@ -156,6 +159,12 @@ type BaseOptions = {
     data?: Record<string, any>;
     render?: DialogV2RenderCallback;
 };
+
+type DialogWaitOptions = DeepPartial<
+    ApplicationConfiguration & DialogV2Configuration & DialogV2WaitOptions
+>;
+
+type DialogPromptOptions = DialogWaitOptions & { ok?: Partial<DialogV2Button> };
 
 export { confirmDialog, promptDialog, waitDialog };
 export type { DialogExtraOptions };

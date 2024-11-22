@@ -21,7 +21,7 @@
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "rootDir": "src",
         "outDir": "dist",
-        "types": ["foundry-pf2e", "foundry-pf2e/pf2e-toolbelt", "jquery", "tooltipster"]
+        "types": ["foundry-pf2e", "jquery", "tooltipster"]
     },
     "include": ["./src/**/*"]
 }

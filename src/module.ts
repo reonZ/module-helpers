@@ -17,7 +17,7 @@ const MODULE = {
         return MODULE_NAME;
     },
     get current() {
-        return game.modules.get(this.id)!;
+        return game.modules.get(this.id) as Module & { api?: Record<string, any> };
     },
     throwError(str: string) {
         throw new Error(`\n[${this.name}] ${str}`);

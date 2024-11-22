@@ -1,6 +1,6 @@
+import * as R from "remeda";
 import { getStatisticClass } from "../classes";
 import { localizer, ordinalString } from "./misc";
-import * as R from "remeda";
 /** Try to coerce some value (typically from user input) to a slot group ID */
 function coerceToSpellGroupId(value) {
     if (value === "cantrips")

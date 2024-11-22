@@ -1,6 +1,7 @@
 /// <reference types="jquery" />
 
-export * from "foundry-pf2e";
+export type * from "./src/types";
+
 export { DateTime } from "luxon";
 export * as R from "remeda";
 export * from "./dist";

@@ -1,5 +1,6 @@
 import {
     ActorPF2e,
+    ChatMessagePF2e,
     CreaturePF2e,
     ScenePF2e,
     TokenDocumentPF2e,
