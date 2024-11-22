@@ -1,6 +1,6 @@
 /// <reference types="jquery" />
 import { ActorPF2e, ActorType, ItemPF2e, TraitViewData } from "foundry-pf2e";
-declare const USER_VISIBILITIES: Set<"none" | "all" | "owner" | "gm">;
+declare const USER_VISIBILITIES: Set<"all" | "none" | "owner" | "gm">;
 declare function traitSlugToObject(trait: string, dictionary: Record<string, string | undefined>): TraitViewData;
 declare function getSelectedActors(options?: GetSelectedActorsOptions): ActorPF2e[];
 /** Set roll mode and dialog skipping from a user's input */

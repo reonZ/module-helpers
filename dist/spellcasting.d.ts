@@ -32,7 +32,7 @@ declare function getHighestSpellcastingStatistic(actor: NPCPF2e | CharacterPF2e)
     statistic: import("foundry-pf2e/pf2e/module/system/statistic/statistic.js").Statistic<import("foundry-pf2e/pf2e/module/actor/base.js").ActorPF2e<import("foundry-pf2e/pf2e/module/scene/token-document/document.js").TokenDocumentPF2e<import("foundry-pf2e/pf2e/module/scene/document.js").ScenePF2e | null> | null>>;
 } | undefined;
 declare function getHighestSyntheticStatistic(actor: NPCPF2e | CharacterPF2e, withClassDcs?: boolean): import("foundry-pf2e/pf2e/module/system/statistic/statistic.js").Statistic<import("foundry-pf2e/pf2e/module/actor/base.js").ActorPF2e<import("foundry-pf2e/pf2e/module/scene/token-document/document.js").TokenDocumentPF2e<import("foundry-pf2e/pf2e/module/scene/document.js").ScenePF2e | null> | null>> | undefined;
-declare function createSpellcastingWithHighestStatisticSource(actor: NPCPF2e | CharacterPF2e, { name, category, flags, showSlotlessRanks, sort, withClassDcs, }: CreateSpellcastingSourceWithHighestStatistic): (Omit<DeepPartial<SpellcastingEntrySource>, "_id" | "name" | "type"> & {
+declare function createSpellcastingWithHighestStatisticSource(actor: NPCPF2e | CharacterPF2e, { name, category, flags, showSlotlessRanks, sort, withClassDcs, }: CreateSpellcastingSourceWithHighestStatistic): (Omit<DeepPartial<SpellcastingEntrySource>, "type" | "name" | "_id"> & {
     _id?: Maybe<string>;
     name: string;
     type: "spellcastingEntry";
