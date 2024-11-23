@@ -12,8 +12,12 @@
     "license": "ISC",
     "type": "module",
     "devDependencies": {
+        "typescript": "5.3.3"
+    },
+    "dependencies": {
         "foundry-pf2e": "github:7H3LaughingMan/foundry-pf2e",
-        "typescript": "5.3.3",
+        "@types/jquery": "^3.5.32",
+        "remeda": "^2.17.3",
         "socket.io": "^4.8.0",
         "socket.io-client": "^4.8.0",
         "tinymce": "^7.4.1",
@@ -32,9 +36,5 @@
         "@codemirror/lang-json": "^6.0.1",
         "@pixi/graphics-smooth": "^1.1.0",
         "@pixi/particle-emitter": "5.0.8"
-    },
-    "dependencies": {
-        "@types/jquery": "^3.5.32",
-        "remeda": "^2.17.3"
     }
 }
