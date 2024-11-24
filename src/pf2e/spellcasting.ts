@@ -12,6 +12,7 @@ import {
     SpellCollection,
     SpellSlotGroupId,
     Statistic,
+    ValueAndMax,
 } from "foundry-pf2e";
 import * as R from "remeda";
 import { getStatisticClass } from "../classes";
@@ -70,42 +71,45 @@ function createCounteractStatistic<TActor extends CreaturePF2e>(
     });
 }
 
+type WithCharges = {
+    category: SpellcastingCategory | "charges";
+    isStaff: boolean;
+    uses?: ValueAndMax;
+};
+
 type BaseSpellcastingEntryWithCharges<TActor extends ActorPF2e | null = ActorPF2e | null> = Omit<
     BaseSpellcastingEntry<TActor>,
     "category"
-> & {
-    category: SpellcastingCategory | "charges";
-};
+> &
+    WithCharges;
 
-type SpellcastingSheetDataWithCharges = Omit<SpellcastingSheetData, "category"> & {
-    category: SpellcastingCategory | "charges";
-};
+type SpellcastingSheetDataWithCharges = Omit<SpellcastingSheetData, "category"> & WithCharges;
 
 type SpellcastingEntryWithCharges<TActor extends ActorPF2e> = Omit<
     SpellcastingEntry<TActor>,
     "category" | "getSheetData"
-> & {
-    category: SpellcastingCategory | "charges";
-    getSheetData(options?: {
-        spells?: SpellCollection<TActor>;
-        prepList?: boolean;
-    }): Promise<SpellcastingSheetDataWithCharges>;
-};
+> &
+    WithCharges & {
+        getSheetData(options?: {
+            spells?: SpellCollection<TActor>;
+            prepList?: boolean;
+        }): Promise<SpellcastingSheetDataWithCharges>;
+    };
 
 type SpellcastingEntryPF2eWithCharges<TParent extends ActorPF2e | null = ActorPF2e | null> = Omit<
     SpellcastingEntryPF2e<TParent>,
     "system" | "category"
-> & {
-    category: SpellcastingCategory | "charges";
-    system: Omit<SpellcastingEntrySystemSource, "description" | "prepared"> &
-        Omit<ItemSystemData, "level" | "traits"> & {
-            prepared: {
-                value: SpellcastingCategory | "charges";
-                flexible: boolean;
-                validItems: "scroll" | null;
+> &
+    WithCharges & {
+        system: Omit<SpellcastingEntrySystemSource, "description" | "prepared"> &
+            Omit<ItemSystemData, "level" | "traits"> & {
+                prepared: {
+                    value: SpellcastingCategory | "charges";
+                    flexible: boolean;
+                    validItems: "scroll" | null;
+                };
             };
-        };
-};
+    };
 
 export { coerceToSpellGroupId, createCounteractStatistic, warnInvalidDrop };
 export type {

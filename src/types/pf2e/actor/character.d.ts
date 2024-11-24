@@ -1,4 +1,4 @@
-import { CharacterPF2e, WeaponPF2e, ZeroToTwo } from "foundry-pf2e";
+import { CharacterPF2e, CharacterSheetData, WeaponPF2e, ZeroToTwo } from "foundry-pf2e";
 
 export {};
 
@@ -30,4 +30,6 @@ declare global {
         | AuxiliaryReleaseParams;
     type AuxiliaryActionType = AuxiliaryActionParams["action"];
     type AuxiliaryActionPurpose = AuxiliaryActionParams["annotation"];
+
+    type ElementalBlastSheetConfig = CharacterSheetData["elementalBlasts"][number];
 }
