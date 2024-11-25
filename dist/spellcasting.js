@@ -5,21 +5,22 @@ import { getActiveModule } from "./module";
 import { isInstanceOf } from "./object";
 import { spellSlotGroupIdToNumber } from "./pf2e";
 async function getSummarizedSpellsDataForRender(actor, sortByType, staffLabels, entries) {
-    entries ??= await Promise.all(actor.spellcasting.collections.map(async (spells) => {
-        const entry = spells.entry;
-        const data = (await entry.getSheetData({ spells }));
-        if (isInstanceOf(entry, "SpellcastingEntryPF2e")) {
-            const id = foundry.utils.getProperty(entry, "flags.pf2e-dailies.identifier");
-            data.isAnimistEntry = id === "animist-spontaneous";
-        }
-        return data;
-    }));
+    const spellcastingEntries = entries ??
+        (await Promise.all(actor.spellcasting.collections.map(async (spells) => {
+            const entry = spells.entry;
+            const data = (await entry.getSheetData({ spells }));
+            if (isInstanceOf(entry, "SpellcastingEntryPF2e")) {
+                const id = foundry.utils.getProperty(entry, "flags.pf2e-dailies.identifier");
+                data.isAnimistEntry = id === "animist-spontaneous";
+            }
+            return data;
+        })));
     const focusPool = actor.system.resources?.focus ?? { value: 0, max: 0 };
     const pf2eDailies = getActiveModule("pf2e-dailies");
     const spells = [];
     const labels = [];
     let hasFocusCantrip = false;
-    for (const entry of entries) {
+    for (const entry of spellcastingEntries) {
         const entryId = entry.id;
         const entryDc = entry.statistic?.dc.value;
         const entryTooltip = entryDc

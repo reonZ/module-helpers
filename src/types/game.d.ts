@@ -20,6 +20,8 @@ declare global {
                 setting: TSetting
             ) => toolbelt.settings[TName][TSetting];
         };
+
+        dice3d?: Dice3D;
     }
 }
 

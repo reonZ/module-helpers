@@ -39,21 +39,23 @@ async function getSummarizedSpellsDataForRender(
     actor: CreaturePF2e,
     sortByType: boolean,
     staffLabels: { staff: string; charges: string },
-    entries?: CustomSpellcastingSheetData[]
+    entries?: SpellcastingSheetData[]
 ) {
-    entries ??= await Promise.all(
-        actor.spellcasting.collections.map(async (spells) => {
-            const entry = spells.entry;
-            const data = (await entry.getSheetData({ spells })) as CustomSpellcastingSheetData;
+    const spellcastingEntries =
+        (entries as CustomSpellcastingSheetData[]) ??
+        (await Promise.all(
+            actor.spellcasting.collections.map(async (spells) => {
+                const entry = spells.entry;
+                const data = (await entry.getSheetData({ spells })) as CustomSpellcastingSheetData;
 
-            if (isInstanceOf(entry, "SpellcastingEntryPF2e")) {
-                const id = foundry.utils.getProperty(entry, "flags.pf2e-dailies.identifier");
-                data.isAnimistEntry = id === "animist-spontaneous";
-            }
+                if (isInstanceOf(entry, "SpellcastingEntryPF2e")) {
+                    const id = foundry.utils.getProperty(entry, "flags.pf2e-dailies.identifier");
+                    data.isAnimistEntry = id === "animist-spontaneous";
+                }
 
-            return data;
-        })
-    );
+                return data;
+            })
+        ));
 
     const focusPool = actor.system.resources?.focus ?? { value: 0, max: 0 };
     const pf2eDailies = getActiveModule("pf2e-dailies");
@@ -63,7 +65,7 @@ async function getSummarizedSpellsDataForRender(
 
     let hasFocusCantrip = false;
 
-    for (const entry of entries) {
+    for (const entry of spellcastingEntries) {
         const entryId = entry.id;
         const entryDc = entry.statistic?.dc.value;
         const entryTooltip = entryDc

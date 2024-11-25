@@ -1,3 +1,5 @@
-export {};
+import { CompendiumBrowser } from "foundry-pf2e";
 
-declare global {}
+declare global {
+    type CompendiumBrowserSheetData = Awaited<ReturnType<CompendiumBrowser["getData"]>>;
+}

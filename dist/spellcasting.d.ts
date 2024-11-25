@@ -1,19 +1,8 @@
-import { ActiveSpell, AttributeString, CharacterPF2e, ConsumablePF2e, CreaturePF2e, MagicTradition, NPCPF2e, OneToTen, SpellcastingCategory, SpellcastingEntryPF2e, SpellcastingEntrySource, SpellcastingSheetData, SpellcastingSlotGroup, SpellSlotGroupId, ValueAndMax, ZeroToFour, ZeroToTen } from "foundry-pf2e";
-type CustomSpellcastingSheetData = Omit<SpellcastingSheetData, "category" | "groups"> & {
-    isAnimistEntry?: boolean;
-    category: SpellcastingCategory | "charges";
-    isStaff: boolean;
-    uses?: ValueAndMax;
-    groups: (Omit<SpellcastingSlotGroup, "active"> & {
-        active: ((ActiveSpell & {
-            uses?: ValueAndMax;
-        }) | null)[];
-    })[];
-};
+import { AttributeString, CharacterPF2e, ConsumablePF2e, CreaturePF2e, MagicTradition, NPCPF2e, OneToTen, SpellcastingCategory, SpellcastingEntryPF2e, SpellcastingEntrySource, SpellcastingSheetData, SpellSlotGroupId, ValueAndMax, ZeroToFour, ZeroToTen } from "foundry-pf2e";
 declare function getSummarizedSpellsDataForRender(actor: CreaturePF2e, sortByType: boolean, staffLabels: {
     staff: string;
     charges: string;
-}, entries?: CustomSpellcastingSheetData[]): Promise<{
+}, entries?: SpellcastingSheetData[]): Promise<{
     labels: string[];
     spells: SummarizedSpell[][];
     focusPool: (ValueAndMax & {

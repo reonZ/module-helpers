@@ -1,3 +1,5 @@
+import { CheckRoll } from "foundry-pf2e";
+
 export {};
 
 declare global {
@@ -12,6 +14,8 @@ declare global {
             speaker?: foundry.documents.ChatSpeakerData | null
         ): Promise<boolean>;
     }
+
+    type Dice3DCheckRoll = Rolled<CheckRoll & { ghost?: boolean }>;
 
     class DiseSoNiceModule extends Module {}
 }
