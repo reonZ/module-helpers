@@ -202,17 +202,14 @@ async function unownedItemtoMessage(actor, item, event, options = {}) {
  */
 function getItemChatTraits(item) {
     if (item.isOfType("weapon")) {
-        // @ts-expect-error
-        return item.traitChatData(CONFIG.PF2E.weaponTraits);
+        return /** protected */ item["traitChatData"](CONFIG.PF2E.weaponTraits);
     }
     if (item.isOfType("spell")) {
         const spellcasting = item.spellcasting;
         if (!spellcasting?.statistic || item.isRitual) {
-            // @ts-expect-error
-            return item.traitChatData();
+            return /** protected */ item["traitChatData"]();
         }
-        // @ts-expect-error
-        return item.traitChatData(CONFIG.PF2E.spellTraits, R.unique([...item.traits, spellcasting.tradition]).filter(R.isTruthy));
+        return /** protected */ item["traitChatData"](CONFIG.PF2E.spellTraits, R.unique([...item.traits, spellcasting.tradition]).filter(R.isTruthy));
     }
     if (item.isOfType("feat")) {
         const actor = item.actor;
@@ -223,11 +220,9 @@ function getItemChatTraits(item) {
             item.system.traits.value.includes(classSlug)
             ? item.system.traits.value.filter((t) => t === classSlug || !(t in CONFIG.PF2E.classTraits))
             : item.system.traits.value;
-        // @ts-expect-error
-        return item.traitChatData(CONFIG.PF2E.featTraits, traitSlugs);
+        return /** protected */ item["traitChatData"](CONFIG.PF2E.featTraits, traitSlugs);
     }
     // other items don't have anything special
-    // @ts-expect-error
-    return item.traitChatData();
+    return /** protected */ item["traitChatData"]();
 }
 export { ITEM_CARRY_TYPES, PHYSICAL_ITEM_TYPES, calculateItemPrice, consumeItem, createSelfEffectMessage, detachSubitem, getActionImg, getItemChatTraits, hasFreePropertySlot, itemIsOfType, unownedItemtoMessage, };

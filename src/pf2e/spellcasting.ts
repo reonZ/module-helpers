@@ -73,7 +73,7 @@ function createCounteractStatistic<TActor extends CreaturePF2e>(
 
 type WithCharges = {
     category: SpellcastingCategory | "charges";
-    isStaff: boolean;
+    isStaff?: boolean;
     uses?: ValueAndMax;
 };
 

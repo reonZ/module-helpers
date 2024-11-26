@@ -5,7 +5,7 @@ declare function warnInvalidDrop(warning: DropWarningType, { spell, groupId }: W
 declare function createCounteractStatistic<TActor extends CreaturePF2e>(ability: SpellcastingEntryWithCharges<TActor>): Statistic<TActor>;
 type WithCharges = {
     category: SpellcastingCategory | "charges";
-    isStaff: boolean;
+    isStaff?: boolean;
     uses?: ValueAndMax;
 };
 type BaseSpellcastingEntryWithCharges<TActor extends ActorPF2e | null = ActorPF2e | null> = Omit<BaseSpellcastingEntry<TActor>, "category"> & WithCharges;
