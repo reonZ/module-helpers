@@ -289,20 +289,17 @@ async function unownedItemtoMessage(
  */
 function getItemChatTraits(item: ItemPF2e<ActorPF2e>) {
     if (item.isOfType("weapon")) {
-        // @ts-expect-error
-        return item.traitChatData(CONFIG.PF2E.weaponTraits);
+        return /** protected */ item["traitChatData"](CONFIG.PF2E.weaponTraits);
     }
 
     if (item.isOfType("spell")) {
         const spellcasting = item.spellcasting;
 
         if (!spellcasting?.statistic || item.isRitual) {
-            // @ts-expect-error
-            return item.traitChatData();
+            return /** protected */ item["traitChatData"]();
         }
 
-        // @ts-expect-error
-        return item.traitChatData(
+        return /** protected */ item["traitChatData"](
             CONFIG.PF2E.spellTraits,
             R.unique([...item.traits, spellcasting.tradition]).filter(R.isTruthy)
         );
@@ -322,13 +319,11 @@ function getItemChatTraits(item: ItemPF2e<ActorPF2e>) {
                   )
                 : item.system.traits.value;
 
-        // @ts-expect-error
-        return item.traitChatData(CONFIG.PF2E.featTraits, traitSlugs);
+        return /** protected */ item["traitChatData"](CONFIG.PF2E.featTraits, traitSlugs);
     }
 
     // other items don't have anything special
-    // @ts-expect-error
-    return item.traitChatData();
+    return /** protected */ item["traitChatData"]();
 }
 
 type ItemOrSource = PreCreate<ItemSourcePF2e> | ItemPF2e;
