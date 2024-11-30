@@ -42,7 +42,7 @@ function advanceTime(interval: TimeInterval, direction: "+" | "-") {
     }
 }
 
-type TimeInterval = "dawn" | "noon" | "dusk" | "midnight" | `${number}`;
+type TimeInterval = "dawn" | "noon" | "dusk" | "midnight" | `${number}` | number;
 
 export type { TimeInterval };
 export { advanceTime, getShortDateTime, getShortTime, getTimeWithSeconds };
