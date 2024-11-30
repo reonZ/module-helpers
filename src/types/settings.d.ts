@@ -22,6 +22,7 @@ declare global {
             step: number;
         };
         gmOnly?: boolean;
+        hide?: boolean;
         name?: string;
         hint?: string;
     }
