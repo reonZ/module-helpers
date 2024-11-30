@@ -1,13 +1,8 @@
-import {
-    ApplicationClosingOptions,
-    ApplicationConfiguration,
-} from "foundry-pf2e/foundry/client-esm/applications/_types.js";
+import { ApplicationClosingOptions } from "foundry-pf2e/foundry/client-esm/applications/_types.js";
 import {
     DialogV2Button,
     DialogV2ButtonCallback,
-    DialogV2Configuration,
     DialogV2RenderCallback,
-    DialogV2WaitOptions,
 } from "foundry-pf2e/foundry/client-esm/applications/api/dialog.js";
 import { createFormData } from ".";
 import { render } from "./handlebars";
@@ -160,9 +155,7 @@ type BaseOptions = {
     render?: DialogV2RenderCallback;
 };
 
-type DialogWaitOptions = DeepPartial<
-    ApplicationConfiguration & DialogV2Configuration & DialogV2WaitOptions
->;
+type DialogWaitOptions = Parameters<(typeof DialogV2)["wait"]>[0];
 
 type DialogPromptOptions = DialogWaitOptions & { ok?: Partial<DialogV2Button> };
 

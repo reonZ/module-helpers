@@ -14,13 +14,13 @@ declare function parseInlineParams(paramString: string, options?: {
 declare class UUIDUtils {
     /** Retrieve multiple documents by UUID */
     static fromUUIDs(uuids: ActorUUID[], options?: {
-        relative?: Maybe<ClientDocument>;
+        relative?: ClientDocument;
     }): Promise<ActorPF2e[]>;
     static fromUUIDs(uuids: ItemUUID[], options?: {
-        relative?: Maybe<ClientDocument>;
+        relative?: ClientDocument;
     }): Promise<ItemPF2e[]>;
     static fromUUIDs(uuids: string[], options?: {
-        relative?: Maybe<ClientDocument>;
+        relative?: ClientDocument;
     }): Promise<ClientDocument[]>;
     static isItemUUID(uuid: unknown, options: {
         embedded: true;

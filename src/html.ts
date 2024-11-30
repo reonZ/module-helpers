@@ -330,7 +330,7 @@ function createFormData(
         R.mapValues((value) => (typeof value === "string" ? value.trim() : value))
     );
 
-    return expand ? foundry.utils.expandObject(data) : data;
+    return expand ? (foundry.utils.expandObject(data) as Record<string, unknown>) : data;
 }
 
 type FormData = {
