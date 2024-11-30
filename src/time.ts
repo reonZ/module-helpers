@@ -4,12 +4,7 @@ import { DateTime } from "luxon";
 function getShortDateTime() {
     const worldClock = game.pf2e.worldClock;
     const worldTime = worldClock.worldTime;
-
-    const time =
-        worldClock.timeConvention === 24
-            ? worldTime.toFormat("HH:mm")
-            : worldTime.toLocaleString(DateTime.TIME_SIMPLE);
-
+    const time = getShortTime(worldTime);
     const date = worldTime.toLocaleString(DateTime.DATE_SHORT);
 
     return {
@@ -18,6 +13,18 @@ function getShortDateTime() {
         time,
         date,
     };
+}
+
+function getShortTime(time: DateTime) {
+    return game.pf2e.worldClock.timeConvention === 24
+        ? time.toFormat("HH:mm")
+        : time.toLocaleString(DateTime.TIME_SIMPLE);
+}
+
+function getTimeWithSeconds(time: DateTime) {
+    return game.pf2e.worldClock.timeConvention === 24
+        ? time.toFormat("HH:mm:ss")
+        : time.toLocaleString(DateTime.TIME_WITH_SECONDS);
 }
 
 function advanceTime(interval: TimeInterval, direction: "+" | "-") {
@@ -38,4 +45,4 @@ function advanceTime(interval: TimeInterval, direction: "+" | "-") {
 type TimeInterval = "dawn" | "noon" | "dusk" | "midnight" | `${number}`;
 
 export type { TimeInterval };
-export { advanceTime, getShortDateTime };
+export { advanceTime, getShortDateTime, getShortTime, getTimeWithSeconds };

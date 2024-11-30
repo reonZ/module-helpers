@@ -6,7 +6,9 @@ declare function getShortDateTime(): {
     time: string;
     date: string;
 };
+declare function getShortTime(time: DateTime): string;
+declare function getTimeWithSeconds(time: DateTime): string;
 declare function advanceTime(interval: TimeInterval, direction: "+" | "-"): void;
 type TimeInterval = "dawn" | "noon" | "dusk" | "midnight" | `${number}`;
 export type { TimeInterval };
-export { advanceTime, getShortDateTime };
+export { advanceTime, getShortDateTime, getShortTime, getTimeWithSeconds };
