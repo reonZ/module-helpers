@@ -107,7 +107,7 @@ async function toggleStance(actor: CharacterPF2e, effectUUID: string, force?: bo
     }
 }
 
-async function addStance(actor: CharacterPF2e, effectUUID: string) {
+async function addStance(actor: CharacterPF2e, effectUUID: string, createMessage = true) {
     const source = await getItemSource(effectUUID, "EffectPF2e");
     if (!source) return;
 
@@ -115,7 +115,10 @@ async function addStance(actor: CharacterPF2e, effectUUID: string) {
     foundry.utils.setProperty(source, "_stats.compendiumSource", effectUUID);
 
     const [item] = await actor.createEmbeddedDocuments("Item", [source]);
-    item?.toMessage();
+
+    if (item && createMessage) {
+        item.toMessage();
+    }
 }
 
 type StanceData = toolbelt.stances.StanceData;
