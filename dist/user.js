@@ -1,3 +1,4 @@
+import * as R from "remeda";
 function getCurrentUser() {
     return game.user ?? game.data.users.find((x) => x._id === game.userId);
 }
@@ -17,4 +18,7 @@ function setControlled(targets) {
         token?.control({ releaseOthers: false });
     }
 }
-export { hasGMOnline, setControlled, userIsActiveGM, userIsGM };
+function getActor() {
+    return R.only(canvas.tokens.controlled)?.actor ?? game.user.character;
+}
+export { getActor, hasGMOnline, setControlled, userIsActiveGM, userIsGM };

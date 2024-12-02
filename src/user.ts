@@ -1,4 +1,5 @@
 import { TokenDocumentPF2e, TokenPF2e } from "foundry-pf2e";
+import * as R from "remeda";
 
 function getCurrentUser() {
     return game.user ?? game.data.users.find((x) => x._id === game.userId);
@@ -25,4 +26,8 @@ function setControlled(targets: (TokenPF2e | TokenDocumentPF2e)[]) {
     }
 }
 
-export { hasGMOnline, setControlled, userIsActiveGM, userIsGM };
+function getActor() {
+    return R.only(canvas.tokens.controlled)?.actor ?? game.user.character;
+}
+
+export { getActor, hasGMOnline, setControlled, userIsActiveGM, userIsGM };
