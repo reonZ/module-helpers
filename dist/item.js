@@ -115,7 +115,7 @@ function isOwnedItem(item) {
     return !!item?.actor;
 }
 function* actorItems(actor, type) {
-    const types = Array.isArray(type)
+    const types = R.isArray(type) && type.length
         ? type
         : typeof type === "string"
             ? [type]
@@ -128,8 +128,21 @@ function* actorItems(actor, type) {
         }
     }
 }
+function itemTypeFromUuid(uuid) {
+    const item = fromUuidSync(uuid);
+    return isItemEntry(item) ? item.type : undefined;
+}
+function itemTypesFromUuids(uuids) {
+    return R.pipe(uuids, R.map((uuid) => itemTypeFromUuid(uuid)), R.filter(R.isTruthy));
+}
+function isItemEntry(item) {
+    return !!item && "type" in item && item.type in CONFIG.PF2E.Item.documentClasses;
+}
 function hasItemWithSourceId(actor, uuid, type) {
-    const uuids = Array.isArray(uuid) ? uuid : [uuid];
+    const uuids = R.isArray(uuid) ? uuid : [uuid];
+    if (!uuids.length)
+        return false;
+    type ??= itemTypesFromUuids(uuids);
     for (const item of actorItems(actor, type)) {
         const sourceId = item.sourceId;
         if (sourceId && uuids.includes(sourceId))
@@ -138,6 +151,7 @@ function hasItemWithSourceId(actor, uuid, type) {
     return false;
 }
 function getItemWithSourceId(actor, uuid, type) {
+    type ??= itemTypeFromUuid(uuid);
     for (const item of actorItems(actor, type)) {
         const sourceId = item.sourceId;
         if (sourceId && uuid.includes(sourceId))
@@ -161,4 +175,4 @@ async function getItemSource(uuid, instance) {
 function getItemTypeLabel(type) {
     return game.i18n.localize(`TYPES.Item.${type}`);
 }
-export { actorItems, BANDS_OF_FORCE_SLUGS, changeCarryType, getActionAnnotation, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, HANDWRAPS_SLUG, hasItemWithSourceId, isOwnedItem, };
+export { actorItems, BANDS_OF_FORCE_SLUGS, changeCarryType, getActionAnnotation, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, HANDWRAPS_SLUG, hasItemWithSourceId, isItemEntry, isOwnedItem, itemTypeFromUuid, itemTypesFromUuids, };

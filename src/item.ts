@@ -1,6 +1,3 @@
-import * as R from "remeda";
-import { isInstanceOf, IsInstanceOfItem, IsInstanceOfItems } from "./object";
-import { getActionGlyph, traitSlugToObject } from "./pf2e";
 import {
     ActorPF2e,
     ChoiceSetSource,
@@ -15,6 +12,9 @@ import {
     ZeroToThree,
     ZeroToTwo,
 } from "foundry-pf2e";
+import * as R from "remeda";
+import { isInstanceOf, IsInstanceOfItem, IsInstanceOfItems } from "./object";
+import { getActionGlyph, traitSlugToObject } from "./pf2e";
 
 const EXCLUDED_TYPES: ItemType[] = ["affliction"];
 
@@ -175,11 +175,12 @@ function* actorItems<TType extends ItemType, TActor extends ActorPF2e>(
     actor: TActor,
     type?: TType | TType[]
 ): Generator<ItemInstances<TActor>[TType]> {
-    const types = Array.isArray(type)
-        ? type
-        : typeof type === "string"
-        ? [type]
-        : R.keys(CONFIG.PF2E.Item.documentClasses);
+    const types =
+        R.isArray(type) && type.length
+            ? type
+            : typeof type === "string"
+            ? [type]
+            : R.keys(CONFIG.PF2E.Item.documentClasses);
 
     for (const type of types) {
         if (EXCLUDED_TYPES.includes(type)) continue;
@@ -190,12 +191,34 @@ function* actorItems<TType extends ItemType, TActor extends ActorPF2e>(
     }
 }
 
+function itemTypeFromUuid<TType extends ItemType>(uuid: string) {
+    const item = fromUuidSync(uuid);
+    return isItemEntry(item) ? (item.type as TType) : undefined;
+}
+
+function itemTypesFromUuids<TType extends ItemType>(uuids: string[]): TType[] {
+    return R.pipe(
+        uuids,
+        R.map((uuid) => itemTypeFromUuid<TType>(uuid)),
+        R.filter(R.isTruthy)
+    );
+}
+
+function isItemEntry(
+    item: Maybe<ClientDocument | CompendiumIndexData>
+): item is (CompendiumIndexData & { type: ItemType }) | ItemPF2e {
+    return !!item && "type" in item && item.type in CONFIG.PF2E.Item.documentClasses;
+}
+
 function hasItemWithSourceId(
     actor: ActorPF2e,
     uuid: string | string[],
     type?: ItemType | ItemType[]
 ) {
-    const uuids = Array.isArray(uuid) ? uuid : [uuid];
+    const uuids = R.isArray(uuid) ? uuid : [uuid];
+    if (!uuids.length) return false;
+
+    type ??= itemTypesFromUuids(uuids);
 
     for (const item of actorItems(actor, type)) {
         const sourceId = item.sourceId;
@@ -210,6 +233,8 @@ function getItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     uuid: string,
     type?: TType | TType[]
 ): ItemInstances<TActor>[TType] | null {
+    type ??= itemTypeFromUuid<TType>(uuid);
+
     for (const item of actorItems(actor, type)) {
         const sourceId = item.sourceId;
         if (sourceId && uuid.includes(sourceId)) return item;
@@ -260,5 +285,8 @@ export {
     getItemWithSourceId,
     HANDWRAPS_SLUG,
     hasItemWithSourceId,
+    isItemEntry,
     isOwnedItem,
+    itemTypeFromUuid,
+    itemTypesFromUuids,
 };
