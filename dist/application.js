@@ -20,4 +20,4 @@ function refreshApplicationHeight(app) {
         return;
     app.setPosition({ height: "auto" });
 }
-export { refreshApplicationHeight, renderActorSheets, renderCharacterSheets, renderItemSheets };
+export { renderApplication, refreshApplicationHeight, renderActorSheets, renderCharacterSheets, renderItemSheets, };
