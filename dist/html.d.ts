@@ -21,6 +21,7 @@ declare function htmlQueryInParent<K extends keyof HTMLElementTagNameMap>(el: Ma
 declare function htmlQueryInParent(el: MaybeHTML, selector: string): HTMLElement | null;
 declare function htmlQueryInParent<E extends HTMLElement = HTMLElement>(el: MaybeHTML, selector: string): E | null;
 declare function dataToDatasetString<TKey extends string>(data: DataToDatasetStringType<TKey>): string;
+declare function getInputValue(el: HTMLInputElement): string | number | boolean;
 declare function castType(value: any, dataType?: string): unknown;
 declare function createTemporaryStyles(): {
     add(selector: string, token: string): void;
@@ -63,4 +64,4 @@ interface CreateHTMLElementOptionsWithNeither extends CreateHTMLElementOptions {
     children?: never;
     innerHTML?: never;
 }
-export { addListener, addListenerAll, castType, createFormData, createGlobalEvent, createHTMLElement, createTemporaryStyles, dataToDatasetString, elementDataset, firstElementWithText, htmlQueryInClosest, htmlQueryInParent, isValidClickEvent, setupDragElement, };
+export { addListener, addListenerAll, castType, createFormData, createGlobalEvent, createHTMLElement, createTemporaryStyles, dataToDatasetString, elementDataset, firstElementWithText, getInputValue, htmlQueryInClosest, htmlQueryInParent, isValidClickEvent, setupDragElement, };

@@ -186,6 +186,14 @@ function dataToDatasetString<TKey extends string>(data: DataToDatasetStringType<
     );
 }
 
+function getInputValue(el: HTMLInputElement) {
+    return el.nodeName === "RANGE-PICKER" || ["number", "range"].includes(el.type)
+        ? el.valueAsNumber
+        : el.type === "checkbox"
+        ? el.checked
+        : el.value.trim();
+}
+
 function castType(value: any, dataType?: string): unknown {
     if (value instanceof Array) return value.map((v) => castType(v, dataType));
     if ([undefined, null].includes(value) || dataType === "String") return value;
@@ -388,6 +396,7 @@ export {
     dataToDatasetString,
     elementDataset,
     firstElementWithText,
+    getInputValue,
     htmlQueryInClosest,
     htmlQueryInParent,
     isValidClickEvent,

@@ -88,6 +88,13 @@ function dataToDatasetString(data) {
         return `data-${sluggifiedKey}='${stringified}'`;
     }), R.filter(R.isTruthy), R.join(" "));
 }
+function getInputValue(el) {
+    return el.nodeName === "RANGE-PICKER" || ["number", "range"].includes(el.type)
+        ? el.valueAsNumber
+        : el.type === "checkbox"
+            ? el.checked
+            : el.value.trim();
+}
 function castType(value, dataType) {
     if (value instanceof Array)
         return value.map((v) => castType(v, dataType));
@@ -192,4 +199,4 @@ function createFormData(html, { expand = false, disabled, readonly } = {}) {
     const data = R.pipe(new FormDataExtended(form, { disabled, readonly }).object, R.mapValues((value) => (typeof value === "string" ? value.trim() : value)));
     return expand ? foundry.utils.expandObject(data) : data;
 }
-export { addListener, addListenerAll, castType, createFormData, createGlobalEvent, createHTMLElement, createTemporaryStyles, dataToDatasetString, elementDataset, firstElementWithText, htmlQueryInClosest, htmlQueryInParent, isValidClickEvent, setupDragElement, };
+export { addListener, addListenerAll, castType, createFormData, createGlobalEvent, createHTMLElement, createTemporaryStyles, dataToDatasetString, elementDataset, firstElementWithText, getInputValue, htmlQueryInClosest, htmlQueryInParent, isValidClickEvent, setupDragElement, };
