@@ -13,7 +13,7 @@ function getDialogClass(animation = true) {
     };
     return AnimationlessDialog;
 }
-async function waitDialog({ title, content, yes, no, classes, data, render, }, { id, width, animation } = {}) {
+async function waitDialog({ title, content, yes, no, classes, data, render, }, { id, width, animation, top } = {}) {
     content = await assureDialogContent(content, data);
     const buttons = [
         {
@@ -40,7 +40,7 @@ async function waitDialog({ title, content, yes, no, classes, data, render, }, {
             title,
             contentClasses: classes ?? [],
         },
-        position: { width },
+        position: { width, top },
         content,
         rejectClose: false,
         buttons,
@@ -61,7 +61,7 @@ async function confirmDialog({ title, content, classes, data }, { animation } = 
         no: { default: false },
     });
 }
-async function promptDialog({ title, content, classes, data, label, render, callback, }, { width, id, animation } = {}) {
+async function promptDialog({ title, content, classes, data, label, render, callback, }, { width, id, animation, top } = {}) {
     content = await assureDialogContent(content, data);
     const ok = {
         callback: typeof callback === "function"
@@ -75,7 +75,7 @@ async function promptDialog({ title, content, classes, data, label, render, call
     const options = {
         content,
         window: { title, contentClasses: classes ?? [] },
-        position: { width },
+        position: { width, top },
         rejectClose: false,
         render,
         ok,

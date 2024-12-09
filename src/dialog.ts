@@ -38,7 +38,7 @@ async function waitDialog<T extends any>(
         yes: Omit<DialogV2Button, "action">;
         no: Omit<DialogV2Button, "action">;
     },
-    { id, width, animation }: DialogExtraOptions = {}
+    { id, width, animation, top }: DialogExtraOptions = {}
 ): Promise<T | null | false> {
     content = await assureDialogContent(content, data);
 
@@ -69,7 +69,7 @@ async function waitDialog<T extends any>(
             title,
             contentClasses: classes ?? [],
         },
-        position: { width },
+        position: { width, top },
         content,
         rejectClose: false,
         buttons,
@@ -107,7 +107,7 @@ async function promptDialog<T extends Record<string, unknown>>(
         render,
         callback,
     }: BaseOptions & { label?: string; callback?: DialogV2ButtonCallback },
-    { width, id, animation }: DialogExtraOptions = {}
+    { width, id, animation, top }: DialogExtraOptions = {}
 ): Promise<T | null> {
     content = await assureDialogContent(content, data);
 
@@ -125,7 +125,7 @@ async function promptDialog<T extends Record<string, unknown>>(
     const options: DialogPromptOptions = {
         content,
         window: { title, contentClasses: classes ?? [] },
-        position: { width },
+        position: { width, top },
         rejectClose: false,
         render,
         ok,
@@ -145,6 +145,7 @@ type DialogExtraOptions = {
     id?: string;
     width?: number;
     animation?: false;
+    top?: number;
 };
 
 type BaseOptions = {

@@ -2,18 +2,19 @@ import { DialogV2Button, DialogV2ButtonCallback, DialogV2RenderCallback } from "
 declare function waitDialog<T extends any>({ title, content, yes, no, classes, data, render, }: BaseOptions & {
     yes: Omit<DialogV2Button, "action">;
     no: Omit<DialogV2Button, "action">;
-}, { id, width, animation }?: DialogExtraOptions): Promise<T | null | false>;
+}, { id, width, animation, top }?: DialogExtraOptions): Promise<T | null | false>;
 declare function confirmDialog({ title, content, classes, data }: BaseOptions, { animation }?: {
     animation?: boolean;
 }): Promise<any>;
 declare function promptDialog<T extends Record<string, unknown>>({ title, content, classes, data, label, render, callback, }: BaseOptions & {
     label?: string;
     callback?: DialogV2ButtonCallback;
-}, { width, id, animation }?: DialogExtraOptions): Promise<T | null>;
+}, { width, id, animation, top }?: DialogExtraOptions): Promise<T | null>;
 type DialogExtraOptions = {
     id?: string;
     width?: number;
     animation?: false;
+    top?: number;
 };
 type BaseOptions = {
     title: string;
