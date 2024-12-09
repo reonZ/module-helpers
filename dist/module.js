@@ -1,6 +1,6 @@
+import { registerMigration } from "./migration";
 import { joinStr } from "./utils";
 let MODULE_ID = "";
-let MODULE_NAME = "";
 const MODULE = {
     get id() {
         if (!MODULE_ID) {
@@ -12,7 +12,7 @@ const MODULE = {
         if (!MODULE_ID) {
             throw new Error("Module needs to be registered.");
         }
-        return MODULE_NAME;
+        return this.current.title;
     },
     get current() {
         return game.modules.get(this.id);
@@ -34,14 +34,17 @@ const MODULE = {
         console.log(`[${this.name}] ${str}`);
     },
     path(...path) {
-        return `${this.id}.${joinStr(".", ...path)}`;
+        const joined = joinStr(".", ...path);
+        return joined ? `${this.id}.${joined}` : `${this.id}`;
     },
-    register(id, name) {
+    register(id) {
         if (MODULE_ID) {
             throw new Error("Module was already registered.");
         }
         MODULE_ID = id;
-        MODULE_NAME = name;
+    },
+    registerMigration(migration) {
+        registerMigration(migration);
     },
 };
 function getActiveModule(name) {
@@ -49,6 +52,7 @@ function getActiveModule(name) {
     if (!module?.active)
         return;
     module.getSetting = (key) => game.settings.get(name, key);
+    module.setSetting = (key, value) => game.settings.set(name, key, value);
     return module;
 }
 function getActiveModuleSetting(name, setting) {
@@ -57,4 +61,4 @@ function getActiveModuleSetting(name, setting) {
         return;
     return game.settings.get(name, setting);
 }
-export { MODULE, getActiveModule, getActiveModuleSetting };
+export { getActiveModule, getActiveModuleSetting, MODULE };

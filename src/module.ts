@@ -1,7 +1,7 @@
+import { ModuleMigration, registerMigration } from "./migration";
 import { joinStr } from "./utils";
 
 let MODULE_ID = "";
-let MODULE_NAME = "";
 
 const MODULE = {
     get id() {
@@ -14,7 +14,7 @@ const MODULE = {
         if (!MODULE_ID) {
             throw new Error("Module needs to be registered.");
         }
-        return MODULE_NAME;
+        return this.current.title;
     },
     get current() {
         return game.modules.get(this.id) as Module & { api?: Record<string, any> };
@@ -36,15 +36,19 @@ const MODULE = {
     log(str: string) {
         console.log(`[${this.name}] ${str}`);
     },
-    path(...path: (string | string[])[]): `${string}.${string}` {
-        return `${this.id}.${joinStr(".", ...path)}`;
+    path(...path: (string | string[])[]): string {
+        const joined = joinStr(".", ...path);
+        return joined ? `${this.id}.${joined}` : `${this.id}`;
     },
-    register(id: string, name: string) {
+    register(id: string) {
         if (MODULE_ID) {
             throw new Error("Module was already registered.");
         }
+
         MODULE_ID = id;
-        MODULE_NAME = name;
+    },
+    registerMigration(migration: Omit<ModuleMigration, "module">) {
+        registerMigration(migration);
     },
 };
 
@@ -57,6 +61,7 @@ function getActiveModule<T extends Module>(name: string): ExtendedModule<T> | un
     if (!module?.active) return;
 
     module.getSetting = <T = boolean>(key: string) => game.settings.get(name, key) as T;
+    module.setSetting = <T>(key: string, value: T) => game.settings.set(name, key, value);
 
     return module;
 }
@@ -68,8 +73,10 @@ function getActiveModuleSetting<T = boolean>(name: string, setting: string) {
     return game.settings.get(name, setting) as T;
 }
 
-type ExtendedModule<TModule extends Module> = TModule & {
+type ExtendedModule<TModule extends Module = Module> = TModule & {
     getSetting<T = boolean>(key: string): T;
+    setSetting<T>(key: string, value: T): Promise<T>;
 };
 
-export { MODULE, getActiveModule, getActiveModuleSetting };
+export { getActiveModule, getActiveModuleSetting, MODULE };
+export type { ExtendedModule };
