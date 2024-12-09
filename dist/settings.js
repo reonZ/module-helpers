@@ -9,6 +9,9 @@ function getSetting(key) {
 function setSetting(key, value) {
     return game.settings.set(MODULE.id, key, value);
 }
+function hasSetting(key) {
+    return game.settings.settings.has(`${MODULE.id}.${key}`);
+}
 function registerSetting(options) {
     if ("choices" in options && Array.isArray(options.choices)) {
         options.choices = R.mapToObj(options.choices, (choice) => [
@@ -30,4 +33,4 @@ function registerSettingMenu(options) {
     options.icon ??= "fas fa-cogs";
     game.settings.registerMenu(MODULE.id, options.key, options);
 }
-export { getSetting, registerSettingMenu, registerSetting, setSetting, settingPath };
+export { getSetting, hasSetting, registerSettingMenu, registerSetting, setSetting, settingPath };
