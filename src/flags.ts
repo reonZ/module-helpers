@@ -14,7 +14,7 @@ function unsetFlag(doc: foundry.abstract.Document, ...path: string[]) {
     return doc.unsetFlag(MODULE.id, path.join("."));
 }
 
-function flagPath(...path: string[]): `flags.${typeof MODULE.id}.${string}` {
+function flagPath(...path: string[]) {
     return `flags.${MODULE.path(path)}`;
 }
 
@@ -24,19 +24,18 @@ function getFlagProperty<T>(obj: object, ...path: string[]) {
 
 function setFlagProperty<T extends object>(obj: T, ...args: [...string[], any]): T {
     const value = args.pop();
-
-    if (args.length) {
-        foundry.utils.setProperty(obj, flagPath(...args), value);
-    } else {
-        foundry.utils.setProperty(obj, `flags.${MODULE.id}`, value);
-    }
-
+    foundry.utils.setProperty(obj, flagPath(...args), value);
     return obj;
 }
 
 function unsetFlagProperty<T extends object>(obj: T, ...path: string[]): T {
     const last = path.pop()!;
     setFlagProperty(obj, ...path, `-=${last}`, true);
+    return obj;
+}
+
+function unsetModuleFlagProperty<T extends object>(obj: T) {
+    foundry.utils.setProperty(obj, `flags.-=${MODULE.id}`, true);
     return obj;
 }
 
@@ -96,5 +95,6 @@ export {
     updateFlag,
     updateSourceFlag,
     unsetFlagProperty,
+    unsetModuleFlagProperty,
     unsetMofuleFlag,
 };

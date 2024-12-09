@@ -18,17 +18,16 @@ function getFlagProperty(obj, ...path) {
 }
 function setFlagProperty(obj, ...args) {
     const value = args.pop();
-    if (args.length) {
-        foundry.utils.setProperty(obj, flagPath(...args), value);
-    }
-    else {
-        foundry.utils.setProperty(obj, `flags.${MODULE.id}`, value);
-    }
+    foundry.utils.setProperty(obj, flagPath(...args), value);
     return obj;
 }
 function unsetFlagProperty(obj, ...path) {
     const last = path.pop();
     setFlagProperty(obj, ...path, `-=${last}`, true);
+    return obj;
+}
+function unsetModuleFlagProperty(obj) {
+    foundry.utils.setProperty(obj, `flags.-=${MODULE.id}`, true);
     return obj;
 }
 function deleteFlagProperty(obj, ...path) {
@@ -63,4 +62,4 @@ function updateSourceFlag(doc, ...args) {
         [flagPath(...args)]: value,
     });
 }
-export { deleteFlagProperty, flagPath, getFlag, getFlagProperty, getModuleFlag, hasModuleFlag, setFlag, setFlagProperty, unsetFlag, updateFlag, updateSourceFlag, unsetFlagProperty, unsetMofuleFlag, };
+export { deleteFlagProperty, flagPath, getFlag, getFlagProperty, getModuleFlag, hasModuleFlag, setFlag, setFlagProperty, unsetFlag, updateFlag, updateSourceFlag, unsetFlagProperty, unsetModuleFlagProperty, unsetMofuleFlag, };
