@@ -1,9 +1,32 @@
 import { ActorPF2e, ActorSourcePF2e } from "foundry-pf2e";
 import * as R from "remeda";
-import { error, waitDialog } from ".";
+import { promptDialog, subLocalize, waitDialog } from ".";
 import { ExtendedModule, getActiveModule, MODULE } from "./module";
 import { hasSetting, registerSetting } from "./settings";
 import { userIsActiveGM } from "./user";
+
+// "SHARED": {
+//     "migration": {
+//         "warning": {
+//             "title": "Module Migration",
+//             "start": "Start Migration",
+//             "cancel": "Cancel",
+//             "content": {
+//                 "modules": "The following module(s) must migrate data:",
+//                 "wait": "If the system is migrating its own data, please wait before starting"
+//             }
+//         },
+//         "summary": {
+//             "title": "Migration Summary",
+//             "content": "The following documents were migrated",
+//             "nothing": "No document needed to be migrated."
+//         },
+//         "error": {
+//             "actors": "An error occured while migrating data for world actors.",
+//             "token": "An error occured while migrating data for the token actor {uuid}."
+//         }
+//     }
+// },
 
 declare global {
     var MODULES_MIGRATIONS: Maybe<{
@@ -85,37 +108,7 @@ async function runMigrations() {
 
     migrations.sort((a, b) => a.version - b.version);
 
-    const migratedActors: Record<
-        string,
-        { uuid: string; actor: ActorPF2e; source: ActorSourcePF2e; isToken: boolean }
-    > = {};
-
-    const migrateActor = async (actor: ActorPF2e, isToken: boolean) => {
-        const uuid = actor.uuid;
-        const source = actor.toObject() as MigratedActorSource;
-
-        for (const migration of migrations) {
-            if ((await migration.migrateActor?.(source)) && !migratedActors[uuid]) {
-                migratedActors[uuid] = { source, actor, uuid, isToken };
-            }
-        }
-    };
-
-    for (const actor of game.actors) {
-        await migrateActor(actor, false);
-    }
-
-    for (const scene of game.scenes) {
-        for (const token of scene.tokens) {
-            const actor = token.actor;
-            if (!actor || token.isLinked) continue;
-
-            await migrateActor(actor, true);
-        }
-    }
-
-    const migratedActorList = Object.values(migratedActors);
-    if (!migratedActorList.length) return;
+    if (!migrations.length) return;
 
     const moduleList = R.pipe(
         modules,
@@ -124,84 +117,117 @@ async function runMigrations() {
         R.map(({ module }) => module)
     );
 
-    const moduleNames = R.map(moduleList, (module) => module.title);
-    const plural = moduleNames.length > 1 ? "s" : "";
-    const single = moduleNames.length > 1 ? "" : "s";
+    const localize = subLocalize("SHARED.migration");
 
-    const names =
-        moduleNames.length === 1
-            ? moduleNames[0]
-            : moduleNames.length === 2
-            ? moduleNames.join(" & ")
-            : moduleNames.slice(0, -1).join(", ") + " & " + moduleNames.at(-1);
+    const warningContent = [
+        "<div style='font-size: 1rem;'>",
+        `<div>${localize("warning.content.modules")}</div>`,
+        `<ul style="margin: 0; font-size: 1rem;">`,
+    ];
 
-    const warningStyle = "style='font-size: 1rem; margin: 0; line-height: 1.2;'";
+    for (const module of moduleList) {
+        warningContent.push(`<li style="font-size: 1rem;">${module.title}</li>`);
+    }
+
+    warningContent.push("</ul>", `<div>${localize("warning.content.wait")}</div>`, "</div>");
+
     const started = await waitDialog(
         {
-            title: "Module Migration",
-            yes: { label: "Start Migration", icon: "fa-solid fa-play" },
-            no: { label: "Cancel", icon: "fa-solid fa-xmark" },
-            content: `<p ${warningStyle}>The module${plural} <strong>${names}</strong> need${single} to migrate some data.
-        <br>If the system is migrating, please wait before starting.</p>`,
+            title: localize("warning.title"),
+            yes: { label: localize("warning.start"), icon: "fa-solid fa-play" },
+            no: { label: localize("warning.cancel"), icon: "fa-solid fa-xmark" },
+            content: warningContent.join(""),
         },
         { top: 100 }
     );
 
     if (!started) return;
 
-    const listStyle = "style='margin: 0; list-style: none; padding: 0; font-size: 1rem;'";
-    const content = [
-        `<p style="margin: 0; font-size: 1rem;">The following documents were migrated by
-        <br>the <strong>${names}</strong> module${plural}.</p>`,
-    ];
+    const migratedActors: Set<ActorPF2e> = new Set();
 
-    if (migratedActorList.length) {
-        const [tokenActors, worldActors] = R.partition(migratedActorList, (x) => x.isToken);
+    const migrateActor = async (actor: ActorPF2e) => {
+        let migrated = false;
+        const source = actor.toObject();
 
-        if (worldActors.length) {
-            try {
-                const ActorClass = getDocumentClass("Actor");
-                const sources = worldActors.map((x) => x.source);
-
-                await ActorClass.updateDocuments(sources, { noHook: true });
-            } catch (err) {
-                error("An error occured while migrating data for world actors.", true);
-                console.warn(err);
+        for (const migration of migrations) {
+            if (await migration.migrateActor?.(source)) {
+                migrated = true;
+                migratedActors.add(actor);
             }
         }
 
-        for (const { actor, source, uuid } of tokenActors) {
-            try {
-                await actor.update(source, { noHook: true });
-            } catch (err) {
-                error(`An error occured while migrating data for the token actor ${uuid}.`, true);
-                console.warn(err);
+        return migrated ? source : null;
+    };
+
+    const worldActorSources = R.filter(
+        await Promise.all(game.actors.map(migrateActor)),
+        R.isTruthy
+    );
+
+    if (worldActorSources.length) {
+        try {
+            const ActorClass = getDocumentClass("Actor");
+            await ActorClass.updateDocuments(worldActorSources, { noHook: true });
+        } catch (err) {
+            localize.error("error.actors", true);
+            console.warn(err);
+        }
+    }
+
+    for (const scene of game.scenes) {
+        for (const token of scene.tokens) {
+            const actor = token.actor;
+            if (!actor || token.isLinked) continue;
+
+            const source = await migrateActor(actor);
+
+            if (source) {
+                try {
+                    await actor.update(source, { noHook: true });
+                } catch (err) {
+                    localize.error("error.token", { uuid: actor.uuid }, true);
+                    console.warn(err);
+                }
             }
         }
-
-        content.push(`<h3 style="margin: 0;">Actors</h3><ul ${listStyle}>`);
-
-        for (const { source, uuid } of migratedActorList) {
-            content.push(`<li style="font-size: 1rem;">@UUID[${uuid}]</li>`);
-        }
-
-        content.push("</ul>");
     }
 
     for (const module of moduleList) {
         module.setSetting("__schema", lastVersion);
     }
 
-    const summary = new foundry.applications.api.DialogV2({
-        window: { title: "Module Migration" },
-        buttons: [{ label: "Close", icon: "fa-solid fa-xmark" }],
-        content: await TextEditor.enrichHTML(content.join("")),
+    const hasMigrated = migratedActors.size;
+
+    if (!hasMigrated) {
+        promptDialog({
+            title: localize("summary.title"),
+            content: localize("summary.nothing"),
+        });
+
+        return;
+    }
+
+    const summaryContent = [`<div>${localize("summary.content")}</div>`];
+
+    if (migratedActors.size) {
+        const actorsLabel = game.i18n.localize("PF2E.Actor.Plural");
+        summaryContent.push(
+            `<h3 style="margin: 0;">${actorsLabel}</h3>`,
+            `<ul style="margin: 0; list-style: none; padding: 0; font-size: 1rem;">`
+        );
+
+        for (const actor of migratedActors) {
+            summaryContent.push(`<li style="font-size: 1rem;">@UUID[${actor.uuid}]</li>`);
+        }
+
+        summaryContent.push("</ul>");
+    }
+
+    promptDialog({
+        title: localize("summary.title"),
+        content: await TextEditor.enrichHTML(summaryContent.join("")),
     });
-
-    summary.render(true);
 }
-
-type MigratedActorSource = ActorSourcePF2e & { _id: string };
 
 type PreparedModuleMigration = ModuleMigration & {
     module: string;
