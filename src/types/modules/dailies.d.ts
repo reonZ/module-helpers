@@ -6,6 +6,7 @@ import {
     OneToFour,
     PhysicalItemPF2e,
     SpellcastingEntry,
+    SpellcastingEntryPF2e,
     SpellSource,
     WeaponPF2e,
     ZeroToTen,
@@ -46,8 +47,20 @@ declare global {
             ) => Promise<foundry.abstract.Document> | undefined;
             openDailiesInterface: (actor: ActorPF2e) => Promise<void>;
             registerCustomDailies: (dailies: object[]) => void;
-            canPrepareDailies: (actor: ActorPF2e) => boolean;
             getDailiesSummary: (actor: ActorPF2e) => string;
+            canPrepareDailies: (actor: ActorPF2e) => boolean;
+            getDisabledDailies: (actor: CharacterPF2e) => Record<string, boolean>;
+            getAnimistConfigs: (actor: CharacterPF2e) => {
+                lores: boolean;
+                spells: boolean;
+                signatures: boolean;
+            };
+            getAnimistVesselsData: (actor: CharacterPF2e) =>
+                | {
+                      entry: SpellcastingEntryPF2e;
+                      primary: string[];
+                  }
+                | undefined;
             utils: Record<string, Function>;
             dailyHelpers: {
                 createComboSkillDaily: (

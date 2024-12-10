@@ -17,6 +17,11 @@ async function getSummarizedSpellsDataForRender(actor, sortByType, entries) {
         })));
     const focusPool = actor.system.resources?.focus ?? { value: 0, max: 0 };
     const pf2eDailies = getActiveModule("pf2e-dailies");
+    const vesselsData = (actor.isOfType("character") &&
+        pf2eDailies?.api.getAnimistVesselsData(actor)) || {
+        entry: undefined,
+        primary: [],
+    };
     const spells = [];
     const labels = [];
     let hasFocusCantrip = false;
@@ -34,6 +39,7 @@ async function getSummarizedSpellsDataForRender(actor, sortByType, entries) {
         const isPrepared = entry.isPrepared;
         const isSpontaneous = entry.isSpontaneous;
         const isFlexible = entry.isFlexible;
+        const isVessels = entry.id === vesselsData.entry?.id;
         const item = entry.isEphemeral
             ? actor.items.get(entryId.split("-")[0])
             : undefined;
@@ -50,8 +56,10 @@ async function getSummarizedSpellsDataForRender(actor, sortByType, entries) {
                 const active = group.active[slotId];
                 if (!active?.spell || active.uses?.max === 0)
                     continue;
-                const { spell } = active;
+                const spell = active.spell;
                 const spellId = spell.id;
+                if (isVessels && !vesselsData.primary.includes(spellId))
+                    continue;
                 const isVirtual = isSpontaneous && !isCantrip && active.virtual;
                 const uses = isCantrip || isFocus || consumable || (isPrepared && !isFlexible)
                     ? undefined
