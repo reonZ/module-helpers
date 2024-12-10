@@ -1,10 +1,10 @@
 import * as R from "remeda";
 import { getActionAnnotation } from "./item";
-import { localeCompare } from "./localize";
+import { localeCompare, localize } from "./localize";
 import { getActiveModule } from "./module";
 import { isInstanceOf } from "./object";
 import { spellSlotGroupIdToNumber } from "./pf2e";
-async function getSummarizedSpellsDataForRender(actor, sortByType, staffLabels, entries) {
+async function getSummarizedSpellsDataForRender(actor, sortByType, entries) {
     const spellcastingEntries = entries ??
         (await Promise.all(actor.spellcasting.collections.map(async (spells) => {
             const entry = spells.entry;
@@ -116,9 +116,9 @@ async function getSummarizedSpellsDataForRender(actor, sortByType, staffLabels, 
                     category: consumable
                         ? `PF2E.Item.Consumable.Category.${consumable.category}`
                         : isStaff
-                            ? staffLabels.staff
+                            ? localize("SHARED.spellcasting.staff")
                             : isCharges
-                                ? staffLabels.charges
+                                ? localize("SHARED.spellcasting.charges")
                                 : isInnate
                                     ? "PF2E.PreparationTypeInnate"
                                     : isSpontaneous

@@ -1,8 +1,5 @@
 import { AttributeString, CharacterPF2e, ConsumablePF2e, CreaturePF2e, MagicTradition, NPCPF2e, OneToTen, SpellcastingCategory, SpellcastingEntryPF2e, SpellcastingEntrySource, SpellcastingSheetData, SpellSlotGroupId, ValueAndMax, ZeroToFour, ZeroToTen } from "foundry-pf2e";
-declare function getSummarizedSpellsDataForRender(actor: CreaturePF2e, sortByType: boolean, staffLabels: {
-    staff: string;
-    charges: string;
-}, entries?: SpellcastingSheetData[]): Promise<{
+declare function getSummarizedSpellsDataForRender(actor: CreaturePF2e, sortByType: boolean, entries?: SpellcastingSheetData[]): Promise<{
     labels: string[];
     spells: SummarizedSpell[][];
     focusPool: (ValueAndMax & {
