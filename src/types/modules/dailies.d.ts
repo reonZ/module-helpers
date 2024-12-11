@@ -32,6 +32,11 @@ declare global {
             };
         };
 
+        type AnimistVesselsData = {
+            entry: SpellcastingEntryPF2e;
+            primary: string[];
+        };
+
         interface StaffSpellcasting extends SpellcastingEntry<CharacterPF2e> {
             staff: StaffPF2e;
         }
@@ -55,12 +60,7 @@ declare global {
                 spells: boolean;
                 signatures: boolean;
             };
-            getAnimistVesselsData: (actor: CharacterPF2e) =>
-                | {
-                      entry: SpellcastingEntryPF2e;
-                      primary: string[];
-                  }
-                | undefined;
+            getAnimistVesselsData: (actor: CharacterPF2e) => dailies.AnimistVesselsData | undefined;
             utils: Record<string, Function>;
             dailyHelpers: {
                 createComboSkillDaily: (
