@@ -1,5 +1,5 @@
 import * as R from "remeda";
-import { promptDialog, subLocalize, waitDialog } from ".";
+import { isInstanceOf, promptDialog, subLocalize, waitDialog } from ".";
 import { getActiveModule, MODULE } from "./module";
 import { hasSetting, registerSetting } from "./settings";
 import { userIsActiveGM } from "./user";
@@ -65,15 +65,21 @@ function getMigrationData(lastVersion) {
     migrations.sort((a, b) => a.version - b.version);
     return { modules, migrations, lastVersion };
 }
-async function testMigration(actor, version) {
-    const migrationData = getMigrationData(version);
-    if (!migrationData)
+async function testMigration(doc, version) {
+    const { migrations } = getMigrationData(version) ?? {};
+    if (!migrations)
         return;
-    const { migrations } = migrationData;
-    const originalSource = actor.toObject();
-    const source = actor.toObject();
+    const functionName = isInstanceOf(doc, "ActorPF2e")
+        ? "migrateActor"
+        : isInstanceOf(doc, "UserPF2e")
+            ? "migrateUser"
+            : undefined;
+    if (!functionName)
+        return;
+    const originalSource = doc.toObject();
+    const source = doc.toObject();
     for (const migration of migrations) {
-        await migration.migrateActor?.(source);
+        await migration[functionName]?.(source);
     }
     return foundry.utils.diffObject(originalSource, source);
 }
@@ -90,7 +96,7 @@ async function runMigrations() {
     const warningContent = [
         "<div style='font-size: 1rem;'>",
         `<div>${localize("warning.content.modules")}</div>`,
-        `<ul style="margin: 0; font-size: 1rem;">`,
+        `<ul style="margin: 0 0 0.5em; font-size: 1rem;">`,
     ];
     for (const module of moduleList) {
         warningContent.push(`<li style="font-size: 1rem;">${module.title}</li>`);
@@ -104,6 +110,7 @@ async function runMigrations() {
     }, { top: 100 });
     if (!started)
         return;
+    // actors
     const migratedActors = new Set();
     const migrateActor = async (actor) => {
         let migrated = false;
@@ -144,10 +151,35 @@ async function runMigrations() {
             }
         }
     }
+    // users
+    const migratedUsers = new Set();
+    const userSources = R.filter(await Promise.all(game.users.map(async (user) => {
+        let migrated = false;
+        const source = user.toObject();
+        for (const migration of migrations) {
+            if (await migration.migrateUser?.(source)) {
+                migrated = true;
+                migratedUsers.add(user);
+            }
+        }
+        return migrated ? source : null;
+    })), R.isTruthy);
+    if (userSources.length) {
+        try {
+            const UserClass = getDocumentClass("User");
+            await UserClass.updateDocuments(userSources, { noHook: true });
+        }
+        catch (err) {
+            localize.error("error.users", true);
+            console.warn(err);
+        }
+    }
+    // set schema
     for (const module of moduleList) {
         module.setSetting("__schema", lastVersion);
     }
-    const hasMigrated = migratedActors.size;
+    // summary
+    const hasMigrated = migratedActors.size || migratedUsers.size;
     if (!hasMigrated) {
         promptDialog({
             title: localize("summary.title"),
@@ -156,11 +188,16 @@ async function runMigrations() {
         return;
     }
     const summaryContent = [`<div>${localize("summary.content")}</div>`];
-    if (migratedActors.size) {
-        const actorsLabel = game.i18n.localize("PF2E.Actor.Plural");
-        summaryContent.push(`<h3 style="margin: 0;">${actorsLabel}</h3>`, `<ul style="margin: 0; list-style: none; padding: 0; font-size: 1rem;">`);
-        for (const actor of migratedActors) {
-            summaryContent.push(`<li style="font-size: 1rem;">@UUID[${actor.uuid}]</li>`);
+    for (const [list, title] of [
+        [migratedUsers, "PLAYERS.Title"],
+        [migratedActors, "PF2E.Actor.Plural"],
+    ]) {
+        if (!list.size)
+            continue;
+        const label = game.i18n.localize(title);
+        summaryContent.push(`<h3 style="margin: 0;">${label}</h3>`, `<ul style="margin: 0 0 0.5em; list-style: none; padding: 0; font-size: 1rem;">`);
+        for (const doc of list) {
+            summaryContent.push(`<li style="font-size: 1rem;">@UUID[${doc.uuid}]</li>`);
         }
         summaryContent.push("</ul>");
     }

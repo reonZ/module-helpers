@@ -1,4 +1,4 @@
-import { ActorPF2e, ActorSourcePF2e } from "foundry-pf2e";
+import { ActorSourcePF2e, UserSourcePF2e } from "foundry-pf2e";
 declare global {
     var MODULES_MIGRATIONS: Maybe<{
         done: boolean;
@@ -8,13 +8,14 @@ declare global {
     }>;
 }
 declare function registerMigration(migration: ModuleMigration): void;
-declare function testMigration(actor: ActorPF2e, version?: number): Promise<object | undefined>;
+declare function testMigration(doc: ClientDocument, version?: number): Promise<object | undefined>;
 type PreparedModuleMigration = ModuleMigration & {
     module: string;
 };
 type ModuleMigration = {
     version: number;
     migrateActor?: (actorSource: ActorSourcePF2e) => Promisable<boolean>;
+    migrateUser?: (userSource: UserSourcePF2e) => Promisable<boolean>;
 };
 export { registerMigration, testMigration };
 export type { ModuleMigration };
