@@ -3,12 +3,28 @@ import { isInstanceOf, promptDialog, subLocalize, waitDialog } from ".";
 import { getActiveModule, MODULE } from "./module";
 import { hasSetting, registerSetting } from "./settings";
 import { userIsActiveGM } from "./user";
+const MANAGER_VERSION = 1;
 function registerMigration(migration) {
     const MIGRATIONS = (window.MODULES_MIGRATIONS ??= {
         done: false,
         initialized: false,
+        modules: new Map(),
         list: [],
+        get context() {
+            return R.firstBy([...this.modules.values()], [R.prop("managerVersion"), "desc"]);
+        },
+        testMigration(doc, version) {
+            return this.context.testMigration(doc, version);
+        },
+        runMigrations() {
+            return this.context.runMigrations();
+        },
+    });
+    MIGRATIONS.modules.set(MODULE.id, {
+        module: MODULE.id,
+        managerVersion: MANAGER_VERSION,
         testMigration,
+        runMigrations,
     });
     MIGRATIONS.list.push({
         ...migration,
@@ -22,7 +38,9 @@ function initializeMigrations() {
         return;
     if (!MIGRATIONS.initialized) {
         MIGRATIONS.initialized = true;
-        Hooks.once("ready", runMigrations);
+        Hooks.once("ready", () => {
+            MIGRATIONS.runMigrations();
+        });
     }
     Hooks.once("init", () => {
         if (hasSetting("__schema"))
@@ -206,4 +224,4 @@ async function runMigrations() {
         content: await TextEditor.enrichHTML(summaryContent.join("")),
     });
 }
-export { registerMigration, testMigration };
+export { registerMigration };

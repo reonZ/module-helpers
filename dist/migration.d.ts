@@ -3,12 +3,16 @@ declare global {
     var MODULES_MIGRATIONS: Maybe<{
         done: boolean;
         initialized: boolean;
+        modules: Map<string, MigrationModuleFunctions>;
         list: PreparedModuleMigration[];
+        get context(): MigrationModuleFunctions;
         testMigration: typeof testMigration;
+        runMigrations: typeof runMigrations;
     }>;
 }
 declare function registerMigration(migration: ModuleMigration): void;
 declare function testMigration(doc: ClientDocument, version?: number): Promise<object | undefined>;
+declare function runMigrations(): Promise<void>;
 type PreparedModuleMigration = ModuleMigration & {
     module: string;
 };
@@ -17,5 +21,11 @@ type ModuleMigration = {
     migrateActor?: (actorSource: ActorSourcePF2e) => Promisable<boolean>;
     migrateUser?: (userSource: UserSourcePF2e) => Promisable<boolean>;
 };
-export { registerMigration, testMigration };
+type MigrationModuleFunctions = {
+    managerVersion: number;
+    module: string;
+    testMigration: typeof testMigration;
+    runMigrations: typeof runMigrations;
+};
+export { registerMigration };
 export type { ModuleMigration };

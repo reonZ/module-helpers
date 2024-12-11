@@ -5,6 +5,8 @@ import { ExtendedModule, getActiveModule, MODULE } from "./module";
 import { hasSetting, registerSetting } from "./settings";
 import { userIsActiveGM } from "./user";
 
+const MANAGER_VERSION = 1;
+
 // "SHARED": {
 //     "migration": {
 //         "warning": {
@@ -33,8 +35,11 @@ declare global {
     var MODULES_MIGRATIONS: Maybe<{
         done: boolean;
         initialized: boolean;
+        modules: Map<string, MigrationModuleFunctions>;
         list: PreparedModuleMigration[];
+        get context(): MigrationModuleFunctions;
         testMigration: typeof testMigration;
+        runMigrations: typeof runMigrations;
     }>;
 }
 
@@ -42,8 +47,24 @@ function registerMigration(migration: ModuleMigration) {
     const MIGRATIONS = (window.MODULES_MIGRATIONS ??= {
         done: false,
         initialized: false,
+        modules: new Map(),
         list: [] as PreparedModuleMigration[],
+        get context() {
+            return R.firstBy([...this.modules.values()], [R.prop("managerVersion"), "desc"])!;
+        },
+        testMigration(doc: ClientDocument, version?: number) {
+            return this.context.testMigration(doc, version);
+        },
+        runMigrations() {
+            return this.context.runMigrations();
+        },
+    });
+
+    MIGRATIONS.modules.set(MODULE.id, {
+        module: MODULE.id,
+        managerVersion: MANAGER_VERSION,
         testMigration,
+        runMigrations,
     });
 
     MIGRATIONS.list.push({
@@ -60,7 +81,9 @@ function initializeMigrations() {
 
     if (!MIGRATIONS.initialized) {
         MIGRATIONS.initialized = true;
-        Hooks.once("ready", runMigrations);
+        Hooks.once("ready", () => {
+            MIGRATIONS.runMigrations();
+        });
     }
 
     Hooks.once("init", () => {
@@ -316,5 +339,12 @@ type ModuleMigration = {
     migrateUser?: (userSource: UserSourcePF2e) => Promisable<boolean>;
 };
 
-export { registerMigration, testMigration };
+type MigrationModuleFunctions = {
+    managerVersion: number;
+    module: string;
+    testMigration: typeof testMigration;
+    runMigrations: typeof runMigrations;
+};
+
+export { registerMigration };
 export type { ModuleMigration };
