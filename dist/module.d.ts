@@ -9,7 +9,7 @@ declare const MODULE: {
     error(str: string, error?: Error): void;
     log(str: string): void;
     path(...path: (string | string[])[]): string;
-    register(id: string): void;
+    register(id: string, migrations?: ModuleMigration[] | Record<string, ModuleMigration>): void;
     registerMigration(migration: Omit<ModuleMigration, "module">): void;
 };
 declare function getActiveModule(name: "dice-so-nice"): ExtendedModule<DiseSoNiceModule> | undefined;

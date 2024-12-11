@@ -1,5 +1,6 @@
 import { registerMigration } from "./migration";
 import { joinStr } from "./utils";
+import * as R from "remeda";
 let MODULE_ID = "";
 const MODULE = {
     get id() {
@@ -37,11 +38,15 @@ const MODULE = {
         const joined = joinStr(".", ...path);
         return joined ? `${this.id}.${joined}` : `${this.id}`;
     },
-    register(id) {
+    register(id, migrations) {
         if (MODULE_ID) {
             throw new Error("Module was already registered.");
         }
         MODULE_ID = id;
+        const migrationList = R.isPlainObject(migrations) ? Object.values(migrations) : migrations;
+        for (const migration of migrationList ?? []) {
+            registerMigration(migration);
+        }
     },
     registerMigration(migration) {
         registerMigration(migration);
