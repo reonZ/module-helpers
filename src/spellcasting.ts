@@ -25,6 +25,13 @@ import { getActiveModule } from "./module";
 import { isInstanceOf } from "./object";
 import { spellSlotGroupIdToNumber } from "./pf2e";
 
+// "SHARED": {
+//     "spellcasting": {
+//         "staff": "Staff",
+//         "charges": "Charges"
+//     }
+// },
+
 type CustomSpellcastingSheetData = Omit<SpellcastingSheetData, "category" | "groups"> & {
     isAnimistEntry?: boolean;
     category: SpellcastingCategory | "charges";
