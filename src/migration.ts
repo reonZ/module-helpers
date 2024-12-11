@@ -52,8 +52,8 @@ function registerMigration(migration: ModuleMigration) {
         get context() {
             return R.firstBy([...this.modules.values()], [R.prop("managerVersion"), "desc"])!;
         },
-        testMigration(doc: ClientDocument, version?: number) {
-            return this.context.testMigration(doc, version);
+        testMigration(doc: ClientDocument) {
+            return this.context.testMigration(doc);
         },
         runMigrations() {
             return this.context.runMigrations();
@@ -99,43 +99,51 @@ function initializeMigrations() {
     });
 }
 
-function getMigrationData(lastVersion?: number) {
+function getMigrationData() {
     const MIGRATIONS = window.MODULES_MIGRATIONS;
     if (!MIGRATIONS) return;
 
-    const modules: Record<string, MigrationModuleType | null> = {};
+    const modules: Record<string, MigrationModuleType> = {};
     const migrations: PreparedModuleMigration[] = [];
 
-    lastVersion ??= Math.max(...MIGRATIONS.list.map((migration) => migration.version));
-
     for (const migration of MIGRATIONS.list) {
-        const { module, version = 1.0 } = ((): Partial<MigrationModuleType> => {
+        const {
+            module,
+            version = 1.0,
+            lastVersion = 1.0,
+        } = ((): Partial<MigrationModuleType> => {
             const exist = modules[migration.module];
-
-            if (exist === null) return {};
-            else if (exist) return exist;
+            if (exist) return exist;
 
             const module = getActiveModule(migration.module);
             if (!module) return {};
 
-            return (modules[migration.module] = {
+            const versions = R.pipe(
+                MIGRATIONS.list,
+                R.filter((migration) => migration.module === module.id),
+                R.map((migration) => migration.version)
+            );
+
+            return {
                 module,
+                lastVersion: Math.max(...versions),
                 version: module.getSetting<number>("__schema"),
-            });
+            };
         })();
 
         if (!module || version >= lastVersion) continue;
 
+        modules[migration.module] = { module, lastVersion, version };
         migrations.push(migration);
     }
 
     migrations.sort((a, b) => a.version - b.version);
 
-    return { modules, migrations, lastVersion };
+    return { modules, migrations };
 }
 
-async function testMigration(doc: ClientDocument, version?: number) {
-    const { migrations } = getMigrationData(version) ?? {};
+async function testMigration(doc: ClientDocument) {
+    const { migrations } = getMigrationData() ?? {};
     if (!migrations) return;
 
     const functionName = isInstanceOf(doc, "ActorPF2e")
@@ -160,16 +168,10 @@ async function runMigrations() {
     const MIGRATIONS = window.MODULES_MIGRATIONS;
     if (!MIGRATIONS || MIGRATIONS.done || !userIsActiveGM()) return;
 
-    const { lastVersion, migrations, modules } = getMigrationData()!;
+    const { migrations, modules } = getMigrationData()!;
     if (!migrations.length) return;
 
-    const moduleList = R.pipe(
-        modules,
-        R.values(),
-        R.filter(R.isTruthy),
-        R.map(({ module }) => module)
-    );
-
+    const moduleList = R.values(modules);
     const localize = subLocalize("SHARED.migration");
 
     const warningContent = [
@@ -178,7 +180,7 @@ async function runMigrations() {
         `<ul style="margin: 0 0 0.5em; font-size: 1rem;">`,
     ];
 
-    for (const module of moduleList) {
+    for (const { module } of moduleList) {
         warningContent.push(`<li style="font-size: 1rem;">${module.title}</li>`);
     }
 
@@ -283,7 +285,7 @@ async function runMigrations() {
 
     // set schema
 
-    for (const module of moduleList) {
+    for (const { module, lastVersion } of moduleList) {
         module.setSetting("__schema", lastVersion);
     }
 
@@ -327,7 +329,7 @@ async function runMigrations() {
     });
 }
 
-type MigrationModuleType = { module: ExtendedModule; version: number };
+type MigrationModuleType = { module: ExtendedModule; version: number; lastVersion: number };
 
 type PreparedModuleMigration = ModuleMigration & {
     module: string;

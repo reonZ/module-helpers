@@ -13,8 +13,8 @@ function registerMigration(migration) {
         get context() {
             return R.firstBy([...this.modules.values()], [R.prop("managerVersion"), "desc"]);
         },
-        testMigration(doc, version) {
-            return this.context.testMigration(doc, version);
+        testMigration(doc) {
+            return this.context.testMigration(doc);
         },
         runMigrations() {
             return this.context.runMigrations();
@@ -54,37 +54,37 @@ function initializeMigrations() {
         });
     });
 }
-function getMigrationData(lastVersion) {
+function getMigrationData() {
     const MIGRATIONS = window.MODULES_MIGRATIONS;
     if (!MIGRATIONS)
         return;
     const modules = {};
     const migrations = [];
-    lastVersion ??= Math.max(...MIGRATIONS.list.map((migration) => migration.version));
     for (const migration of MIGRATIONS.list) {
-        const { module, version = 1.0 } = (() => {
+        const { module, version = 1.0, lastVersion = 1.0, } = (() => {
             const exist = modules[migration.module];
-            if (exist === null)
-                return {};
-            else if (exist)
+            if (exist)
                 return exist;
             const module = getActiveModule(migration.module);
             if (!module)
                 return {};
-            return (modules[migration.module] = {
+            const versions = R.pipe(MIGRATIONS.list, R.filter((migration) => migration.module === module.id), R.map((migration) => migration.version));
+            return {
                 module,
+                lastVersion: Math.max(...versions),
                 version: module.getSetting("__schema"),
-            });
+            };
         })();
         if (!module || version >= lastVersion)
             continue;
+        modules[migration.module] = { module, lastVersion, version };
         migrations.push(migration);
     }
     migrations.sort((a, b) => a.version - b.version);
-    return { modules, migrations, lastVersion };
+    return { modules, migrations };
 }
-async function testMigration(doc, version) {
-    const { migrations } = getMigrationData(version) ?? {};
+async function testMigration(doc) {
+    const { migrations } = getMigrationData() ?? {};
     if (!migrations)
         return;
     const functionName = isInstanceOf(doc, "ActorPF2e")
@@ -105,17 +105,17 @@ async function runMigrations() {
     const MIGRATIONS = window.MODULES_MIGRATIONS;
     if (!MIGRATIONS || MIGRATIONS.done || !userIsActiveGM())
         return;
-    const { lastVersion, migrations, modules } = getMigrationData();
+    const { migrations, modules } = getMigrationData();
     if (!migrations.length)
         return;
-    const moduleList = R.pipe(modules, R.values(), R.filter(R.isTruthy), R.map(({ module }) => module));
+    const moduleList = R.values(modules);
     const localize = subLocalize("SHARED.migration");
     const warningContent = [
         "<div style='font-size: 1rem;'>",
         `<div>${localize("warning.content.modules")}</div>`,
         `<ul style="margin: 0 0 0.5em; font-size: 1rem;">`,
     ];
-    for (const module of moduleList) {
+    for (const { module } of moduleList) {
         warningContent.push(`<li style="font-size: 1rem;">${module.title}</li>`);
     }
     warningContent.push("</ul>", `<div>${localize("warning.content.wait")}</div>`, "</div>");
@@ -193,7 +193,7 @@ async function runMigrations() {
         }
     }
     // set schema
-    for (const module of moduleList) {
+    for (const { module, lastVersion } of moduleList) {
         module.setSetting("__schema", lastVersion);
     }
     // summary

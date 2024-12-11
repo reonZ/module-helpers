@@ -11,7 +11,7 @@ declare global {
     }>;
 }
 declare function registerMigration(migration: ModuleMigration): void;
-declare function testMigration(doc: ClientDocument, version?: number): Promise<object | undefined>;
+declare function testMigration(doc: ClientDocument): Promise<object | undefined>;
 declare function runMigrations(): Promise<void>;
 type PreparedModuleMigration = ModuleMigration & {
     module: string;
