@@ -33,6 +33,7 @@ declare global {
         done: boolean;
         initialized: boolean;
         list: PreparedModuleMigration[];
+        testMigration: typeof testMigration;
     }>;
 }
 
@@ -41,6 +42,7 @@ function registerMigration(migration: ModuleMigration) {
         done: false,
         initialized: false,
         list: [] as PreparedModuleMigration[],
+        testMigration,
     });
 
     MIGRATIONS.list.push({
@@ -73,20 +75,17 @@ function initializeMigrations() {
     });
 }
 
-async function runMigrations() {
+function getMigrationData(lastVersion?: number) {
     const MIGRATIONS = window.MODULES_MIGRATIONS;
-    if (!MIGRATIONS || MIGRATIONS.done || !userIsActiveGM()) return;
+    if (!MIGRATIONS) return;
 
-    MIGRATIONS.done = true;
-
-    type ModuleType = { module: ExtendedModule; version: number };
-
-    const modules: Record<string, ModuleType | null> = {};
-    const lastVersion = Math.max(...MIGRATIONS.list.map((migration) => migration.version));
+    const modules: Record<string, MigrationModuleType | null> = {};
     const migrations: PreparedModuleMigration[] = [];
 
+    lastVersion ??= Math.max(...MIGRATIONS.list.map((migration) => migration.version));
+
     for (const migration of MIGRATIONS.list) {
-        const { module, version = 1.0 } = ((): Partial<ModuleType> => {
+        const { module, version = 1.0 } = ((): Partial<MigrationModuleType> => {
             const exist = modules[migration.module];
 
             if (exist === null) return {};
@@ -108,6 +107,31 @@ async function runMigrations() {
 
     migrations.sort((a, b) => a.version - b.version);
 
+    return { modules, migrations, lastVersion };
+}
+
+async function testMigration(actor: ActorPF2e, version?: number) {
+    const migrationData = getMigrationData(version);
+    if (!migrationData) return;
+
+    const { migrations } = migrationData;
+    const originalSource = actor.toObject();
+    const source = actor.toObject();
+
+    for (const migration of migrations) {
+        await migration.migrateActor?.(source);
+    }
+
+    return foundry.utils.diffObject(originalSource, source);
+}
+
+async function runMigrations() {
+    const MIGRATIONS = window.MODULES_MIGRATIONS;
+    if (!MIGRATIONS || MIGRATIONS.done || !userIsActiveGM()) return;
+
+    MIGRATIONS.done = true;
+
+    const { lastVersion, migrations, modules } = getMigrationData()!;
     if (!migrations.length) return;
 
     const moduleList = R.pipe(
@@ -229,6 +253,8 @@ async function runMigrations() {
     });
 }
 
+type MigrationModuleType = { module: ExtendedModule; version: number };
+
 type PreparedModuleMigration = ModuleMigration & {
     module: string;
 };
@@ -238,5 +264,5 @@ type ModuleMigration = {
     migrateActor?: (actorSource: ActorSourcePF2e) => Promisable<boolean>;
 };
 
-export { registerMigration };
+export { registerMigration, testMigration };
 export type { ModuleMigration };

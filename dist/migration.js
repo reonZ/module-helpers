@@ -8,6 +8,7 @@ function registerMigration(migration) {
         done: false,
         initialized: false,
         list: [],
+        testMigration,
     });
     MIGRATIONS.list.push({
         ...migration,
@@ -35,14 +36,13 @@ function initializeMigrations() {
         });
     });
 }
-async function runMigrations() {
+function getMigrationData(lastVersion) {
     const MIGRATIONS = window.MODULES_MIGRATIONS;
-    if (!MIGRATIONS || MIGRATIONS.done || !userIsActiveGM())
+    if (!MIGRATIONS)
         return;
-    MIGRATIONS.done = true;
     const modules = {};
-    const lastVersion = Math.max(...MIGRATIONS.list.map((migration) => migration.version));
     const migrations = [];
+    lastVersion ??= Math.max(...MIGRATIONS.list.map((migration) => migration.version));
     for (const migration of MIGRATIONS.list) {
         const { module, version = 1.0 } = (() => {
             const exist = modules[migration.module];
@@ -63,6 +63,26 @@ async function runMigrations() {
         migrations.push(migration);
     }
     migrations.sort((a, b) => a.version - b.version);
+    return { modules, migrations, lastVersion };
+}
+async function testMigration(actor, version) {
+    const migrationData = getMigrationData(version);
+    if (!migrationData)
+        return;
+    const { migrations } = migrationData;
+    const originalSource = actor.toObject();
+    const source = actor.toObject();
+    for (const migration of migrations) {
+        await migration.migrateActor?.(source);
+    }
+    return foundry.utils.diffObject(originalSource, source);
+}
+async function runMigrations() {
+    const MIGRATIONS = window.MODULES_MIGRATIONS;
+    if (!MIGRATIONS || MIGRATIONS.done || !userIsActiveGM())
+        return;
+    MIGRATIONS.done = true;
+    const { lastVersion, migrations, modules } = getMigrationData();
     if (!migrations.length)
         return;
     const moduleList = R.pipe(modules, R.values(), R.filter(R.isTruthy), R.map(({ module }) => module));
@@ -149,4 +169,4 @@ async function runMigrations() {
         content: await TextEditor.enrichHTML(summaryContent.join("")),
     });
 }
-export { registerMigration };
+export { registerMigration, testMigration };
