@@ -105,7 +105,6 @@ async function runMigrations() {
     const MIGRATIONS = window.MODULES_MIGRATIONS;
     if (!MIGRATIONS || MIGRATIONS.done || !userIsActiveGM())
         return;
-    MIGRATIONS.done = true;
     const { lastVersion, migrations, modules } = getMigrationData();
     if (!migrations.length)
         return;
@@ -128,6 +127,7 @@ async function runMigrations() {
     }, { top: 100 });
     if (!started)
         return;
+    MIGRATIONS.done = true;
     // actors
     const migratedActors = new Set();
     const migrateActor = async (actor) => {
