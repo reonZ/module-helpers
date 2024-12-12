@@ -18,7 +18,6 @@ type PreparedModuleMigration = ModuleMigration & {
 };
 type ModuleMigration = {
     version: number;
-    needMigration: () => Promisable<boolean>;
     migrateActor?: (actorSource: ActorSourcePF2e) => Promisable<boolean>;
     migrateUser?: (userSource: UserSourcePF2e) => Promisable<boolean>;
 };

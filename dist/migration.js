@@ -73,7 +73,7 @@ function getMigrationData() {
             const version = module.getSetting("__schema");
             return version < lastVersion ? { module, lastVersion, version } : {};
         })();
-        if (!module || !migration.needMigration())
+        if (!module)
             continue;
         modules[migration.module] = { module, lastVersion, version };
         migrations.push(migration);

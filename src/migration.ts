@@ -14,7 +14,7 @@ const MANAGER_VERSION = 1;
 //             "start": "Start Migration",
 //             "cancel": "Cancel",
 //             "content": {
-//                 "modules": "The following module(s) must migrate data:",
+//                 "modules": "The following module(s) may need to migrate data:",
 //                 "wait": "If the system is migrating its own data, please wait before starting"
 //             }
 //         },
@@ -130,7 +130,7 @@ function getMigrationData() {
             return version < lastVersion ? { module, lastVersion, version } : {};
         })();
 
-        if (!module || !migration.needMigration()) continue;
+        if (!module) continue;
 
         modules[migration.module] = { module, lastVersion, version };
         migrations.push(migration);
@@ -334,7 +334,6 @@ type PreparedModuleMigration = ModuleMigration & {
 
 type ModuleMigration = {
     version: number;
-    needMigration: () => Promisable<boolean>;
     migrateActor?: (actorSource: ActorSourcePF2e) => Promisable<boolean>;
     migrateUser?: (userSource: UserSourcePF2e) => Promisable<boolean>;
 };
