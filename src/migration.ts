@@ -1,6 +1,6 @@
 import { ActorPF2e, ActorSourcePF2e, UserPF2e, UserSourcePF2e } from "foundry-pf2e";
 import * as R from "remeda";
-import { isInstanceOf, promptDialog, subLocalize, waitDialog } from ".";
+import { isInstanceOf, promptDialog, scenesTokens, subLocalize, waitDialog } from ".";
 import { ExtendedModule, getActiveModule, MODULE } from "./module";
 import { hasSetting, registerSetting } from "./settings";
 import { userIsActiveGM } from "./user";
@@ -124,14 +124,13 @@ function getMigrationData() {
                 R.map((migration) => migration.version)
             );
 
-            return {
-                module,
-                lastVersion: Math.max(...versions),
-                version: module.getSetting<number>("__schema"),
-            };
+            const lastVersion = Math.max(...versions);
+            const version = module.getSetting<number>("__schema");
+
+            return version < lastVersion ? { module, lastVersion, version } : {};
         })();
 
-        if (!module || version >= lastVersion) continue;
+        if (!module || !migration.needMigration()) continue;
 
         modules[migration.module] = { module, lastVersion, version };
         migrations.push(migration);
@@ -233,20 +232,18 @@ async function runMigrations() {
         }
     }
 
-    for (const scene of game.scenes) {
-        for (const token of scene.tokens) {
-            const actor = token.actor;
-            if (!actor || token.isLinked) continue;
+    for (const token of scenesTokens()) {
+        const actor = token.actor;
+        if (!actor || token.isLinked) continue;
 
-            const source = await migrateActor(actor);
+        const source = await migrateActor(actor);
 
-            if (source) {
-                try {
-                    await actor.update(source, { noHook: true });
-                } catch (err) {
-                    localize.error("error.token", { uuid: actor.uuid }, true);
-                    console.warn(err);
-                }
+        if (source) {
+            try {
+                await actor.update(source, { noHook: true });
+            } catch (err) {
+                localize.error("error.token", { uuid: actor.uuid }, true);
+                console.warn(err);
             }
         }
     }
@@ -337,6 +334,7 @@ type PreparedModuleMigration = ModuleMigration & {
 
 type ModuleMigration = {
     version: number;
+    needMigration: () => Promisable<boolean>;
     migrateActor?: (actorSource: ActorSourcePF2e) => Promisable<boolean>;
     migrateUser?: (userSource: UserSourcePF2e) => Promisable<boolean>;
 };
