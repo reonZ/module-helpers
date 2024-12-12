@@ -21,6 +21,7 @@ export * from "./libwrapper";
 export * from "./localize";
 export * from "./module";
 export * from "./object";
+export * from "./scene";
 export * from "./settings";
 export * from "./sheet";
 export * from "./skills";
