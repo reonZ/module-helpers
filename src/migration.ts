@@ -5,7 +5,7 @@ import { ExtendedModule, getActiveModule, MODULE } from "./module";
 import { hasSetting, registerSetting } from "./settings";
 import { userIsActiveGM } from "./user";
 
-const MANAGER_VERSION = 1;
+const MANAGER_VERSION = 2;
 
 // "SHARED": {
 //     "migration": {
@@ -167,6 +167,8 @@ async function runMigrations() {
     const MIGRATIONS = window.MODULES_MIGRATIONS;
     if (!MIGRATIONS || MIGRATIONS.done || !userIsActiveGM()) return;
 
+    MIGRATIONS.done = true;
+
     const { migrations, modules } = getMigrationData()!;
     if (!migrations.length) return;
 
@@ -196,8 +198,6 @@ async function runMigrations() {
     );
 
     if (!started) return;
-
-    MIGRATIONS.done = true;
 
     // actors
 
