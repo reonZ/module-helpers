@@ -114,10 +114,10 @@ function calculateItemPrice(item, quantity = 1, ratio = 1) {
     return ratio === 1 ? coins : coins.scale(ratio);
 }
 async function createSelfEffectMessage(item, rollMode = "roll") {
-    const ChatMessage = getDocumentClass("ChatMessage");
+    const ChatMessagePF2e = getDocumentClass("ChatMessage");
     const { actor, actionCost } = item;
     const token = actor.getActiveTokens(true, true).shift() ?? null;
-    const speaker = ChatMessage.getSpeaker({ actor, token });
+    const speaker = ChatMessagePF2e.getSpeaker({ actor, token });
     const flavor = await renderTemplate("systems/pf2e/templates/chat/action/flavor.hbs", {
         action: { title: item.name, glyph: getActionGlyph(actionCost) },
         item,
@@ -134,21 +134,26 @@ async function createSelfEffectMessage(item, rollMode = "roll") {
         tempDiv.innerHTML = item.description.replace(linkPattern, (_match, ...args) => args[3]);
         return tempDiv.innerText.slice(0, previewLength);
     })();
-    const description = {
-        full: descriptionPreview && descriptionPreview.length < previewLength
-            ? item.description
-            : null,
-        preview: descriptionPreview,
-    };
-    const content = await renderTemplate("systems/pf2e/templates/chat/action/self-effect.hbs", {
+    const content = await renderTemplate("systems/pf2e/templates/chat/action/collapsed.hbs", {
         actor: item.actor,
-        description,
+        description: {
+            full: descriptionPreview && descriptionPreview.length < previewLength
+                ? item.description
+                : null,
+            preview: descriptionPreview,
+        },
+        selfEffect: !!item.system.selfEffect,
     });
-    const flags = {
-        pf2e: { context: { type: "self-effect", item: item.id } },
-    };
-    const messageData = ChatMessage.applyRollMode({ speaker, flavor, content, flags }, rollMode);
-    return (await ChatMessage.create(messageData)) ?? null;
+    const flags = { pf2e: {} };
+    if (item.system.selfEffect) {
+        flags.pf2e.context = { type: "self-effect", item: item.id };
+    }
+    else {
+        flags.pf2e.origin = item.getOriginData();
+    }
+    // Create the message
+    const messageData = ChatMessagePF2e.applyRollMode({ speaker, flavor, content, flags }, rollMode);
+    return (await ChatMessagePF2e.create(messageData)) ?? null;
 }
 const FEAT_ICON = "icons/sundries/books/book-red-exclamation.webp";
 function getActionImg(item, itemImgFallback = false) {

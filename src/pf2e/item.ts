@@ -1,7 +1,7 @@
 import {
     AbilityItemPF2e,
     ActorPF2e,
-    ChatMessagePF2e,
+    ChatMessageFlagsPF2e,
     ConsumablePF2e,
     FeatPF2e,
     ItemInstances,
@@ -11,12 +11,12 @@ import {
     PhysicalItemPF2e,
     WeaponPF2e,
 } from "foundry-pf2e";
+import * as R from "remeda";
 import { getDamageRollClass } from "../classes";
 import { createHTMLElement } from "../html";
 import { htmlClosest } from "./dom";
 import { ErrorPF2e, getActionGlyph, getActionIcon, localizer, setHasElement } from "./misc";
 import { eventToRollMode, traitSlugToObject } from "./utils";
-import * as R from "remeda";
 
 const ITEM_CARRY_TYPES = ["attached", "dropped", "held", "stowed", "worn"] as const;
 
@@ -173,12 +173,12 @@ async function createSelfEffectMessage(
     item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e>,
     rollMode: RollMode | "roll" = "roll"
 ): Promise<ChatMessage | null> {
-    const ChatMessage = getDocumentClass("ChatMessage");
+    const ChatMessagePF2e = getDocumentClass("ChatMessage");
 
     const { actor, actionCost } = item;
     const token = actor.getActiveTokens(true, true).shift() ?? null;
 
-    const speaker = ChatMessage.getSpeaker({ actor, token });
+    const speaker = ChatMessagePF2e.getSpeaker({ actor, token });
     const flavor = await renderTemplate("systems/pf2e/templates/chat/action/flavor.hbs", {
         action: { title: item.name, glyph: getActionGlyph(actionCost) },
         item,
@@ -199,27 +199,33 @@ async function createSelfEffectMessage(
 
         return tempDiv.innerText.slice(0, previewLength);
     })();
-    const description = {
-        full:
-            descriptionPreview && descriptionPreview.length < previewLength
-                ? item.description
-                : null,
-        preview: descriptionPreview,
-    };
-    const content = await renderTemplate("systems/pf2e/templates/chat/action/self-effect.hbs", {
+    const content = await renderTemplate("systems/pf2e/templates/chat/action/collapsed.hbs", {
         actor: item.actor,
-        description,
+        description: {
+            full:
+                descriptionPreview && descriptionPreview.length < previewLength
+                    ? item.description
+                    : null,
+            preview: descriptionPreview,
+        },
+        selfEffect: !!item.system.selfEffect,
     });
-    const flags: foundry.documents.ChatMessageFlags = {
-        pf2e: { context: { type: "self-effect", item: item.id } },
-    };
-    const messageData = ChatMessage.applyRollMode({ speaker, flavor, content, flags }, rollMode);
+    const flags: { pf2e: ChatMessageFlagsPF2e["pf2e"] } = { pf2e: {} };
+    if (item.system.selfEffect) {
+        flags.pf2e.context = { type: "self-effect", item: item.id };
+    } else {
+        flags.pf2e.origin = item.getOriginData();
+    }
 
-    return (await ChatMessage.create(messageData)) ?? null;
+    // Create the message
+    const messageData = ChatMessagePF2e.applyRollMode(
+        { speaker, flavor, content, flags },
+        rollMode
+    );
+    return (await ChatMessagePF2e.create(messageData)) ?? null;
 }
 
 const FEAT_ICON = "icons/sundries/books/book-red-exclamation.webp";
-
 function getActionImg(
     item: FeatPF2e | AbilityItemPF2e,
     itemImgFallback: boolean = false
@@ -329,8 +335,6 @@ function getItemChatTraits(item: ItemPF2e<ActorPF2e>) {
 type ItemOrSource = PreCreate<ItemSourcePF2e> | ItemPF2e;
 
 export {
-    ITEM_CARRY_TYPES,
-    PHYSICAL_ITEM_TYPES,
     calculateItemPrice,
     consumeItem,
     createSelfEffectMessage,
@@ -338,6 +342,8 @@ export {
     getActionImg,
     getItemChatTraits,
     hasFreePropertySlot,
+    ITEM_CARRY_TYPES,
     itemIsOfType,
+    PHYSICAL_ITEM_TYPES,
     unownedItemtoMessage,
 };
