@@ -3,7 +3,7 @@ import { isInstanceOf, promptDialog, scenesTokens, subLocalize, waitDialog } fro
 import { getActiveModule, MODULE } from "./module";
 import { hasSetting, registerSetting } from "./settings";
 import { userIsActiveGM } from "./user";
-const MANAGER_VERSION = 1;
+const MANAGER_VERSION = 2;
 function registerMigration(migration) {
     const MIGRATIONS = (window.MODULES_MIGRATIONS ??= {
         done: false,
@@ -103,6 +103,7 @@ async function runMigrations() {
     const MIGRATIONS = window.MODULES_MIGRATIONS;
     if (!MIGRATIONS || MIGRATIONS.done || !userIsActiveGM())
         return;
+    MIGRATIONS.done = true;
     const { migrations, modules } = getMigrationData();
     if (!migrations.length)
         return;
@@ -125,7 +126,6 @@ async function runMigrations() {
     }, { top: 100 });
     if (!started)
         return;
-    MIGRATIONS.done = true;
     // actors
     const migratedActors = new Set();
     const migrateActor = async (actor) => {
