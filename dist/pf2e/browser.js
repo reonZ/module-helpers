@@ -13,12 +13,8 @@ function filterTraits(traits, selected, condition) {
     }
     return true;
 }
-async function getCompendiumFilters(tab, init) {
+function getCompendiumFilters(tab) {
     const compendiumTab = game.pf2e.compendiumBrowser.tabs[tab];
-    return init
-        ? await compendiumTab.getFilterData()
-        : compendiumTab.isInitialized
-            ? foundry.utils.deepClone(compendiumTab.defaultFilterData)
-            : foundry.utils.deepClone(compendiumTab.filterData);
+    return compendiumTab.getFilterData();
 }
 export { filterTraits, getCompendiumFilters };

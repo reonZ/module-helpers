@@ -20,16 +20,11 @@ function filterTraits(
     return true;
 }
 
-async function getCompendiumFilters<T extends keyof BrowserTabs>(
-    tab: T,
-    init?: boolean
+function getCompendiumFilters<T extends keyof BrowserTabs>(
+    tab: T
 ): Promise<BrowserTabs[T]["filterData"]> {
     const compendiumTab = game.pf2e.compendiumBrowser.tabs[tab];
-    return init
-        ? await compendiumTab.getFilterData()
-        : compendiumTab.isInitialized
-        ? foundry.utils.deepClone(compendiumTab.defaultFilterData)
-        : foundry.utils.deepClone(compendiumTab.filterData);
+    return compendiumTab.getFilterData();
 }
 
 export { filterTraits, getCompendiumFilters };
