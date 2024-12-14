@@ -6,6 +6,7 @@ export * from "./dc";
 export * from "./degree-of-success";
 export * from "./dom";
 export * from "./effect";
+export * from "./encounter";
 export * from "./identify";
 export * from "./inline";
 export * from "./item";

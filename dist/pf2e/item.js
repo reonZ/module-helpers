@@ -1,9 +1,9 @@
+import * as R from "remeda";
 import { getDamageRollClass } from "../classes";
 import { createHTMLElement } from "../html";
 import { htmlClosest } from "./dom";
 import { ErrorPF2e, getActionGlyph, getActionIcon, localizer, setHasElement } from "./misc";
 import { eventToRollMode, traitSlugToObject } from "./utils";
-import * as R from "remeda";
 const ITEM_CARRY_TYPES = ["attached", "dropped", "held", "stowed", "worn"];
 const PHYSICAL_ITEM_TYPES = new Set([
     "armor",
@@ -230,4 +230,4 @@ function getItemChatTraits(item) {
     // other items don't have anything special
     return /** protected */ item["traitChatData"]();
 }
-export { ITEM_CARRY_TYPES, PHYSICAL_ITEM_TYPES, calculateItemPrice, consumeItem, createSelfEffectMessage, detachSubitem, getActionImg, getItemChatTraits, hasFreePropertySlot, itemIsOfType, unownedItemtoMessage, };
+export { calculateItemPrice, consumeItem, createSelfEffectMessage, detachSubitem, getActionImg, getItemChatTraits, hasFreePropertySlot, ITEM_CARRY_TYPES, itemIsOfType, PHYSICAL_ITEM_TYPES, unownedItemtoMessage, };

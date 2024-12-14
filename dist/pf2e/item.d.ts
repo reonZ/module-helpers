@@ -22,4 +22,4 @@ declare function unownedItemtoMessage(actor: ActorPF2e, item: ItemPF2e, event?: 
  */
 declare function getItemChatTraits(item: ItemPF2e<ActorPF2e>): import("foundry-pf2e/pf2e/module/item/base/data").TraitChatData[];
 type ItemOrSource = PreCreate<ItemSourcePF2e> | ItemPF2e;
-export { ITEM_CARRY_TYPES, PHYSICAL_ITEM_TYPES, calculateItemPrice, consumeItem, createSelfEffectMessage, detachSubitem, getActionImg, getItemChatTraits, hasFreePropertySlot, itemIsOfType, unownedItemtoMessage, };
+export { calculateItemPrice, consumeItem, createSelfEffectMessage, detachSubitem, getActionImg, getItemChatTraits, hasFreePropertySlot, ITEM_CARRY_TYPES, itemIsOfType, PHYSICAL_ITEM_TYPES, unownedItemtoMessage, };
