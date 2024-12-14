@@ -10,7 +10,6 @@ declare function itemIsOfType<TParent extends ActorPF2e | null, TType extends It
 declare function itemIsOfType<TParent extends ActorPF2e | null, TType extends "physical" | ItemType>(item: ItemOrSource, ...types: TType[]): item is TType extends "physical" ? PhysicalItemPF2e<TParent> | PhysicalItemPF2e<TParent>["_source"] : TType extends ItemType ? ItemInstances<TParent>[TType] | ItemInstances<TParent>[TType]["_source"] : never;
 declare function itemIsOfType<TParent extends ActorPF2e | null>(item: ItemOrSource, type: "physical"): item is PhysicalItemPF2e<TParent> | PhysicalItemPF2e["_source"];
 declare function calculateItemPrice(item: PhysicalItemPF2e, quantity?: number, ratio?: number): import("foundry-pf2e/pf2e/module/item/physical/coins.js").CoinsPF2e;
-declare function createSelfEffectMessage(item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e>, rollMode?: RollMode | "roll"): Promise<ChatMessage | null>;
 declare function getActionImg(item: FeatPF2e | AbilityItemPF2e, itemImgFallback?: boolean): ImageFilePath;
 declare function unownedItemtoMessage(actor: ActorPF2e, item: ItemPF2e, event?: Maybe<Event | JQuery.TriggeredEvent>, options?: {
     rollMode?: RollMode | "roll";
@@ -22,4 +21,4 @@ declare function unownedItemtoMessage(actor: ActorPF2e, item: ItemPF2e, event?: 
  */
 declare function getItemChatTraits(item: ItemPF2e<ActorPF2e>): import("foundry-pf2e/pf2e/module/item/base/data").TraitChatData[];
 type ItemOrSource = PreCreate<ItemSourcePF2e> | ItemPF2e;
-export { calculateItemPrice, consumeItem, createSelfEffectMessage, detachSubitem, getActionImg, getItemChatTraits, hasFreePropertySlot, ITEM_CARRY_TYPES, itemIsOfType, PHYSICAL_ITEM_TYPES, unownedItemtoMessage, };
+export { ITEM_CARRY_TYPES, PHYSICAL_ITEM_TYPES, calculateItemPrice, consumeItem, detachSubitem, getActionImg, getItemChatTraits, hasFreePropertySlot, itemIsOfType, unownedItemtoMessage, };
