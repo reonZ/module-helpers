@@ -1,4 +1,5 @@
 import * as R from "remeda";
+import { getActiveModule } from ".";
 import { isInstanceOf } from "./object";
 import { getActionGlyph, traitSlugToObject } from "./pf2e";
 const EXCLUDED_TYPES = ["affliction"];
@@ -175,4 +176,28 @@ async function getItemSource(uuid, instance) {
 function getItemTypeLabel(type) {
     return game.i18n.localize(`TYPES.Item.${type}`);
 }
-export { actorItems, BANDS_OF_FORCE_SLUGS, changeCarryType, getActionAnnotation, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, HANDWRAPS_SLUG, hasItemWithSourceId, isItemEntry, isOwnedItem, itemTypeFromUuid, itemTypesFromUuids, };
+async function reduceActionFrequency(item) {
+    if (item.system.frequency && item.system.frequency.value > 0) {
+        const newValue = item.system.frequency.value - 1;
+        await item.update({ "system.frequency.value": newValue });
+    }
+}
+async function getActionMacro(item) {
+    const toolbelt = getActiveModule("pf2e-toolbelt");
+    return toolbelt?.getSetting("actionable.enabled")
+        ? toolbelt.api.actionable.getActionMacro(item)
+        : null;
+}
+async function useAction(item, event) {
+    if (!item.isOfType("feat", "action"))
+        return;
+    if (!item.system.selfEffect) {
+        const macro = await getActionMacro(item);
+        if (macro) {
+            await reduceActionFrequency(item);
+            return macro.execute({ actor: item.actor, item });
+        }
+    }
+    return game.pf2e.rollItemMacro(item.uuid, event);
+}
+export { BANDS_OF_FORCE_SLUGS, HANDWRAPS_SLUG, actorItems, changeCarryType, getActionAnnotation, getActionMacro, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, hasItemWithSourceId, isItemEntry, isOwnedItem, itemTypeFromUuid, itemTypesFromUuids, reduceActionFrequency, useAction, };

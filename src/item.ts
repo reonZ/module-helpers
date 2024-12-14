@@ -1,7 +1,9 @@
 import {
+    AbilityItemPF2e,
     ActorPF2e,
     ChoiceSetSource,
     CreaturePF2e,
+    FeatPF2e,
     ItemCarryType,
     ItemInstances,
     ItemPF2e,
@@ -13,7 +15,8 @@ import {
     ZeroToTwo,
 } from "foundry-pf2e";
 import * as R from "remeda";
-import { isInstanceOf, IsInstanceOfItem, IsInstanceOfItems } from "./object";
+import { getActiveModule } from ".";
+import { IsInstanceOfItem, IsInstanceOfItems, isInstanceOf } from "./object";
 import { getActionGlyph, traitSlugToObject } from "./pf2e";
 
 const EXCLUDED_TYPES: ItemType[] = ["affliction"];
@@ -273,20 +276,56 @@ function getItemTypeLabel(type: ItemType) {
     return game.i18n.localize(`TYPES.Item.${type}`);
 }
 
+async function reduceActionFrequency(item: ActionItem) {
+    if (item.system.frequency && item.system.frequency.value > 0) {
+        const newValue = item.system.frequency.value - 1;
+        await item.update({ "system.frequency.value": newValue });
+    }
+}
+
+async function getActionMacro(item: ActionItem) {
+    const toolbelt = getActiveModule("pf2e-toolbelt");
+    return toolbelt?.getSetting("actionable.enabled")
+        ? toolbelt.api.actionable.getActionMacro(item)
+        : null;
+}
+
+async function useAction(item: ActionItem, event?: Event) {
+    if (!item.isOfType("feat", "action")) return;
+
+    if (!item.system.selfEffect) {
+        const macro = await getActionMacro(item);
+
+        if (macro) {
+            await reduceActionFrequency(item);
+            return macro.execute({ actor: item.actor, item });
+        }
+    }
+
+    return game.pf2e.rollItemMacro(item.uuid, event);
+}
+
+type ActionItem = FeatPF2e<ActorPF2e> | AbilityItemPF2e<ActorPF2e>;
+
 export {
-    actorItems,
     BANDS_OF_FORCE_SLUGS,
+    HANDWRAPS_SLUG,
+    actorItems,
     changeCarryType,
     getActionAnnotation,
+    getActionMacro,
     getChoiceSetSelection,
     getEquippedHandwraps,
     getItemSource,
     getItemTypeLabel,
     getItemWithSourceId,
-    HANDWRAPS_SLUG,
     hasItemWithSourceId,
     isItemEntry,
     isOwnedItem,
     itemTypeFromUuid,
     itemTypesFromUuids,
+    reduceActionFrequency,
+    useAction,
 };
+
+export type { ActionItem };

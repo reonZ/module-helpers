@@ -1,4 +1,4 @@
-import { ActorPF2e, CreaturePF2e, ItemInstances, ItemPF2e, ItemSourcePF2e, ItemType, PhysicalItemPF2e, ZeroToTwo } from "foundry-pf2e";
+import { AbilityItemPF2e, ActorPF2e, CreaturePF2e, FeatPF2e, ItemInstances, ItemPF2e, ItemSourcePF2e, ItemType, PhysicalItemPF2e, ZeroToTwo } from "foundry-pf2e";
 import { IsInstanceOfItem, IsInstanceOfItems } from "./object";
 declare const HANDWRAPS_SLUG = "handwraps-of-mighty-blows";
 declare const BANDS_OF_FORCE_SLUGS: readonly ["bands-of-force", "bands-of-force-greater", "bands-of-force-major"];
@@ -21,4 +21,9 @@ declare function getChoiceSetSelection<T extends any = string>(item: ItemPF2e, {
 declare function getItemSource<T extends IsInstanceOfItem>(uuid: string, instance?: T): Promise<IsInstanceOfItems[T]["_source"] | null>;
 declare function getItemSource(uuid: string, instance?: string): Promise<ItemSourcePF2e | null>;
 declare function getItemTypeLabel(type: ItemType): string;
-export { actorItems, BANDS_OF_FORCE_SLUGS, changeCarryType, getActionAnnotation, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, HANDWRAPS_SLUG, hasItemWithSourceId, isItemEntry, isOwnedItem, itemTypeFromUuid, itemTypesFromUuids, };
+declare function reduceActionFrequency(item: ActionItem): Promise<void>;
+declare function getActionMacro(item: ActionItem): Promise<Macro | null>;
+declare function useAction(item: ActionItem, event?: Event): Promise<unknown>;
+type ActionItem = FeatPF2e<ActorPF2e> | AbilityItemPF2e<ActorPF2e>;
+export { BANDS_OF_FORCE_SLUGS, HANDWRAPS_SLUG, actorItems, changeCarryType, getActionAnnotation, getActionMacro, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, hasItemWithSourceId, isItemEntry, isOwnedItem, itemTypeFromUuid, itemTypesFromUuids, reduceActionFrequency, useAction, };
+export type { ActionItem };
