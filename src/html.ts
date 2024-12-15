@@ -132,10 +132,10 @@ function addListenerAll(
     }
 }
 
-function elementDataset<T extends Record<string, string>>(element: HTMLElement): T;
-function elementDataset<T extends string>(element: HTMLElement): Record<T, string>;
-function elementDataset(element: HTMLElement): Record<string, string> {
-    return element.dataset as Record<string, string>;
+function elementDataset<T extends Record<string, string>>(element: Maybe<HTMLElement>): T;
+function elementDataset<T extends string>(element: Maybe<HTMLElement>): Record<T, string>;
+function elementDataset(element: Maybe<HTMLElement>): Record<string, string> {
+    return element!.dataset as Record<string, string>;
 }
 
 function htmlQueryInClosest<K extends keyof HTMLElementTagNameMap>(

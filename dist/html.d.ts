@@ -12,8 +12,8 @@ declare function addListener<E extends HTMLElement, TEvent extends EventType = "
 declare function addListenerAll<K extends keyof HTMLElementTagNameMap, TEvent extends EventType = "click">(parent: MaybeHTML, selectors: K, ...args: ListenerCallbackArgs<HTMLElementTagNameMap[K], TEvent>): void;
 declare function addListenerAll<TEvent extends EventType = "click">(parent: MaybeHTML, selectors: string, ...args: ListenerCallbackArgs<HTMLElement, TEvent>): void;
 declare function addListenerAll<E extends HTMLElement, TEvent extends EventType = "click">(parent: MaybeHTML, selectors: string, ...args: ListenerCallbackArgs<E, TEvent>): void;
-declare function elementDataset<T extends Record<string, string>>(element: HTMLElement): T;
-declare function elementDataset<T extends string>(element: HTMLElement): Record<T, string>;
+declare function elementDataset<T extends Record<string, string>>(element: Maybe<HTMLElement>): T;
+declare function elementDataset<T extends string>(element: Maybe<HTMLElement>): Record<T, string>;
 declare function htmlQueryInClosest<K extends keyof HTMLElementTagNameMap>(el: MaybeHTML, closest: string, selector: K): HTMLElementTagNameMap[K] | null;
 declare function htmlQueryInClosest(el: MaybeHTML, closest: string, selector: string): HTMLElement | null;
 declare function htmlQueryInClosest<E extends HTMLElement = HTMLElement>(el: MaybeHTML, closest: string, selector: string): E | null;
