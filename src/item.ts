@@ -293,7 +293,7 @@ async function getActionMacro(item: ActionItem) {
 async function useAction(item: ActionItem, event?: Event) {
     if (!item.isOfType("feat", "action")) return;
 
-    if (!item.system.selfEffect) {
+    if (!item.system.selfEffect && !item.crafting) {
         const macro = await getActionMacro(item);
 
         if (macro) {
