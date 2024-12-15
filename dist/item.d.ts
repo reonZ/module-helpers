@@ -23,7 +23,7 @@ declare function getItemSource(uuid: string, instance?: string): Promise<ItemSou
 declare function getItemTypeLabel(type: ItemType): string;
 declare function reduceActionFrequency(item: ActionItem): Promise<void>;
 declare function getActionMacro(item: ActionItem): Promise<Macro | null>;
-declare function useAction(item: ActionItem, event?: Event): Promise<unknown>;
+declare function useAction(item: ItemPF2e<ActorPF2e>, event?: Event): Promise<unknown>;
 type ActionItem = FeatPF2e<ActorPF2e> | AbilityItemPF2e<ActorPF2e>;
 export { BANDS_OF_FORCE_SLUGS, HANDWRAPS_SLUG, actorItems, changeCarryType, getActionAnnotation, getActionMacro, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, hasItemWithSourceId, isItemEntry, isOwnedItem, itemTypeFromUuid, itemTypesFromUuids, reduceActionFrequency, useAction, };
 export type { ActionItem };

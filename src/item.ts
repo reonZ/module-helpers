@@ -290,7 +290,7 @@ async function getActionMacro(item: ActionItem) {
         : null;
 }
 
-async function useAction(item: ActionItem, event?: Event) {
+async function useAction(item: ItemPF2e<ActorPF2e>, event?: Event) {
     if (!item.isOfType("feat", "action")) return;
 
     if (!item.system.selfEffect && !item.crafting) {
