@@ -73,4 +73,9 @@ function canObserveActor(actor, withParty) {
 function getWorldActor(actor) {
     return actor?.token?.baseActor ?? actor ?? null;
 }
-export { canObserveActor, getAlliance, getDispositionColor, getFirstActiveToken, getHighestName, getOwner, getWorldActor, isOwner, isPlayedActor, };
+function getMythicOrHeroPoints(actor) {
+    return actor.system.resources.mythicPoints.max
+        ? actor.system.resources.mythicPoints
+        : actor.system.resources.heroPoints;
+}
+export { canObserveActor, getAlliance, getDispositionColor, getFirstActiveToken, getHighestName, getMythicOrHeroPoints, getOwner, getWorldActor, isOwner, isPlayedActor, };

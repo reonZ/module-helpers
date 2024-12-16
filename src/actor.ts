@@ -1,5 +1,6 @@
 import {
     ActorPF2e,
+    CharacterPF2e,
     CreaturePF2e,
     ScenePF2e,
     TokenDocumentPF2e,
@@ -121,12 +122,19 @@ function getWorldActor<T extends ActorPF2e>(actor: Maybe<T>): T | null {
     return (actor?.token?.baseActor as T | undefined) ?? actor ?? null;
 }
 
+function getMythicOrHeroPoints(actor: CharacterPF2e) {
+    return actor.system.resources.mythicPoints.max
+        ? actor.system.resources.mythicPoints
+        : actor.system.resources.heroPoints;
+}
+
 export {
     canObserveActor,
     getAlliance,
     getDispositionColor,
     getFirstActiveToken,
     getHighestName,
+    getMythicOrHeroPoints,
     getOwner,
     getWorldActor,
     isOwner,
