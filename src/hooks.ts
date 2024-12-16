@@ -1,4 +1,4 @@
-function registerUpstreamHook(event: string, listener: HookCallback<any>) {
+function registerUpstreamHook(event: string, listener: RegisterHookCallback) {
     const id = Hooks.on(event, listener);
     const index = Hooks.events[event].findIndex((x) => x.id === id);
 
@@ -10,7 +10,7 @@ function registerUpstreamHook(event: string, listener: HookCallback<any>) {
     return id;
 }
 
-function createHook(hooks: string | string[], listener: HookCallback<any>) {
+function createHook(hooks: string | string[], listener: RegisterHookCallback) {
     const hookIds: { id: number; hook: string }[] = [];
     hooks = Array.isArray(hooks) ? hooks : [hooks];
 
@@ -46,6 +46,8 @@ type Hook = {
     disable(): void;
     toggle(enabled: boolean): void;
 };
+
+type RegisterHookCallback = (...args: any[]) => any;
 
 export type { Hook };
 export { createHook, registerUpstreamHook, runWhenReady };

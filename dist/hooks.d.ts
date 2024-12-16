@@ -1,5 +1,5 @@
-declare function registerUpstreamHook(event: string, listener: HookCallback<any>): number;
-declare function createHook(hooks: string | string[], listener: HookCallback<any>): {
+declare function registerUpstreamHook(event: string, listener: RegisterHookCallback): number;
+declare function createHook(hooks: string | string[], listener: RegisterHookCallback): {
     activate(): void;
     disable(): void;
     toggle(enabled: boolean): void;
@@ -10,5 +10,6 @@ type Hook = {
     disable(): void;
     toggle(enabled: boolean): void;
 };
+type RegisterHookCallback = (...args: any[]) => any;
 export type { Hook };
 export { createHook, registerUpstreamHook, runWhenReady };
