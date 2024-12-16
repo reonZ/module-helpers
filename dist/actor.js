@@ -74,8 +74,12 @@ function getWorldActor(actor) {
     return actor?.token?.baseActor ?? actor ?? null;
 }
 function getMythicOrHeroPoints(actor) {
-    return actor.system.resources.mythicPoints.max
-        ? actor.system.resources.mythicPoints
-        : actor.system.resources.heroPoints;
+    const name = actor.system.resources.mythicPoints.max ? "mythicPoints" : "heroPoints";
+    return {
+        ...(name === "mythicPoints"
+            ? actor.system.resources.mythicPoints
+            : actor.system.resources.heroPoints),
+        name,
+    };
 }
 export { canObserveActor, getAlliance, getDispositionColor, getFirstActiveToken, getHighestName, getMythicOrHeroPoints, getOwner, getWorldActor, isOwner, isPlayedActor, };

@@ -6,6 +6,7 @@ import {
     TokenDocumentPF2e,
     TokenPF2e,
     UserPF2e,
+    ValueAndMax,
 } from "foundry-pf2e";
 
 function getDispositionColor(actor?: ActorPF2e | null) {
@@ -122,10 +123,16 @@ function getWorldActor<T extends ActorPF2e>(actor: Maybe<T>): T | null {
     return (actor?.token?.baseActor as T | undefined) ?? actor ?? null;
 }
 
-function getMythicOrHeroPoints(actor: CharacterPF2e) {
-    return actor.system.resources.mythicPoints.max
-        ? actor.system.resources.mythicPoints
-        : actor.system.resources.heroPoints;
+function getMythicOrHeroPoints(
+    actor: CharacterPF2e
+): ValueAndMax & { name: "mythicPoints" | "heroPoints" } {
+    const name = actor.system.resources.mythicPoints.max ? "mythicPoints" : "heroPoints";
+    return {
+        ...(name === "mythicPoints"
+            ? actor.system.resources.mythicPoints
+            : actor.system.resources.heroPoints),
+        name,
+    };
 }
 
 export {
