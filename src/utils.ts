@@ -42,7 +42,7 @@ function arrayIncludes(array: string[], other: string[]): boolean {
     return other.some((value) => array.includes(value));
 }
 
-function getUuidFromInlineMatch(match: RegExpExecArray) {
+function getUuidFromInlineMatch(match: RegExpExecArray | RegExpMatchArray) {
     return match[1] === "Compendium" ? `Compendium.${match[2]}` : match[2];
 }
 
