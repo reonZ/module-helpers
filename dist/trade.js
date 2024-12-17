@@ -1,89 +1,45 @@
 import { getHighestName } from "./actor";
-import { ErrorPF2e, getActionGlyph } from "./pf2e";
-import { hasGMOnline } from "./user";
-function getActor(tokenId, actorId) {
-    if (typeof tokenId === "string") {
-        const token = canvas.tokens.placeables.find((t) => t.id === tokenId);
-        return token?.actor ?? null;
-    }
-    return game.actors.get(actorId) ?? null;
-}
-function prepareTradeData(source, target, item, data) {
-    return {
-        ...data,
-        source: { tokenId: source.token?.id, actorId: source.id, itemId: item.id },
-        target: { tokenId: target.token?.id, actorId: target.id },
-    };
-}
-function translateTradeData(data) {
-    const sourceActor = getActor(data.source.tokenId, data.source.actorId);
-    const targetActor = getActor(data.target.tokenId, data.target.actorId);
-    const sourceItem = sourceActor?.inventory.find((i) => i.id === data.source.itemId);
-    if (!sourceItem || !sourceActor || !targetActor) {
-        throw ErrorPF2e("Failed sanity check during item transfer");
-    }
-    return {
-        ...data,
-        sourceActor,
-        targetActor,
-        sourceItem,
-    };
-}
-function sendTradeRequest(source, target, item, data, socket) {
-    if (!hasGMOnline()) {
-        ui.notifications.error(game.i18n.format("PF2E.loot.GMSupervisionError", {
-            loot: getHighestName(source),
-        }));
-        return;
-    }
-    const packet = prepareTradeData(source, target, item, data);
-    socket.emit(packet);
-}
-async function enactTradeRequest(data) {
-    if (!game.user.isGM) {
-        throw ErrorPF2e("Unauthorized item transfer");
-    }
-    const quantity = Math.min(data.sourceItem.quantity, data.quantity);
-    const { sourceItem, targetActor } = data;
-    const newQuantity = sourceItem.quantity - quantity;
+import { getActionGlyph } from "./pf2e";
+async function giveItemToActor({ item, origin, target, quantity = 1, message }, userId) {
+    quantity = Math.min(item.quantity, quantity);
+    const newQuantity = item.quantity - quantity;
     const removeFromSource = newQuantity < 1;
     if (removeFromSource) {
-        await sourceItem.delete();
+        await item.delete();
     }
     else {
-        await sourceItem.update({ "system.quantity": newQuantity });
+        await item.update({ "system.quantity": newQuantity });
     }
-    const newItemData = sourceItem.toObject();
-    newItemData.system.quantity = quantity;
-    newItemData.system.equipped.carryType = "worn";
-    if ("invested" in newItemData.system.equipped) {
-        newItemData.system.equipped.invested = sourceItem.traits.has("invested") ? false : null;
+    const newItemSource = item.toObject();
+    newItemSource.system.quantity = quantity;
+    newItemSource.system.equipped.carryType = "worn";
+    if ("invested" in newItemSource.system.equipped) {
+        newItemSource.system.equipped.invested = item.traits.has("invested") ? false : null;
     }
-    const newItem = await targetActor.addToInventory(newItemData);
+    const newItem = await target.addToInventory(newItemSource);
     if (!newItem)
         return null;
-    return {
-        ...data,
-        quantity,
-        newItem,
-    };
+    if (message) {
+        createTradeMessage(origin, target, newItem, quantity, message.subtitle, message.message, userId);
+    }
+    return newItem;
 }
-async function createTradeMessage({ quantity, sourceActor, targetActor, newItem }, { message, subtitle }, senderId) {
-    const giver = getHighestName(sourceActor);
-    const recipient = getHighestName(targetActor);
+async function createTradeMessage(origin, target, item, quantity, subtitle, message, userId) {
+    const giver = getHighestName(origin);
+    const recipient = getHighestName(target);
     const formatProperties = {
         giver,
         recipient,
         seller: giver,
         buyer: recipient,
         quantity: quantity,
-        item: await TextEditor.enrichHTML(newItem.link),
+        item: await TextEditor.enrichHTML(item.link),
     };
     const content = await renderTemplate("./systems/pf2e/templates/chat/action/content.hbs", {
-        imgPath: newItem.img,
+        imgPath: item.img,
         message: game.i18n.format(message, formatProperties).replace(/\b1 × /, ""),
     });
-    const glyph = getActionGlyph(sourceActor.isOfType("loot") && targetActor.isOfType("loot") ? 2 : 1);
+    const glyph = getActionGlyph(origin.isOfType("loot") && target.isOfType("loot") ? 2 : 1);
     const action = { title: "PF2E.Actions.Interact.Title", subtitle: subtitle, glyph };
     const traits = [
         {
@@ -97,11 +53,11 @@ async function createTradeMessage({ quantity, sourceActor, targetActor, newItem 
         traits,
     });
     await ChatMessage.create({
-        author: senderId,
+        author: userId ?? game.user.id,
         speaker: { alias: formatProperties.giver },
         style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
         flavor,
         content,
     });
 }
-export { createTradeMessage, enactTradeRequest, prepareTradeData, sendTradeRequest, translateTradeData, };
+export { createTradeMessage, giveItemToActor };

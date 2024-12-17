@@ -1,112 +1,60 @@
 import { ActorPF2e, PhysicalItemPF2e, TraitViewData } from "foundry-pf2e";
+import { ExtractSocketOptions } from ".";
 import { getHighestName } from "./actor";
-import { ErrorPF2e, getActionGlyph } from "./pf2e";
-import { hasGMOnline } from "./user";
+import { getActionGlyph } from "./pf2e";
 
-function getActor(tokenId: string | undefined, actorId: string): ActorPF2e | null {
-    if (typeof tokenId === "string") {
-        const token = canvas.tokens.placeables.find((t) => t.id === tokenId);
-        return token?.actor ?? null;
-    }
-    return game.actors.get(actorId) ?? null;
-}
-
-function prepareTradeData<TData extends TradeData>(
-    source: ActorPF2e,
-    target: ActorPF2e,
-    item: PhysicalItemPF2e,
-    data: TData
-): TradePacket<TData> {
-    return {
-        ...data,
-        source: { tokenId: source.token?.id, actorId: source.id, itemId: item.id },
-        target: { tokenId: target.token?.id, actorId: target.id },
-    };
-}
-
-function translateTradeData<TData extends TradeData>(
-    data: TradePacket<TData>
-): TranslatedTradeData<TData> {
-    const sourceActor = getActor(data.source.tokenId, data.source.actorId);
-    const targetActor = getActor(data.target.tokenId, data.target.actorId);
-    const sourceItem = sourceActor?.inventory.find((i) => i.id === data.source.itemId);
-
-    if (!sourceItem || !sourceActor || !targetActor) {
-        throw ErrorPF2e("Failed sanity check during item transfer");
-    }
-
-    return {
-        ...data,
-        sourceActor,
-        targetActor,
-        sourceItem,
-    };
-}
-
-function sendTradeRequest<TData extends TradeData>(
-    source: ActorPF2e,
-    target: ActorPF2e,
-    item: PhysicalItemPF2e,
-    data: TData,
-    socket: { emit: (packet: TradePacket<TData>) => void }
+async function giveItemToActor(
+    { item, origin, target, quantity = 1, message }: TradeData,
+    userId: string
 ) {
-    if (!hasGMOnline()) {
-        ui.notifications.error(
-            game.i18n.format("PF2E.loot.GMSupervisionError", {
-                loot: getHighestName(source),
-            })
-        );
-        return;
-    }
+    quantity = Math.min(item.quantity, quantity);
 
-    const packet = prepareTradeData(source, target, item, data);
-
-    socket.emit(packet);
-}
-
-async function enactTradeRequest<TData extends TradeData>(
-    data: TranslatedTradeData<TData>
-): Promise<EnactedTradeData<TData> | null> {
-    if (!game.user.isGM) {
-        throw ErrorPF2e("Unauthorized item transfer");
-    }
-
-    const quantity = Math.min(data.sourceItem.quantity, data.quantity);
-    const { sourceItem, targetActor } = data;
-    const newQuantity = sourceItem.quantity - quantity;
+    const newQuantity = item.quantity - quantity;
     const removeFromSource = newQuantity < 1;
 
     if (removeFromSource) {
-        await sourceItem.delete();
+        await item.delete();
     } else {
-        await sourceItem.update({ "system.quantity": newQuantity });
+        await item.update({ "system.quantity": newQuantity });
     }
 
-    const newItemData = sourceItem.toObject();
-    newItemData.system.quantity = quantity;
-    newItemData.system.equipped.carryType = "worn";
+    const newItemSource = item.toObject();
+    newItemSource.system.quantity = quantity;
+    newItemSource.system.equipped.carryType = "worn";
 
-    if ("invested" in newItemData.system.equipped) {
-        newItemData.system.equipped.invested = sourceItem.traits.has("invested") ? false : null;
+    if ("invested" in newItemSource.system.equipped) {
+        newItemSource.system.equipped.invested = item.traits.has("invested") ? false : null;
     }
 
-    const newItem = await targetActor.addToInventory(newItemData);
+    const newItem = await target.addToInventory(newItemSource);
     if (!newItem) return null;
 
-    return {
-        ...data,
-        quantity,
-        newItem,
-    };
+    if (message) {
+        createTradeMessage(
+            origin,
+            target,
+            newItem,
+            quantity,
+            message.subtitle,
+            message.message,
+            userId
+        );
+    }
+
+    return newItem;
 }
 
 async function createTradeMessage(
-    { quantity, sourceActor, targetActor, newItem }: EnactedTradeData,
-    { message, subtitle }: { subtitle: string; message: string },
-    senderId: string
+    origin: ActorPF2e,
+    target: ActorPF2e,
+    item: PhysicalItemPF2e,
+    quantity: number,
+    subtitle: string,
+    message: string,
+    userId?: string
 ) {
-    const giver = getHighestName(sourceActor);
-    const recipient = getHighestName(targetActor);
+    const giver = getHighestName(origin);
+    const recipient = getHighestName(target);
 
     const formatProperties = {
         giver,
@@ -114,17 +62,15 @@ async function createTradeMessage(
         seller: giver,
         buyer: recipient,
         quantity: quantity,
-        item: await TextEditor.enrichHTML(newItem.link),
+        item: await TextEditor.enrichHTML(item.link),
     };
 
     const content = await renderTemplate("./systems/pf2e/templates/chat/action/content.hbs", {
-        imgPath: newItem.img,
+        imgPath: item.img,
         message: game.i18n.format(message, formatProperties).replace(/\b1 × /, ""),
     });
 
-    const glyph = getActionGlyph(
-        sourceActor.isOfType("loot") && targetActor.isOfType("loot") ? 2 : 1
-    );
+    const glyph = getActionGlyph(origin.isOfType("loot") && target.isOfType("loot") ? 2 : 1);
     const action = { title: "PF2E.Actions.Interact.Title", subtitle: subtitle, glyph };
     const traits: TraitViewData[] = [
         {
@@ -140,7 +86,7 @@ async function createTradeMessage(
     });
 
     await ChatMessage.create({
-        author: senderId,
+        author: userId ?? game.user.id,
         speaker: { alias: formatProperties.giver },
         style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
         flavor,
@@ -148,38 +94,18 @@ async function createTradeMessage(
     });
 }
 
-type EnactedTradeData<TData extends TradeData = TradeData> = TranslatedTradeData<TData> & {
-    newItem: PhysicalItemPF2e;
+type TradeData = {
+    origin: ActorPF2e;
+    target: ActorPF2e;
+    item: PhysicalItemPF2e<ActorPF2e>;
+    quantity: number | undefined;
+    message?: { subtitle: string; message: string };
 };
 
-type TranslatedTradeData<TData extends TradeData> = TData & {
-    sourceItem: PhysicalItemPF2e<ActorPF2e>;
-    sourceActor: ActorPF2e;
-    targetActor: ActorPF2e;
-    quantity: number;
-};
+type TradePacket<
+    TType extends string,
+    TData extends TradeData = TradeData
+> = ExtractSocketOptions<TData> & { type: TType };
 
-type TradeSources = {
-    source: {
-        tokenId?: string;
-        actorId: string;
-        itemId: string;
-    };
-    target: {
-        tokenId?: string;
-        actorId: string;
-    };
-};
-
-type TradeData = { quantity: number; containerId?: string };
-
-type TradePacket<TData extends TradeData = TradeData> = TradeSources & TData;
-
-export type { TradeData, TradePacket, TranslatedTradeData };
-export {
-    createTradeMessage,
-    enactTradeRequest,
-    prepareTradeData,
-    sendTradeRequest,
-    translateTradeData,
-};
+export { createTradeMessage, giveItemToActor };
+export type { TradeData, TradePacket };
