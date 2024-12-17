@@ -1,7 +1,11 @@
 import { CreaturePF2e, DamageRoll, SpellCollection, Statistic } from "foundry-pf2e";
 
+let _DamageRoll: typeof DamageRoll;
+
 function getDamageRollClass() {
-    return CONFIG.Dice.rolls.find((Roll) => Roll.name === "DamageRoll") as typeof DamageRoll;
+    return (_DamageRoll ??= CONFIG.Dice.rolls.find(
+        (Roll) => Roll.name === "DamageRoll"
+    ) as typeof DamageRoll);
 }
 
 function getSpellCollectionClass<TParent extends CreaturePF2e>(actor: TParent) {

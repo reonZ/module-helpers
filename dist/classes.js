@@ -1,5 +1,6 @@
+let _DamageRoll;
 function getDamageRollClass() {
-    return CONFIG.Dice.rolls.find((Roll) => Roll.name === "DamageRoll");
+    return (_DamageRoll ??= CONFIG.Dice.rolls.find((Roll) => Roll.name === "DamageRoll"));
 }
 function getSpellCollectionClass(actor) {
     return actor.spellcasting.get("rituals").spells
