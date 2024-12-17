@@ -66,8 +66,15 @@ function canObserveActor(actor, withParty) {
     const user = game.user;
     if (actor.testUserPermission(user, "OBSERVER"))
         return true;
-    return (withParty &&
+    return (!!withParty &&
         game.pf2e.settings.metagame.partyStats &&
+        actor.parties?.some((party) => party.testUserPermission(user, "LIMITED")));
+}
+function isFriendActor(actor) {
+    const user = game.user;
+    if (actor.testUserPermission(user, "OBSERVER"))
+        return true;
+    return (actor.testUserPermission(user, "OBSERVER") ||
         actor.parties?.some((party) => party.testUserPermission(user, "LIMITED")));
 }
 function getWorldActor(actor) {
@@ -82,4 +89,4 @@ function getMythicOrHeroPoints(actor) {
         name,
     };
 }
-export { canObserveActor, getAlliance, getDispositionColor, getFirstActiveToken, getHighestName, getMythicOrHeroPoints, getOwner, getWorldActor, isOwner, isPlayedActor, };
+export { canObserveActor, getAlliance, getDispositionColor, getFirstActiveToken, getHighestName, getMythicOrHeroPoints, getOwner, getWorldActor, isFriendActor, isOwner, isPlayedActor, };

@@ -111,8 +111,18 @@ function canObserveActor(actor: Maybe<ActorPF2e>, withParty?: boolean) {
     if (actor.testUserPermission(user, "OBSERVER")) return true;
 
     return (
-        withParty &&
+        !!withParty &&
         game.pf2e.settings.metagame.partyStats &&
+        (actor as CreaturePF2e).parties?.some((party) => party.testUserPermission(user, "LIMITED"))
+    );
+}
+
+function isFriendActor(actor: ActorPF2e) {
+    const user = game.user;
+    if (actor.testUserPermission(user, "OBSERVER")) return true;
+
+    return (
+        actor.testUserPermission(user, "OBSERVER") ||
         (actor as CreaturePF2e).parties?.some((party) => party.testUserPermission(user, "LIMITED"))
     );
 }
@@ -144,6 +154,7 @@ export {
     getMythicOrHeroPoints,
     getOwner,
     getWorldActor,
+    isFriendActor,
     isOwner,
     isPlayedActor,
 };
