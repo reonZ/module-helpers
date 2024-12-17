@@ -30,5 +30,11 @@ declare global {
             [K in Keys]-?: Required<Pick<T, K>> & Partial<Record<Exclude<Keys, K>, undefined>>;
         }[Keys];
 
+    type RequiredFieldsOnly<T> = {
+        [K in keyof T as T[K] extends Required<T>[K] ? K : never]: T[K];
+    };
+
+    type PartialFieldsOnly<T> = Omit<T, keyof RequiredFieldsOnly<T>>;
+
     type Pairs<T> = Array<{ [K in keyof T]-?: [key: K, value: Required<T>[K]] }[keyof T]>;
 }
