@@ -1,7 +1,6 @@
 export * from "./pf2e";
 export * from "./actor";
 export * from "./application";
-export * from "./canvas";
 export * from "./chat";
 export * from "./classes";
 export * from "./combat";
