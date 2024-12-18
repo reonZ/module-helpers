@@ -1,4 +1,4 @@
-import { TokenDocumentPF2e, TokenPF2e } from "foundry-pf2e";
+import { ActorPF2e, TokenDocumentPF2e, TokenPF2e } from "foundry-pf2e";
 import * as R from "remeda";
 
 function getCurrentUser() {
@@ -30,4 +30,8 @@ function getActor() {
     return R.only(canvas.tokens.controlled)?.actor ?? game.user.character;
 }
 
-export { getActor, hasGMOnline, setControlled, userIsActiveGM, userIsGM };
+function isPrimaryUpdater(actor: ActorPF2e) {
+    return actor.primaryUpdater === game.user;
+}
+
+export { getActor, hasGMOnline, isPrimaryUpdater, setControlled, userIsActiveGM, userIsGM };

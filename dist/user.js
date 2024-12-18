@@ -21,4 +21,7 @@ function setControlled(targets) {
 function getActor() {
     return R.only(canvas.tokens.controlled)?.actor ?? game.user.character;
 }
-export { getActor, hasGMOnline, setControlled, userIsActiveGM, userIsGM };
+function isPrimaryUpdater(actor) {
+    return actor.primaryUpdater === game.user;
+}
+export { getActor, hasGMOnline, isPrimaryUpdater, setControlled, userIsActiveGM, userIsGM };
