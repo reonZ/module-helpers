@@ -1,4 +1,4 @@
-import { ActorPF2e, PhysicalItemPF2e, TraitViewData } from "foundry-pf2e";
+import { ActionCost, ActorPF2e, PhysicalItemPF2e, TraitViewData } from "foundry-pf2e";
 import { ExtractSocketOptions } from ".";
 import { getHighestName } from "./actor";
 import { getActionGlyph } from "./pf2e";
@@ -61,17 +61,31 @@ async function createTradeMessage(
         recipient,
         seller: giver,
         buyer: recipient,
-        quantity: quantity,
+        quantity,
         item: await TextEditor.enrichHTML(item.link),
     };
 
-    const content = await renderTemplate("./systems/pf2e/templates/chat/action/content.hbs", {
-        imgPath: item.img,
-        message: game.i18n.format(message, formatProperties).replace(/\b1 × /, ""),
-    });
+    return createActionMessage(
+        origin,
+        origin.isOfType("loot") && target.isOfType("loot") ? 2 : 1,
+        item.img,
+        subtitle,
+        game.i18n.format(message, formatProperties).replace(/\b1 × /, ""),
+        userId
+    );
+}
 
-    const glyph = getActionGlyph(origin.isOfType("loot") && target.isOfType("loot") ? 2 : 1);
+async function createActionMessage(
+    origin: ActorPF2e,
+    cost: string | number | null | ActionCost,
+    imgPath: string,
+    subtitle: string,
+    message: string,
+    userId?: string
+) {
+    const glyph = getActionGlyph(cost);
     const action = { title: "PF2E.Actions.Interact.Title", subtitle: subtitle, glyph };
+
     const traits: TraitViewData[] = [
         {
             name: "manipulate",
@@ -85,9 +99,14 @@ async function createTradeMessage(
         traits,
     });
 
-    await ChatMessage.create({
+    const content = await renderTemplate("./systems/pf2e/templates/chat/action/content.hbs", {
+        imgPath,
+        message,
+    });
+
+    return ChatMessage.create({
         author: userId ?? game.user.id,
-        speaker: { alias: formatProperties.giver },
+        speaker: { alias: getHighestName(origin) },
         style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
         flavor,
         content,
@@ -107,5 +126,5 @@ type TradePacket<
     TData extends TradeData = TradeData
 > = ExtractSocketOptions<TData> & { type: TType };
 
-export { createTradeMessage, giveItemToActor };
+export { createActionMessage, createTradeMessage, giveItemToActor };
 export type { TradeData, TradePacket };

@@ -32,14 +32,13 @@ async function createTradeMessage(origin, target, item, quantity, subtitle, mess
         recipient,
         seller: giver,
         buyer: recipient,
-        quantity: quantity,
+        quantity,
         item: await TextEditor.enrichHTML(item.link),
     };
-    const content = await renderTemplate("./systems/pf2e/templates/chat/action/content.hbs", {
-        imgPath: item.img,
-        message: game.i18n.format(message, formatProperties).replace(/\b1 × /, ""),
-    });
-    const glyph = getActionGlyph(origin.isOfType("loot") && target.isOfType("loot") ? 2 : 1);
+    return createActionMessage(origin, origin.isOfType("loot") && target.isOfType("loot") ? 2 : 1, item.img, subtitle, game.i18n.format(message, formatProperties).replace(/\b1 × /, ""), userId);
+}
+async function createActionMessage(origin, cost, imgPath, subtitle, message, userId) {
+    const glyph = getActionGlyph(cost);
     const action = { title: "PF2E.Actions.Interact.Title", subtitle: subtitle, glyph };
     const traits = [
         {
@@ -52,12 +51,16 @@ async function createTradeMessage(origin, target, item, quantity, subtitle, mess
         action,
         traits,
     });
-    await ChatMessage.create({
+    const content = await renderTemplate("./systems/pf2e/templates/chat/action/content.hbs", {
+        imgPath,
+        message,
+    });
+    return ChatMessage.create({
         author: userId ?? game.user.id,
-        speaker: { alias: formatProperties.giver },
+        speaker: { alias: getHighestName(origin) },
         style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
         flavor,
         content,
     });
 }
-export { createTradeMessage, giveItemToActor };
+export { createActionMessage, createTradeMessage, giveItemToActor };
