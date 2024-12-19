@@ -74,7 +74,7 @@ function createCallOrEmit(packetType, callback, socket) {
                 error("A GM must be online in order to enact this request.");
                 return;
             }
-            displaySending();
+            // displaySending();
             const packetOptions = R.mapValues(options, (entry) => entry instanceof foundry.abstract.Document ? entry.uuid : entry);
             socket?.emit({ ...packetOptions, type: packetType });
         }

@@ -98,7 +98,7 @@ function createCallOrEmit<
                 return;
             }
 
-            displaySending();
+            // displaySending();
 
             const packetOptions = R.mapValues(options, (entry) =>
                 entry instanceof foundry.abstract.Document ? entry.uuid : entry
