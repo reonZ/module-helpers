@@ -30,31 +30,47 @@ async function giveItemToActor(
     if (!newItem) return null;
 
     if (message) {
-        createTradeMessage(
+        createTradeMessage({
+            ...message,
             origin,
             target,
-            newItem,
+            item: newItem,
             quantity,
-            message.subtitle,
-            message.message,
-            userId
-        );
+            userId,
+        });
     }
 
     return newItem;
 }
 
-async function createTradeMessage(
-    origin: ActorPF2e,
-    target: ActorPF2e,
-    item: PhysicalItemPF2e,
-    quantity: number,
-    subtitle: string,
-    message: string,
-    userId?: string
-) {
+async function createTradeMessage({
+    item,
+    message,
+    origin,
+    quantity,
+    subtitle,
+    target,
+    userId,
+    cost,
+    imgPath,
+}: {
+    origin: ActorPF2e;
+    target?: ActorPF2e;
+    quantity: number;
+    subtitle: string;
+    message: string;
+    userId?: string;
+    cost?: string | number | null | ActionCost;
+    imgPath?: string;
+    item?: PhysicalItemPF2e;
+}) {
     const giver = getHighestName(origin);
-    const recipient = getHighestName(target);
+    const recipient = target ? getHighestName(target) : "";
+
+    const glyph = getActionGlyph(
+        cost ?? (origin.isOfType("loot") && target?.isOfType("loot") ? 2 : 1)
+    );
+    const action = { title: "PF2E.Actions.Interact.Title", subtitle: subtitle, glyph };
 
     const formatProperties = {
         giver,
@@ -62,29 +78,8 @@ async function createTradeMessage(
         seller: giver,
         buyer: recipient,
         quantity,
-        item: await TextEditor.enrichHTML(item.link),
+        item: item ? await TextEditor.enrichHTML(item.link) : "",
     };
-
-    return createActionMessage(
-        origin,
-        origin.isOfType("loot") && target.isOfType("loot") ? 2 : 1,
-        item.img,
-        subtitle,
-        game.i18n.format(message, formatProperties).replace(/\b1 × /, ""),
-        userId
-    );
-}
-
-async function createActionMessage(
-    origin: ActorPF2e,
-    cost: string | number | null | ActionCost,
-    imgPath: string,
-    subtitle: string,
-    message: string,
-    userId?: string
-) {
-    const glyph = getActionGlyph(cost);
-    const action = { title: "PF2E.Actions.Interact.Title", subtitle: subtitle, glyph };
 
     const traits: TraitViewData[] = [
         {
@@ -100,8 +95,8 @@ async function createActionMessage(
     });
 
     const content = await renderTemplate("./systems/pf2e/templates/chat/action/content.hbs", {
-        imgPath,
-        message,
+        imgPath: item?.img ?? imgPath,
+        message: game.i18n.format(message, formatProperties).replace(/\b1 × /, ""),
     });
 
     return ChatMessage.create({
@@ -126,5 +121,5 @@ type TradePacket<
     TData extends TradeData = TradeData
 > = ExtractSocketOptions<TData> & { type: TType };
 
-export { createActionMessage, createTradeMessage, giveItemToActor };
+export { createTradeMessage, giveItemToActor };
 export type { TradeData, TradePacket };

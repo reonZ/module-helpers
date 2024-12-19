@@ -20,26 +20,30 @@ async function giveItemToActor({ item, origin, target, quantity = 1, message }, 
     if (!newItem)
         return null;
     if (message) {
-        createTradeMessage(origin, target, newItem, quantity, message.subtitle, message.message, userId);
+        createTradeMessage({
+            ...message,
+            origin,
+            target,
+            item: newItem,
+            quantity,
+            userId,
+        });
     }
     return newItem;
 }
-async function createTradeMessage(origin, target, item, quantity, subtitle, message, userId) {
+async function createTradeMessage({ item, message, origin, quantity, subtitle, target, userId, cost, imgPath, }) {
     const giver = getHighestName(origin);
-    const recipient = getHighestName(target);
+    const recipient = target ? getHighestName(target) : "";
+    const glyph = getActionGlyph(cost ?? (origin.isOfType("loot") && target?.isOfType("loot") ? 2 : 1));
+    const action = { title: "PF2E.Actions.Interact.Title", subtitle: subtitle, glyph };
     const formatProperties = {
         giver,
         recipient,
         seller: giver,
         buyer: recipient,
         quantity,
-        item: await TextEditor.enrichHTML(item.link),
+        item: item ? await TextEditor.enrichHTML(item.link) : "",
     };
-    return createActionMessage(origin, origin.isOfType("loot") && target.isOfType("loot") ? 2 : 1, item.img, subtitle, game.i18n.format(message, formatProperties).replace(/\b1 × /, ""), userId);
-}
-async function createActionMessage(origin, cost, imgPath, subtitle, message, userId) {
-    const glyph = getActionGlyph(cost);
-    const action = { title: "PF2E.Actions.Interact.Title", subtitle: subtitle, glyph };
     const traits = [
         {
             name: "manipulate",
@@ -52,8 +56,8 @@ async function createActionMessage(origin, cost, imgPath, subtitle, message, use
         traits,
     });
     const content = await renderTemplate("./systems/pf2e/templates/chat/action/content.hbs", {
-        imgPath,
-        message,
+        imgPath: item?.img ?? imgPath,
+        message: game.i18n.format(message, formatProperties).replace(/\b1 × /, ""),
     });
     return ChatMessage.create({
         author: userId ?? game.user.id,
@@ -63,4 +67,4 @@ async function createActionMessage(origin, cost, imgPath, subtitle, message, use
         content,
     });
 }
-export { createActionMessage, createTradeMessage, giveItemToActor };
+export { createTradeMessage, giveItemToActor };
