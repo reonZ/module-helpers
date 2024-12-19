@@ -13,6 +13,7 @@ export * from "./handlebars";
 export * from "./hooks";
 export * from "./html";
 export * from "./item";
+export * from "./item-transfer";
 export * from "./keybinds";
 export * from "./keyboard";
 export * from "./libwrapper";
