@@ -5,15 +5,19 @@ import {
     PhysicalItemSource,
     TraitViewData,
 } from "foundry-pf2e";
-import { getActionGlyph, getHighestName, htmlQuery } from ".";
 import * as R from "remeda";
+import { getActionGlyph, getHighestName, htmlQuery } from ".";
 
 async function initiateTransfer({
     item,
     targetActor,
+    prompt,
+    title,
 }: {
     item: PhysicalItemPF2e;
     targetActor?: ActorPF2e;
+    title?: string;
+    prompt?: string;
 }): Promise<MoveLootFormData | null> {
     if (item.quantity <= 0) {
         return null;
@@ -26,6 +30,9 @@ async function initiateTransfer({
     return new ItemTransferDialog(item, {
         targetActor,
         lockStack: !targetActor?.inventory.findStackableItem(item._source),
+        title,
+        prompt,
+        button: title,
     }).resolve();
 }
 
@@ -37,15 +44,13 @@ async function getTransferData({
     item: PhysicalItemPF2e;
     withContent?: boolean;
     quantity?: number;
-}) {
+}): Promise<{
+    itemSource: PhysicalItemSource;
+    contentSources: PhysicalItemSource[];
+    quantity: number;
+} | null> {
     const realQuantity = getRealQuantity(item, quantity);
     if (realQuantity <= 0) return null;
-
-    const itemSources: PhysicalItemSource[] = [];
-
-    if (item.isOfType("backpack") && withContent) {
-        itemSources.push(...item.contents.map((x) => x.toObject()));
-    }
 
     const itemSource = item.toObject();
     itemSource.system.quantity = realQuantity;
@@ -55,9 +60,47 @@ async function getTransferData({
         itemSource.system.equipped.invested = item.traits.has("invested") ? false : null;
     }
 
-    itemSources.push(itemSource);
+    const contentSources =
+        item.isOfType("backpack") && withContent ? item.contents.map((x) => x.toObject()) : [];
 
-    return { itemSources, quantity: realQuantity };
+    return { itemSource, contentSources, quantity: realQuantity };
+}
+
+async function addItemsToActor({
+    targetActor,
+    itemSource,
+    contentSources = [],
+    newStack,
+}: {
+    targetActor: ActorPF2e;
+    itemSource: PhysicalItemSource;
+    contentSources: PhysicalItemSource[];
+    newStack?: boolean;
+}) {
+    if (!newStack && itemSource.type !== "backpack") {
+        const existingitem = targetActor.inventory.findStackableItem(itemSource);
+        if (existingitem) {
+            await existingitem.update({
+                "system.quantity": existingitem.quantity + itemSource.system.quantity,
+            });
+            return { item: existingitem, contentItems: [] };
+        }
+    }
+
+    const isContainer = contentSources.length > 0;
+    const [newItem] = await targetActor.createEmbeddedDocuments("Item", [itemSource], {
+        keepId: isContainer,
+    });
+
+    if (!newItem) return null;
+
+    const contentItems = contentSources.length
+        ? await targetActor.createEmbeddedDocuments("Item", contentSources, {
+              keepId: isContainer,
+          })
+        : [];
+
+    return { item: newItem, contentItems };
 }
 
 async function updateTransferSource({
@@ -180,7 +223,7 @@ class ItemTransferDialog extends FormApplication<PhysicalItemPF2e, MoveLootOptio
     }
 
     override get title(): string {
-        return this.options.title ?? game.i18n.localize("PF2E.loot.MoveLoot");
+        return this.options.title || game.i18n.localize("PF2E.loot.MoveLoot");
     }
 
     get item(): PhysicalItemPF2e {
@@ -189,7 +232,7 @@ class ItemTransferDialog extends FormApplication<PhysicalItemPF2e, MoveLootOptio
 
     override async getData(): Promise<PopupData> {
         const item = this.item;
-        const prompt = this.options.prompt ?? game.i18n.localize("PF2E.loot.MoveLootMessage");
+        const prompt = this.options.prompt || game.i18n.localize("PF2E.loot.MoveLootMessage");
 
         return {
             ...(await super.getData()),
@@ -200,6 +243,19 @@ class ItemTransferDialog extends FormApplication<PhysicalItemPF2e, MoveLootOptio
             canGift: false,
             prompt,
         };
+    }
+
+    protected async _renderInner(
+        data: FormApplicationData<PhysicalItemPF2e>,
+        options: RenderOptions
+    ): Promise<JQuery> {
+        const $html = await super._renderInner(data, options);
+
+        if (this.options.button) {
+            $html.find("button").text(this.options.button);
+        }
+
+        return $html;
     }
 
     /**
@@ -274,6 +330,7 @@ interface MoveLootOptions extends FormApplicationOptions {
     newStack: boolean;
     lockStack: boolean;
     prompt?: string;
+    button?: string;
 }
 
 interface MoveLootFormData {
@@ -292,4 +349,12 @@ interface PopupData extends FormApplicationData {
 
 type TransferCost = string | number | null | ActionCost;
 
-export { createTransferMessage, getTransferData, initiateTransfer, updateTransferSource };
+export {
+    addItemsToActor,
+    createTransferMessage,
+    getRealQuantity,
+    getTransferData,
+    initiateTransfer,
+    updateTransferSource,
+};
+export type { MoveLootFormData };

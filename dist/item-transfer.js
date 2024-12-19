@@ -1,6 +1,6 @@
-import { getActionGlyph, getHighestName, htmlQuery } from ".";
 import * as R from "remeda";
-async function initiateTransfer({ item, targetActor, }) {
+import { getActionGlyph, getHighestName, htmlQuery } from ".";
+async function initiateTransfer({ item, targetActor, prompt, title, }) {
     if (item.quantity <= 0) {
         return null;
     }
@@ -10,24 +10,46 @@ async function initiateTransfer({ item, targetActor, }) {
     return new ItemTransferDialog(item, {
         targetActor,
         lockStack: !targetActor?.inventory.findStackableItem(item._source),
+        title,
+        prompt,
+        button: title,
     }).resolve();
 }
 async function getTransferData({ item, quantity, withContent, }) {
     const realQuantity = getRealQuantity(item, quantity);
     if (realQuantity <= 0)
         return null;
-    const itemSources = [];
-    if (item.isOfType("backpack") && withContent) {
-        itemSources.push(...item.contents.map((x) => x.toObject()));
-    }
     const itemSource = item.toObject();
     itemSource.system.quantity = realQuantity;
     itemSource.system.equipped.carryType = "worn";
     if ("invested" in itemSource.system.equipped) {
         itemSource.system.equipped.invested = item.traits.has("invested") ? false : null;
     }
-    itemSources.push(itemSource);
-    return { itemSources, quantity: realQuantity };
+    const contentSources = item.isOfType("backpack") && withContent ? item.contents.map((x) => x.toObject()) : [];
+    return { itemSource, contentSources, quantity: realQuantity };
+}
+async function addItemsToActor({ targetActor, itemSource, contentSources = [], newStack, }) {
+    if (!newStack && itemSource.type !== "backpack") {
+        const existingitem = targetActor.inventory.findStackableItem(itemSource);
+        if (existingitem) {
+            await existingitem.update({
+                "system.quantity": existingitem.quantity + itemSource.system.quantity,
+            });
+            return { item: existingitem, contentItems: [] };
+        }
+    }
+    const isContainer = contentSources.length > 0;
+    const [newItem] = await targetActor.createEmbeddedDocuments("Item", [itemSource], {
+        keepId: isContainer,
+    });
+    if (!newItem)
+        return null;
+    const contentItems = contentSources.length
+        ? await targetActor.createEmbeddedDocuments("Item", contentSources, {
+            keepId: isContainer,
+        })
+        : [];
+    return { item: newItem, contentItems };
 }
 async function updateTransferSource({ item, withContent, quantity, }) {
     const sourceActor = item.actor;
@@ -106,14 +128,14 @@ class ItemTransferDialog extends FormApplication {
         };
     }
     get title() {
-        return this.options.title ?? game.i18n.localize("PF2E.loot.MoveLoot");
+        return this.options.title || game.i18n.localize("PF2E.loot.MoveLoot");
     }
     get item() {
         return this.object;
     }
     async getData() {
         const item = this.item;
-        const prompt = this.options.prompt ?? game.i18n.localize("PF2E.loot.MoveLootMessage");
+        const prompt = this.options.prompt || game.i18n.localize("PF2E.loot.MoveLootMessage");
         return {
             ...(await super.getData()),
             item,
@@ -123,6 +145,13 @@ class ItemTransferDialog extends FormApplication {
             canGift: false,
             prompt,
         };
+    }
+    async _renderInner(data, options) {
+        const $html = await super._renderInner(data, options);
+        if (this.options.button) {
+            $html.find("button").text(this.options.button);
+        }
+        return $html;
     }
     /**
      * Shows the dialog and resolves how many to transfer and what action to perform.
@@ -174,4 +203,4 @@ class ItemTransferDialog extends FormApplication {
         return super.close(options);
     }
 }
-export { createTransferMessage, getTransferData, initiateTransfer, updateTransferSource };
+export { addItemsToActor, createTransferMessage, getRealQuantity, getTransferData, initiateTransfer, updateTransferSource, };
