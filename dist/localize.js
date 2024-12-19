@@ -81,7 +81,7 @@ function subLocalize(subKey) {
             configurable: false,
         },
         path: {
-            value: (key) => MODULE.path(subKey, key),
+            value: (...path) => MODULE.path(subKey, path),
             enumerable: false,
             configurable: false,
         },
