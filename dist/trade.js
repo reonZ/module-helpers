@@ -67,4 +67,5 @@ async function createTradeMessage({ item, message, origin, quantity, subtitle, t
         content,
     });
 }
-export { createTradeMessage, giveItemToActor };
+// export { createTradeMessage, giveItemToActor };
+// export type { TradeData, TradePacket };
