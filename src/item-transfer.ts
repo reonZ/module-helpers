@@ -53,7 +53,10 @@ async function getTransferData({
     const realQuantity = getRealQuantity(item, quantity);
     if (realQuantity <= 0) return null;
 
+    const itemId = foundry.utils.randomID();
     const itemSource = item.toObject();
+
+    itemSource._id = itemId;
     itemSource.system.quantity = realQuantity;
     itemSource.system.equipped.carryType = "worn";
 
@@ -61,18 +64,10 @@ async function getTransferData({
         itemSource.system.equipped.invested = item.traits.has("invested") ? false : null;
     }
 
-    const contentSources = item.isOfType("backpack") && withContent ? getItemContent(item) : [];
+    const contentSources =
+        item.isOfType("backpack") && withContent ? getItemContentSource(item, itemId) : [];
 
     return { itemSource, contentSources, quantity: realQuantity };
-}
-
-function getItemContent(item: ContainerPF2e) {
-    return item.contents
-        .map((x): PhysicalItemSource[] => {
-            const source = x.toObject();
-            return x.isOfType("backpack") ? [source, ...getItemContent(x)] : [source];
-        })
-        .flat();
 }
 
 async function addItemsToActor({
@@ -127,11 +122,8 @@ async function updateTransferSource({
     const realQuantity = getRealQuantity(item, quantity);
     if (realQuantity <= 0) return false;
 
-    const toDelete: string[] = [];
-
-    if (item.isOfType("backpack") && withContent) {
-        toDelete.push(...item.contents.map((x) => x.id));
-    }
+    const toDelete: string[] =
+        item.isOfType("backpack") && withContent ? getItemContentIds(item) : [];
 
     const newQuantity = item.quantity - realQuantity;
 
@@ -208,6 +200,26 @@ async function createTransferMessage({
         flavor,
         content,
     });
+}
+
+function getItemContentIds(item: ContainerPF2e) {
+    return item.contents
+        .map((x): string[] => (x.isOfType("backpack") ? [x.id, ...getItemContentIds(x)] : [x.id]))
+        .flat();
+}
+
+function getItemContentSource(item: ContainerPF2e, containerId: string) {
+    return item.contents
+        .map((x): PhysicalItemSource[] => {
+            const itemId = foundry.utils.randomID();
+            const source = x.toObject();
+
+            source._id = itemId;
+            source.system.containerId = containerId;
+
+            return x.isOfType("backpack") ? [source, ...getItemContentSource(x, itemId)] : [source];
+        })
+        .flat();
 }
 
 function getRealQuantity(item: PhysicalItemPF2e, quantity?: number) {
