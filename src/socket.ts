@@ -1,6 +1,24 @@
 import * as R from "remeda";
-import { error, hasGMOnline } from ".";
+import { error, hasGMOnline, localizeIfExist } from ".";
 import { MODULE } from "./module";
+
+const SENDING_STYLE = {
+    position: "absolute",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "4em",
+    textShadow: "0 0 6px #000000",
+    color: "#e9e3e3",
+    gap: "0.3em",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    background: "#00000094",
+    padding: "0.3em 0.5em",
+    borderRadius: "20px",
+    zIndex: "2147483647",
+} as const;
 
 function socketOn<T extends object = object>(callback: SocketCallback<T>) {
     game.socket.on(`module.${MODULE.id}`, callback);
@@ -12,6 +30,25 @@ function socketOff<T extends object = object>(callback: SocketCallback<T>) {
 
 function socketEmit<T extends object = object>(packet: T) {
     game.socket.emit(`module.${MODULE.id}`, packet);
+}
+
+let _sendingElement: HTMLElement;
+function displaySending() {
+    const sendingElement = (_sendingElement ??= (() => {
+        const label = localizeIfExist("SHARED.sending") || "Sending";
+        const el = document.createElement("div");
+
+        el.innerHTML = `${label}<i class="fa-solid fa-wifi"></i>`;
+        Object.assign(el.style, SENDING_STYLE);
+
+        return el;
+    })());
+
+    document.body.append(sendingElement);
+
+    setTimeout(() => {
+        sendingElement.remove();
+    }, 500);
 }
 
 function createCallOrEmit<
@@ -60,6 +97,8 @@ function createCallOrEmit<
                 error("A GM must be online in order to enact this request.");
                 return;
             }
+
+            displaySending();
 
             const packetOptions = R.mapValues(options, (entry) =>
                 entry instanceof foundry.abstract.Document ? entry.uuid : entry
