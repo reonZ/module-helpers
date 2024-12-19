@@ -25,8 +25,16 @@ async function getTransferData({ item, quantity, withContent, }) {
     if ("invested" in itemSource.system.equipped) {
         itemSource.system.equipped.invested = item.traits.has("invested") ? false : null;
     }
-    const contentSources = item.isOfType("backpack") && withContent ? item.contents.map((x) => x.toObject()) : [];
+    const contentSources = item.isOfType("backpack") && withContent ? getItemContent(item) : [];
     return { itemSource, contentSources, quantity: realQuantity };
+}
+function getItemContent(item) {
+    return item.contents
+        .map((x) => {
+        const source = x.toObject();
+        return x.isOfType("backpack") ? [source, ...getItemContent(x)] : [source];
+    })
+        .flat();
 }
 async function addItemsToActor({ targetActor, itemSource, contentSources = [], newStack, }) {
     if (!newStack && itemSource.type !== "backpack") {
