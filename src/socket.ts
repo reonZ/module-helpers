@@ -18,7 +18,7 @@ function createCallOrEmit<
     TType extends string,
     TOptions extends Record<string, any>,
     TOptionsWithSocket = WithSocketOptions<TOptions>,
-    TPacket = ExtractSocketOptions<TOptions> & { type: TType }
+    TPacket = ExtractSocketOptions<TType, TOptions>
 >(
     packetType: TType,
     callback: (options: TOptions, userId: string) => void,
@@ -70,8 +70,11 @@ function createCallOrEmit<
     };
 }
 
-type ExtractSocketOptions<TOptions extends Record<string, any>> =
-    ExtractSocketOptionsRequired<TOptions> & ExtractSocketOptionsPartial<TOptions>;
+type ExtractSocketOptions<
+    TType extends string,
+    TOptions extends Record<string, any>
+> = ExtractSocketOptionsRequired<TOptions> &
+    ExtractSocketOptionsPartial<TOptions> & { type: TType };
 
 type ExtractSocketOptionsRequired<
     TOptions extends Record<string, any>,

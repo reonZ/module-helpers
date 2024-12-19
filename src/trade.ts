@@ -116,10 +116,10 @@ type TradeData = {
     message?: { subtitle: string; message: string };
 };
 
-type TradePacket<
-    TType extends string,
-    TData extends TradeData = TradeData
-> = ExtractSocketOptions<TData> & { type: TType };
+type TradePacket<TType extends string, TData extends TradeData = TradeData> = ExtractSocketOptions<
+    TType,
+    TData
+>;
 
 export { createTradeMessage, giveItemToActor };
 export type { TradeData, TradePacket };
