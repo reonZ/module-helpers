@@ -100,7 +100,7 @@ async function createTransferMessage({ sourceActor, targetActor, subtitle, messa
         imgPath: item.img,
         message: game.i18n.format(message, formatProperties).replace(/\b1 × /, ""),
     });
-    return ChatMessage.create({
+    return getDocumentClass("ChatMessage").create({
         author: userId ?? game.user.id,
         speaker: { alias: sourceName },
         style: CONST.CHAT_MESSAGE_STYLES.EMOTE,

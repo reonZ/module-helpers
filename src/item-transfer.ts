@@ -1,6 +1,7 @@
 import {
     ActionCost,
     ActorPF2e,
+    ChatMessagePF2e,
     ContainerPF2e,
     PhysicalItemPF2e,
     PhysicalItemSource,
@@ -158,7 +159,7 @@ async function createTransferMessage({
     quantity?: number;
     cost?: TransferCost;
     userId?: string;
-}) {
+}): Promise<ChatMessagePF2e | undefined> {
     const sourceName = getHighestName(sourceActor);
     const targetName = targetActor ? getHighestName(targetActor) : "";
 
@@ -193,7 +194,7 @@ async function createTransferMessage({
         message: game.i18n.format(message, formatProperties).replace(/\b1 × /, ""),
     });
 
-    return ChatMessage.create({
+    return getDocumentClass("ChatMessage").create({
         author: userId ?? game.user.id,
         speaker: { alias: sourceName },
         style: CONST.CHAT_MESSAGE_STYLES.EMOTE,

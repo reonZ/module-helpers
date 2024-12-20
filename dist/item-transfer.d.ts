@@ -1,4 +1,4 @@
-import { ActionCost, ActorPF2e, PhysicalItemPF2e, PhysicalItemSource } from "foundry-pf2e";
+import { ActionCost, ActorPF2e, ChatMessagePF2e, PhysicalItemPF2e, PhysicalItemSource } from "foundry-pf2e";
 declare function initiateTransfer({ item, targetActor, prompt, title, }: {
     item: PhysicalItemPF2e;
     targetActor?: ActorPF2e;
@@ -40,7 +40,7 @@ declare function createTransferMessage({ sourceActor, targetActor, subtitle, mes
     quantity?: number;
     cost?: TransferCost;
     userId?: string;
-}): Promise<ChatMessage | undefined>;
+}): Promise<ChatMessagePF2e | undefined>;
 declare function getRealQuantity(item: PhysicalItemPF2e, quantity?: number): number;
 interface MoveLootFormData {
     quantity: number;
