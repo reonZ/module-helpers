@@ -1,23 +1,23 @@
 import * as R from "remeda";
-import { error, hasGMOnline, localizeIfExist } from ".";
+import { error, hasGMOnline } from ".";
 import { MODULE } from "./module";
-const SENDING_STYLE = {
-    position: "absolute",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: "4em",
-    textShadow: "0 0 6px #000000",
-    color: "#e9e3e3",
-    gap: "0.3em",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    background: "#00000094",
-    padding: "0.3em 0.5em",
-    borderRadius: "20px",
-    zIndex: "2147483647",
-};
+// const SENDING_STYLE = {
+//     position: "absolute",
+//     display: "flex",
+//     alignItems: "center",
+//     justifyContent: "center",
+//     fontSize: "4em",
+//     textShadow: "0 0 6px #000000",
+//     color: "#e9e3e3",
+//     gap: "0.3em",
+//     top: "50%",
+//     left: "50%",
+//     transform: "translate(-50%, -50%)",
+//     background: "#00000094",
+//     padding: "0.3em 0.5em",
+//     borderRadius: "20px",
+//     zIndex: "2147483647",
+// } as const;
 function socketOn(callback) {
     game.socket.on(`module.${MODULE.id}`, callback);
 }
@@ -27,20 +27,20 @@ function socketOff(callback) {
 function socketEmit(packet) {
     game.socket.emit(`module.${MODULE.id}`, packet);
 }
-let _sendingElement;
-function displaySending() {
-    const sendingElement = (_sendingElement ??= (() => {
-        const label = localizeIfExist("SHARED.sending") || "Sending";
-        const el = document.createElement("div");
-        el.innerHTML = `${label}<i class="fa-solid fa-wifi"></i>`;
-        Object.assign(el.style, SENDING_STYLE);
-        return el;
-    })());
-    document.body.append(sendingElement);
-    setTimeout(() => {
-        sendingElement.remove();
-    }, 500);
-}
+// let _sendingElement: HTMLElement;
+// function displaySending() {
+//     const sendingElement = (_sendingElement ??= (() => {
+//         const label = localizeIfExist("SHARED.sending") || "Sending";
+//         const el = document.createElement("div");
+//         el.innerHTML = `${label}<i class="fa-solid fa-wifi"></i>`;
+//         Object.assign(el.style, SENDING_STYLE);
+//         return el;
+//     })());
+//     document.body.append(sendingElement);
+//     setTimeout(() => {
+//         sendingElement.remove();
+//     }, 500);
+// }
 function createCallOrEmit(packetType, callback, socket) {
     return async (options, userId) => {
         if (!R.isObjectType(options))
@@ -75,7 +75,11 @@ function createCallOrEmit(packetType, callback, socket) {
                 return;
             }
             // displaySending();
-            const packetOptions = R.mapValues(options, (entry) => entry instanceof foundry.abstract.Document ? entry.uuid : entry);
+            const packetOptions = R.mapValues(options, (entry) => entry instanceof foundry.abstract.Document
+                ? entry.uuid
+                : entry instanceof Token
+                    ? entry.document.uuid
+                    : entry);
             socket?.emit({ ...packetOptions, type: packetType });
         }
     };
