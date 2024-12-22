@@ -37,4 +37,18 @@ declare global {
     type PartialFieldsOnly<T> = Omit<T, keyof RequiredFieldsOnly<T>>;
 
     type Pairs<T> = Array<{ [K in keyof T]-?: [key: K, value: Required<T>[K]] }[keyof T]>;
+
+    type Widen<T> = { [key in keyof T]: ToPrimitive<T[key]> };
+
+    type ToPrimitive<T> = T extends string
+        ? string
+        : T extends number
+        ? number
+        : T extends boolean
+        ? boolean
+        : T extends (..._args: any[]) => any
+        ? (..._args: Parameters<T>) => ReturnType<T>
+        : T extends object
+        ? { [key in keyof T]: ToPrimitive<T[key]> }
+        : T;
 }
