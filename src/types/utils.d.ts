@@ -36,6 +36,18 @@ declare global {
 
     type PartialFieldsOnly<T> = Omit<T, keyof RequiredFieldsOnly<T>>;
 
+    type WithRequired<T extends Record<string, any>, K extends keyof T> = Omit<T, K> &
+        Required<Pick<T, K>>;
+
+    type RequiredExcept<T extends Record<string, any>, K extends keyof T> = Required<Omit<T, K>> &
+        Pick<T, K>;
+
+    type WithPartial<T extends Record<string, any>, K extends keyof T> = Omit<T, K> &
+        Partial<Pick<T, K>>;
+
+    type PartialExcept<T extends Record<string, any>, K extends keyof T> = Partial<Omit<T, K>> &
+        Pick<T, K>;
+
     type Pairs<T> = Array<{ [K in keyof T]-?: [key: K, value: Required<T>[K]] }[keyof T]>;
 
     type Widen<T> = { [key in keyof T]: ToPrimitive<T[key]> };
