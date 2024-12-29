@@ -7,7 +7,8 @@ declare const MODULE: {
     };
     throwError(str: string): never;
     error(str: string, error?: Error): void;
-    log(str: string): void;
+    debug(...args: any[]): void;
+    log(...args: any[]): void;
     path(...path: (string | string[])[]): string;
     register(id: string, migrations?: ModuleMigration[] | Record<string, ModuleMigration>): void;
     registerMigration(migration: Omit<ModuleMigration, "module">): void;

@@ -31,8 +31,14 @@ const MODULE = {
         }
         console.error(message);
     },
-    log(str) {
-        console.log(`[${this.name}] ${str}`);
+    debug(...args) {
+        // @ts-expect-error
+        if (CONFIG.debug.modules) {
+            this.log(...args);
+        }
+    },
+    log(...args) {
+        console.log(`[${this.name}]`, ...args);
     },
     path(...path) {
         const joined = joinStr(".", ...path);
