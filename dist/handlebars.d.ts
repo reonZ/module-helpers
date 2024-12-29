@@ -4,7 +4,7 @@ declare function render<TData extends Record<string, any>>(...args: [string, ...
 declare function arrayToSelect<T extends string>(values: Iterable<T | {
     value: T;
     label?: string;
-}>, localize?: boolean | ((label: string) => string)): {
+}>, localize?: boolean | ((value: string) => string)): {
     value: T;
     label: string;
 }[];
