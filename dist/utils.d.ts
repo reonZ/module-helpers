@@ -7,4 +7,5 @@ declare function arrayIncludes(array: string[], other: string[]): boolean;
 declare function getUuidFromInlineMatch(match: RegExpExecArray | RegExpMatchArray): string;
 declare function removeIndexFromArray<T extends any[]>(array: T, index: number, copy?: boolean): T;
 declare function rollDie(faces: number, nb?: number): number;
-export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, joinStr, removeIndexFromArray, rollDie, stringBoolean, stringNumber, };
+declare function indexObjToArray<T>(obj: Maybe<Record<`${number}`, T> | T[]>): T[];
+export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, removeIndexFromArray, rollDie, stringBoolean, stringNumber, };

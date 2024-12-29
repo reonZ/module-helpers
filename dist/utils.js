@@ -46,4 +46,11 @@ function rollDie(faces, nb = 1) {
     }
     return total;
 }
-export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, joinStr, removeIndexFromArray, rollDie, stringBoolean, stringNumber, };
+function indexObjToArray(obj) {
+    if (!obj)
+        return [];
+    if (R.isArray(obj))
+        return obj;
+    return R.pipe(R.entries(obj), R.sortBy(([k]) => Number(k)), R.map(([k, v]) => v));
+}
+export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, removeIndexFromArray, rollDie, stringBoolean, stringNumber, };

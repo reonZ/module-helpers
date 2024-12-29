@@ -62,11 +62,23 @@ function rollDie(faces: number, nb = 1) {
     return total;
 }
 
+function indexObjToArray<T>(obj: Maybe<Record<`${number}`, T> | T[]>) {
+    if (!obj) return [];
+    if (R.isArray(obj)) return obj;
+
+    return R.pipe(
+        R.entries(obj),
+        R.sortBy(([k]) => Number(k)),
+        R.map(([k, v]) => v)
+    );
+}
+
 export {
     arrayIncludes,
     beautifySlug,
     compareArrays,
     getUuidFromInlineMatch,
+    indexObjToArray,
     joinStr,
     removeIndexFromArray,
     rollDie,
