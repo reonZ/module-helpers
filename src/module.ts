@@ -34,6 +34,18 @@ const MODULE = {
 
         console.error(message);
     },
+    debugGroup(...args: any[]) {
+        // @ts-expect-error
+        if (CONFIG.debug.modules) {
+            console.group(`[${this.name}]`, ...args);
+        }
+    },
+    debugGroupEnd() {
+        // @ts-expect-error
+        if (CONFIG.debug.modules) {
+            console.groupEnd();
+        }
+    },
     debug(...args: any[]) {
         // @ts-expect-error
         if (CONFIG.debug.modules) {

@@ -7,6 +7,8 @@ declare const MODULE: {
     };
     throwError(str: string): never;
     error(str: string, error?: Error): void;
+    debugGroup(...args: any[]): void;
+    debugGroupEnd(): void;
     debug(...args: any[]): void;
     log(...args: any[]): void;
     path(...path: (string | string[])[]): string;
