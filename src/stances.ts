@@ -93,17 +93,17 @@ async function toggleStance(actor: CharacterPF2e, effectUUID: string, force?: bo
     }
 
     const effects = getStanceEffects(actor);
-    const effect = effects.find((stance) => stance.effectUUID === effectUUID);
-
-    if (!effect) {
-        await addStance(actor, effectUUID);
-    }
+    const effect = effects.findSplice((stance) => stance.effectUUID === effectUUID);
 
     if (effects.length) {
-        actor.deleteEmbeddedDocuments(
+        await actor.deleteEmbeddedDocuments(
             "Item",
             effects.map(({ effectID }) => effectID)
         );
+    }
+
+    if (!effect) {
+        await addStance(actor, effectUUID);
     }
 }
 

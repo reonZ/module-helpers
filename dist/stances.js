@@ -77,12 +77,12 @@ async function toggleStance(actor, effectUUID, force) {
         return "no-combat";
     }
     const effects = getStanceEffects(actor);
-    const effect = effects.find((stance) => stance.effectUUID === effectUUID);
+    const effect = effects.findSplice((stance) => stance.effectUUID === effectUUID);
+    if (effects.length) {
+        await actor.deleteEmbeddedDocuments("Item", effects.map(({ effectID }) => effectID));
+    }
     if (!effect) {
         await addStance(actor, effectUUID);
-    }
-    if (effects.length) {
-        actor.deleteEmbeddedDocuments("Item", effects.map(({ effectID }) => effectID));
     }
 }
 async function addStance(actor, effectUUID, createMessage = true) {
