@@ -3,6 +3,16 @@ import { ActorPF2e, TokenDocumentPF2e } from "foundry-pf2e";
 export {};
 
 declare global {
+    type TypeOfType =
+        | "bigint"
+        | "boolean"
+        | "function"
+        | "number"
+        | "object"
+        | "string"
+        | "synbol"
+        | undefined;
+
     type Promisable<T> = Promise<T> | T;
 
     type TargetDocuments = { actor: ActorPF2e; token?: TokenDocumentPF2e };
@@ -63,4 +73,14 @@ declare global {
         : T extends object
         ? { [key in keyof T]: ToPrimitive<T[key]> }
         : T;
+
+    type PrimitiveOf<T> = T extends StringConstructor
+        ? string
+        : T extends NumberConstructor
+        ? number
+        : T extends BooleanConstructor
+        ? boolean
+        : never;
+
+    type MaybePartial<T extends object> = Maybe<DeepPartial<T>>;
 }
