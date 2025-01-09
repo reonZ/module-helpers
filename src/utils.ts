@@ -1,12 +1,7 @@
 import * as R from "remeda";
 
-function joinStr(separator: "/" | "." | "-", ...path: (string | string[])[]) {
-    return R.pipe(
-        path,
-        R.flat(),
-        R.filter((x) => typeof x === "string"),
-        R.join(separator)
-    );
+function joinStr(separator: "/" | "." | "-", ...path: any[]) {
+    return R.pipe(path, R.flat(), R.filter(R.isString), R.join(separator));
 }
 
 function stringBoolean(b: boolean | string) {

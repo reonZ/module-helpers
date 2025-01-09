@@ -1,6 +1,6 @@
 import * as R from "remeda";
 function joinStr(separator, ...path) {
-    return R.pipe(path, R.flat(), R.filter((x) => typeof x === "string"), R.join(separator));
+    return R.pipe(path, R.flat(), R.filter(R.isString), R.join(separator));
 }
 function stringBoolean(b) {
     return String(b);

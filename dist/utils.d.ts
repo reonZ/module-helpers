@@ -1,4 +1,4 @@
-declare function joinStr(separator: "/" | "." | "-", ...path: (string | string[])[]): string;
+declare function joinStr(separator: "/" | "." | "-", ...path: any[]): string;
 declare function stringBoolean(b: boolean | string): "false" | "true";
 declare function stringNumber(n: number | string): `${number}`;
 declare function beautifySlug(slug: string): string;
