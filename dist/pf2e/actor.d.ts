@@ -1,7 +1,7 @@
 import { ActorPF2e } from "foundry-pf2e";
 declare const ACTOR_TYPES: readonly ["army", "character", "familiar", "hazard", "loot", "npc", "party", "vehicle"];
 declare const SAVE_TYPES: readonly ["fortitude", "reflex", "will"];
-declare const SKILL_SLUGS: Set<"performance" | "athletics" | "deception" | "stealth" | "nature" | "acrobatics" | "arcana" | "crafting" | "diplomacy" | "intimidation" | "medicine" | "occultism" | "religion" | "society" | "survival" | "thievery">;
+declare const SKILL_SLUGS: Set<"performance" | "crafting" | "athletics" | "deception" | "stealth" | "nature" | "acrobatics" | "arcana" | "diplomacy" | "intimidation" | "medicine" | "occultism" | "religion" | "society" | "survival" | "thievery">;
 /**
  * Reset and rerender a provided list of actors. Omit argument to reset all world and synthetic actors
  * @param [actors] A list of actors to refresh: if none are provided, all world and synthetic actors are retrieved
