@@ -61,6 +61,7 @@ const MODULE = {
             throw new Error("Module was already registered.");
         }
         MODULE_ID = id;
+        window.fu ??= foundry.utils;
         const migrationList = R.isPlainObject(migrations) ? Object.values(migrations) : migrations;
         for (const migration of migrationList ?? []) {
             registerMigration(migration);

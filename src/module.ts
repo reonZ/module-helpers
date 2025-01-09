@@ -66,6 +66,8 @@ const MODULE = {
 
         MODULE_ID = id;
 
+        window.fu ??= foundry.utils;
+
         const migrationList = R.isPlainObject(migrations) ? Object.values(migrations) : migrations;
 
         for (const migration of migrationList ?? []) {
