@@ -69,7 +69,7 @@ async function detachSubitem(subitem: PhysicalItemPF2e, skipConfirm: boolean): P
     }
 }
 
-async function consumeItem(event: Event, item: ConsumablePF2e) {
+async function consumeItem(event: Event, item: ConsumablePF2e, thisMany: number = 1) {
     const uses = item.uses;
     if (uses.max && uses.value < 1) return null;
 
@@ -78,8 +78,6 @@ async function consumeItem(event: Event, item: ConsumablePF2e) {
     }
 
     const actor = item.actor;
-    // const multiUse = uses.max > 1;
-    // const key = uses.value === 1 && multiUse ? "UseExhausted" : multiUse ? "UseMulti" : "UseSingle";
     const flags = {
         pf2e: {
             origin: {
@@ -97,7 +95,7 @@ async function consumeItem(event: Event, item: ConsumablePF2e) {
     contentHTML.querySelector("button[data-action='consume']")?.remove();
     contentHTML.querySelector("footer")?.remove();
 
-    const flavor = contentHTML.outerHTML;
+    const content = contentHTML.outerHTML;
 
     if (item.system.damage) {
         const DamageRoll = getDamageRollClass();
@@ -106,11 +104,24 @@ async function consumeItem(event: Event, item: ConsumablePF2e) {
 
         roll.toMessage({
             speaker,
-            flavor,
+            flavor: content,
             flags,
         });
     } else {
-        ChatMessage.create({ speaker, content: flavor, flags });
+        const exhausted = uses.max >= thisMany && uses.value === thisMany;
+        const key =
+            exhausted && uses.max > 1
+                ? "UseExhausted"
+                : uses.max > thisMany
+                ? "UseMulti"
+                : "UseSingle";
+        const use = game.i18n.format(`PF2E.ConsumableMessage.${key}`, {
+            name: item.name,
+            current: uses.value - thisMany,
+        });
+        const flavor = `<h4>${use}</h4>`;
+
+        ChatMessage.create({ speaker, content: `${flavor}${content}`, flags });
     }
 
     if (item.system.uses.autoDestroy && uses.value <= 1) {
