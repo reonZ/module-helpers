@@ -138,13 +138,16 @@ function subLocalize(subKey: string) {
         warn: typeof warn;
         info: typeof info;
         error: typeof error;
-        i18n: typeof templateLocalize;
+        i18n: TemplateLocalize;
         sub: typeof subLocalize;
     };
 }
 
 type LocalizeArgs = [...string[], string | Record<string, any>];
 
+type TemplateLocalize = ReturnType<typeof templateLocalize>;
+
+export type { TemplateLocalize };
 export {
     error,
     hasLocalization,
