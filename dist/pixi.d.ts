@@ -6,4 +6,5 @@ declare function subtractPoints(a: Point, b: Point): {
     x: number;
     y: number;
 };
-export { addPoints, subtractPoints };
+declare function distanceBetweenPoints(a: Point, b: Point): number;
+export { addPoints, distanceBetweenPoints, subtractPoints };

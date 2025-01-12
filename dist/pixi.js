@@ -10,4 +10,7 @@ function subtractPoints(a, b) {
         y: a.y - b.y,
     };
 }
-export { addPoints, subtractPoints };
+function distanceBetweenPoints(a, b) {
+    return Math.hypot(b.x - a.x, b.y - a.y);
+}
+export { addPoints, distanceBetweenPoints, subtractPoints };
