@@ -15,7 +15,7 @@ declare global {
 
     type Promisable<T> = Promise<T> | T;
 
-    type TargetDocuments = { actor: ActorPF2e; token?: TokenDocumentPF2e };
+    type TargetDocuments = { actor: ActorPF2e; token?: TokenDocumentPF2e | null };
 
     type MaybeHTML = Maybe<Document | Element | EventTarget>;
 
