@@ -5,7 +5,7 @@ import { ExtendedModule, getActiveModule, MODULE } from "./module";
 import { hasSetting, registerSetting } from "./settings";
 import { userIsActiveGM } from "./user";
 
-const MANAGER_VERSION = 2;
+const MANAGER_VERSION = 3;
 
 // "SHARED": {
 //     "migration": {
@@ -118,6 +118,9 @@ function getMigrationData() {
             const module = getActiveModule(migration.module);
             if (!module) return {};
 
+            const version = module.getSetting<number>("__schema");
+            if (version >= migration.version) return {};
+
             const versions = R.pipe(
                 MIGRATIONS.list,
                 R.filter((migration) => migration.module === module.id),
@@ -125,7 +128,6 @@ function getMigrationData() {
             );
 
             const lastVersion = Math.max(...versions);
-            const version = module.getSetting<number>("__schema");
 
             return version < lastVersion ? { module, lastVersion, version } : {};
         })();
@@ -133,7 +135,10 @@ function getMigrationData() {
         if (!module) continue;
 
         modules[migration.module] = { module, lastVersion, version };
-        migrations.push(migration);
+
+        if (migration.version > version) {
+            migrations.push(migration);
+        }
     }
 
     migrations.sort((a, b) => a.version - b.version);
@@ -198,6 +203,20 @@ async function runMigrations() {
     );
 
     if (!started) return;
+
+    // settings
+
+    const migratedSettings: Set<string> = new Set();
+
+    for (const migration of migrations) {
+        const settings = await migration.migrateSettings?.();
+
+        if (R.isArray(settings)) {
+            for (const setting of settings) {
+                migratedSettings.add(setting);
+            }
+        }
+    }
 
     // actors
 
@@ -283,12 +302,12 @@ async function runMigrations() {
     // set schema
 
     for (const { module, lastVersion } of moduleList) {
-        module.setSetting("__schema", lastVersion);
+        await module.setSetting("__schema", lastVersion);
     }
 
     // summary
 
-    const hasMigrated = migratedActors.size || migratedUsers.size;
+    const hasMigrated = migratedSettings.size || migratedActors.size || migratedUsers.size;
 
     if (!hasMigrated) {
         promptDialog({
@@ -302,6 +321,7 @@ async function runMigrations() {
     const summaryContent = [`<div>${localize("summary.content")}</div>`];
 
     for (const [list, title] of [
+        [migratedSettings, "PF2E.SETTINGS.Settings"],
         [migratedUsers, "PLAYERS.Title"],
         [migratedActors, "PF2E.Actor.Plural"],
     ] as const) {
@@ -313,8 +333,10 @@ async function runMigrations() {
             `<ul style="margin: 0 0 0.5em; list-style: none; padding: 0; font-size: 1rem;">`
         );
 
-        for (const doc of list) {
-            summaryContent.push(`<li style="font-size: 1rem;">@UUID[${doc.uuid}]</li>`);
+        for (const entry of list) {
+            const content =
+                entry instanceof foundry.abstract.Document ? `@UUID[${entry.uuid}]` : entry;
+            summaryContent.push(`<li style="font-size: 1rem;">${content}</li>`);
         }
 
         summaryContent.push("</ul>");
@@ -334,6 +356,7 @@ type PreparedModuleMigration = ModuleMigration & {
 
 type ModuleMigration = {
     version: number;
+    migrateSettings?: () => Promisable<string[] | undefined>;
     migrateActor?: (actorSource: ActorSourcePF2e) => Promisable<boolean>;
     migrateUser?: (userSource: UserSourcePF2e) => Promisable<boolean>;
 };

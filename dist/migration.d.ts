@@ -18,6 +18,7 @@ type PreparedModuleMigration = ModuleMigration & {
 };
 type ModuleMigration = {
     version: number;
+    migrateSettings?: () => Promisable<string[] | undefined>;
     migrateActor?: (actorSource: ActorSourcePF2e) => Promisable<boolean>;
     migrateUser?: (userSource: UserSourcePF2e) => Promisable<boolean>;
 };
