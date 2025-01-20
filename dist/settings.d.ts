@@ -1,6 +1,6 @@
 declare function settingPath(...path: string[]): string;
 declare function getSetting<T = boolean>(key: string): T;
-declare function setSetting(key: string, value: any): Promise<any>;
+declare function setSetting<TSetting>(key: string, value: TSetting): Promise<TSetting>;
 declare function hasSetting(key: string): boolean;
 declare function registerSetting(options: SettingOptions): void;
 declare function registerSettingMenu(options: MenuSettingOptions): void;

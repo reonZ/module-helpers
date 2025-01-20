@@ -9,8 +9,8 @@ function getSetting<T = boolean>(key: string) {
     return game.settings.get(MODULE.id, key) as T;
 }
 
-function setSetting(key: string, value: any) {
-    return game.settings.set(MODULE.id, key, value);
+function setSetting<TSetting>(key: string, value: TSetting) {
+    return game.settings.set<TSetting>(MODULE.id, key, value);
 }
 
 function hasSetting(key: string) {
