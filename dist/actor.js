@@ -99,4 +99,8 @@ function actorsRespectAlliance(origin, target, alliance = "all") {
             ? target.isAllyOf(origin)
             : target.isEnemyOf(origin);
 }
-export { actorsRespectAlliance, canObserveActor, getAlliance, getDispositionColor, getFirstActiveToken, getHighestName, getMythicOrHeroPoints, getOwner, getWorldActor, isCurrentCombatant, isFriendActor, isOwner, isPlayedActor, };
+function hasRollOption(actor, option) {
+    const rolloptionsDomains = Object.values(actor.rollOptions);
+    return rolloptionsDomains.some((rollOptions) => !!rollOptions[option]);
+}
+export { actorsRespectAlliance, canObserveActor, getAlliance, getDispositionColor, getFirstActiveToken, getHighestName, getMythicOrHeroPoints, getOwner, getWorldActor, hasRollOption, isCurrentCombatant, isFriendActor, isOwner, isPlayedActor, };

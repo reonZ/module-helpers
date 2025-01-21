@@ -161,6 +161,11 @@ function actorsRespectAlliance(
         : target.isEnemyOf(origin);
 }
 
+function hasRollOption(actor: ActorPF2e, option: string) {
+    const rolloptionsDomains = Object.values(actor.rollOptions) as Record<string, boolean>[];
+    return rolloptionsDomains.some((rollOptions) => !!rollOptions[option]);
+}
+
 export {
     actorsRespectAlliance,
     canObserveActor,
@@ -171,6 +176,7 @@ export {
     getMythicOrHeroPoints,
     getOwner,
     getWorldActor,
+    hasRollOption,
     isCurrentCombatant,
     isFriendActor,
     isOwner,
