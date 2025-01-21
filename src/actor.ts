@@ -145,7 +145,24 @@ function getMythicOrHeroPoints(
     };
 }
 
+function isCurrentCombatant(actor: ActorPF2e) {
+    return game.combat?.combatant === actor.combatant;
+}
+
+function actorsRespectAlliance(
+    origin: ActorPF2e,
+    target: ActorPF2e,
+    alliance: "all" | "allies" | "enemies" = "all"
+) {
+    return alliance === "all"
+        ? true
+        : alliance === "allies"
+        ? target.isAllyOf(origin)
+        : target.isEnemyOf(origin);
+}
+
 export {
+    actorsRespectAlliance,
     canObserveActor,
     getAlliance,
     getDispositionColor,
@@ -154,6 +171,7 @@ export {
     getMythicOrHeroPoints,
     getOwner,
     getWorldActor,
+    isCurrentCombatant,
     isFriendActor,
     isOwner,
     isPlayedActor,

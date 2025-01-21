@@ -89,4 +89,14 @@ function getMythicOrHeroPoints(actor) {
         name,
     };
 }
-export { canObserveActor, getAlliance, getDispositionColor, getFirstActiveToken, getHighestName, getMythicOrHeroPoints, getOwner, getWorldActor, isFriendActor, isOwner, isPlayedActor, };
+function isCurrentCombatant(actor) {
+    return game.combat?.combatant === actor.combatant;
+}
+function actorsRespectAlliance(origin, target, alliance = "all") {
+    return alliance === "all"
+        ? true
+        : alliance === "allies"
+            ? target.isAllyOf(origin)
+            : target.isEnemyOf(origin);
+}
+export { actorsRespectAlliance, canObserveActor, getAlliance, getDispositionColor, getFirstActiveToken, getHighestName, getMythicOrHeroPoints, getOwner, getWorldActor, isCurrentCombatant, isFriendActor, isOwner, isPlayedActor, };

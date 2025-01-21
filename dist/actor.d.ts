@@ -14,4 +14,6 @@ declare function getWorldActor<T extends ActorPF2e>(actor: Maybe<T>): T | null;
 declare function getMythicOrHeroPoints(actor: CharacterPF2e): ValueAndMax & {
     name: "mythicPoints" | "heroPoints";
 };
-export { canObserveActor, getAlliance, getDispositionColor, getFirstActiveToken, getHighestName, getMythicOrHeroPoints, getOwner, getWorldActor, isFriendActor, isOwner, isPlayedActor, };
+declare function isCurrentCombatant(actor: ActorPF2e): boolean;
+declare function actorsRespectAlliance(origin: ActorPF2e, target: ActorPF2e, alliance?: "all" | "allies" | "enemies"): boolean;
+export { actorsRespectAlliance, canObserveActor, getAlliance, getDispositionColor, getFirstActiveToken, getHighestName, getMythicOrHeroPoints, getOwner, getWorldActor, isCurrentCombatant, isFriendActor, isOwner, isPlayedActor, };
