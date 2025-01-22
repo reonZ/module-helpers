@@ -155,7 +155,7 @@ function getItemWithSourceId(actor, uuid, type) {
     type ??= itemTypeFromUuid(uuid);
     for (const item of actorItems(actor, type)) {
         const sourceId = item.sourceId;
-        if (sourceId && uuid.includes(sourceId))
+        if (sourceId === uuid)
             return item;
     }
     return null;

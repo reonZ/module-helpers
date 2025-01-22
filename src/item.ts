@@ -240,7 +240,7 @@ function getItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
 
     for (const item of actorItems(actor, type)) {
         const sourceId = item.sourceId;
-        if (sourceId && uuid.includes(sourceId)) return item;
+        if (sourceId === uuid) return item;
     }
 
     return null;
