@@ -210,7 +210,7 @@ function itemTypesFromUuids<TType extends ItemType>(uuids: string[]): TType[] {
 function isItemEntry(
     item: Maybe<ClientDocument | CompendiumIndexData>
 ): item is (CompendiumIndexData & { type: ItemType }) | ItemPF2e {
-    return !!item && "type" in item && item.type in CONFIG.PF2E.Item.documentClasses;
+    return R.isObjectType(item) && "type" in item && item.type in CONFIG.PF2E.Item.documentClasses;
 }
 
 function hasItemWithSourceId(

@@ -137,7 +137,7 @@ function itemTypesFromUuids(uuids) {
     return R.pipe(uuids, R.map((uuid) => itemTypeFromUuid(uuid)), R.filter(R.isTruthy));
 }
 function isItemEntry(item) {
-    return !!item && "type" in item && item.type in CONFIG.PF2E.Item.documentClasses;
+    return R.isObjectType(item) && "type" in item && item.type in CONFIG.PF2E.Item.documentClasses;
 }
 function hasItemWithSourceId(actor, uuid, type) {
     const uuids = R.isArray(uuid) ? uuid : [uuid];
