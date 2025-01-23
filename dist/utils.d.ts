@@ -1,3 +1,4 @@
+import { ZeroToThree } from "foundry-pf2e";
 declare function joinStr(separator: "/" | "." | "-", ...path: any[]): string;
 declare function stringBoolean(b: boolean | string): "false" | "true";
 declare function stringNumber(n: number | string): `${number}`;
@@ -8,4 +9,5 @@ declare function getUuidFromInlineMatch(match: RegExpExecArray | RegExpMatchArra
 declare function removeIndexFromArray<T extends any[]>(array: T, index: number, copy?: boolean): T;
 declare function rollDie(faces: number, nb?: number): number;
 declare function indexObjToArray<T>(obj: Maybe<Record<`${number}`, T> | T[]>): T[];
-export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, removeIndexFromArray, rollDie, stringBoolean, stringNumber, };
+declare function isDegreeOfSuccessNumber(value: any): value is ZeroToThree;
+export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, isDegreeOfSuccessNumber, joinStr, removeIndexFromArray, rollDie, stringBoolean, stringNumber, };
