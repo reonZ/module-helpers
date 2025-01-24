@@ -22,6 +22,10 @@ declare global {
         };
 
         dice3d?: Dice3D;
+
+        trigger?: {
+            test?: () => void;
+        };
     }
 }
 
