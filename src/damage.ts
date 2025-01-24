@@ -14,12 +14,11 @@ async function rollDamageFromFormula(
         (trait): trait is AbilityTrait => trait in CONFIG.PF2E.actionTraits
     );
 
-    const options = [
-        traits,
-        actor?.getRollOptions(),
-        item?.getRollOptions("item") ?? [],
-        extraRollOptions,
-    ].flat();
+    const options = R.pipe(
+        [traits, actor?.getRollOptions(), item?.getRollOptions("item"), extraRollOptions],
+        R.flat(),
+        R.filter(R.isTruthy)
+    );
 
     const context = {
         type: "damage-roll",
