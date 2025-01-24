@@ -1,4 +1,3 @@
-import { ZeroToThree } from "foundry-pf2e";
 import * as R from "remeda";
 
 function joinStr(separator: "/" | "." | "-", ...path: any[]) {
@@ -69,17 +68,12 @@ function indexObjToArray<T>(obj: Maybe<Record<`${number}`, T> | T[]>) {
     );
 }
 
-function isDegreeOfSuccessNumber(value: any): value is ZeroToThree {
-    return R.isNumber(value) && value >= 0 && value <= 3;
-}
-
 export {
     arrayIncludes,
     beautifySlug,
     compareArrays,
     getUuidFromInlineMatch,
     indexObjToArray,
-    isDegreeOfSuccessNumber,
     joinStr,
     removeIndexFromArray,
     rollDie,

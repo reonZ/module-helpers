@@ -53,7 +53,4 @@ function indexObjToArray(obj) {
         return obj;
     return R.pipe(R.entries(obj), R.sortBy(([k]) => Number(k)), R.map(([k, v]) => v));
 }
-function isDegreeOfSuccessNumber(value) {
-    return R.isNumber(value) && value >= 0 && value <= 3;
-}
-export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, isDegreeOfSuccessNumber, joinStr, removeIndexFromArray, rollDie, stringBoolean, stringNumber, };
+export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, removeIndexFromArray, rollDie, stringBoolean, stringNumber, };
