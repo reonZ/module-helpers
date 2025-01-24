@@ -1,10 +1,16 @@
 import * as R from "remeda";
 import { getDamageRollClass } from "./classes";
-async function rollDamageFromFormula(formula, { actionName, item, origin, target } = {}) {
+async function rollDamageFromFormula(formula, { actionName, item, origin, target, extraRollOptions = [] } = {}) {
     const { actor, token } = origin ?? {};
     const DamageRoll = getDamageRollClass();
     const roll = await new DamageRoll(formula, { actor, item }).evaluate();
     const traits = R.filter(item?.system.traits.value ?? [], (trait) => trait in CONFIG.PF2E.actionTraits);
+    const options = [
+        traits,
+        actor?.getRollOptions(),
+        item?.getRollOptions("item") ?? [],
+        extraRollOptions,
+    ].flat();
     const context = {
         type: "damage-roll",
         sourceType: "attack",
@@ -12,7 +18,7 @@ async function rollDamageFromFormula(formula, { actionName, item, origin, target
         token: token?.id,
         target: target ?? null,
         domains: [],
-        options: [traits, actor?.getRollOptions(), item?.getRollOptions("item") ?? []].flat(),
+        options,
         mapIncreases: undefined,
         notes: [],
         secret: false,

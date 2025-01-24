@@ -4,7 +4,7 @@ import { getDamageRollClass } from "./classes";
 
 async function rollDamageFromFormula(
     formula: string,
-    { actionName, item, origin, target }: RollDamageExtraOptions = {}
+    { actionName, item, origin, target, extraRollOptions = [] }: RollDamageExtraOptions = {}
 ) {
     const { actor, token } = origin ?? {};
     const DamageRoll = getDamageRollClass();
@@ -14,6 +14,13 @@ async function rollDamageFromFormula(
         (trait): trait is AbilityTrait => trait in CONFIG.PF2E.actionTraits
     );
 
+    const options = [
+        traits,
+        actor?.getRollOptions(),
+        item?.getRollOptions("item") ?? [],
+        extraRollOptions,
+    ].flat();
+
     const context = {
         type: "damage-roll",
         sourceType: "attack",
@@ -21,7 +28,7 @@ async function rollDamageFromFormula(
         token: token?.id,
         target: target ?? null,
         domains: [],
-        options: [traits, actor?.getRollOptions(), item?.getRollOptions("item") ?? []].flat(),
+        options,
         mapIncreases: undefined,
         notes: [],
         secret: false,
@@ -77,6 +84,7 @@ type RollDamageExtraOptions = {
     actionName?: string;
     origin?: TargetDocuments;
     target?: TargetDocuments;
+    extraRollOptions?: string[];
 };
 
 export { rollDamageFromFormula };
