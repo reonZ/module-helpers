@@ -8,4 +8,5 @@ declare function getUuidFromInlineMatch(match: RegExpExecArray | RegExpMatchArra
 declare function removeIndexFromArray<T extends any[]>(array: T, index: number, copy?: boolean): T;
 declare function rollDie(faces: number, nb?: number): number;
 declare function indexObjToArray<T>(obj: Maybe<Record<`${number}`, T> | T[]>): T[];
-export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, removeIndexFromArray, rollDie, stringBoolean, stringNumber, };
+declare function roundToStep(value: number, step: number): number;
+export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, removeIndexFromArray, rollDie, roundToStep, stringBoolean, stringNumber, };

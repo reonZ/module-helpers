@@ -53,4 +53,9 @@ function indexObjToArray(obj) {
         return obj;
     return R.pipe(R.entries(obj), R.sortBy(([k]) => Number(k)), R.map(([k, v]) => v));
 }
-export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, removeIndexFromArray, rollDie, stringBoolean, stringNumber, };
+function roundToStep(value, step) {
+    step = value < 0 ? step * -1 : step;
+    const half = step / 2;
+    return value + half - ((value + half) % step);
+}
+export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, removeIndexFromArray, rollDie, roundToStep, stringBoolean, stringNumber, };

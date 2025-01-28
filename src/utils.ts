@@ -68,6 +68,12 @@ function indexObjToArray<T>(obj: Maybe<Record<`${number}`, T> | T[]>) {
     );
 }
 
+function roundToStep(value: number, step: number): number {
+    step = value < 0 ? step * -1 : step;
+    const half = step / 2;
+    return value + half - ((value + half) % step);
+}
+
 export {
     arrayIncludes,
     beautifySlug,
@@ -77,6 +83,7 @@ export {
     joinStr,
     removeIndexFromArray,
     rollDie,
+    roundToStep,
     stringBoolean,
     stringNumber,
 };
