@@ -9,6 +9,7 @@ import {
     FeatPF2e,
     ItemPF2e,
     LootPF2e,
+    MacroPF2e,
     SpellcastingEntryPF2e,
     SpellPF2e,
     TokenDocumentPF2e,
@@ -71,6 +72,7 @@ type IsInstanceOfClasses = IsInstanceOfItems & {
     LootPF2e: LootPF2e;
     ActorPF2e: ActorPF2e;
     ChatMessagePF2e: ChatMessagePF2e;
+    MacroPF2e: MacroPF2e;
 };
 
 type IsInstanceOfItems = {
