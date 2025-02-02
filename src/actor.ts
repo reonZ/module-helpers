@@ -152,19 +152,21 @@ function isCurrentCombatant(actor: ActorPF2e) {
 function actorsRespectAlliance(
     origin: ActorPF2e,
     target: ActorPF2e,
-    alliance: "all" | "allies" | "enemies" = "all"
+    alliance: ActorTargetAlliance = "all"
 ) {
-    return alliance === "all"
-        ? true
-        : alliance === "allies"
+    return alliance === "allies"
         ? target.isAllyOf(origin)
-        : target.isEnemyOf(origin);
+        : alliance === "enemies"
+        ? target.isEnemyOf(origin)
+        : true;
 }
 
 function hasRollOption(actor: ActorPF2e, option: string) {
     const rolloptionsDomains = Object.values(actor.rollOptions) as Record<string, boolean>[];
     return rolloptionsDomains.some((rollOptions) => !!rollOptions[option]);
 }
+
+type ActorTargetAlliance = "all" | "allies" | "enemies";
 
 export {
     actorsRespectAlliance,
@@ -182,3 +184,4 @@ export {
     isOwner,
     isPlayedActor,
 };
+export type { ActorTargetAlliance };

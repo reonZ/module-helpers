@@ -93,11 +93,11 @@ function isCurrentCombatant(actor) {
     return game.combat?.combatant === actor.combatant;
 }
 function actorsRespectAlliance(origin, target, alliance = "all") {
-    return alliance === "all"
-        ? true
-        : alliance === "allies"
-            ? target.isAllyOf(origin)
-            : target.isEnemyOf(origin);
+    return alliance === "allies"
+        ? target.isAllyOf(origin)
+        : alliance === "enemies"
+            ? target.isEnemyOf(origin)
+            : true;
 }
 function hasRollOption(actor, option) {
     const rolloptionsDomains = Object.values(actor.rollOptions);

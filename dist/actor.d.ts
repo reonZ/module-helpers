@@ -15,6 +15,8 @@ declare function getMythicOrHeroPoints(actor: CharacterPF2e): ValueAndMax & {
     name: "mythicPoints" | "heroPoints";
 };
 declare function isCurrentCombatant(actor: ActorPF2e): boolean;
-declare function actorsRespectAlliance(origin: ActorPF2e, target: ActorPF2e, alliance?: "all" | "allies" | "enemies"): boolean;
+declare function actorsRespectAlliance(origin: ActorPF2e, target: ActorPF2e, alliance?: ActorTargetAlliance): boolean;
 declare function hasRollOption(actor: ActorPF2e, option: string): boolean;
+type ActorTargetAlliance = "all" | "allies" | "enemies";
 export { actorsRespectAlliance, canObserveActor, getAlliance, getDispositionColor, getFirstActiveToken, getHighestName, getMythicOrHeroPoints, getOwner, getWorldActor, hasRollOption, isCurrentCombatant, isFriendActor, isOwner, isPlayedActor, };
+export type { ActorTargetAlliance };
