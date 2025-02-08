@@ -25,6 +25,7 @@ declare global {
 
         trigger?: {
             test?: () => void;
+            execute?: (id: string, target: TargetDocuments, values?: any[]) => Promise<void>;
         };
     }
 }
