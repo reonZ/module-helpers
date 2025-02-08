@@ -5,9 +5,9 @@ function templatePath(...path: string[]) {
     return `modules/${MODULE.id}/templates/${joinStr("/", path)}.hbs`;
 }
 
-function imagePath(...args: [...string[], "svg" | "webp"]) {
+function imagePath(...args: [...string[], "svg" | "webp"]): ImageFilePath {
     const ext = args.pop();
-    return `modules/${MODULE.id}/images/${joinStr("/", args)}.${ext}`;
+    return `modules/${MODULE.id}/images/${joinStr("/", args)}.${ext}` as ImageFilePath;
 }
 
 function render<TData extends Record<string, any>>(...args: [string, ...string[], TData | string]) {
