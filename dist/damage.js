@@ -1,6 +1,6 @@
 import * as R from "remeda";
 import { getDamageRollClass } from "./classes";
-async function rollDamageFromFormula(formula, { actionName, item, origin, target, extraRollOptions = [] } = {}) {
+async function rollDamageFromFormula(formula, { actionName, item, origin, target, extraRollOptions = [], skipDialog = false, } = {}) {
     const { actor, token } = origin ?? {};
     const DamageRoll = getDamageRollClass();
     const roll = await new DamageRoll(formula, { actor, item }).evaluate();
@@ -19,7 +19,7 @@ async function rollDamageFromFormula(formula, { actionName, item, origin, target
         secret: false,
         rollMode: "roll",
         traits,
-        skipDialog: false,
+        skipDialog,
         outcome: null,
         unadjustedOutcome: null,
     };

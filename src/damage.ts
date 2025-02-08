@@ -4,7 +4,14 @@ import { getDamageRollClass } from "./classes";
 
 async function rollDamageFromFormula(
     formula: string,
-    { actionName, item, origin, target, extraRollOptions = [] }: RollDamageExtraOptions = {}
+    {
+        actionName,
+        item,
+        origin,
+        target,
+        extraRollOptions = [],
+        skipDialog = false,
+    }: RollDamageExtraOptions = {}
 ) {
     const { actor, token } = origin ?? {};
     const DamageRoll = getDamageRollClass();
@@ -33,7 +40,7 @@ async function rollDamageFromFormula(
         secret: false,
         rollMode: "roll",
         traits,
-        skipDialog: false,
+        skipDialog,
         outcome: null,
         unadjustedOutcome: null,
     };
@@ -84,6 +91,7 @@ type RollDamageExtraOptions = {
     origin?: TargetDocuments;
     target?: TargetDocuments;
     extraRollOptions?: string[];
+    skipDialog?: boolean;
 };
 
 export { rollDamageFromFormula };
