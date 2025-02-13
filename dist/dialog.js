@@ -1,4 +1,4 @@
-import { createFormData } from ".";
+import { createFormData, htmlQuery } from ".";
 import { render } from "./handlebars";
 const DialogV2 = foundry.applications.api.DialogV2;
 let AnimationlessDialog = null;
@@ -13,8 +13,18 @@ function getDialogClass(animation = true) {
     };
     return AnimationlessDialog;
 }
-async function waitDialog({ title, content, yes, no, classes, data, render, }, { id, width, animation, top } = {}) {
+async function waitDialog({ title, content, yes, no, classes, data, render, focus, }, { id, width, animation, top } = {}) {
     content = await assureDialogContent(content, data);
+    const dialogRender = !render && !focus
+        ? undefined
+        : (event, html) => {
+            if (focus) {
+                htmlQuery(html, focus)?.focus();
+            }
+            if (render) {
+                render(event, html);
+            }
+        };
     const buttons = [
         {
             action: "yes",
@@ -44,7 +54,7 @@ async function waitDialog({ title, content, yes, no, classes, data, render, }, {
         content,
         rejectClose: false,
         buttons,
-        render,
+        render: dialogRender,
         close: () => { },
     };
     if (id)

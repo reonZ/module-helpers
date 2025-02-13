@@ -4,7 +4,7 @@ import {
     DialogV2ButtonCallback,
     DialogV2RenderCallback,
 } from "foundry-pf2e/foundry/client-esm/applications/api/dialog.js";
-import { createFormData } from ".";
+import { createFormData, htmlQuery } from ".";
 import { render } from "./handlebars";
 
 const DialogV2 = foundry.applications.api.DialogV2;
@@ -34,13 +34,28 @@ async function waitDialog<T extends any>(
         classes,
         data,
         render,
+        focus,
     }: BaseOptions & {
         yes: Omit<DialogV2Button, "action">;
         no: Omit<DialogV2Button, "action">;
+        focus?: string;
     },
     { id, width, animation, top }: DialogExtraOptions = {}
 ): Promise<T | null | false> {
     content = await assureDialogContent(content, data);
+
+    const dialogRender: DialogV2RenderCallback | undefined =
+        !render && !focus
+            ? undefined
+            : (event, html) => {
+                  if (focus) {
+                      htmlQuery(html, focus)?.focus();
+                  }
+
+                  if (render) {
+                      render(event, html);
+                  }
+              };
 
     const buttons: DialogV2Button[] = [
         {
@@ -73,7 +88,7 @@ async function waitDialog<T extends any>(
         content,
         rejectClose: false,
         buttons,
-        render,
+        render: dialogRender,
         close: () => {},
     };
 
