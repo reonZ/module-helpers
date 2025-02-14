@@ -3,6 +3,10 @@ import { ActorPF2e, TokenDocumentPF2e } from "foundry-pf2e";
 export {};
 
 declare global {
+    type Prettify<T> = { [K in keyof T]: T[K] } & {};
+
+    type Promisable<T> = Promise<T> | T;
+
     type TypeOfType =
         | "bigint"
         | "boolean"
@@ -12,8 +16,6 @@ declare global {
         | "string"
         | "synbol"
         | undefined;
-
-    type Promisable<T> = Promise<T> | T;
 
     type TargetDocuments = { actor: ActorPF2e; token?: TokenDocumentPF2e | null };
 
