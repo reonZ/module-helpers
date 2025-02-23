@@ -81,6 +81,10 @@ function setHasElement(set, value) {
 function tupleHasValue(array, value) {
     return array.includes(value);
 }
+function isCheckContextFlag(flag) {
+    return (!!flag &&
+        !tupleHasValue(["damage-roll", "spell-cast", "self-effect", "damage-taken"], flag.type));
+}
 function fontAwesomeIcon(glyph, { style = "solid", fixedWidth = false } = {}) {
     const styleClass = `fa-${style}`;
     const glyphClass = glyph.startsWith("fa-") ? glyph : `fa-${glyph}`;
@@ -102,4 +106,4 @@ function splitListString(str, { delimiter = ",", unique = true } = {}) {
         .filter((el) => el !== "");
     return unique ? R.unique(list) : list;
 }
-export { ErrorPF2e, fontAwesomeIcon, getActionGlyph, getActionIcon, localizer, signedInteger, splitListString, objectHasKey, ordinalString, setHasElement, tupleHasValue, };
+export { ErrorPF2e, fontAwesomeIcon, getActionGlyph, getActionIcon, isCheckContextFlag, localizer, objectHasKey, ordinalString, setHasElement, signedInteger, splitListString, tupleHasValue, };

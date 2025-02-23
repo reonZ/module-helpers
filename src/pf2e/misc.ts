@@ -1,4 +1,4 @@
-import { ActionType, OneToThree } from "foundry-pf2e";
+import { ActionType, ChatContextFlag, CheckContextChatFlag, OneToThree } from "foundry-pf2e";
 import * as R from "remeda";
 
 const actionGlyphMap: Record<string, string> = {
@@ -115,6 +115,13 @@ function tupleHasValue<const A extends readonly unknown[]>(
     return array.includes(value);
 }
 
+function isCheckContextFlag(flag?: ChatContextFlag): flag is CheckContextChatFlag {
+    return (
+        !!flag &&
+        !tupleHasValue(["damage-roll", "spell-cast", "self-effect", "damage-taken"], flag.type)
+    );
+}
+
 function fontAwesomeIcon(
     glyph: string,
     { style = "solid", fixedWidth = false }: { style?: FontAwesomeStyle; fixedWidth?: boolean } = {}
@@ -162,11 +169,12 @@ export {
     fontAwesomeIcon,
     getActionGlyph,
     getActionIcon,
+    isCheckContextFlag,
     localizer,
-    signedInteger,
-    splitListString,
     objectHasKey,
     ordinalString,
     setHasElement,
+    signedInteger,
+    splitListString,
     tupleHasValue,
 };

@@ -1,4 +1,4 @@
-import { ActionType, OneToThree } from "foundry-pf2e";
+import { ActionType, ChatContextFlag, CheckContextChatFlag, OneToThree } from "foundry-pf2e";
 /** Create a localization function with a prefixed localization object path */
 declare function localizer(prefix: string): (...args: Parameters<Localization["format"]>) => string;
 /**
@@ -20,6 +20,7 @@ declare function objectHasKey<O extends object>(obj: O, key: unknown): key is ke
 declare function ordinalString(value: number): string;
 declare function setHasElement<T extends Set<unknown>>(set: T, value: unknown): value is SetElement<T>;
 declare function tupleHasValue<const A extends readonly unknown[]>(array: A, value: unknown): value is A[number];
+declare function isCheckContextFlag(flag?: ChatContextFlag): flag is CheckContextChatFlag;
 declare function fontAwesomeIcon(glyph: string, { style, fixedWidth }?: {
     style?: FontAwesomeStyle;
     fixedWidth?: boolean;
@@ -40,4 +41,4 @@ interface SplitListStringOptions {
     delimiter?: string | RegExp;
     unique?: boolean;
 }
-export { ErrorPF2e, fontAwesomeIcon, getActionGlyph, getActionIcon, localizer, signedInteger, splitListString, objectHasKey, ordinalString, setHasElement, tupleHasValue, };
+export { ErrorPF2e, fontAwesomeIcon, getActionGlyph, getActionIcon, isCheckContextFlag, localizer, objectHasKey, ordinalString, setHasElement, signedInteger, splitListString, tupleHasValue, };
