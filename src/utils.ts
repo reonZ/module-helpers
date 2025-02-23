@@ -74,6 +74,20 @@ function roundToStep(value: number, step: number): number {
     return value + half - ((value + half) % step);
 }
 
+function nextPowerOf2(value: number): number {
+    let count = 0;
+
+    if ((value & (value - 1)) === 0) {
+        return value;
+    }
+
+    while (value > 0) {
+        value >>= 1;
+        count++;
+    }
+    return 1 << count;
+}
+
 export {
     arrayIncludes,
     beautifySlug,
@@ -81,6 +95,7 @@ export {
     getUuidFromInlineMatch,
     indexObjToArray,
     joinStr,
+    nextPowerOf2,
     removeIndexFromArray,
     rollDie,
     roundToStep,

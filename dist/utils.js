@@ -58,4 +58,15 @@ function roundToStep(value, step) {
     const half = step / 2;
     return value + half - ((value + half) % step);
 }
-export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, removeIndexFromArray, rollDie, roundToStep, stringBoolean, stringNumber, };
+function nextPowerOf2(value) {
+    let count = 0;
+    if ((value & (value - 1)) === 0) {
+        return value;
+    }
+    while (value > 0) {
+        value >>= 1;
+        count++;
+    }
+    return 1 << count;
+}
+export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, nextPowerOf2, removeIndexFromArray, rollDie, roundToStep, stringBoolean, stringNumber, };

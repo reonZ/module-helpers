@@ -9,4 +9,5 @@ declare function removeIndexFromArray<T extends any[]>(array: T, index: number, 
 declare function rollDie(faces: number, nb?: number): number;
 declare function indexObjToArray<T>(obj: Maybe<Record<`${number}`, T> | T[]>): T[];
 declare function roundToStep(value: number, step: number): number;
-export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, removeIndexFromArray, rollDie, roundToStep, stringBoolean, stringNumber, };
+declare function nextPowerOf2(value: number): number;
+export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, nextPowerOf2, removeIndexFromArray, rollDie, roundToStep, stringBoolean, stringNumber, };
