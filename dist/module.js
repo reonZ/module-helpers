@@ -18,6 +18,10 @@ const MODULE = {
     get current() {
         return game.modules.get(this.id);
     },
+    get isDebug() {
+        // @ts-expect-error
+        return CONFIG.debug.modules === true;
+    },
     throwError(str) {
         throw new Error(`\n[${this.name}] ${str}`);
     },
@@ -32,20 +36,17 @@ const MODULE = {
         console.error(message);
     },
     debugGroup(...args) {
-        // @ts-expect-error
-        if (CONFIG.debug.modules) {
+        if (this.isDebug) {
             console.group(`[${this.name}]`, ...args);
         }
     },
     debugGroupEnd() {
-        // @ts-expect-error
-        if (CONFIG.debug.modules) {
+        if (this.isDebug) {
             console.groupEnd();
         }
     },
     debug(...args) {
-        // @ts-expect-error
-        if (CONFIG.debug.modules) {
+        if (this.isDebug) {
             this.log(...args);
         }
     },

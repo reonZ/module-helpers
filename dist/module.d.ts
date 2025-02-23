@@ -5,6 +5,7 @@ declare const MODULE: {
     readonly current: Module & {
         api?: Record<string, any> | undefined;
     };
+    readonly isDebug: boolean;
     throwError(str: string): never;
     error(str: string, error?: Error): void;
     debugGroup(...args: any[]): void;
