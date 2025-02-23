@@ -28,6 +28,8 @@ declare global {
     type StringNumber = `${number}`;
     type StringBoolean = `${boolean}`;
 
+    type SelectOptions<V extends string = string> = { value: V; label: string }[];
+
     type Merge<T extends object> = {
         [k in T extends any ? keyof T : never]?: T extends { [l in k]?: infer V } ? V : never;
     };
