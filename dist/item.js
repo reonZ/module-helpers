@@ -140,22 +140,16 @@ function isItemEntry(item) {
     return R.isObjectType(item) && "type" in item && item.type in CONFIG.PF2E.Item.documentClasses;
 }
 function hasItemWithSourceId(actor, uuid, type) {
+    return !!getItemWithSourceId(actor, uuid, type);
+}
+function getItemWithSourceId(actor, uuid, type) {
     const uuids = R.isArray(uuid) ? uuid : [uuid];
     if (!uuids.length)
-        return false;
+        return null;
     type ??= itemTypesFromUuids(uuids);
     for (const item of actorItems(actor, type)) {
         const sourceId = item.sourceId;
         if (sourceId && uuids.includes(sourceId))
-            return true;
-    }
-    return false;
-}
-function getItemWithSourceId(actor, uuid, type) {
-    type ??= itemTypeFromUuid(uuid);
-    for (const item of actorItems(actor, type)) {
-        const sourceId = item.sourceId;
-        if (sourceId === uuid)
             return item;
     }
     return null;

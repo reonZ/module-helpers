@@ -217,30 +217,23 @@ function hasItemWithSourceId(
     actor: ActorPF2e,
     uuid: string | string[],
     type?: ItemType | ItemType[]
-) {
+): boolean {
+    return !!getItemWithSourceId(actor, uuid, type);
+}
+
+function getItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
+    actor: TActor,
+    uuid: string | string[],
+    type?: TType | TType[]
+): ItemInstances<TActor>[TType] | null {
     const uuids = R.isArray(uuid) ? uuid : [uuid];
-    if (!uuids.length) return false;
+    if (!uuids.length) return null;
 
     type ??= itemTypesFromUuids(uuids);
 
     for (const item of actorItems(actor, type)) {
         const sourceId = item.sourceId;
-        if (sourceId && uuids.includes(sourceId)) return true;
-    }
-
-    return false;
-}
-
-function getItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
-    actor: TActor,
-    uuid: string,
-    type?: TType | TType[]
-): ItemInstances<TActor>[TType] | null {
-    type ??= itemTypeFromUuid<TType>(uuid);
-
-    for (const item of actorItems(actor, type)) {
-        const sourceId = item.sourceId;
-        if (sourceId === uuid) return item;
+        if (sourceId && uuids.includes(sourceId)) return item;
     }
 
     return null;

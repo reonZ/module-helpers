@@ -13,7 +13,7 @@ declare function isItemEntry(item: Maybe<ClientDocument | CompendiumIndexData>):
     type: ItemType;
 }) | ItemPF2e;
 declare function hasItemWithSourceId(actor: ActorPF2e, uuid: string | string[], type?: ItemType | ItemType[]): boolean;
-declare function getItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, uuid: string, type?: TType | TType[]): ItemInstances<TActor>[TType] | null;
+declare function getItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, uuid: string | string[], type?: TType | TType[]): ItemInstances<TActor>[TType] | null;
 declare function getChoiceSetSelection<T extends any = string>(item: ItemPF2e, { option, flag }?: {
     option?: string;
     flag?: string;
