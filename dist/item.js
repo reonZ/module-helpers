@@ -148,9 +148,12 @@ function getItemWithSourceId(actor, uuid, type) {
         return null;
     type ??= itemTypesFromUuids(uuids);
     for (const item of actorItems(actor, type)) {
+        if (item.type === "feat" && item.suppressed)
+            continue;
         const sourceId = item.sourceId;
-        if (sourceId && uuids.includes(sourceId))
+        if (sourceId && uuids.includes(sourceId)) {
             return item;
+        }
     }
     return null;
 }

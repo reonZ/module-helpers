@@ -232,8 +232,13 @@ function getItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     type ??= itemTypesFromUuids(uuids);
 
     for (const item of actorItems(actor, type)) {
+        if (item.type === "feat" && (item as FeatPF2e).suppressed) continue;
+
         const sourceId = item.sourceId;
-        if (sourceId && uuids.includes(sourceId)) return item;
+
+        if (sourceId && uuids.includes(sourceId)) {
+            return item;
+        }
     }
 
     return null;
