@@ -142,13 +142,16 @@ function isItemEntry(item) {
 function hasItemWithSourceId(actor, uuid, type) {
     return !!getItemWithSourceId(actor, uuid, type);
 }
+function isSupressedFeat(item) {
+    return item.type === "feat" && item.suppressed;
+}
 function getItemWithSourceId(actor, uuid, type) {
     const uuids = R.isArray(uuid) ? uuid : [uuid];
     if (!uuids.length)
         return null;
     type ??= itemTypesFromUuids(uuids);
     for (const item of actorItems(actor, type)) {
-        if (item.type === "feat" && item.suppressed)
+        if (isSupressedFeat(item))
             continue;
         const sourceId = item.sourceId;
         if (sourceId && uuids.includes(sourceId)) {
@@ -197,4 +200,4 @@ async function useAction(item, event) {
     }
     return game.pf2e.rollItemMacro(item.uuid, event);
 }
-export { BANDS_OF_FORCE_SLUGS, HANDWRAPS_SLUG, actorItems, changeCarryType, getActionAnnotation, getActionMacro, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, hasItemWithSourceId, isItemEntry, isOwnedItem, itemTypeFromUuid, itemTypesFromUuids, reduceActionFrequency, useAction, };
+export { BANDS_OF_FORCE_SLUGS, HANDWRAPS_SLUG, actorItems, changeCarryType, getActionAnnotation, getActionMacro, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, hasItemWithSourceId, isItemEntry, isOwnedItem, isSupressedFeat, itemTypeFromUuid, itemTypesFromUuids, reduceActionFrequency, useAction, };

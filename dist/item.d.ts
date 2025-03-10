@@ -13,6 +13,7 @@ declare function isItemEntry(item: Maybe<ClientDocument | CompendiumIndexData>):
     type: ItemType;
 }) | ItemPF2e;
 declare function hasItemWithSourceId(actor: ActorPF2e, uuid: string | string[], type?: ItemType | ItemType[]): boolean;
+declare function isSupressedFeat<TActor extends ActorPF2e | null>(item: ItemPF2e<TActor>): item is FeatPF2e<TActor>;
 declare function getItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, uuid: string | string[], type?: TType | TType[]): ItemInstances<TActor>[TType] | null;
 declare function getChoiceSetSelection<T extends any = string>(item: ItemPF2e, { option, flag }?: {
     option?: string;
@@ -25,5 +26,5 @@ declare function reduceActionFrequency(item: ActionItem): Promise<void>;
 declare function getActionMacro(item: ActionItem): Promise<Macro | null>;
 declare function useAction(item: ItemPF2e<ActorPF2e>, event?: Event): Promise<unknown>;
 type ActionItem = FeatPF2e<ActorPF2e> | AbilityItemPF2e<ActorPF2e>;
-export { BANDS_OF_FORCE_SLUGS, HANDWRAPS_SLUG, actorItems, changeCarryType, getActionAnnotation, getActionMacro, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, hasItemWithSourceId, isItemEntry, isOwnedItem, itemTypeFromUuid, itemTypesFromUuids, reduceActionFrequency, useAction, };
+export { BANDS_OF_FORCE_SLUGS, HANDWRAPS_SLUG, actorItems, changeCarryType, getActionAnnotation, getActionMacro, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, hasItemWithSourceId, isItemEntry, isOwnedItem, isSupressedFeat, itemTypeFromUuid, itemTypesFromUuids, reduceActionFrequency, useAction, };
 export type { ActionItem };

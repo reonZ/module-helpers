@@ -221,6 +221,12 @@ function hasItemWithSourceId(
     return !!getItemWithSourceId(actor, uuid, type);
 }
 
+function isSupressedFeat<TActor extends ActorPF2e | null>(
+    item: ItemPF2e<TActor>
+): item is FeatPF2e<TActor> {
+    return item.type === "feat" && (item as FeatPF2e<TActor>).suppressed;
+}
+
 function getItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     actor: TActor,
     uuid: string | string[],
@@ -232,7 +238,7 @@ function getItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     type ??= itemTypesFromUuids(uuids);
 
     for (const item of actorItems(actor, type)) {
-        if (item.type === "feat" && (item as FeatPF2e).suppressed) continue;
+        if (isSupressedFeat(item)) continue;
 
         const sourceId = item.sourceId;
 
@@ -320,6 +326,7 @@ export {
     hasItemWithSourceId,
     isItemEntry,
     isOwnedItem,
+    isSupressedFeat,
     itemTypeFromUuid,
     itemTypesFromUuids,
     reduceActionFrequency,
