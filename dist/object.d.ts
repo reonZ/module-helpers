@@ -1,4 +1,4 @@
-import { ActorPF2e, ChatMessagePF2e, ConsumablePF2e, CreatureConfig, CreaturePF2e, DamageRoll, EffectPF2e, FeatPF2e, ItemPF2e, LootPF2e, MacroPF2e, SpellcastingEntryPF2e, SpellPF2e, TokenDocumentPF2e } from "foundry-pf2e";
+import { ActorPF2e, ArithmeticExpression, ChatMessagePF2e, ConsumablePF2e, CreatureConfig, CreaturePF2e, DamageRoll, EffectPF2e, FeatPF2e, Grouping, ItemPF2e, LootPF2e, MacroPF2e, SpellcastingEntryPF2e, SpellPF2e, TokenDocumentPF2e } from "foundry-pf2e";
 declare function isInstanceOf<T extends IsInstanceOfType>(obj: any, cls: T): obj is IsInstanceOfClasses[T];
 declare function isInstanceOf<T>(obj: any, cls: string): obj is T;
 declare function getInMemory<T>(obj: object, ...path: string[]): T | undefined;
@@ -13,6 +13,8 @@ type IsInstanceOfClasses = IsInstanceOfItems & {
     ActorPF2e: ActorPF2e;
     ChatMessagePF2e: ChatMessagePF2e;
     MacroPF2e: MacroPF2e;
+    ArithmeticExpression: ArithmeticExpression;
+    Grouping: Grouping;
 };
 type IsInstanceOfItems = {
     ItemPF2e: ItemPF2e;

@@ -1,5 +1,6 @@
 import {
     ActorPF2e,
+    ArithmeticExpression,
     ChatMessagePF2e,
     ConsumablePF2e,
     CreatureConfig,
@@ -7,6 +8,7 @@ import {
     DamageRoll,
     EffectPF2e,
     FeatPF2e,
+    Grouping,
     ItemPF2e,
     LootPF2e,
     MacroPF2e,
@@ -73,6 +75,8 @@ type IsInstanceOfClasses = IsInstanceOfItems & {
     ActorPF2e: ActorPF2e;
     ChatMessagePF2e: ChatMessagePF2e;
     MacroPF2e: MacroPF2e;
+    ArithmeticExpression: ArithmeticExpression;
+    Grouping: Grouping;
 };
 
 type IsInstanceOfItems = {
