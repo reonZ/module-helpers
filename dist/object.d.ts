@@ -15,6 +15,7 @@ type IsInstanceOfClasses = IsInstanceOfItems & {
     MacroPF2e: MacroPF2e;
     ArithmeticExpression: ArithmeticExpression;
     Grouping: Grouping;
+    ClientDocumentMixin: ClientDocument;
 };
 type IsInstanceOfItems = {
     ItemPF2e: ItemPF2e;
