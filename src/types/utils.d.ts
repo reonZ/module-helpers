@@ -51,6 +51,8 @@ declare global {
 
     type PartialFieldsOnly<T> = Omit<T, keyof RequiredFieldsOnly<T>>;
 
+    type PartialRecord<K extends string | number | symbol, V> = Partial<Record<K, V>>;
+
     type WithRequired<T extends Record<string, any>, K extends keyof T> = Omit<T, K> &
         Required<Pick<T, K>>;
 
