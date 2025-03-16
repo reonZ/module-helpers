@@ -10,4 +10,5 @@ declare function rollDie(faces: number, nb?: number): number;
 declare function indexObjToArray<T>(obj: Maybe<Record<`${number}`, T> | T[]>): T[];
 declare function roundToStep(value: number, step: number): number;
 declare function nextPowerOf2(value: number): number;
-export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, nextPowerOf2, removeIndexFromArray, rollDie, roundToStep, stringBoolean, stringNumber, };
+declare function setHasAny<T>(set: Set<T>, ...entries: T[]): boolean;
+export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, nextPowerOf2, removeIndexFromArray, rollDie, roundToStep, setHasAny, stringBoolean, stringNumber, };

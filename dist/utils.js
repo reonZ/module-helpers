@@ -69,4 +69,11 @@ function nextPowerOf2(value) {
     }
     return 1 << count;
 }
-export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, nextPowerOf2, removeIndexFromArray, rollDie, roundToStep, stringBoolean, stringNumber, };
+function setHasAny(set, ...entries) {
+    for (const entry of entries) {
+        if (set.has(entry))
+            return true;
+    }
+    return false;
+}
+export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, nextPowerOf2, removeIndexFromArray, rollDie, roundToStep, setHasAny, stringBoolean, stringNumber, };

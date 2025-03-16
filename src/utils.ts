@@ -88,6 +88,13 @@ function nextPowerOf2(value: number): number {
     return 1 << count;
 }
 
+function setHasAny<T>(set: Set<T>, ...entries: T[]) {
+    for (const entry of entries) {
+        if (set.has(entry)) return true;
+    }
+    return false;
+}
+
 export {
     arrayIncludes,
     beautifySlug,
@@ -99,6 +106,7 @@ export {
     removeIndexFromArray,
     rollDie,
     roundToStep,
+    setHasAny,
     stringBoolean,
     stringNumber,
 };
