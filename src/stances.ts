@@ -104,6 +104,8 @@ async function toggleStance(actor: CharacterPF2e, effectUUID: string, force?: bo
 
     if (!effect) {
         await addStance(actor, effectUUID);
+    } else if (!effects.length) {
+        await actor.deleteEmbeddedDocuments("Item", [effect.effectID]);
     }
 }
 

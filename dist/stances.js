@@ -84,6 +84,9 @@ async function toggleStance(actor, effectUUID, force) {
     if (!effect) {
         await addStance(actor, effectUUID);
     }
+    else if (!effects.length) {
+        await actor.deleteEmbeddedDocuments("Item", [effect.effectID]);
+    }
 }
 async function addStance(actor, effectUUID, createMessage = true) {
     const source = await getItemSource(effectUUID, "EffectPF2e");
