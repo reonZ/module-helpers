@@ -76,4 +76,7 @@ function setHasAny(set, ...entries) {
     }
     return false;
 }
-export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, nextPowerOf2, removeIndexFromArray, rollDie, roundToStep, setHasAny, stringBoolean, stringNumber, };
+function isValidTargetDocuments(target) {
+    return R.isPlainObject(target) && target.actor instanceof Actor;
+}
+export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, isValidTargetDocuments, joinStr, nextPowerOf2, removeIndexFromArray, rollDie, roundToStep, setHasAny, stringBoolean, stringNumber, };

@@ -1,3 +1,4 @@
+import { ActorPF2e, TokenDocumentPF2e } from "foundry-pf2e";
 import * as R from "remeda";
 
 function joinStr(separator: "/" | "." | "-", ...path: any[]) {
@@ -95,12 +96,19 @@ function setHasAny<T>(set: Set<T>, ...entries: T[]) {
     return false;
 }
 
+function isValidTargetDocuments(
+    target: Maybe<{ actor: Maybe<ActorPF2e>; token?: TokenDocumentPF2e | null }>
+): target is TargetDocuments {
+    return R.isPlainObject(target) && target.actor instanceof Actor;
+}
+
 export {
     arrayIncludes,
     beautifySlug,
     compareArrays,
     getUuidFromInlineMatch,
     indexObjToArray,
+    isValidTargetDocuments,
     joinStr,
     nextPowerOf2,
     removeIndexFromArray,

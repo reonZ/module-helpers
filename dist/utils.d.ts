@@ -1,3 +1,4 @@
+import { ActorPF2e, TokenDocumentPF2e } from "foundry-pf2e";
 declare function joinStr(separator: "/" | "." | "-", ...path: any[]): string;
 declare function stringBoolean(b: boolean | string): "false" | "true";
 declare function stringNumber(n: number | string): `${number}`;
@@ -11,4 +12,8 @@ declare function indexObjToArray<T>(obj: Maybe<Record<`${number}`, T> | T[]>): T
 declare function roundToStep(value: number, step: number): number;
 declare function nextPowerOf2(value: number): number;
 declare function setHasAny<T>(set: Set<T>, ...entries: T[]): boolean;
-export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, joinStr, nextPowerOf2, removeIndexFromArray, rollDie, roundToStep, setHasAny, stringBoolean, stringNumber, };
+declare function isValidTargetDocuments(target: Maybe<{
+    actor: Maybe<ActorPF2e>;
+    token?: TokenDocumentPF2e | null;
+}>): target is TargetDocuments;
+export { arrayIncludes, beautifySlug, compareArrays, getUuidFromInlineMatch, indexObjToArray, isValidTargetDocuments, joinStr, nextPowerOf2, removeIndexFromArray, rollDie, roundToStep, setHasAny, stringBoolean, stringNumber, };
