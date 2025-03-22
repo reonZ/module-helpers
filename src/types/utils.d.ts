@@ -89,8 +89,6 @@ declare global {
         ? boolean
         : never;
 
-    type MaybePartial<T extends object> = Maybe<DeepPartial<T>>;
-
     type ExtractSelectionOption<
         T extends ReadonlyArray<string | { value: string; label: string }>
     > = T[number] extends string
