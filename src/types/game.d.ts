@@ -24,6 +24,7 @@ declare global {
         dice3d?: Dice3D;
 
         trigger?: {
+            getTriggersList?: () => object[];
             test?: () => void;
             execute?: (id: string, target: TargetDocuments, values?: any[]) => Promise<void>;
         };
