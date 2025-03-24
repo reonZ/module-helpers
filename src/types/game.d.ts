@@ -25,6 +25,7 @@ declare global {
 
         trigger?: {
             getTriggersList?: () => object[];
+            getSchema?: (nodeData: any) => object;
             test?: () => void;
             execute?: (id: string, target: TargetDocuments, values?: any[]) => Promise<void>;
         };
