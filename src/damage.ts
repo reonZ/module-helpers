@@ -1,4 +1,9 @@
-import { AbilityTrait, ItemPF2e } from "foundry-pf2e";
+import {
+    AbilityTrait,
+    ChatMessageFlagsPF2e,
+    DamageDamageContextFlag,
+    ItemPF2e,
+} from "foundry-pf2e";
 import * as R from "remeda";
 import { getDamageRollClass } from "./classes";
 
@@ -27,12 +32,16 @@ async function rollDamageFromFormula(
         R.filter(R.isTruthy)
     );
 
-    const context = {
+    const targetToken = target
+        ? target.token ?? target.actor.token ?? target.actor.getActiveTokens().shift()?.document
+        : undefined;
+
+    const context: DamageDamageContextFlag = {
         type: "damage-roll",
         sourceType: "attack",
-        actor: actor?.id,
-        token: token?.id,
-        target: target ?? null,
+        actor: actor?.id ?? null,
+        token: token?.id ?? null,
+        target: target ? { actor: target.actor.uuid, token: targetToken?.uuid } : null,
         domains: [],
         options,
         mapIncreases: undefined,
@@ -47,7 +56,8 @@ async function rollDamageFromFormula(
 
     const traitDescriptions: Record<string, string | undefined> = CONFIG.PF2E.traitsDescriptions;
 
-    const flags: DeepPartial<foundry.documents.ChatMessageFlags> = {
+    const flags: ChatMessageFlagsPF2e = {
+        core: {},
         pf2e: {
             context,
             origin: item?.getOriginData(),
@@ -57,10 +67,10 @@ async function rollDamageFromFormula(
         },
     };
 
-    if (target?.token) {
+    if (targetToken) {
         flags["pf2e-toolbelt"] = {
             targetHelper: {
-                targets: [target.token.uuid],
+                targets: [targetToken.uuid],
             },
         };
     }

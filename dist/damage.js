@@ -6,12 +6,15 @@ async function rollDamageFromFormula(formula, { actionName, item, origin, target
     const roll = await new DamageRoll(formula, { actor, item }).evaluate();
     const traits = R.filter(item?.system.traits.value ?? [], (trait) => trait in CONFIG.PF2E.actionTraits);
     const options = R.pipe([traits, actor?.getRollOptions(), item?.getRollOptions("item"), extraRollOptions], R.flat(), R.filter(R.isTruthy));
+    const targetToken = target
+        ? target.token ?? target.actor.token ?? target.actor.getActiveTokens().shift()?.document
+        : undefined;
     const context = {
         type: "damage-roll",
         sourceType: "attack",
-        actor: actor?.id,
-        token: token?.id,
-        target: target ?? null,
+        actor: actor?.id ?? null,
+        token: token?.id ?? null,
+        target: target ? { actor: target.actor.uuid, token: targetToken?.uuid } : null,
         domains: [],
         options,
         mapIncreases: undefined,
@@ -25,6 +28,7 @@ async function rollDamageFromFormula(formula, { actionName, item, origin, target
     };
     const traitDescriptions = CONFIG.PF2E.traitsDescriptions;
     const flags = {
+        core: {},
         pf2e: {
             context,
             origin: item?.getOriginData(),
@@ -33,10 +37,10 @@ async function rollDamageFromFormula(formula, { actionName, item, origin, target
             targetHelper: {},
         },
     };
-    if (target?.token) {
+    if (targetToken) {
         flags["pf2e-toolbelt"] = {
             targetHelper: {
-                targets: [target.token.uuid],
+                targets: [targetToken.uuid],
             },
         };
     }
