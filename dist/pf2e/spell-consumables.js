@@ -1,4 +1,5 @@
 import * as R from "remeda";
+import { getSource } from "..";
 import { isInstanceOf } from "../object";
 import { ErrorPF2e, setHasElement } from "./misc";
 import { MAGIC_TRADITIONS } from "./spell";
@@ -53,11 +54,7 @@ async function createConsumableFromSpell(spell, { type, heightenedLevel = spell.
     if (!isInstanceOf(consumable, "ConsumablePF2e")) {
         throw ErrorPF2e("Failed to retrieve consumable item");
     }
-    const consumableSource = {
-        // @ts-ignore
-        ...consumable.toObject(),
-        _id: null,
-    }; // Clear _id
+    const consumableSource = getSource(consumable, true);
     const traits = consumableSource.system.traits;
     traits.value = R.unique([...traits.value, ...spell.traits]);
     traits.rarity = spell.rarity;

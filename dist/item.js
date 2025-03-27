@@ -170,8 +170,16 @@ function getChoiceSetSelection(item, { option, flag } = {}) {
 async function getItemSource(uuid, instance) {
     const item = await fromUuid(uuid);
     return item instanceof Item && (!instance || isInstanceOf(item, instance))
-        ? item.toObject()
+        ? getSource(item)
         : null;
+}
+function getSource(item, clearId) {
+    const source = item.toObject();
+    source._stats.compendiumSource ??= item.uuid;
+    if (clearId) {
+        source._id = null;
+    }
+    return source;
 }
 function getItemTypeLabel(type) {
     return game.i18n.localize(`TYPES.Item.${type}`);
@@ -200,4 +208,4 @@ async function useAction(item, event) {
     }
     return game.pf2e.rollItemMacro(item.uuid, event);
 }
-export { BANDS_OF_FORCE_SLUGS, HANDWRAPS_SLUG, actorItems, changeCarryType, getActionAnnotation, getActionMacro, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, hasItemWithSourceId, isItemEntry, isOwnedItem, isSupressedFeat, itemTypeFromUuid, itemTypesFromUuids, reduceActionFrequency, useAction, };
+export { BANDS_OF_FORCE_SLUGS, HANDWRAPS_SLUG, actorItems, changeCarryType, getActionAnnotation, getActionMacro, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, getSource, hasItemWithSourceId, isItemEntry, isOwnedItem, isSupressedFeat, itemTypeFromUuid, itemTypesFromUuids, reduceActionFrequency, useAction, };

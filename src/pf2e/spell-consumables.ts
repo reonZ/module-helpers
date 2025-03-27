@@ -1,8 +1,9 @@
+import { ConsumableSource, SpellConsumableItemType, SpellPF2e } from "foundry-pf2e";
 import * as R from "remeda";
+import { getSource } from "..";
 import { isInstanceOf } from "../object";
 import { ErrorPF2e, setHasElement } from "./misc";
 import { MAGIC_TRADITIONS } from "./spell";
-import { ConsumableSource, SpellConsumableItemType, SpellPF2e } from "foundry-pf2e";
 
 const CANTRIP_DECK_ID = "tLa4bewBhyqzi6Ow";
 
@@ -89,11 +90,7 @@ async function createConsumableFromSpell(
         throw ErrorPF2e("Failed to retrieve consumable item");
     }
 
-    const consumableSource = {
-        // @ts-ignore
-        ...consumable.toObject(),
-        _id: null,
-    }; // Clear _id
+    const consumableSource = getSource(consumable, true) as ConsumableSource;
     const traits = consumableSource.system.traits;
 
     traits.value = R.unique([...traits.value, ...spell.traits]);

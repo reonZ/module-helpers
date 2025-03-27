@@ -272,8 +272,20 @@ async function getItemSource(uuid: string, instance?: string): Promise<ItemSourc
 async function getItemSource(uuid: string, instance?: string) {
     const item = await fromUuid(uuid);
     return item instanceof Item && (!instance || isInstanceOf(item, instance))
-        ? item.toObject()
+        ? getSource(item as ItemPF2e)
         : null;
+}
+
+function getSource<T extends ItemPF2e>(item: T, clearId?: boolean): T["_source"] {
+    const source = item.toObject();
+
+    source._stats.compendiumSource ??= item.uuid;
+
+    if (clearId) {
+        source._id = null;
+    }
+
+    return source;
 }
 
 function getItemTypeLabel(type: ItemType) {
@@ -323,6 +335,7 @@ export {
     getItemSource,
     getItemTypeLabel,
     getItemWithSourceId,
+    getSource,
     hasItemWithSourceId,
     isItemEntry,
     isOwnedItem,

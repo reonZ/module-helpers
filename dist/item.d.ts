@@ -21,10 +21,11 @@ declare function getChoiceSetSelection<T extends any = string>(item: ItemPF2e, {
 }): T | undefined;
 declare function getItemSource<T extends IsInstanceOfItem>(uuid: string, instance?: T): Promise<IsInstanceOfItems[T]["_source"] | null>;
 declare function getItemSource(uuid: string, instance?: string): Promise<ItemSourcePF2e | null>;
+declare function getSource<T extends ItemPF2e>(item: T, clearId?: boolean): T["_source"];
 declare function getItemTypeLabel(type: ItemType): string;
 declare function reduceActionFrequency(item: ActionItem): Promise<void>;
 declare function getActionMacro(item: ActionItem): Promise<Macro | null>;
 declare function useAction(item: ItemPF2e<ActorPF2e>, event?: Event): Promise<unknown>;
 type ActionItem = FeatPF2e<ActorPF2e> | AbilityItemPF2e<ActorPF2e>;
-export { BANDS_OF_FORCE_SLUGS, HANDWRAPS_SLUG, actorItems, changeCarryType, getActionAnnotation, getActionMacro, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, hasItemWithSourceId, isItemEntry, isOwnedItem, isSupressedFeat, itemTypeFromUuid, itemTypesFromUuids, reduceActionFrequency, useAction, };
+export { BANDS_OF_FORCE_SLUGS, HANDWRAPS_SLUG, actorItems, changeCarryType, getActionAnnotation, getActionMacro, getChoiceSetSelection, getEquippedHandwraps, getItemSource, getItemTypeLabel, getItemWithSourceId, getSource, hasItemWithSourceId, isItemEntry, isOwnedItem, isSupressedFeat, itemTypeFromUuid, itemTypesFromUuids, reduceActionFrequency, useAction, };
 export type { ActionItem };
