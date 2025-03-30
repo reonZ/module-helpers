@@ -25,7 +25,7 @@ function getRankLabel(rank: ZeroToTen) {
 
 function getSpellsDataFromDescriptionList(
     ul: HTMLElement,
-    maxCharges: number = Infinity
+    maxRank: number = Infinity
 ): { rank: ZeroToTen; uuid: string }[] {
     return R.pipe(
         htmlQueryAll(ul, "li"),
@@ -37,7 +37,7 @@ function getSpellsDataFromDescriptionList(
 
             return uuids.map((uuid) => ({ rank, uuid }));
         }),
-        R.filter(({ rank }) => rank <= maxCharges)
+        R.filter(({ rank }) => rank <= maxRank)
     );
 }
 

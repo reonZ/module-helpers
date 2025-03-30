@@ -13,13 +13,13 @@ function getRankLabel(rank) {
         rank: ordinalString(rank),
     });
 }
-function getSpellsDataFromDescriptionList(ul, maxCharges = Infinity) {
+function getSpellsDataFromDescriptionList(ul, maxRank = Infinity) {
     return R.pipe(htmlQueryAll(ul, "li"), R.flatMap((SpellRankEL) => {
         const label = SpellRankEL.firstChild;
         const rank = Number(label.textContent?.match(LABEL_REGEX)?.[0] || "0");
         const text = SpellRankEL.textContent ?? "";
         const uuids = Array.from(text.matchAll(UUID_REGEX)).map(getUuidFromInlineMatch);
         return uuids.map((uuid) => ({ rank, uuid }));
-    }), R.filter(({ rank }) => rank <= maxCharges));
+    }), R.filter(({ rank }) => rank <= maxRank));
 }
 export { getRankLabel, getSpellsDataFromDescriptionList, hasSpells };
