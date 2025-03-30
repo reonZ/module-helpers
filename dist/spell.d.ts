@@ -1,4 +1,5 @@
-import { ActorPF2e, ZeroToTen } from "foundry-pf2e";
+import { ActorPF2e, SpellSource, ZeroToTen } from "foundry-pf2e";
 declare function hasSpells(actor: ActorPF2e): boolean;
 declare function getRankLabel(rank: ZeroToTen): string;
-export { getRankLabel, hasSpells };
+declare function getSpellsFromDescriptionList(ul: HTMLElement, maxCharges?: number): Promise<SpellSource[]>;
+export { getRankLabel, getSpellsFromDescriptionList, hasSpells };
