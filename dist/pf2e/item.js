@@ -197,4 +197,14 @@ function getItemChatTraits(item) {
     // other items don't have anything special
     return /** protected */ item["traitChatData"]();
 }
-export { ITEM_CARRY_TYPES, PHYSICAL_ITEM_TYPES, calculateItemPrice, consumeItem, detachSubitem, getActionImg, getItemChatTraits, hasFreePropertySlot, itemIsOfType, unownedItemtoMessage, };
+/** Save data from an effect item dropped on an ability or feat sheet. Returns true if handled */
+async function handleSelfEffectDrop(sheet, item) {
+    if (!sheet.isEditable || sheet.item.system.actionType.value === "passive") {
+        return false;
+    }
+    if (!item?.isOfType("effect"))
+        return false;
+    await sheet.item.update({ "system.selfEffect": { uuid: item.uuid, name: item.name } });
+    return true;
+}
+export { ITEM_CARRY_TYPES, PHYSICAL_ITEM_TYPES, calculateItemPrice, consumeItem, detachSubitem, getActionImg, getItemChatTraits, handleSelfEffectDrop, hasFreePropertySlot, itemIsOfType, unownedItemtoMessage, };

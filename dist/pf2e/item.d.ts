@@ -1,5 +1,5 @@
 /// <reference types="jquery" />
-import { AbilityItemPF2e, ActorPF2e, ConsumablePF2e, FeatPF2e, ItemInstances, ItemPF2e, ItemSourcePF2e, ItemType, PhysicalItemPF2e, WeaponPF2e } from "foundry-pf2e";
+import { AbilityItemPF2e, AbilitySheetPF2e, ActorPF2e, ConsumablePF2e, FeatPF2e, FeatSheetPF2e, ItemInstances, ItemPF2e, ItemSourcePF2e, ItemType, PhysicalItemPF2e, WeaponPF2e } from "foundry-pf2e";
 declare const ITEM_CARRY_TYPES: readonly ["attached", "dropped", "held", "stowed", "worn"];
 declare const PHYSICAL_ITEM_TYPES: Set<"armor" | "book" | "consumable" | "backpack" | "equipment" | "shield" | "treasure" | "weapon">;
 declare function detachSubitem(subitem: PhysicalItemPF2e, skipConfirm: boolean): Promise<void>;
@@ -20,5 +20,7 @@ declare function unownedItemtoMessage(actor: ActorPF2e, item: ItemPF2e, event?: 
  * `traits` retrieved in the `getChatData` across the different items
  */
 declare function getItemChatTraits(item: ItemPF2e<ActorPF2e>): import("foundry-pf2e/pf2e/module/item/base/data").TraitChatData[];
+/** Save data from an effect item dropped on an ability or feat sheet. Returns true if handled */
+declare function handleSelfEffectDrop(sheet: AbilitySheetPF2e | FeatSheetPF2e, item: ItemPF2e): Promise<boolean>;
 type ItemOrSource = PreCreate<ItemSourcePF2e> | ItemPF2e;
-export { ITEM_CARRY_TYPES, PHYSICAL_ITEM_TYPES, calculateItemPrice, consumeItem, detachSubitem, getActionImg, getItemChatTraits, hasFreePropertySlot, itemIsOfType, unownedItemtoMessage, };
+export { ITEM_CARRY_TYPES, PHYSICAL_ITEM_TYPES, calculateItemPrice, consumeItem, detachSubitem, getActionImg, getItemChatTraits, handleSelfEffectDrop, hasFreePropertySlot, itemIsOfType, unownedItemtoMessage, };

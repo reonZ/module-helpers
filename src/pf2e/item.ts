@@ -1,8 +1,10 @@
 import {
     AbilityItemPF2e,
+    AbilitySheetPF2e,
     ActorPF2e,
     ConsumablePF2e,
     FeatPF2e,
+    FeatSheetPF2e,
     ItemInstances,
     ItemPF2e,
     ItemSourcePF2e,
@@ -286,6 +288,19 @@ function getItemChatTraits(item: ItemPF2e<ActorPF2e>) {
     return /** protected */ item["traitChatData"]();
 }
 
+/** Save data from an effect item dropped on an ability or feat sheet. Returns true if handled */
+async function handleSelfEffectDrop(
+    sheet: AbilitySheetPF2e | FeatSheetPF2e,
+    item: ItemPF2e
+): Promise<boolean> {
+    if (!sheet.isEditable || sheet.item.system.actionType.value === "passive") {
+        return false;
+    }
+    if (!item?.isOfType("effect")) return false;
+    await sheet.item.update({ "system.selfEffect": { uuid: item.uuid, name: item.name } });
+    return true;
+}
+
 type ItemOrSource = PreCreate<ItemSourcePF2e> | ItemPF2e;
 
 export {
@@ -296,6 +311,7 @@ export {
     detachSubitem,
     getActionImg,
     getItemChatTraits,
+    handleSelfEffectDrop,
     hasFreePropertySlot,
     itemIsOfType,
     unownedItemtoMessage,
