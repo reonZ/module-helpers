@@ -61,6 +61,10 @@ function localeCompare(a: string, b: string) {
     return a.localeCompare(b, game.i18n.lang);
 }
 
+function sortByLocaleCompare<T extends Record<string, any>>(list: Array<T>, key: keyof T) {
+    list.sort((a, b) => localeCompare(a[key], b[key]));
+}
+
 function hasLocalization(...path: string[]) {
     return game.i18n.has(`${MODULE.path(path)}`, false);
 }
@@ -155,6 +159,7 @@ export {
     localeCompare,
     localize,
     localizeIfExist,
+    sortByLocaleCompare,
     subLocalize,
     templateLocalize,
     warn,

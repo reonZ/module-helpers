@@ -38,6 +38,9 @@ function templateLocalize(subKey) {
 function localeCompare(a, b) {
     return a.localeCompare(b, game.i18n.lang);
 }
+function sortByLocaleCompare(list, key) {
+    list.sort((a, b) => localeCompare(a[key], b[key]));
+}
 function hasLocalization(...path) {
     return game.i18n.has(`${MODULE.path(path)}`, false);
 }
@@ -100,4 +103,4 @@ function subLocalize(subKey) {
     });
     return fn;
 }
-export { error, hasLocalization, info, localeCompare, localize, localizeIfExist, subLocalize, templateLocalize, warn, };
+export { error, hasLocalization, info, localeCompare, localize, localizeIfExist, sortByLocaleCompare, subLocalize, templateLocalize, warn, };

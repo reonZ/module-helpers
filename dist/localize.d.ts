@@ -8,6 +8,7 @@ declare function templateLocalize(subKey: string): (key: string, { hash }: {
     hash: Record<string, string>;
 }) => string;
 declare function localeCompare(a: string, b: string): number;
+declare function sortByLocaleCompare<T extends Record<string, any>>(list: Array<T>, key: keyof T): void;
 declare function hasLocalization(...path: string[]): boolean;
 declare function localizeIfExist(...args: LocalizeArgs): string | undefined;
 declare function subLocalize(subKey: string): typeof localize & {
@@ -23,4 +24,4 @@ declare function subLocalize(subKey: string): typeof localize & {
 type LocalizeArgs = [...string[], string | Record<string, any>];
 type TemplateLocalize = ReturnType<typeof templateLocalize>;
 export type { TemplateLocalize };
-export { error, hasLocalization, info, localeCompare, localize, localizeIfExist, subLocalize, templateLocalize, warn, };
+export { error, hasLocalization, info, localeCompare, localize, localizeIfExist, sortByLocaleCompare, subLocalize, templateLocalize, warn, };
