@@ -1,4 +1,4 @@
-import { ConsumablePF2e, ConsumableSource, SpellConsumableItemType, SpellPF2e } from "foundry-pf2e";
+import { ConsumableSource, SpellConsumableItemType, SpellPF2e } from "foundry-pf2e";
 import * as R from "remeda";
 import { getSource } from "..";
 import { isInstanceOf } from "../object";
@@ -90,7 +90,8 @@ async function createConsumableFromSpell(
         throw ErrorPF2e("Failed to retrieve consumable item");
     }
 
-    const consumableSource = getSource(consumable as ConsumablePF2e, true);
+    // @ts-ignore
+    const consumableSource = getSource(consumable, true);
     const traits = consumableSource.system.traits;
 
     traits.value = R.unique([...traits.value, ...spell.traits]);
