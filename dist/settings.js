@@ -37,8 +37,6 @@ function hasSetting(key) {
     return game.settings.settings.has(`${MODULE.id}.${key}`);
 }
 function registerSetting(options) {
-    if (options.gmOnly && !game.user.isGM)
-        return;
     if ("choices" in options && Array.isArray(options.choices)) {
         options.choices = R.mapToObj(options.choices, (choice) => [
             choice,

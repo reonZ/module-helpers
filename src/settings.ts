@@ -49,8 +49,6 @@ function hasSetting(key: string) {
 }
 
 function registerSetting(options: SettingOptions) {
-    if (options.gmOnly && !game.user.isGM) return;
-
     if ("choices" in options && Array.isArray(options.choices)) {
         options.choices = R.mapToObj(options.choices, (choice) => [
             choice,
