@@ -1,5 +1,29 @@
 import * as R from "remeda";
 import { MODULE } from "./module";
+import { createHTMLElement, htmlQuery, localize } from ".";
+// "SHARED": {
+//    "gmOnly": "GM Only",
+//    "reloadRequired": "Requires  Reload",
+// },
+const CACHE = {};
+function addExtraInfoToSettingLabel(setting, group) {
+    const nameExtras = [];
+    if (setting.gmOnly) {
+        const label = (CACHE.gmOnlyLabel ??= localize("SHARED.gmOnly"));
+        nameExtras.push(label);
+    }
+    if (setting.requiresReload) {
+        const label = (CACHE.reloadLabel ??= localize("SHARED.reloadRequired"));
+        nameExtras.push(label);
+    }
+    if (!nameExtras.length)
+        return;
+    const labelElement = htmlQuery(group, ":scope > label");
+    const extraElement = createHTMLElement("span", {
+        innerHTML: ` (${nameExtras.join(", ")})`,
+    });
+    labelElement?.append(extraElement);
+}
 function settingPath(...path) {
     return MODULE.path("settings", ...path);
 }
@@ -33,4 +57,4 @@ function registerSettingMenu(options) {
     options.icon ??= "fas fa-cogs";
     game.settings.registerMenu(MODULE.id, options.key, options);
 }
-export { getSetting, hasSetting, registerSettingMenu, registerSetting, setSetting, settingPath };
+export { addExtraInfoToSettingLabel, getSetting, hasSetting, registerSettingMenu, registerSetting, setSetting, settingPath, };
