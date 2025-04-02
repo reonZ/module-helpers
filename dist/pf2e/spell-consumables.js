@@ -54,6 +54,7 @@ async function createConsumableFromSpell(spell, { type, heightenedLevel = spell.
     if (!isInstanceOf(consumable, "ConsumablePF2e")) {
         throw ErrorPF2e("Failed to retrieve consumable item");
     }
+    // @ts-ignore
     const consumableSource = getSource(consumable, true);
     const traits = consumableSource.system.traits;
     traits.value = R.unique([...traits.value, ...spell.traits]);
