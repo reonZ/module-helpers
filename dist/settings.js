@@ -1,6 +1,6 @@
 import * as R from "remeda";
 import { MODULE } from "./module";
-import { createHTMLElement, htmlQuery, localize } from ".";
+import { createHTMLElement, htmlQuery, localize, userIsGM } from ".";
 // "SHARED": {
 //    "gmOnly": "GM Only",
 //    "reloadRequired": "Requires  Reload",
@@ -37,6 +37,8 @@ function hasSetting(key) {
     return game.settings.settings.has(`${MODULE.id}.${key}`);
 }
 function registerSetting(options) {
+    if (options.gmOnly && !userIsGM())
+        return;
     if ("choices" in options && Array.isArray(options.choices)) {
         options.choices = R.mapToObj(options.choices, (choice) => [
             choice,

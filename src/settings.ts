@@ -1,6 +1,6 @@
 import * as R from "remeda";
 import { MODULE } from "./module";
-import { createHTMLElement, htmlQuery, localize } from ".";
+import { createHTMLElement, htmlQuery, localize, userIsGM } from ".";
 
 // "SHARED": {
 //    "gmOnly": "GM Only",
@@ -49,6 +49,8 @@ function hasSetting(key: string) {
 }
 
 function registerSetting(options: SettingOptions) {
+    if (options.gmOnly && !userIsGM()) return;
+
     if ("choices" in options && Array.isArray(options.choices)) {
         options.choices = R.mapToObj(options.choices, (choice) => [
             choice,
