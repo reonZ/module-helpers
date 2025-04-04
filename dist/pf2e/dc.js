@@ -68,4 +68,7 @@ function calculateDC(level, { pwol, rarity = "common" } = {}) {
         return adjustDCByRarity(dc, rarity);
     }
 }
-export { calculateDC, adjustDCByRarity };
+function calculateCreatureDC(actor, pwol) {
+    return calculateDC(actor.level, { pwol, rarity: actor.rarity });
+}
+export { adjustDCByRarity, calculateCreatureDC, calculateDC };

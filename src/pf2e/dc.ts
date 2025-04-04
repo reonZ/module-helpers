@@ -1,4 +1,4 @@
-import { DCAdjustment, PositiveDCAdjustment, Rarity } from "foundry-pf2e";
+import { CreaturePF2e, DCAdjustment, PositiveDCAdjustment, Rarity } from "foundry-pf2e";
 
 const dcAdjustments = new Map<DCAdjustment, number>([
     ["incredibly-easy", -10],
@@ -76,10 +76,14 @@ function calculateDC(level: number, { pwol, rarity = "common" }: DCOptions = {})
     }
 }
 
+function calculateCreatureDC(actor: CreaturePF2e, pwol?: boolean) {
+    return calculateDC(actor.level, { pwol, rarity: actor.rarity });
+}
+
 interface DCOptions {
     pwol?: boolean;
     rarity?: Rarity;
 }
 
+export { adjustDCByRarity, calculateCreatureDC, calculateDC };
 export type { DCOptions };
-export { calculateDC, adjustDCByRarity };
