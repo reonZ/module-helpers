@@ -3,7 +3,7 @@ import { MODULE } from "./module";
 import { createHTMLElement, htmlQuery, localize, userIsGM } from ".";
 // "SHARED": {
 //    "gmOnly": "GM Only",
-//    "reloadRequired": "Requires  Reload",
+//    "reloadRequired": "Requires Reload",
 // },
 const CACHE = {};
 function addExtraInfoToSettingLabel(setting, group) {

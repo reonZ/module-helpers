@@ -1,4 +1,4 @@
-import { AttributeString, CharacterPF2e, ConsumablePF2e, CreaturePF2e, MagicTradition, NPCPF2e, OneToTen, SpellcastingCategory, SpellcastingEntryPF2e, SpellcastingEntrySource, SpellcastingSheetData, SpellSlotGroupId, ValueAndMax, ZeroToFour, ZeroToTen } from "foundry-pf2e";
+import { AttributeString, CharacterPF2e, ConsumablePF2e, CreaturePF2e, MagicTradition, NPCPF2e, OneToTen, SpellcastingCategory, SpellcastingEntryPF2e, SpellcastingEntrySource, SpellcastingEntrySystemSource, SpellcastingSheetData, SpellSlotGroupId, ValueAndMax, ZeroToFour, ZeroToTen } from "foundry-pf2e";
 declare function getSummarizedSpellsDataForRender(actor: CreaturePF2e, sortByType: boolean, entries?: SpellcastingSheetData[]): Promise<{
     labels: string[];
     spells: SummarizedSpell[][];
@@ -18,15 +18,14 @@ declare function getHighestSpellcastingStatistic(actor: NPCPF2e | CharacterPF2e)
     statistic: import("foundry-pf2e/pf2e/module/system/statistic/statistic.js").Statistic<import("foundry-pf2e/pf2e/module/actor/base.js").ActorPF2e<import("foundry-pf2e/pf2e/module/scene/token-document/document.js").TokenDocumentPF2e<import("foundry-pf2e/pf2e/module/scene/document.js").ScenePF2e | null> | null>>;
 } | undefined;
 declare function getHighestSyntheticStatistic(actor: NPCPF2e | CharacterPF2e, withClassDcs?: boolean): import("foundry-pf2e/pf2e/module/system/statistic/statistic.js").Statistic<import("foundry-pf2e/pf2e/module/actor/base.js").ActorPF2e<import("foundry-pf2e/pf2e/module/scene/token-document/document.js").TokenDocumentPF2e<import("foundry-pf2e/pf2e/module/scene/document.js").ScenePF2e | null> | null>> | undefined;
-declare function createSpellcastingWithHighestStatisticSource(actor: NPCPF2e | CharacterPF2e, { name, category, flags, showSlotlessRanks, sort, withClassDcs, }: CreateSpellcastingSourceWithHighestStatistic): (Omit<DeepPartial<SpellcastingEntrySource>, "type" | "name" | "_id"> & {
-    _id?: Maybe<string>;
-    name: string;
-    type: "spellcastingEntry";
-}) | undefined;
-declare function createSpellcastingSource({ name, category, attribute, flags, proficiencyRank, proficiencySlug, showSlotlessRanks, sort, tradition, }: CreateSpellcastingSource): PreCreate<SpellcastingEntrySource>;
+declare function createSpellcastingWithHighestStatisticSource(actor: NPCPF2e | CharacterPF2e, { name, category, flags, showSlotlessRanks, sort, withClassDcs, }: CreateSpellcastingSourceWithHighestStatistic): CreatedSpellcastingEntrySource | undefined;
+declare function createSpellcastingSource({ name, category, attribute, flags, proficiencyRank, proficiencySlug, showSlotlessRanks, sort, tradition, }: CreateSpellcastingSource): CreatedSpellcastingEntrySource;
+type CreatedSpellcastingEntrySource = Omit<PreCreate<SpellcastingEntrySource>, "system"> & {
+    system: DeepPartial<SpellcastingEntrySystemSource>;
+};
 type CreateSpellcastingSource = {
     name: string;
-    category?: SpellcastingCategory;
+    category?: SpellcastingCategory | "charges";
     sort?: number;
     attribute?: AttributeString | null;
     proficiencySlug?: string;

@@ -11,6 +11,7 @@ import {
     SpellcastingCategory,
     SpellcastingEntryPF2e,
     SpellcastingEntrySource,
+    SpellcastingEntrySystemSource,
     SpellcastingSheetData,
     SpellcastingSlotGroup,
     SpellSlotGroupId,
@@ -365,7 +366,7 @@ function createSpellcastingSource({
     showSlotlessRanks,
     sort,
     tradition,
-}: CreateSpellcastingSource): PreCreate<SpellcastingEntrySource> {
+}: CreateSpellcastingSource): CreatedSpellcastingEntrySource {
     return {
         type: "spellcastingEntry",
         name,
@@ -375,7 +376,7 @@ function createSpellcastingSource({
                 value: (!proficiencySlug && attribute) || "",
             },
             prepared: {
-                value: category ?? "innate",
+                value: (category as SpellcastingCategory) ?? "innate",
             },
             showSlotlessLevels: {
                 value: showSlotlessRanks ?? false,
@@ -392,9 +393,13 @@ function createSpellcastingSource({
     };
 }
 
+type CreatedSpellcastingEntrySource = Omit<PreCreate<SpellcastingEntrySource>, "system"> & {
+    system: DeepPartial<SpellcastingEntrySystemSource>;
+};
+
 type CreateSpellcastingSource = {
     name: string;
-    category?: SpellcastingCategory;
+    category?: SpellcastingCategory | "charges";
     sort?: number;
     attribute?: AttributeString | null;
     proficiencySlug?: string;
