@@ -4,7 +4,7 @@ import { createHTMLElement, htmlQuery, localize, userIsGM } from ".";
 
 // "SHARED": {
 //    "gmOnly": "GM Only",
-//    "reloadRequired": "Requires  Reload",
+//    "reloadRequired": "Requires Reload",
 // },
 
 const CACHE: SETTINGS_CACHE = {};
