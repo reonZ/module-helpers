@@ -1,10 +1,5 @@
 import { ActorPF2e, ZeroToTen } from "foundry-pf2e";
-import * as R from "remeda";
-import { getUuidFromInlineMatch } from ".";
-import { htmlQueryAll, ordinalString } from "./pf2e";
-
-const UUID_REGEX = /@(uuid|compendium)\[([a-z0-9\._-]+)\]/gi;
-const LABEL_REGEX = /\d+/;
+import { ordinalString } from "./pf2e";
 
 function hasSpells(actor: ActorPF2e) {
     return (
@@ -23,22 +18,4 @@ function getRankLabel(rank: ZeroToTen) {
     });
 }
 
-function getSpellsDataFromDescriptionList(
-    ul: HTMLElement,
-    maxRank: number = Infinity
-): { rank: ZeroToTen; uuid: string }[] {
-    return R.pipe(
-        htmlQueryAll(ul, "li"),
-        R.flatMap((SpellRankEL) => {
-            const label = SpellRankEL.firstChild as HTMLElement;
-            const rank = Number(label.textContent?.match(LABEL_REGEX)?.[0] || "0") as ZeroToTen;
-            const text = SpellRankEL.textContent ?? "";
-            const uuids = Array.from(text.matchAll(UUID_REGEX)).map(getUuidFromInlineMatch);
-
-            return uuids.map((uuid) => ({ rank, uuid }));
-        }),
-        R.filter(({ rank }) => rank <= maxRank)
-    );
-}
-
-export { getRankLabel, getSpellsDataFromDescriptionList, hasSpells };
+export { getRankLabel, hasSpells };
