@@ -8,6 +8,7 @@ import {
     LootPF2e,
     NPCPF2e,
     PhysicalItemPF2e,
+    SaveType,
     ScenePF2e,
     TokenDocumentPF2e,
 } from "foundry-pf2e";
@@ -31,6 +32,15 @@ declare global {
 
         namespace heroActions {
             type HeroActionFlag = { uuid: string; name: string };
+        }
+
+        namespace targetHelper {
+            type MessageSaveFlag = {
+                statistic: SaveType;
+                basic: boolean;
+                dc: number;
+                author?: string;
+            };
         }
 
         type settings = {
