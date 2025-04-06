@@ -2,6 +2,8 @@ import {
     ActorPF2e,
     CharacterPF2e,
     CoinsPF2e,
+    DegreeAdjustmentsRecord,
+    DegreeOfSuccessString,
     EquipmentFilters,
     FeatPF2e,
     ItemPF2e,
@@ -35,6 +37,37 @@ declare global {
         }
 
         namespace targetHelper {
+            type TargetMessageType = "damage" | "spell-damage" | "spell-save" | "action" | "check";
+
+            type MessageTargetSave = {
+                private: boolean;
+                value: number;
+                die: number;
+                success: DegreeOfSuccessString;
+                roll: string;
+                notes: RollNoteSource[];
+                dosAdjustments: DegreeAdjustmentsRecord | undefined;
+                unadjustedOutcome?: DegreeOfSuccessString | null;
+                modifiers: { label: string; modifier: number }[];
+                significantModifiers: modifiersMatter.SignificantModifier[] | undefined;
+                rerolled?: "hero" | "new" | "lower" | "higher";
+                statistic: SaveType;
+            };
+
+            type MessageFlag = {
+                type?: TargetMessageType;
+                targets?: string[];
+                save?: MessageSaveFlag;
+                saves?: Record<string, MessageTargetSave>;
+                splashIndex?: number;
+                isRegen?: boolean;
+                applied?: Record<string, boolean[]>;
+                options?: string[];
+                traits?: string[];
+                item?: ItemUUID;
+                splashTargets?: string[];
+            };
+
             type MessageSaveFlag = {
                 statistic: SaveType;
                 basic: boolean;
