@@ -1,5 +1,5 @@
 import { ItemPF2e } from "foundry-pf2e";
-declare function rollDamageFromFormula(formula: string, { actionName, item, origin, target, extraRollOptions, skipDialog, }?: RollDamageExtraOptions): Promise<ChatMessage>;
+declare function rollDamageFromFormula(formula: string, { actionName, item, origin, target, extraRollOptions, skipDialog, save, }?: RollDamageExtraOptions): Promise<ChatMessage>;
 type RollDamageExtraOptions = {
     item?: ItemPF2e;
     actionName?: string;
@@ -7,6 +7,7 @@ type RollDamageExtraOptions = {
     target?: TargetDocuments;
     extraRollOptions?: string[];
     skipDialog?: boolean;
+    save?: toolbelt.targetHelper.MessageSaveFlag;
 };
 export { rollDamageFromFormula };
 export type { RollDamageExtraOptions };
