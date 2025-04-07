@@ -7,7 +7,8 @@ type RollDamageExtraOptions = {
     target?: TargetDocuments;
     extraRollOptions?: string[];
     skipDialog?: boolean;
-    toolbelt?: Pick<toolbelt.targetHelper.MessageFlag, "save" | "options" | "traits">;
+    toolbelt?: RollDamageToolbeltFlag;
 };
+type RollDamageToolbeltFlag = Pick<toolbelt.targetHelper.MessageFlag, "save" | "options" | "traits">;
 export { rollDamageFromFormula };
-export type { RollDamageExtraOptions };
+export type { RollDamageExtraOptions, RollDamageToolbeltFlag };
