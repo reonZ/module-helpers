@@ -16,7 +16,7 @@ async function rollDamageFromFormula(
         target,
         extraRollOptions = [],
         skipDialog = false,
-        save,
+        toolbelt,
     }: RollDamageExtraOptions = {}
 ) {
     const { actor, token } = origin ?? {};
@@ -68,18 +68,16 @@ async function rollDamageFromFormula(
         },
     };
 
-    if (targetToken || save) {
-        const toobeltFlags: toolbelt.targetHelper.MessageFlag = (flags["pf2e-toolbelt"] = {
-            targetHelper: {},
-        }).targetHelper;
+    if (targetToken || toolbelt) {
+        const toolbeltFlag = toolbelt ?? {};
 
         if (targetToken) {
-            toobeltFlags.targets = [targetToken.uuid];
+            toolbeltFlag.targets = [targetToken.uuid];
         }
 
-        if (save) {
-            toobeltFlags.save = save;
-        }
+        flags["pf2e-toolbelt"] = {
+            targetHelper: toolbeltFlag,
+        };
     }
 
     actionName ??= item?.name ?? game.i18n.localize("PF2E.DamageRoll");
@@ -109,7 +107,7 @@ type RollDamageExtraOptions = {
     target?: TargetDocuments;
     extraRollOptions?: string[];
     skipDialog?: boolean;
-    save?: toolbelt.targetHelper.MessageSaveFlag;
+    toolbelt?: toolbelt.targetHelper.MessageFlag;
 };
 
 export { rollDamageFromFormula };

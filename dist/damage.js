@@ -1,6 +1,6 @@
 import * as R from "remeda";
 import { getDamageRollClass } from "./classes";
-async function rollDamageFromFormula(formula, { actionName, item, origin, target, extraRollOptions = [], skipDialog = false, save, } = {}) {
+async function rollDamageFromFormula(formula, { actionName, item, origin, target, extraRollOptions = [], skipDialog = false, toolbelt, } = {}) {
     const { actor, token } = origin ?? {};
     const DamageRoll = getDamageRollClass();
     const roll = await new DamageRoll(formula, { actor, item }).evaluate();
@@ -37,16 +37,14 @@ async function rollDamageFromFormula(formula, { actionName, item, origin, target
             targetHelper: {},
         },
     };
-    if (targetToken || save) {
-        const toobeltFlags = (flags["pf2e-toolbelt"] = {
-            targetHelper: {},
-        }).targetHelper;
+    if (targetToken || toolbelt) {
+        const toolbeltFlag = toolbelt ?? {};
         if (targetToken) {
-            toobeltFlags.targets = [targetToken.uuid];
+            toolbeltFlag.targets = [targetToken.uuid];
         }
-        if (save) {
-            toobeltFlags.save = save;
-        }
+        flags["pf2e-toolbelt"] = {
+            targetHelper: toolbeltFlag,
+        };
     }
     actionName ??= item?.name ?? game.i18n.localize("PF2E.DamageRoll");
     let flavor = `<h4 class="action"><strong>${actionName}</strong></h4>`;
