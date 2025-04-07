@@ -69,7 +69,7 @@ async function rollDamageFromFormula(
     };
 
     if (targetToken || toolbelt) {
-        const toolbeltFlag = toolbelt ?? {};
+        const toolbeltFlag: toolbelt.targetHelper.MessageFlag = toolbelt ?? {};
 
         if (targetToken) {
             toolbeltFlag.targets = [targetToken.uuid];
@@ -107,7 +107,7 @@ type RollDamageExtraOptions = {
     target?: TargetDocuments;
     extraRollOptions?: string[];
     skipDialog?: boolean;
-    toolbelt?: toolbelt.targetHelper.MessageFlag;
+    toolbelt?: Pick<toolbelt.targetHelper.MessageFlag, "save" | "options" | "traits">;
 };
 
 export { rollDamageFromFormula };
