@@ -9,6 +9,6 @@ type RollDamageExtraOptions = {
     skipDialog?: boolean;
     toolbelt?: RollDamageToolbeltFlag;
 };
-type RollDamageToolbeltFlag = Pick<toolbelt.targetHelper.MessageFlag, "save" | "options" | "traits">;
+type RollDamageToolbeltFlag = Pick<toolbelt.targetHelper.MessageFlag, "save" | "options" | "traits" | "item">;
 export { rollDamageFromFormula };
 export type { RollDamageExtraOptions, RollDamageToolbeltFlag };

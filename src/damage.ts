@@ -112,7 +112,7 @@ type RollDamageExtraOptions = {
 
 type RollDamageToolbeltFlag = Pick<
     toolbelt.targetHelper.MessageFlag,
-    "save" | "options" | "traits"
+    "save" | "options" | "traits" | "item"
 >;
 
 export { rollDamageFromFormula };
