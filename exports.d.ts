@@ -7,6 +7,12 @@ export type { HitPointsStatistic } from "foundry-pf2e/pf2e/module/actor/data/bas
 export type { ItemFlagsPF2e } from "foundry-pf2e/pf2e/module/item/base/data/system.d.ts";
 export type { PrerequisiteTagData } from "foundry-pf2e/pf2e/module/item/feat/data.d.ts";
 
+export type * from "foundry-pf2e/foundry/common/abstract/data.d.ts";
+export type * from "foundry-pf2e/foundry/common/data/fields.d.ts";
+export type * from "foundry-pf2e/foundry/common/data/validation-failure.d.ts";
+export type * from "foundry-pf2e/foundry/client-esm/applications/api/module.d.ts";
+export type * from "foundry-pf2e/foundry/client-esm/applications/module.d.ts";
+
 export type * from "foundry-pf2e/pf2e/global.d.ts";
 export type * from "foundry-pf2e/pf2e/module/active-effect.d.ts";
 export type * from "foundry-pf2e/pf2e/module/data.d.ts";

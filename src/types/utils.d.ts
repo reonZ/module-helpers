@@ -5,8 +5,6 @@ export {};
 declare global {
     type Prettify<T> = { [K in keyof T]: T[K] } & {};
 
-    type Promisable<T> = Promise<T> | T;
-
     type TypeOfType =
         | "bigint"
         | "boolean"
@@ -23,12 +21,7 @@ declare global {
 
     type EventType = keyof HTMLElementEventMap;
 
-    type SocketCallback<T = any> = (packet: T, senderId: string) => void;
-
-    type StringNumber = `${number}`;
-    type StringBoolean = `${boolean}`;
-
-    type SelectOption<V extends string = string> = { value: V; label: string };
+    type SelectOption<V extends string = string> = { value: V; label?: string };
     type SelectOptions<V extends string = string> = SelectOption<V>[];
 
     type Merge<T extends object> = {

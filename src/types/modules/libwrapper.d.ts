@@ -2,9 +2,16 @@ export {};
 
 declare global {
     namespace libWrapper {
-        type RegisterType = "WRAPPER" | "OVERRIDE" | "MIXED";
+        type RegisterType = "WRAPPER" | "MIXED" | "OVERRIDE";
 
         type RegisterCallback = (...args: any[]) => any;
+
+        type RegisterWrapperCallback = <TArgs extends any[], TReturn extends any>(
+            wrapped: (...args: TArgs) => TReturn,
+            ...args: TArgs
+        ) => TReturn;
+
+        type RegisterOverrideCallback = (...args: any[]) => any;
 
         function register(
             namespace: string,

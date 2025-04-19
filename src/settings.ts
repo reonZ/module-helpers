@@ -1,18 +1,22 @@
 import { MODULE, R, userIsGM } from ".";
 
-function settingPath(...path: string[]) {
+function settingPath(...path: string[]): string {
     return MODULE.path("settings", ...path);
 }
 
-function getSetting<T = boolean>(key: string) {
-    return game.settings.get(MODULE.id, key) as T;
+function getSetting(key: "__migrationSchema"): number;
+function getSetting<T = boolean>(key: string): T;
+function getSetting(key: string) {
+    return game.settings.get(MODULE.id, key);
 }
 
-function setSetting<TSetting>(key: string, value: TSetting) {
-    return game.settings.set<TSetting>(MODULE.id, key, value);
+function setSetting(key: "__migrationSchema", value: number): Promise<number>;
+function setSetting<TSetting>(key: string, value: TSetting): Promise<TSetting>;
+function setSetting(key: string, value: any) {
+    return game.settings.set(MODULE.id, key, value);
 }
 
-function hasSetting(key: string) {
+function hasSetting(key: string): boolean {
     return game.settings.settings.has(`${MODULE.id}.${key}`);
 }
 
@@ -30,13 +34,24 @@ function registerSetting(key: string, options: RegisterSettingOptions) {
     options.hint ??= settingPath(key, "hint");
     options.config ??= true;
 
-    game.settings.register(MODULE.id, key, options as RegisterSettingOptions & { name: string });
+    game.settings.register(MODULE.id, key, options as SettingRegistration);
 }
 
-type RegisterSettingOptions = Omit<SettingConfig, "config" | "key" | "namespace" | "name"> & {
-    name?: string;
-    config?: boolean;
+function registerSettingMenu(key: string, options: RegisterSettingMenuOptions) {
+    options.name ??= settingPath("menus", key, "name");
+    options.label ??= settingPath("menus", key, "label");
+    options.hint ??= settingPath("menus", key, "hint");
+    options.icon ??= "fas fa-cogs";
+
+    game.settings.registerMenu(MODULE.id, key, options as SettingSubmenuConfig);
+}
+
+type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope"> & {
     gmOnly?: boolean;
+    name?: string;
+    scope: "client" | "world";
 };
 
-export { getSetting, hasSetting, registerSetting, setSetting };
+type RegisterSettingMenuOptions = PartialExcept<SettingSubmenuConfig, "type" | "restricted">;
+
+export { getSetting, hasSetting, registerSetting, registerSettingMenu, setSetting };

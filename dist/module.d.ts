@@ -1,14 +1,25 @@
-import type { ModuleMigration } from ".";
+import type { ModuleMigrations } from ".";
 declare const MODULE: {
     readonly id: string;
     readonly name: string;
     readonly current: Module & {
         api?: Record<string, any> | undefined;
     };
-    throwError(str: string): never;
+    readonly isDebug: boolean;
+    readonly gameContext: string;
+    Error(str: string): Error;
     error(str: string, error?: Error): void;
     log(...args: any[]): void;
+    debug(...args: any[]): void;
+    debugExpose(expose: Record<string, any>): void;
+    apiExpose(expose: Record<string, any>): void;
+    devExpose(expose: Record<string, any>): void;
+    enableDebugMode(): void;
     path(...path: (string | string[])[]): string;
-    register(id: string, migrations?: ModuleMigration[] | Record<string, ModuleMigration>): void;
+    register(id: string, options?: ModuleRegisterOptions): void;
+};
+type ModuleRegisterOptions = {
+    game?: string;
+    migrations?: ModuleMigrations;
 };
 export { MODULE };

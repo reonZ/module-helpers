@@ -1,4 +1,4 @@
-import { MODULE, joinStr, localize } from ".";
+import { joinStr, localize, MODULE } from ".";
 function templatePath(...path) {
     return `modules/${MODULE.id}/templates/${joinStr("/", path)}.hbs`;
 }
@@ -7,17 +7,18 @@ function render(template, data, { i18n } = {}) {
         data.i18n = templateLocalize(i18n);
     }
     const path = templatePath(...[template].flat());
-    return renderTemplate(path, data);
+    return foundry.applications.handlebars.renderTemplate(path, data);
 }
-function templateLocalize(...args) {
-    const fn = (...params) => {
-        const { hash } = params.pop();
-        return localize(...args, ...params, hash);
+function templateLocalize(...subKeys) {
+    const fn = (...args) => {
+        const { hash } = args.pop();
+        return localize(...subKeys, ...args, hash);
     };
     Object.defineProperties(fn, {
-        path: {
-            value: (...params) => {
-                return MODULE.path(...args, ...params);
+        tooltip: {
+            value: (...keys) => {
+                const tooltip = localize(...subKeys, ...keys);
+                return `data-tooltip aria-label="${tooltip}"`;
             },
             enumerable: false,
             configurable: false,
@@ -25,4 +26,4 @@ function templateLocalize(...args) {
     });
     return fn;
 }
-export { render, templateLocalize };
+export { render, templateLocalize, templatePath };

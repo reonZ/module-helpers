@@ -25,4 +25,11 @@ function registerSetting(key, options) {
     options.config ??= true;
     game.settings.register(MODULE.id, key, options);
 }
-export { getSetting, hasSetting, registerSetting, setSetting };
+function registerSettingMenu(key, options) {
+    options.name ??= settingPath("menus", key, "name");
+    options.label ??= settingPath("menus", key, "label");
+    options.hint ??= settingPath("menus", key, "hint");
+    options.icon ??= "fas fa-cogs";
+    game.settings.registerMenu(MODULE.id, key, options);
+}
+export { getSetting, hasSetting, registerSetting, registerSettingMenu, setSetting };
