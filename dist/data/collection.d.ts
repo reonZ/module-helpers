@@ -4,8 +4,8 @@ declare class ExtendedDocumentCollection<TDocument extends ExtendedCollectionDoc
     set(id: string, document: TDocument): this;
     add(document: TDocument): boolean;
     delete(id: string): boolean;
+    updateDocuments(updates: EmbeddedDocumentUpdateData[]): DeepPartial<TDocument["_source"]>[];
     fullClear(): void;
-    updateDocuments(updates: EmbeddedDocumentUpdateData[]): void;
     _initialize(): void;
 }
 interface ExtendedCollectionDocument extends Document {

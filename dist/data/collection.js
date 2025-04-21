@@ -1,4 +1,5 @@
 import { MODULE } from "../module";
+import { R } from "..";
 class ExtendedDocumentCollection extends foundry
     .documents.abstract.DocumentCollection {
     set(id, document) {
@@ -14,7 +15,6 @@ class ExtendedDocumentCollection extends foundry
         }
         document.__collection = this;
         super.set(document.id, document);
-        Hooks.callAll(MODULE.path(`add${this.documentName}`), document, this);
         return true;
     }
     delete(id) {
@@ -23,24 +23,26 @@ class ExtendedDocumentCollection extends foundry
             if (document) {
                 document.__collection = undefined;
             }
-            Hooks.callAll(MODULE.path(`delete${this.documentName}`), document, this);
             return true;
         }
         return false;
     }
+    updateDocuments(updates) {
+        return R.pipe(updates, R.map((update) => {
+            const document = this.get(update._id ?? "");
+            if (!document)
+                return;
+            const changed = document.updateSource(update);
+            this._source.findSplice((source) => source._id === update._id, document.toObject());
+            return {
+                ...changed,
+                _id: update._id,
+            };
+        }), R.filter(R.isTruthy));
+    }
     fullClear() {
         this._source.length = 0;
         super.clear();
-    }
-    updateDocuments(updates) {
-        for (const update of updates) {
-            const document = this.get(update._id ?? "");
-            if (!document)
-                continue;
-            const changed = document.updateSource(update);
-            this._source.findSplice((source) => source._id === update._id, document.toObject());
-            Hooks.callAll(MODULE.path(`update${this.documentName}`), document, changed, this);
-        }
     }
     _initialize() {
         this.clear();

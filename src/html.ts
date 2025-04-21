@@ -142,12 +142,35 @@ function arrayToSelectOptions(
     return newEntries;
 }
 
+function assignStyle(el: HTMLElement, style: Partial<CSSStyleDeclaration>) {
+    Object.assign(el.style, style);
+}
+
+function dataToDatasetString(data: DatasetData): string {
+    return R.pipe(
+        !R.isArray(data) ? R.entries(data) : data,
+        R.map(([key, value]): string | undefined => {
+            if (R.isNullish(value)) return;
+
+            const sluggifiedKey = key.replace(/\B([A-Z])/g, "-$1").toLowerCase();
+            const stringified = R.isObjectType(value) ? JSON.stringify(value) : value;
+
+            return `data-${sluggifiedKey}="${stringified}"`;
+        }),
+        R.filter(R.isTruthy),
+        R.join(" ")
+    );
+}
+
 interface CreateHTMLElementOptions {
     classes?: string[];
     content?: string | HTMLCollection | (Element | string)[];
     dataset?: Record<string, string | number | boolean | null | undefined>;
     id?: string;
 }
+
+type DatasetValue = Maybe<string | number | boolean | object>;
+type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
 
 type ListenerCallbackArgs<E extends HTMLElement, TEvent extends EventType> =
     | [TEvent, ListenerCallback<E, TEvent>, boolean]
@@ -164,7 +187,9 @@ export {
     addListener,
     addListenerAll,
     arrayToSelectOptions,
+    assignStyle,
     createHTMLElement,
+    dataToDatasetString,
     htmlClosest,
     htmlQuery,
 };

@@ -1,5 +1,5 @@
 import { HelperDelegate, HelperOptions } from "handlebars";
-import { joinStr, localize, LocalizeData, MODULE } from ".";
+import { joinStr, localize, LocalizeData, MODULE, R } from ".";
 
 function templatePath(...path: string[]): string {
     return `modules/${MODULE.id}/templates/${joinStr("/", path)}.hbs`;
@@ -7,11 +7,10 @@ function templatePath(...path: string[]): string {
 
 function render<TData extends RenderTemplateData>(
     template: string | string[],
-    data: TData,
-    { i18n }: RenderTemplateOptions = {}
+    data: TData
 ): Promise<string> {
-    if (i18n) {
-        (data as any).i18n = templateLocalize(i18n);
+    if (R.isString(data.i18n)) {
+        data.i18n = templateLocalize(data.i18n);
     }
 
     const path = templatePath(...[template].flat());
@@ -26,9 +25,9 @@ function templateLocalize(...subKeys: string[]) {
 
     Object.defineProperties(fn, {
         tooltip: {
-            value: (...keys: string[]) => {
-                const tooltip = localize(...subKeys, ...keys);
-                return `data-tooltip aria-label="${tooltip}"`;
+            value: (...args: Parameters<HelperDelegate>) => {
+                const { hash } = args.pop() as HelperOptions;
+                return templateTooltip(...subKeys, ...(args as string[]), hash);
             },
             enumerable: false,
             configurable: false,
@@ -38,10 +37,17 @@ function templateLocalize(...subKeys: string[]) {
     return fn;
 }
 
-type RenderTemplateData = Record<string, any>;
-type RenderTemplateOptions = { i18n?: string };
+function templateTooltip(...args: [...string[], TemplateToolipOptions]) {
+    const options = args.pop() as TemplateToolipOptions;
+    const tooltip = options.localize !== false ? localize(...args) : args[0];
+    return `data-tooltip aria-label="${tooltip}"`;
+}
+
+type RenderTemplateData = Record<string, any> & { i18n?: string | TemplateLocalize };
 
 type TemplateLocalize = ReturnType<typeof templateLocalize>;
 
-export { render, templateLocalize, templatePath };
-export type { RenderTemplateData, RenderTemplateOptions, TemplateLocalize };
+type TemplateToolipOptions = { localize?: boolean };
+
+export { render, templateLocalize, templatePath, templateTooltip };
+export type { RenderTemplateData, TemplateLocalize };

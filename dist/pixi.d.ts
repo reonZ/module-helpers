@@ -1,2 +1,3 @@
-declare function distanceBetweenPoints(a: Point, b: Point): number;
-export { distanceBetweenPoints };
+declare function distanceToPoint(a: Point, b: Point): number;
+declare function subtractPoint(a: Point, b: Point): Point;
+export { distanceToPoint, subtractPoint };

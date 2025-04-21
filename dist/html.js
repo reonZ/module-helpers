@@ -67,4 +67,16 @@ function arrayToSelectOptions(entries, i18n) {
     }
     return newEntries;
 }
-export { addListener, addListenerAll, arrayToSelectOptions, createHTMLElement, htmlClosest, htmlQuery, };
+function assignStyle(el, style) {
+    Object.assign(el.style, style);
+}
+function dataToDatasetString(data) {
+    return R.pipe(!R.isArray(data) ? R.entries(data) : data, R.map(([key, value]) => {
+        if (R.isNullish(value))
+            return;
+        const sluggifiedKey = key.replace(/\B([A-Z])/g, "-$1").toLowerCase();
+        const stringified = R.isObjectType(value) ? JSON.stringify(value) : value;
+        return `data-${sluggifiedKey}="${stringified}"`;
+    }), R.filter(R.isTruthy), R.join(" "));
+}
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, dataToDatasetString, htmlClosest, htmlQuery, };

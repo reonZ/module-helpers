@@ -1,5 +1,6 @@
 import { MODULE } from "../module";
 import Document = foundry.abstract.Document;
+import { R } from "..";
 
 class ExtendedDocumentCollection<TDocument extends ExtendedCollectionDocument> extends foundry
     .documents.abstract.DocumentCollection<TDocument> {
@@ -22,7 +23,6 @@ class ExtendedDocumentCollection<TDocument extends ExtendedCollectionDocument> e
         document.__collection = this;
         super.set(document.id, document);
 
-        Hooks.callAll(MODULE.path(`add${this.documentName}`), document, this);
         return true;
     }
 
@@ -34,27 +34,34 @@ class ExtendedDocumentCollection<TDocument extends ExtendedCollectionDocument> e
                 document.__collection = undefined;
             }
 
-            Hooks.callAll(MODULE.path(`delete${this.documentName}`), document, this);
             return true;
         }
 
         return false;
     }
 
+    updateDocuments(updates: EmbeddedDocumentUpdateData[]): DeepPartial<TDocument["_source"]>[] {
+        return R.pipe(
+            updates,
+            R.map((update) => {
+                const document = this.get(update._id ?? "");
+                if (!document) return;
+
+                const changed = document.updateSource(update);
+                this._source.findSplice((source) => source._id === update._id, document.toObject());
+
+                return {
+                    ...changed,
+                    _id: update._id,
+                };
+            }),
+            R.filter(R.isTruthy)
+        );
+    }
+
     fullClear() {
         this._source.length = 0;
         super.clear();
-    }
-
-    updateDocuments(updates: EmbeddedDocumentUpdateData[]) {
-        for (const update of updates) {
-            const document = this.get(update._id ?? "");
-            if (!document) continue;
-
-            const changed = document.updateSource(update);
-            this._source.findSplice((source) => source._id === update._id, document.toObject());
-            Hooks.callAll(MODULE.path(`update${this.documentName}`), document, changed, this);
-        }
     }
 
     _initialize() {
