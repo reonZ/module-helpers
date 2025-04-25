@@ -2,7 +2,12 @@ import * as R from "remeda";
 function joinStr(separator, ...path) {
     return R.pipe(path, R.flat(), R.filter(R.isString), R.join(separator));
 }
-function objectHasKey(obj, key) {
-    return (typeof key === "string" || typeof key === "number") && key in obj;
+function arrayIncludes(arr, test) {
+    return test.some((entry) => arr.includes(entry));
 }
-export { joinStr, objectHasKey };
+function roundToStep(value, step) {
+    step = value < 0 ? step * -1 : step;
+    const half = step / 2;
+    return value + half - ((value + half) % step);
+}
+export { arrayIncludes, joinStr, roundToStep };

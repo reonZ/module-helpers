@@ -9,4 +9,18 @@ function subtractPoint(a: Point, b: Point): Point {
     };
 }
 
-export { distanceToPoint, subtractPoint };
+function addToPoint({ x, y }: Point, value: number): Point {
+    return {
+        x: x + value,
+        y: y + value,
+    };
+}
+
+function calculateMidPoint(a: Point, b: Point): Point {
+    return {
+        x: (a.x + b.x) / 2,
+        y: (a.y + b.y) / 2,
+    };
+}
+
+export { addToPoint, calculateMidPoint, distanceToPoint, subtractPoint };

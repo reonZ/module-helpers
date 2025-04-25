@@ -1,3 +1,4 @@
 declare function joinStr(separator: "/" | "." | "-", ...path: any[]): string;
-declare function objectHasKey<T extends object>(obj: T, key: unknown): key is keyof T;
-export { joinStr, objectHasKey };
+declare function arrayIncludes(arr: any[], test: any[]): boolean;
+declare function roundToStep(value: number, step: number): number;
+export { arrayIncludes, joinStr, roundToStep };

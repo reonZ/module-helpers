@@ -28,6 +28,32 @@ function createHTMLElement<K extends keyof HTMLElementTagNameMap>(
     return element;
 }
 
+function createHTMLButton({ icon, label, action, type }: ButtonData): HTMLButtonElement {
+    const button = document.createElement("button");
+
+    button.type = type ?? "button";
+    button.innerHTML = `<i class="${icon}"></i> ${label}`;
+
+    if (action) {
+        button.dataset.action = action;
+    }
+
+    return button;
+}
+
+function createHTMLButtons(data: ButtonData[], wrapperClass = "buttons"): HTMLElement {
+    const wrapper = document.createElement("div");
+
+    wrapper.classList.add(wrapperClass);
+
+    for (const entry of data) {
+        const button = createHTMLButton(entry);
+        wrapper.appendChild(button);
+    }
+
+    return wrapper;
+}
+
 function htmlQuery<K extends keyof HTMLElementTagNameMap>(
     parent: MaybeHTML,
     selectors: K
@@ -169,6 +195,13 @@ interface CreateHTMLElementOptions {
     id?: string;
 }
 
+type ButtonData = {
+    icon: string;
+    label: string;
+    action?: string;
+    type?: "button" | "submit" | "reset";
+};
+
 type DatasetValue = Maybe<string | number | boolean | object>;
 type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
 
@@ -188,8 +221,12 @@ export {
     addListenerAll,
     arrayToSelectOptions,
     assignStyle,
+    createHTMLButton,
+    createHTMLButtons,
     createHTMLElement,
     dataToDatasetString,
     htmlClosest,
     htmlQuery,
 };
+
+export type { DatasetData, DatasetValue };

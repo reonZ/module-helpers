@@ -1,5 +1,7 @@
 import { I18n } from ".";
 declare function createHTMLElement<K extends keyof HTMLElementTagNameMap>(nodeName: K, { classes, dataset, content, id }?: CreateHTMLElementOptions): HTMLElementTagNameMap[K];
+declare function createHTMLButton({ icon, label, action, type }: ButtonData): HTMLButtonElement;
+declare function createHTMLButtons(data: ButtonData[], wrapperClass?: string): HTMLElement;
 declare function htmlQuery<K extends keyof HTMLElementTagNameMap>(parent: MaybeHTML, selectors: K): HTMLElementTagNameMap[K] | null;
 declare function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null;
 declare function htmlQuery<E extends HTMLElement = HTMLElement>(parent: MaybeHTML, selectors: string): E | null;
@@ -21,8 +23,15 @@ interface CreateHTMLElementOptions {
     dataset?: Record<string, string | number | boolean | null | undefined>;
     id?: string;
 }
+type ButtonData = {
+    icon: string;
+    label: string;
+    action?: string;
+    type?: "button" | "submit" | "reset";
+};
 type DatasetValue = Maybe<string | number | boolean | object>;
 type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
 type ListenerCallbackArgs<E extends HTMLElement, TEvent extends EventType> = [TEvent, ListenerCallback<E, TEvent>, boolean] | [TEvent, ListenerCallback<E, TEvent>] | [ListenerCallback<E, TEvent>, boolean] | [ListenerCallback<E, TEvent>];
 type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = (event: HTMLElementEventMap[TEvent], element: TElement) => void;
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, dataToDatasetString, htmlClosest, htmlQuery, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, dataToDatasetString, htmlClosest, htmlQuery, };
+export type { DatasetData, DatasetValue };

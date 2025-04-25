@@ -89,4 +89,17 @@ declare global {
         : T[number] extends { value: infer V extends string }
         ? V
         : never;
+
+    type UpdateData<T> = T extends Record<infer K extends string, any>
+        ? Partial<T> & Partial<Record<`-=${K}`, null>>
+        : never;
+
+    type Rect = {
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+        left: number;
+        right: number;
+    };
 }

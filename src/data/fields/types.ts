@@ -44,23 +44,4 @@ type SchemaField<
     THasInitial
 >;
 
-type StringField<
-    TSourceProp extends string = string,
-    TRequired extends boolean = false,
-    TNullable extends boolean = false,
-    THasInitial extends boolean = true
-> = fields.StringField<TSourceProp, TSourceProp, TRequired, TNullable, THasInitial>;
-
-type BooleanField<
-    TRequired extends boolean = true,
-    TNullable extends boolean = false,
-    THasInitial extends boolean = true
-> = fields.BooleanField<boolean, boolean, TRequired, TNullable, THasInitial>;
-
-type NumberField<
-    TRequired extends boolean = false,
-    TNullable extends boolean = true,
-    THasInitial extends boolean = true
-> = fields.NumberField<number, number, TRequired, TNullable, THasInitial>;
-
-export type { ArrayField, BooleanField, NumberField, RecordField, SchemaField, StringField };
+export type { ArrayField, RecordField, SchemaField };

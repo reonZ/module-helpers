@@ -7,4 +7,16 @@ function subtractPoint(a, b) {
         y: a.y - b.y,
     };
 }
-export { distanceToPoint, subtractPoint };
+function addToPoint({ x, y }, value) {
+    return {
+        x: x + value,
+        y: y + value,
+    };
+}
+function calculateMidPoint(a, b) {
+    return {
+        x: (a.x + b.x) / 2,
+        y: (a.y + b.y) / 2,
+    };
+}
+export { addToPoint, calculateMidPoint, distanceToPoint, subtractPoint };

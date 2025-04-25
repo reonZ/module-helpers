@@ -20,6 +20,24 @@ function createHTMLElement(nodeName, { classes = [], dataset = {}, content, id }
     }
     return element;
 }
+function createHTMLButton({ icon, label, action, type }) {
+    const button = document.createElement("button");
+    button.type = type ?? "button";
+    button.innerHTML = `<i class="${icon}"></i> ${label}`;
+    if (action) {
+        button.dataset.action = action;
+    }
+    return button;
+}
+function createHTMLButtons(data, wrapperClass = "buttons") {
+    const wrapper = document.createElement("div");
+    wrapper.classList.add(wrapperClass);
+    for (const entry of data) {
+        const button = createHTMLButton(entry);
+        wrapper.appendChild(button);
+    }
+    return wrapper;
+}
 function htmlQuery(parent, selectors) {
     if (!(parent instanceof Element || parent instanceof Document))
         return null;
@@ -79,4 +97,4 @@ function dataToDatasetString(data) {
         return `data-${sluggifiedKey}="${stringified}"`;
     }), R.filter(R.isTruthy), R.join(" "));
 }
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, dataToDatasetString, htmlClosest, htmlQuery, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, dataToDatasetString, htmlClosest, htmlQuery, };

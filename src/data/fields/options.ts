@@ -1,4 +1,3 @@
-import { StringField } from ".";
 import fields = foundry.data.fields;
 
 class SelectOptionField<
@@ -36,8 +35,8 @@ class SelectOptionField<
 }
 
 type SelectOptionSchema = {
-    value: StringField<string, true>;
-    label: StringField<string, false, false, false>;
+    value: fields.StringField<string, string, true>;
+    label: fields.StringField<string, string, false, false, false>;
 };
 
 export { SelectOptionField };
