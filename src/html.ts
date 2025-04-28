@@ -155,12 +155,9 @@ function arrayToSelectOptions(
     const localizer = i18n?.localize.bind(i18n) ?? game.i18n.localize.bind(game.i18n);
 
     for (const entry of entries) {
-        const newEntry =
-            typeof entry === "string" ? { value: entry, label: entry } : (entry as SelectOption);
-
+        const newEntry = typeof entry === "string" ? { value: entry, label: entry } : entry;
         newEntries.push({
             ...newEntry,
-            value: newEntry.value,
             label: localizer(newEntry.label ?? newEntry.value),
         });
     }
@@ -181,11 +178,27 @@ function dataToDatasetString(data: DatasetData): string {
             const sluggifiedKey = key.replace(/\B([A-Z])/g, "-$1").toLowerCase();
             const stringified = R.isObjectType(value) ? JSON.stringify(value) : value;
 
-            return `data-${sluggifiedKey}="${stringified}"`;
+            return `data-${sluggifiedKey}='${stringified}'`;
         }),
         R.filter(R.isTruthy),
         R.join(" ")
     );
+}
+
+function datasetToData<T extends Record<string, any>>(dataset: DOMStringMap): T {
+    const data = {} as T;
+
+    for (const [sluggifiedKey, stringValue] of R.entries(dataset)) {
+        const key = game.pf2e.system.sluggify(sluggifiedKey, { camel: "dromedary" }) as keyof T;
+
+        try {
+            data[key] = stringValue ? JSON.parse(stringValue) : undefined;
+        } catch (error) {
+            data[key] = stringValue as T[keyof T];
+        }
+    }
+
+    return data;
 }
 
 interface CreateHTMLElementOptions {
@@ -224,6 +237,7 @@ export {
     createHTMLButton,
     createHTMLButtons,
     createHTMLElement,
+    datasetToData,
     dataToDatasetString,
     htmlClosest,
     htmlQuery,

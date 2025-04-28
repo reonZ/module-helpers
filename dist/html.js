@@ -79,7 +79,6 @@ function arrayToSelectOptions(entries, i18n) {
         const newEntry = typeof entry === "string" ? { value: entry, label: entry } : entry;
         newEntries.push({
             ...newEntry,
-            value: newEntry.value,
             label: localizer(newEntry.label ?? newEntry.value),
         });
     }
@@ -94,7 +93,20 @@ function dataToDatasetString(data) {
             return;
         const sluggifiedKey = key.replace(/\B([A-Z])/g, "-$1").toLowerCase();
         const stringified = R.isObjectType(value) ? JSON.stringify(value) : value;
-        return `data-${sluggifiedKey}="${stringified}"`;
+        return `data-${sluggifiedKey}='${stringified}'`;
     }), R.filter(R.isTruthy), R.join(" "));
 }
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, dataToDatasetString, htmlClosest, htmlQuery, };
+function datasetToData(dataset) {
+    const data = {};
+    for (const [sluggifiedKey, stringValue] of R.entries(dataset)) {
+        const key = game.pf2e.system.sluggify(sluggifiedKey, { camel: "dromedary" });
+        try {
+            data[key] = stringValue ? JSON.parse(stringValue) : undefined;
+        }
+        catch (error) {
+            data[key] = stringValue;
+        }
+    }
+    return data;
+}
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, };

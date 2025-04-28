@@ -17,6 +17,7 @@ declare function htmlClosest<E extends HTMLElement = HTMLElement>(child: MaybeHT
 declare function arrayToSelectOptions(entries: Iterable<SelectOption | string | FormSelectOption>, i18n?: I18n): WithRequired<SelectOption, "label">[];
 declare function assignStyle(el: HTMLElement, style: Partial<CSSStyleDeclaration>): void;
 declare function dataToDatasetString(data: DatasetData): string;
+declare function datasetToData<T extends Record<string, any>>(dataset: DOMStringMap): T;
 interface CreateHTMLElementOptions {
     classes?: string[];
     content?: string | HTMLCollection | (Element | string)[];
@@ -33,5 +34,5 @@ type DatasetValue = Maybe<string | number | boolean | object>;
 type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
 type ListenerCallbackArgs<E extends HTMLElement, TEvent extends EventType> = [TEvent, ListenerCallback<E, TEvent>, boolean] | [TEvent, ListenerCallback<E, TEvent>] | [ListenerCallback<E, TEvent>, boolean] | [ListenerCallback<E, TEvent>];
 type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = (event: HTMLElementEventMap[TEvent], element: TElement) => void;
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, dataToDatasetString, htmlClosest, htmlQuery, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, };
 export type { DatasetData, DatasetValue };
