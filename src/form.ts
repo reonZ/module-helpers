@@ -84,13 +84,13 @@ function createFormTemplate(i18n: I18nCreateArgs, groups: CreateFormGroupParams[
 
 type BaseCreateInputConfig<T extends { name: string }> = PartialExcept<T, "name"> & {
     i18n?: I18nCreateArgs;
+    disabled?: boolean;
 };
 
 type CreateTextInputConfig = BaseCreateInputConfig<FormInputConfig>;
 
 type CreateSelectInputConfig = Omit<BaseCreateInputConfig<SelectInputConfig>, "options"> & {
-    options: FormSelectOption[] | string[];
-    i18n?: I18nCreateArgs;
+    options: (FormSelectOption | string)[] | ReadonlyArray<FormSelectOption | string>;
 };
 
 type CreateGroupInputConfigMap = {
@@ -100,7 +100,7 @@ type CreateGroupInputConfigMap = {
 
 type FormGroupType = "text" | "select";
 
-type BaseFormGroupParams<T extends FormGroupType> = {
+type FormGroupParams<T extends FormGroupType> = {
     type: T;
     inputConfig: CreateGroupInputConfigMap[T];
     groupConfig?: CreateFormGroupConfig;
@@ -110,7 +110,7 @@ type CreateFormGroupConfig = Partial<FormGroupConfig> & {
     i18n?: I18nCreateArgs;
 };
 
-type CreateFormGroupParams = BaseFormGroupParams<"text"> | BaseFormGroupParams<"select">;
+type CreateFormGroupParams = FormGroupParams<"text"> | FormGroupParams<"select">;
 
 type CreateFormDataOptions = {
     expand?: boolean;
