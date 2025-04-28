@@ -90,10 +90,6 @@ declare global {
         ? V
         : never;
 
-    type UpdateData<T> = T extends Record<infer K extends string, any>
-        ? Partial<T> & Partial<Record<`-=${K}`, null>>
-        : never;
-
     type Rect = {
         x: number;
         y: number;
