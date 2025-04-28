@@ -48,15 +48,15 @@ async function waitDialog({ content, classes = [], data, focus, i18n, no, positi
         window: {
             title: title ?? localize(i18n, "title"),
         },
-        render: (event, html) => {
+        render: (event, dialog) => {
             if (focus) {
-                htmlQuery(html, `[name="${focus}"]`)?.focus();
+                htmlQuery(dialog.element, `[name="${focus}"]`)?.focus();
             }
             else {
-                htmlQuery(html, `input[type="text"]`)?.focus();
+                htmlQuery(dialog.element, `input[type="text"]`)?.focus();
             }
             if (onRender) {
-                onRender(event, html);
+                onRender(event, dialog);
             }
         },
     };
