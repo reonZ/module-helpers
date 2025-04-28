@@ -27,8 +27,9 @@ function templateLocalize(...subKeys) {
     return fn;
 }
 function templateTooltip(...args) {
-    const options = args.pop();
+    const options = args[0];
     const tooltip = options.localize !== false ? localize(...args) : args[0];
-    return `data-tooltip aria-label="${tooltip}"`;
+    return `data-tooltip="${tooltip}"`;
+    // return `data-tooltip="${tooltip}" aria-label="${tooltip}"`;
 }
 export { render, templateLocalize, templatePath, templateTooltip };

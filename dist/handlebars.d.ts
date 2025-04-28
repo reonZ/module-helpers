@@ -1,5 +1,6 @@
 /// <reference types="foundry-pf2e/node_modules/handlebars" />
 import { HelperOptions } from "handlebars";
+import { LocalizeData } from ".";
 declare function templatePath(...path: string[]): string;
 declare function render<TData extends RenderTemplateData>(template: string | string[], data: TData): Promise<string>;
 declare function templateLocalize(...subKeys: string[]): (context?: any, arg1?: any, arg2?: any, arg3?: any, arg4?: any, arg5?: any, options?: HelperOptions | undefined) => string;
@@ -8,7 +9,7 @@ type RenderTemplateData = Record<string, any> & {
     i18n?: string | TemplateLocalize;
 };
 type TemplateLocalize = ReturnType<typeof templateLocalize>;
-type TemplateToolipOptions = {
+type TemplateToolipOptions = LocalizeData & {
     localize?: boolean;
 };
 export { render, templateLocalize, templatePath, templateTooltip };

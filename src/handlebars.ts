@@ -38,16 +38,17 @@ function templateLocalize(...subKeys: string[]) {
 }
 
 function templateTooltip(...args: [...string[], TemplateToolipOptions]) {
-    const options = args.pop() as TemplateToolipOptions;
+    const options = args[0] as TemplateToolipOptions;
     const tooltip = options.localize !== false ? localize(...args) : args[0];
-    return `data-tooltip aria-label="${tooltip}"`;
+    return `data-tooltip="${tooltip}"`;
+    // return `data-tooltip="${tooltip}" aria-label="${tooltip}"`;
 }
 
 type RenderTemplateData = Record<string, any> & { i18n?: string | TemplateLocalize };
 
 type TemplateLocalize = ReturnType<typeof templateLocalize>;
 
-type TemplateToolipOptions = { localize?: boolean };
+type TemplateToolipOptions = LocalizeData & { localize?: boolean };
 
 export { render, templateLocalize, templatePath, templateTooltip };
 export type { RenderTemplateData, TemplateLocalize };
