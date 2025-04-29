@@ -5,6 +5,7 @@ class SelectOptionField extends fields.SchemaField {
             value: new fields.StringField({
                 required: true,
                 nullable: false,
+                blank: false,
             }),
             label: new fields.StringField({
                 required: false,
