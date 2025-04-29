@@ -83,7 +83,7 @@ async function waitDialog<T extends Record<string, any>>({
         position,
         skipAnimate,
         window: {
-            title: title ?? localize(i18n, "title"),
+            title: title ?? localize(i18n, "title", data ?? {}),
         },
         render: (event, dialog) => {
             if (focus) {
@@ -124,7 +124,7 @@ async function confirmDialog(
         position,
         skipAnimate,
         window: {
-            title: title ?? localize(i18n, "title"),
+            title: title ?? localize(i18n, "title", data),
         },
         yes: {
             default: !!yes?.default,

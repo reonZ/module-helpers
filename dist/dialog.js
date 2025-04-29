@@ -46,7 +46,7 @@ async function waitDialog({ content, classes = [], data, focus, i18n, no, positi
         position,
         skipAnimate,
         window: {
-            title: title ?? localize(i18n, "title"),
+            title: title ?? localize(i18n, "title", data ?? {}),
         },
         render: (event, dialog) => {
             if (focus) {
@@ -73,7 +73,7 @@ async function confirmDialog(i18n, { classes = [], content, data = {}, no, posit
         position,
         skipAnimate,
         window: {
-            title: title ?? localize(i18n, "title"),
+            title: title ?? localize(i18n, "title", data),
         },
         yes: {
             default: !!yes?.default,
