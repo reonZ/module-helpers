@@ -90,6 +90,10 @@ declare global {
         ? V
         : never;
 
+    type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+
+    type DeepWriteable<T> = { -readonly [P in keyof T]: DeepWriteable<T[P]> };
+
     type Rect = {
         x: number;
         y: number;
