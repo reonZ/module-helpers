@@ -19,4 +19,23 @@ function calculateMidPoint(a, b) {
         y: (a.y + b.y) / 2,
     };
 }
-export { addToPoint, calculateMidPoint, distanceToPoint, subtractPoint };
+function drawRectangleMask(x, y, width, height, radius) {
+    const mask = new PIXI.Graphics();
+    mask.beginFill(0x555555);
+    if (radius) {
+        mask.drawRoundedRect(x, y, width, height, radius);
+    }
+    else {
+        mask.drawRect(x, y, width, height);
+    }
+    mask.endFill();
+    return mask;
+}
+function drawCircleMask(x, y, radius) {
+    const mask = new PIXI.Graphics();
+    mask.beginFill(0x555555);
+    mask.drawCircle(x, y, radius);
+    mask.endFill();
+    return mask;
+}
+export { addToPoint, calculateMidPoint, distanceToPoint, drawCircleMask, drawRectangleMask, subtractPoint, };
