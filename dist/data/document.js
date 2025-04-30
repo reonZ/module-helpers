@@ -15,7 +15,7 @@ function makeModuleDocument(metadata, schema) {
                 documents.push(document);
                 collection?.set(document.id, document, { modifySource: true });
             }
-            if (collection && operation.broadcast !== false) {
+            if (collection && operation.broadcast === true) {
                 parent?._dispatchDescendantDocumentEvents("onCreate", collection.name, [
                     documents,
                     data,
@@ -42,7 +42,7 @@ function makeModuleDocument(metadata, schema) {
                 changes.push(changed);
                 documents.push(document);
             }
-            if (operation.broadcast !== false) {
+            if (operation.broadcast === true) {
                 parent?._dispatchDescendantDocumentEvents("onUpdate", collection.name, [
                     documents,
                     changes,
@@ -68,7 +68,7 @@ function makeModuleDocument(metadata, schema) {
                     documents.push(document);
                 }
             }
-            if (operation.broadcast !== false) {
+            if (operation.broadcast === true) {
                 for (const document of documents) {
                     document["_onDelete"](operation, game.user.id);
                 }
