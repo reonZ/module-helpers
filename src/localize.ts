@@ -28,7 +28,7 @@ function localizePath(...args: string[]): string {
 
 function notify(type: "info" | "warning" | "error", ...args: NotificationArgs): number {
     const permanent = R.isBoolean(args.at(-1)) ? (args.pop() as boolean) : false;
-    const str = localize(args);
+    const str = localize(...(args as LocalizeArgs));
     return ui.notifications.notify(str, type, { permanent });
 }
 

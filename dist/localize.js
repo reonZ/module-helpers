@@ -22,7 +22,7 @@ function localizePath(...args) {
 }
 function notify(type, ...args) {
     const permanent = R.isBoolean(args.at(-1)) ? args.pop() : false;
-    const str = localize(args);
+    const str = localize(...args);
     return ui.notifications.notify(str, type, { permanent });
 }
 function info(...args) {
