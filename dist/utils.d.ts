@@ -1,4 +1,5 @@
 declare function joinStr(separator: "/" | "." | "-", ...path: any[]): string;
 declare function arrayIncludes(arr: any[], test: any[]): boolean;
 declare function roundToStep(value: number, step: number): number;
-export { arrayIncludes, joinStr, roundToStep };
+declare function isDecimal(num: number): boolean;
+export { arrayIncludes, isDecimal, joinStr, roundToStep };

@@ -14,4 +14,8 @@ function roundToStep(value: number, step: number): number {
     return value + half - ((value + half) % step);
 }
 
-export { arrayIncludes, joinStr, roundToStep };
+function isDecimal(num: number): boolean {
+    return num % 1 !== 0;
+}
+
+export { arrayIncludes, isDecimal, joinStr, roundToStep };

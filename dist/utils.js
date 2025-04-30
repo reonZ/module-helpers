@@ -10,4 +10,7 @@ function roundToStep(value, step) {
     const half = step / 2;
     return value + half - ((value + half) % step);
 }
-export { arrayIncludes, joinStr, roundToStep };
+function isDecimal(num) {
+    return num % 1 !== 0;
+}
+export { arrayIncludes, isDecimal, joinStr, roundToStep };
