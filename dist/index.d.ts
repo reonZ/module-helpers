@@ -1,5 +1,6 @@
 export * as R from "remeda";
 export * from "./data";
+export * from "./actor";
 export * from "./check";
 export * from "./damage";
 export * from "./dialog";
