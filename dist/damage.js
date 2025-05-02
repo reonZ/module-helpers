@@ -53,7 +53,6 @@ async function rollDamageFromFormula(formula, { actionName, extraRollOptions = [
     flavor += "</div><hr>";
     const DamageRoll = getDamageRollClass();
     const roll = await new DamageRoll(formula, { actor, item }).evaluate();
-    // @ts-ignore
     const speaker = getDocumentClass("ChatMessage").getSpeaker({ actor, token });
     return roll.toMessage({
         flavor,
