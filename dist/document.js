@@ -1,3 +1,4 @@
+import { MODULE } from "./module";
 let _DamageRoll;
 let _DamageInstance;
 function getDamageRollClass() {
@@ -6,4 +7,14 @@ function getDamageRollClass() {
 function getDamageInstanceClass() {
     return (_DamageInstance ??= CONFIG.Dice.rolls.find((Roll) => Roll.name === "DamageInstance"));
 }
-export { getDamageRollClass, getDamageInstanceClass };
+function getInMemory(obj, ...path) {
+    return foundry.utils.getProperty(obj, `modules.${MODULE.id}.${path.join(".")}`);
+}
+function setInMemory(obj, ...args) {
+    const value = args.pop();
+    return foundry.utils.setProperty(obj, `modules.${MODULE.id}.${args.join(".")}`, value);
+}
+function deleteInMemory(obj, ...path) {
+    return foundry.utils.deleteProperty(obj, `modules.${MODULE.id}.${path.join(".")}`);
+}
+export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, setInMemory };
