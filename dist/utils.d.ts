@@ -1,5 +1,7 @@
-declare function joinStr(separator: "/" | "." | "-", ...path: any[]): string;
+declare function joinStr(separator: StringSeparator, ...path: any[]): string;
+declare function splitStr(separator: StringSeparator, str: string): string[];
 declare function arrayIncludes(arr: any[], test: any[]): boolean;
 declare function roundToStep(value: number, step: number): number;
 declare function isDecimal(num: number): boolean;
-export { arrayIncludes, isDecimal, joinStr, roundToStep };
+type StringSeparator = "/" | "." | "-" | ",";
+export { arrayIncludes, isDecimal, joinStr, roundToStep, splitStr };

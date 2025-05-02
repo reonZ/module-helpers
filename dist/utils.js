@@ -1,6 +1,10 @@
 import * as R from "remeda";
 function joinStr(separator, ...path) {
-    return R.pipe(path, R.flat(), R.filter(R.isString), R.join(separator));
+    return R.pipe(path, //
+    R.flat(), R.filter(R.isString), R.join(separator));
+}
+function splitStr(separator, str) {
+    return R.pipe(str, R.split(separator), R.map((x) => x.trim()), R.filter(R.isTruthy));
 }
 function arrayIncludes(arr, test) {
     return test.some((entry) => arr.includes(entry));
@@ -13,4 +17,4 @@ function roundToStep(value, step) {
 function isDecimal(num) {
     return num % 1 !== 0;
 }
-export { arrayIncludes, isDecimal, joinStr, roundToStep };
+export { arrayIncludes, isDecimal, joinStr, roundToStep, splitStr };

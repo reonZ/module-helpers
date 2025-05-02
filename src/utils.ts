@@ -1,7 +1,21 @@
 import * as R from "remeda";
 
-function joinStr(separator: "/" | "." | "-", ...path: any[]): string {
-    return R.pipe(path, R.flat(), R.filter(R.isString), R.join(separator));
+function joinStr(separator: StringSeparator, ...path: any[]): string {
+    return R.pipe(
+        path, //
+        R.flat(),
+        R.filter(R.isString),
+        R.join(separator)
+    );
+}
+
+function splitStr(separator: StringSeparator, str: string): string[] {
+    return R.pipe(
+        str,
+        R.split(separator),
+        R.map((x) => x.trim()),
+        R.filter(R.isTruthy)
+    );
 }
 
 function arrayIncludes(arr: any[], test: any[]): boolean {
@@ -18,4 +32,6 @@ function isDecimal(num: number): boolean {
     return num % 1 !== 0;
 }
 
-export { arrayIncludes, isDecimal, joinStr, roundToStep };
+type StringSeparator = "/" | "." | "-" | ",";
+
+export { arrayIncludes, isDecimal, joinStr, roundToStep, splitStr };
