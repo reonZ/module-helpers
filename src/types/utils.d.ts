@@ -90,6 +90,8 @@ declare global {
         ? V
         : never;
 
+    type ExtractArrayUnion<T> = T extends (infer U)[] | ReadonlyArray<infer U> ? U : T;
+
     type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
     type DeepWriteable<T> = { -readonly [P in keyof T]: DeepWriteable<T[P]> };
