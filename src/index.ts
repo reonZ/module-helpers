@@ -2,7 +2,10 @@ export * as R from "remeda";
 
 export * from "./data";
 
+export * from "./check";
+export * from "./damage";
 export * from "./dialog";
+export * from "./document";
 export * from "./form";
 export * from "./handlebars";
 export * from "./hooks";
