@@ -10,6 +10,8 @@ declare const MODULE: {
     Error(str: string): Error;
     error(str: string, error?: Error): void;
     log(...args: any[]): void;
+    group(label: string): void;
+    groupEnd(): void;
     debug(...args: any[]): void;
     debugExpose(expose: Record<string, any>): void;
     apiExpose(expose: Record<string, any>): void;

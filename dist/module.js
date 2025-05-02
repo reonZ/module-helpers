@@ -1,5 +1,6 @@
 import { joinStr, R, registerMigrations } from ".";
 let MODULE_ID = "";
+let GROUP_LOG = false;
 let GAME_CONTEXT = "";
 let EXPOSE = {
     api: {},
@@ -43,7 +44,21 @@ const MODULE = {
         console.error(message);
     },
     log(...args) {
-        console.log(`[${this.name}]`, ...args);
+        if (GROUP_LOG) {
+            console.log(...args);
+        }
+        else {
+            console.log(`[${this.name}]`, ...args);
+        }
+    },
+    group(label) {
+        this.groupEnd();
+        GROUP_LOG = true;
+        console.group(`[${this.name}] ${label}`);
+    },
+    groupEnd() {
+        console.groupEnd();
+        GROUP_LOG = false;
     },
     debug(...args) {
         if (this.isDebug) {
