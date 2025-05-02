@@ -1,9 +1,9 @@
-declare function registerWrapper(type: "OVERRIDE", path: string | string[], callback: libWrapper.RegisterOverrideCallback, context?: WrapperContext): number[];
-declare function registerWrapper(type: "WRAPPER" | "MIXED", path: string | string[], callback: libWrapper.RegisterWrapperCallback, context?: WrapperContext): number[];
 declare function registerWrapper(type: libWrapper.RegisterType, path: string | string[], callback: libWrapper.RegisterCallback, context?: WrapperContext): number[];
 declare function unregisterWrapper(id: number | number[]): void;
-declare function createToggleableWrapper<TPath extends string | string[]>(type: "OVERRIDE", path: TPath, callback: libWrapper.RegisterOverrideCallback, options: WrapperOptions): Wrapper;
-declare function createToggleableWrapper<TPath extends string | string[]>(type: "WRAPPER" | "MIXED", path: TPath, callback: libWrapper.RegisterWrapperCallback, options: WrapperOptions): Wrapper;
+declare function createToggleableWrapper(type: libWrapper.RegisterType, path: string | string[], callback: libWrapper.RegisterCallback, options?: WrapperOptions): Wrapper;
+declare function activateWrappers(wrappers: Wrapper[]): void;
+declare function disableWrappers(wrappers: Wrapper[]): void;
+declare function toggleWrappers(wrappers: Wrapper[], enabled?: boolean): void;
 type Wrapper = {
     activate(): void;
     disable(): void;
@@ -15,4 +15,4 @@ type WrapperOptions = {
     onActivate?: () => void;
 };
 type WrapperContext = InstanceType<new (...args: any[]) => any>;
-export { createToggleableWrapper, registerWrapper, unregisterWrapper };
+export { activateWrappers, createToggleableWrapper, disableWrappers, registerWrapper, toggleWrappers, unregisterWrapper, };

@@ -2,24 +2,6 @@ import { R } from ".";
 import { MODULE } from "./module";
 
 function registerWrapper(
-    type: "OVERRIDE",
-    path: string | string[],
-    callback: libWrapper.RegisterOverrideCallback,
-    context?: WrapperContext
-): number[];
-function registerWrapper(
-    type: "WRAPPER" | "MIXED",
-    path: string | string[],
-    callback: libWrapper.RegisterWrapperCallback,
-    context?: WrapperContext
-): number[];
-function registerWrapper(
-    type: libWrapper.RegisterType,
-    path: string | string[],
-    callback: libWrapper.RegisterCallback,
-    context?: WrapperContext
-): number[];
-function registerWrapper(
     type: libWrapper.RegisterType,
     path: string | string[],
     callback: libWrapper.RegisterCallback,
@@ -51,18 +33,6 @@ function unregisterWrapper(id: number | number[]) {
     }
 }
 
-function createToggleableWrapper<TPath extends string | string[]>(
-    type: "OVERRIDE",
-    path: TPath,
-    callback: libWrapper.RegisterOverrideCallback,
-    options: WrapperOptions
-): Wrapper;
-function createToggleableWrapper<TPath extends string | string[]>(
-    type: "WRAPPER" | "MIXED",
-    path: TPath,
-    callback: libWrapper.RegisterWrapperCallback,
-    options: WrapperOptions
-): Wrapper;
 function createToggleableWrapper(
     type: libWrapper.RegisterType,
     path: string | string[],
@@ -95,6 +65,24 @@ function createToggleableWrapper(
     };
 }
 
+function activateWrappers(wrappers: Wrapper[]) {
+    for (const wrapper of wrappers) {
+        wrapper.activate();
+    }
+}
+
+function disableWrappers(wrappers: Wrapper[]) {
+    for (const wrapper of wrappers) {
+        wrapper.disable();
+    }
+}
+
+function toggleWrappers(wrappers: Wrapper[], enabled?: boolean) {
+    for (const wrapper of wrappers) {
+        wrapper.toggle(enabled);
+    }
+}
+
 type Wrapper = {
     activate(): void;
     disable(): void;
@@ -109,4 +97,11 @@ type WrapperOptions = {
 
 type WrapperContext = InstanceType<new (...args: any[]) => any>;
 
-export { createToggleableWrapper, registerWrapper, unregisterWrapper };
+export {
+    activateWrappers,
+    createToggleableWrapper,
+    disableWrappers,
+    registerWrapper,
+    toggleWrappers,
+    unregisterWrapper,
+};

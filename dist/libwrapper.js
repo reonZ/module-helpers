@@ -47,4 +47,19 @@ function createToggleableWrapper(type, path, callback, options = {}) {
         },
     };
 }
-export { createToggleableWrapper, registerWrapper, unregisterWrapper };
+function activateWrappers(wrappers) {
+    for (const wrapper of wrappers) {
+        wrapper.activate();
+    }
+}
+function disableWrappers(wrappers) {
+    for (const wrapper of wrappers) {
+        wrapper.disable();
+    }
+}
+function toggleWrappers(wrappers, enabled) {
+    for (const wrapper of wrappers) {
+        wrapper.toggle(enabled);
+    }
+}
+export { activateWrappers, createToggleableWrapper, disableWrappers, registerWrapper, toggleWrappers, unregisterWrapper, };
