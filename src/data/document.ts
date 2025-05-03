@@ -129,7 +129,7 @@ function makeModuleDocument<
         _onDeleteDescendantDocuments(parent: ModuleDocument, collection: string, ...args: any[]) {}
 
         /**
-         * client/documents/abstract/client-document.mjs
+         * client/documents/abstract/client-document.mjs#590
          */
         _dispatchDescendantDocumentEvents(
             event: DispatchEvent,
