@@ -1,4 +1,5 @@
 import { ActorPF2e } from "foundry-pf2e";
+import { R } from ".";
 
 function actorsRespectAlliance(
     origin: ActorPF2e,
@@ -12,7 +13,12 @@ function actorsRespectAlliance(
         : true;
 }
 
+function hasRollOption(actor: ActorPF2e, option: string) {
+    const rolloptionsDomains = R.values(actor.rollOptions) as Record<string, boolean>[];
+    return rolloptionsDomains.some((rollOptions) => rollOptions[option]);
+}
+
 type ActorTargetAlliance = "all" | "allies" | "enemies";
 
-export { actorsRespectAlliance };
+export { actorsRespectAlliance, hasRollOption };
 export type { ActorTargetAlliance };

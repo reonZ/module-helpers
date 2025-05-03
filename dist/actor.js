@@ -1,3 +1,4 @@
+import { R } from ".";
 function actorsRespectAlliance(origin, target, alliance = "all") {
     return alliance === "allies"
         ? target.isAllyOf(origin)
@@ -5,4 +6,8 @@ function actorsRespectAlliance(origin, target, alliance = "all") {
             ? target.isEnemyOf(origin)
             : true;
 }
-export { actorsRespectAlliance };
+function hasRollOption(actor, option) {
+    const rolloptionsDomains = R.values(actor.rollOptions);
+    return rolloptionsDomains.some((rollOptions) => rollOptions[option]);
+}
+export { actorsRespectAlliance, hasRollOption };
