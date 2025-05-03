@@ -30,7 +30,7 @@ function deleteInMemory(obj: object, ...path: string[]) {
 }
 
 function isClientDocument<T>(doc: T): doc is Extract<T, ClientDocument> {
-    return doc instanceof foundry.abstract.Document;
+    return doc instanceof foundry.abstract.Document && "collection" in doc;
 }
 
 function isScriptMacro(doc: any): doc is MacroPF2e {

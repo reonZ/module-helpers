@@ -18,7 +18,7 @@ function deleteInMemory(obj, ...path) {
     return foundry.utils.deleteProperty(obj, `modules.${MODULE.id}.${path.join(".")}`);
 }
 function isClientDocument(doc) {
-    return doc instanceof foundry.abstract.Document;
+    return doc instanceof foundry.abstract.Document && "collection" in doc;
 }
 function isScriptMacro(doc) {
     return doc instanceof Macro && doc.type === "script";
