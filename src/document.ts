@@ -1,4 +1,4 @@
-import { DamageInstance, DamageRoll } from "foundry-pf2e";
+import { DamageInstance, DamageRoll, MacroPF2e } from "foundry-pf2e";
 import { MODULE } from "./module";
 
 let _DamageRoll: typeof DamageRoll;
@@ -29,4 +29,20 @@ function deleteInMemory(obj: object, ...path: string[]) {
     return foundry.utils.deleteProperty(obj, `modules.${MODULE.id}.${path.join(".")}`);
 }
 
-export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, setInMemory };
+function isClientDocument<T>(doc: T): doc is Extract<T, ClientDocument> {
+    return doc instanceof foundry.abstract.Document;
+}
+
+function isScriptMacro(doc: any): doc is MacroPF2e {
+    return doc instanceof Macro && doc.type === "script";
+}
+
+export {
+    deleteInMemory,
+    getDamageInstanceClass,
+    getDamageRollClass,
+    getInMemory,
+    isClientDocument,
+    isScriptMacro,
+    setInMemory,
+};

@@ -17,4 +17,10 @@ function setInMemory(obj, ...args) {
 function deleteInMemory(obj, ...path) {
     return foundry.utils.deleteProperty(obj, `modules.${MODULE.id}.${path.join(".")}`);
 }
-export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, setInMemory };
+function isClientDocument(doc) {
+    return doc instanceof foundry.abstract.Document;
+}
+function isScriptMacro(doc) {
+    return doc instanceof Macro && doc.type === "script";
+}
+export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, isClientDocument, isScriptMacro, setInMemory, };
