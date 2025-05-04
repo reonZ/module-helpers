@@ -18,6 +18,7 @@ export * from "./migration";
 export * from "./module";
 export * from "./object";
 export * from "./pixi";
+export * from "./rules";
 export * from "./settings";
 export * from "./user";
 export * from "./utils";
