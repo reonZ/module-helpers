@@ -9,7 +9,7 @@ function joinStr(separator: StringSeparator, ...path: any[]): string {
     );
 }
 
-function splitStr(separator: StringSeparator, str: string): string[] {
+function splitStr(str: string, separator: StringSeparator = ","): string[] {
     return R.pipe(
         str,
         R.split(separator),

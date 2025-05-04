@@ -3,7 +3,7 @@ function joinStr(separator, ...path) {
     return R.pipe(path, //
     R.flat(), R.filter(R.isString), R.join(separator));
 }
-function splitStr(separator, str) {
+function splitStr(str, separator = ",") {
     return R.pipe(str, R.split(separator), R.map((x) => x.trim()), R.filter(R.isTruthy));
 }
 function arrayIncludes(arr, test) {

@@ -9,9 +9,9 @@ function isDegreeOfSuccessNumber(value) {
  * traits & options can also be arrays of strings
  */
 function getExtraRollOptions({ traits, options } = {}, isBasic) {
-    const maybeTraits = R.isString(traits) ? splitStr(",", traits) : traits ?? [];
+    const maybeTraits = R.isString(traits) ? splitStr(traits) : traits ?? [];
     const additionalTraits = maybeTraits.filter((t) => t in CONFIG.PF2E.actionTraits);
-    const allOptions = R.isString(options) ? splitStr(",", options) : options?.slice() ?? [];
+    const allOptions = R.isString(options) ? splitStr(options) : options?.slice() ?? [];
     if (isBasic && !allOptions.includes("damaging-effect")) {
         allOptions.push("damaging-effect");
     }
