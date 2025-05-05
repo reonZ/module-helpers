@@ -1,8 +1,25 @@
-import { AbilityTrait, ZeroToThree } from "foundry-pf2e";
+import { AbilityTrait, DegreeOfSuccessIndex, DegreeOfSuccessString } from "foundry-pf2e";
 import { R, splitStr } from ".";
 
-function isDegreeOfSuccessNumber(value: any): value is ZeroToThree {
-    return R.isNumber(value) && value >= 0 && value <= 3;
+const DEGREE_VALUES: Record<DegreeOfSuccessIndex | DegreeOfSuccessString, DegreeOfSuccessIndex> = {
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    criticalFailure: 0,
+    failure: 1,
+    success: 2,
+    criticalSuccess: 3,
+};
+
+function isDegreeOfSuccessValue(
+    value: string | number
+): value is DegreeOfSuccessIndex | DegreeOfSuccessString {
+    return value in DEGREE_VALUES;
+}
+
+function degreeOfSuccessNumber(value: string | number): DegreeOfSuccessIndex | undefined {
+    return isDegreeOfSuccessValue(value) ? DEGREE_VALUES[value] : undefined;
 }
 
 /**
@@ -31,4 +48,4 @@ function getExtraRollOptions(
     );
 }
 
-export { getExtraRollOptions, isDegreeOfSuccessNumber };
+export { degreeOfSuccessNumber, getExtraRollOptions, isDegreeOfSuccessValue };

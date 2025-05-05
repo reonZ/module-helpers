@@ -1,6 +1,19 @@
 import { R, splitStr } from ".";
-function isDegreeOfSuccessNumber(value) {
-    return R.isNumber(value) && value >= 0 && value <= 3;
+const DEGREE_VALUES = {
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    criticalFailure: 0,
+    failure: 1,
+    success: 2,
+    criticalSuccess: 3,
+};
+function isDegreeOfSuccessValue(value) {
+    return value in DEGREE_VALUES;
+}
+function degreeOfSuccessNumber(value) {
+    return isDegreeOfSuccessValue(value) ? DEGREE_VALUES[value] : undefined;
 }
 /**
  * modified version of
@@ -17,4 +30,4 @@ function getExtraRollOptions({ traits, options } = {}, isBasic) {
     }
     return R.unique([maybeTraits, additionalTraits.map((t) => `item:trait:${t}`), allOptions].flat());
 }
-export { getExtraRollOptions, isDegreeOfSuccessNumber };
+export { degreeOfSuccessNumber, getExtraRollOptions, isDegreeOfSuccessValue };
