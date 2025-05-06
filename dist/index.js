@@ -2,6 +2,7 @@ export * as R from "remeda";
 export * from "./data";
 export * from "./actor";
 export * from "./check";
+export * from "./combat";
 export * from "./damage";
 export * from "./dialog";
 export * from "./document";
