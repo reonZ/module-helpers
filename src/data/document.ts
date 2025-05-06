@@ -34,7 +34,7 @@ function makeModuleDocument<
                 collection?.set(document.id, document as any, { modifySource: true });
             }
 
-            if (collection && operation.broadcast === true) {
+            if (collection && operation.broadcast !== false) {
                 parent?._dispatchDescendantDocumentEvents("onCreate", collection.name, [
                     documents,
                     data,
@@ -71,7 +71,7 @@ function makeModuleDocument<
                 documents.push(document);
             }
 
-            if (operation.broadcast === true) {
+            if (operation.broadcast !== false) {
                 parent?._dispatchDescendantDocumentEvents("onUpdate", collection.name, [
                     documents,
                     changes,
@@ -106,7 +106,7 @@ function makeModuleDocument<
                 }
             }
 
-            if (operation.broadcast === true) {
+            if (operation.broadcast !== false) {
                 for (const document of documents) {
                     document["_onDelete"](
                         operation as DatabaseDeleteOperation<TDocument["parent"]>,
