@@ -44,6 +44,10 @@ function generateFormInput<T extends FormGroupType>(
         case "select": {
             const configs = inputConfig as CreateSelectInputConfig;
 
+            if (configs.options.length <= 1) {
+                configs.disabled = true;
+            }
+
             return fields.createSelectInput({
                 ...configs,
                 options: arrayToSelectOptions(configs.options, _i18n),

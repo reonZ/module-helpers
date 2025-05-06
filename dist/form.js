@@ -21,6 +21,9 @@ function generateFormInput(type, i18n, inputConfig) {
         }
         case "select": {
             const configs = inputConfig;
+            if (configs.options.length <= 1) {
+                configs.disabled = true;
+            }
             return fields.createSelectInput({
                 ...configs,
                 options: arrayToSelectOptions(configs.options, _i18n),
