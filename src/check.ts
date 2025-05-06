@@ -1,7 +1,7 @@
-import { AbilityTrait, DegreeOfSuccessIndex, DegreeOfSuccessString } from "foundry-pf2e";
+import { AbilityTrait, DegreeOfSuccessString, ZeroToThree } from "foundry-pf2e";
 import { R, splitStr } from ".";
 
-const DEGREE_VALUES: Record<DegreeOfSuccessIndex | DegreeOfSuccessString, DegreeOfSuccessIndex> = {
+const DEGREE_VALUES: Record<ZeroToThree | DegreeOfSuccessString, ZeroToThree> = {
     0: 0,
     1: 1,
     2: 2,
@@ -12,14 +12,20 @@ const DEGREE_VALUES: Record<DegreeOfSuccessIndex | DegreeOfSuccessString, Degree
     criticalSuccess: 3,
 };
 
+const DEGREE_STRINGS = ["criticalFailure", "failure", "success", "criticalSuccess"] as const;
+
 function isDegreeOfSuccessValue(
     value: string | number
-): value is DegreeOfSuccessIndex | DegreeOfSuccessString {
+): value is ZeroToThree | DegreeOfSuccessString {
     return value in DEGREE_VALUES;
 }
 
-function degreeOfSuccessNumber(value: string | number): DegreeOfSuccessIndex | undefined {
-    return isDegreeOfSuccessValue(value) ? DEGREE_VALUES[value] : undefined;
+function degreeOfSuccessNumber(value: string | number): ZeroToThree | undefined {
+    return DEGREE_VALUES[value as ZeroToThree];
+}
+
+function degreeOfSuccessString(value: number): DegreeOfSuccessString | undefined {
+    return DEGREE_STRINGS.at(value);
 }
 
 /**
@@ -48,4 +54,9 @@ function getExtraRollOptions(
     );
 }
 
-export { degreeOfSuccessNumber, getExtraRollOptions, isDegreeOfSuccessValue };
+export {
+    degreeOfSuccessNumber,
+    degreeOfSuccessString,
+    getExtraRollOptions,
+    isDegreeOfSuccessValue,
+};

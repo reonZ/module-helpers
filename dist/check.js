@@ -9,11 +9,15 @@ const DEGREE_VALUES = {
     success: 2,
     criticalSuccess: 3,
 };
+const DEGREE_STRINGS = ["criticalFailure", "failure", "success", "criticalSuccess"];
 function isDegreeOfSuccessValue(value) {
     return value in DEGREE_VALUES;
 }
 function degreeOfSuccessNumber(value) {
-    return isDegreeOfSuccessValue(value) ? DEGREE_VALUES[value] : undefined;
+    return DEGREE_VALUES[value];
+}
+function degreeOfSuccessString(value) {
+    return DEGREE_STRINGS.at(value);
 }
 /**
  * modified version of
@@ -30,4 +34,4 @@ function getExtraRollOptions({ traits, options } = {}, isBasic) {
     }
     return R.unique([maybeTraits, additionalTraits.map((t) => `item:trait:${t}`), allOptions].flat());
 }
-export { degreeOfSuccessNumber, getExtraRollOptions, isDegreeOfSuccessValue };
+export { degreeOfSuccessNumber, degreeOfSuccessString, getExtraRollOptions, isDegreeOfSuccessValue, };
