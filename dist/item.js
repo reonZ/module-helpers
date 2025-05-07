@@ -33,4 +33,8 @@ function getItemWithSourceId(actor, uuid, type) {
     }
     return null;
 }
-export { actorItems, getItemWithSourceId };
+async function getItemFromUuid(uuid) {
+    const item = await fromUuid(uuid);
+    return item instanceof Item ? item : undefined;
+}
+export { actorItems, getItemFromUuid, getItemWithSourceId };

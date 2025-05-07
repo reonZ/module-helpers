@@ -55,4 +55,9 @@ function getItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     return null;
 }
 
-export { actorItems, getItemWithSourceId };
+async function getItemFromUuid(uuid: string): Promise<ItemPF2e | undefined> {
+    const item = await fromUuid<ItemPF2e>(uuid);
+    return item instanceof Item ? item : undefined;
+}
+
+export { actorItems, getItemFromUuid, getItemWithSourceId };
