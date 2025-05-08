@@ -62,9 +62,9 @@ function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     return null;
 }
 
-async function getItemFromUuid(uuid: string): Promise<ItemPF2e | undefined> {
+async function getItemFromUuid(uuid: string): Promise<ItemPF2e | null> {
     const item = await fromUuid<ItemPF2e>(uuid);
-    return item instanceof Item ? item : undefined;
+    return item instanceof Item ? item : null;
 }
 
 function getItemSource<T extends ItemPF2e>(item: T, clearId?: boolean): T["_source"] {
@@ -80,9 +80,9 @@ function getItemSource<T extends ItemPF2e>(item: T, clearId?: boolean): T["_sour
     return source;
 }
 
-async function getItemSourceFromUuid(uuid: string): Promise<ItemSourcePF2e | undefined> {
+async function getItemSourceFromUuid(uuid: string): Promise<ItemSourcePF2e | null> {
     const item = await getItemFromUuid(uuid);
-    return (!!item && getItemSource(item)) || undefined;
+    return !!item ? getItemSource(item) : null;
 }
 
 function getItemSourceId(item: ItemPF2e): string {

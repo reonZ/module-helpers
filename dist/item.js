@@ -35,7 +35,7 @@ function findItemWithSourceId(actor, uuid, type) {
 }
 async function getItemFromUuid(uuid) {
     const item = await fromUuid(uuid);
-    return item instanceof Item ? item : undefined;
+    return item instanceof Item ? item : null;
 }
 function getItemSource(item, clearId) {
     const source = item.toObject();
@@ -48,7 +48,7 @@ function getItemSource(item, clearId) {
 }
 async function getItemSourceFromUuid(uuid) {
     const item = await getItemFromUuid(uuid);
-    return (!!item && getItemSource(item)) || undefined;
+    return !!item ? getItemSource(item) : null;
 }
 function getItemSourceId(item) {
     return item.sourceId ?? item.uuid;
