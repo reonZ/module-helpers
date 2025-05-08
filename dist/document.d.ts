@@ -6,4 +6,6 @@ declare function setInMemory<T>(obj: ClientDocument, ...args: [...string[], T]):
 declare function deleteInMemory(obj: ClientDocument, ...path: string[]): boolean;
 declare function isClientDocument<T>(doc: T): doc is Extract<T, ClientDocument>;
 declare function isScriptMacro(doc: any): doc is MacroPF2e;
-export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, isClientDocument, isScriptMacro, setInMemory, };
+declare function isUuidOf(uuid: string, type: DocumentType | DocumentType[] | ReadonlyArray<DocumentType>): uuid is DocumentUUID;
+type DocumentType = "Item" | "Actor" | "Macro";
+export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, isClientDocument, isScriptMacro, isUuidOf, setInMemory, };

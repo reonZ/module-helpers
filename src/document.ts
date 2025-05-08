@@ -1,5 +1,6 @@
 import { DamageInstance, DamageRoll, MacroPF2e } from "foundry-pf2e";
 import { MODULE } from "./module";
+import { R } from ".";
 
 let _DamageRoll: typeof DamageRoll;
 let _DamageInstance: typeof DamageInstance;
@@ -37,6 +38,17 @@ function isScriptMacro(doc: any): doc is MacroPF2e {
     return doc instanceof Macro && doc.type === "script";
 }
 
+function isUuidOf(
+    uuid: string,
+    type: DocumentType | DocumentType[] | ReadonlyArray<DocumentType>
+): uuid is DocumentUUID {
+    const types = R.isArray(type) ? type : [type];
+    const result = foundry.utils.parseUuid(uuid);
+    return !!result.type && types.includes(result.type as DocumentType) && !!result.documentId;
+}
+
+type DocumentType = "Item" | "Actor" | "Macro";
+
 export {
     deleteInMemory,
     getDamageInstanceClass,
@@ -44,5 +56,6 @@ export {
     getInMemory,
     isClientDocument,
     isScriptMacro,
+    isUuidOf,
     setInMemory,
 };
