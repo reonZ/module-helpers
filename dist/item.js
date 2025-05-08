@@ -21,7 +21,7 @@ function itemTypeFromUuid(uuid) {
     const item = fromUuidSync(uuid);
     return isItemEntry(item) ? item.type : undefined;
 }
-function getItemWithSourceId(actor, uuid, type) {
+function findItemWithSourceId(actor, uuid, type) {
     type ??= itemTypeFromUuid(uuid);
     for (const item of actorItems(actor, type)) {
         if (isSupressedFeat(item))
@@ -37,4 +37,20 @@ async function getItemFromUuid(uuid) {
     const item = await fromUuid(uuid);
     return item instanceof Item ? item : undefined;
 }
-export { actorItems, getItemFromUuid, getItemWithSourceId };
+function getItemSource(item, clearId) {
+    const source = item.toObject();
+    source._stats.compendiumSource ??= item.uuid;
+    if (clearId) {
+        // @ts-expect-error
+        delete source._id;
+    }
+    return source;
+}
+async function getItemSourceFromUuid(uuid) {
+    const item = await getItemFromUuid(uuid);
+    return (!!item && getItemSource(item)) || undefined;
+}
+function getItemSourceId(item) {
+    return item.sourceId ?? item.uuid;
+}
+export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, };

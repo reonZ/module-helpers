@@ -1,4 +1,11 @@
-import { ActorPF2e, FeatPF2e, ItemInstances, ItemPF2e, ItemType } from "foundry-pf2e";
+import {
+    ActorPF2e,
+    FeatPF2e,
+    ItemInstances,
+    ItemPF2e,
+    ItemSourcePF2e,
+    ItemType,
+} from "foundry-pf2e";
 import { R } from ".";
 
 function* actorItems<TType extends ItemType, TActor extends ActorPF2e>(
@@ -36,7 +43,7 @@ function itemTypeFromUuid<TType extends ItemType>(uuid: string) {
     return isItemEntry(item) ? (item.type as TType) : undefined;
 }
 
-function getItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
+function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     actor: TActor,
     uuid: string,
     type?: TType
@@ -60,4 +67,33 @@ async function getItemFromUuid(uuid: string): Promise<ItemPF2e | undefined> {
     return item instanceof Item ? item : undefined;
 }
 
-export { actorItems, getItemFromUuid, getItemWithSourceId };
+function getItemSource<T extends ItemPF2e>(item: T, clearId?: boolean): T["_source"] {
+    const source = item.toObject();
+
+    source._stats.compendiumSource ??= item.uuid;
+
+    if (clearId) {
+        // @ts-expect-error
+        delete source._id;
+    }
+
+    return source;
+}
+
+async function getItemSourceFromUuid(uuid: string): Promise<ItemSourcePF2e | undefined> {
+    const item = await getItemFromUuid(uuid);
+    return (!!item && getItemSource(item)) || undefined;
+}
+
+function getItemSourceId(item: ItemPF2e): string {
+    return item.sourceId ?? item.uuid;
+}
+
+export {
+    actorItems,
+    findItemWithSourceId,
+    getItemFromUuid,
+    getItemSource,
+    getItemSourceFromUuid,
+    getItemSourceId,
+};
