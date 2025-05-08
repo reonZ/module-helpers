@@ -25,6 +25,9 @@ function isScriptMacro(doc) {
     return doc instanceof Macro && doc.type === "script";
 }
 function isUuidOf(uuid, type) {
+    if (!uuid) {
+        return false;
+    }
     const types = R.isArray(type) ? type : [type];
     const result = foundry.utils.parseUuid(uuid);
     return !!result.type && types.includes(result.type) && !!result.documentId;

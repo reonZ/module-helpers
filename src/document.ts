@@ -42,6 +42,10 @@ function isUuidOf(
     uuid: string,
     type: DocumentType | DocumentType[] | ReadonlyArray<DocumentType>
 ): uuid is DocumentUUID {
+    if (!uuid) {
+        return false;
+    }
+
     const types = R.isArray(type) ? type : [type];
     const result = foundry.utils.parseUuid(uuid);
     return !!result.type && types.includes(result.type as DocumentType) && !!result.documentId;
