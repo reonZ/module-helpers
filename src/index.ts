@@ -8,6 +8,7 @@ export * from "./combat";
 export * from "./damage";
 export * from "./dialog";
 export * from "./document";
+export * from "./effect";
 export * from "./form";
 export * from "./handlebars";
 export * from "./hooks";
