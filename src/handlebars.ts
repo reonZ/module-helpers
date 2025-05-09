@@ -5,6 +5,11 @@ function templatePath(...path: string[]): string {
     return `modules/${MODULE.id}/templates/${joinStr("/", path)}.hbs`;
 }
 
+function imagePath(...args: [...string[], "svg" | "webp"]): ImageFilePath {
+    const ext = args.pop();
+    return `modules/${MODULE.id}/images/${joinStr("/", args)}.${ext}` as ImageFilePath;
+}
+
 function render<TData extends RenderTemplateData>(
     template: string | string[],
     data: TData
@@ -50,5 +55,5 @@ type TemplateLocalize = ReturnType<typeof templateLocalize>;
 
 type TemplateToolipOptions = LocalizeData & { localize?: boolean };
 
-export { render, templateLocalize, templatePath, templateTooltip };
+export { imagePath, render, templateLocalize, templatePath, templateTooltip };
 export type { RenderTemplateData, TemplateLocalize };
