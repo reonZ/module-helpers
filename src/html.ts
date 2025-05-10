@@ -148,17 +148,18 @@ function htmlClosest(child: MaybeHTML, selectors: string): HTMLElement | null {
 }
 
 function arrayToSelectOptions(
-    entries: Iterable<SelectOption | string | FormSelectOption>,
+    entries: Iterable<IterableSelectOptions>,
     i18n?: I18n
 ): WithRequired<SelectOption, "label">[] {
     const newEntries: WithRequired<SelectOption, "label">[] = [];
-    const localizer = i18n?.localize.bind(i18n) ?? game.i18n.localize.bind(game.i18n);
 
     for (const entry of entries) {
         const newEntry = typeof entry === "string" ? { value: entry, label: entry } : entry;
         newEntries.push({
             ...newEntry,
-            label: localizer(newEntry.label ?? newEntry.value),
+            label:
+                i18n?.localizeIfExist(newEntry.label ?? newEntry.value) ??
+                game.i18n.localize(newEntry.label ?? newEntry.value),
         });
     }
 
@@ -229,6 +230,8 @@ type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = 
     element: TElement
 ) => void;
 
+type IterableSelectOptions = SelectOption | string | FormSelectOption;
+
 export {
     addListener,
     addListenerAll,
@@ -243,4 +246,4 @@ export {
     htmlQuery,
 };
 
-export type { DatasetData, DatasetValue };
+export type { DatasetData, DatasetValue, IterableSelectOptions };

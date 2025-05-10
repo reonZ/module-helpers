@@ -14,7 +14,7 @@ declare function addListenerAll<E extends HTMLElement, TEvent extends EventType 
 declare function htmlClosest<K extends keyof HTMLElementTagNameMap>(child: MaybeHTML, selectors: K): HTMLElementTagNameMap[K] | null;
 declare function htmlClosest(child: MaybeHTML, selectors: string): HTMLElement | null;
 declare function htmlClosest<E extends HTMLElement = HTMLElement>(child: MaybeHTML, selectors: string): E | null;
-declare function arrayToSelectOptions(entries: Iterable<SelectOption | string | FormSelectOption>, i18n?: I18n): WithRequired<SelectOption, "label">[];
+declare function arrayToSelectOptions(entries: Iterable<IterableSelectOptions>, i18n?: I18n): WithRequired<SelectOption, "label">[];
 declare function assignStyle(el: HTMLElement, style: Partial<CSSStyleDeclaration>): void;
 declare function dataToDatasetString(data: DatasetData): string;
 declare function datasetToData<T extends Record<string, any>>(dataset: DOMStringMap): T;
@@ -34,5 +34,6 @@ type DatasetValue = Maybe<string | number | boolean | object>;
 type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
 type ListenerCallbackArgs<E extends HTMLElement, TEvent extends EventType> = [TEvent, ListenerCallback<E, TEvent>, boolean] | [TEvent, ListenerCallback<E, TEvent>] | [ListenerCallback<E, TEvent>, boolean] | [ListenerCallback<E, TEvent>];
 type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = (event: HTMLElementEventMap[TEvent], element: TElement) => void;
+type IterableSelectOptions = SelectOption | string | FormSelectOption;
 export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, };
-export type { DatasetData, DatasetValue };
+export type { DatasetData, DatasetValue, IterableSelectOptions };

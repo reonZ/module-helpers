@@ -74,12 +74,12 @@ function htmlClosest(child, selectors) {
 }
 function arrayToSelectOptions(entries, i18n) {
     const newEntries = [];
-    const localizer = i18n?.localize.bind(i18n) ?? game.i18n.localize.bind(game.i18n);
     for (const entry of entries) {
         const newEntry = typeof entry === "string" ? { value: entry, label: entry } : entry;
         newEntries.push({
             ...newEntry,
-            label: localizer(newEntry.label ?? newEntry.value),
+            label: i18n?.localizeIfExist(newEntry.label ?? newEntry.value) ??
+                game.i18n.localize(newEntry.label ?? newEntry.value),
         });
     }
     return newEntries;

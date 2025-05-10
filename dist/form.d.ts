@@ -1,4 +1,4 @@
-import { I18nCreateArgs } from ".";
+import { I18nCreateArgs, IterableSelectOptions } from ".";
 declare function createFormData<E extends HTMLFormElement>(html: E, options?: CreateFormDataOptions): Record<string, unknown>;
 declare function createFormData<E extends HTMLElement | HTMLFormElement>(html: E, options?: CreateFormDataOptions): Record<string, unknown> | null;
 declare function createFormTemplate(i18n: I18nCreateArgs, groups: CreateFormGroupParams[]): string;
@@ -10,7 +10,7 @@ type BaseCreateInputConfig<T extends {
 };
 type CreateTextInputConfig = BaseCreateInputConfig<FormInputConfig>;
 type CreateSelectInputConfig = Omit<BaseCreateInputConfig<SelectInputConfig>, "options"> & {
-    options: (FormSelectOption | string)[] | ReadonlyArray<FormSelectOption | string>;
+    options: IterableSelectOptions[] | ReadonlyArray<IterableSelectOptions>;
 };
 type CreateGroupInputConfigMap = {
     text: CreateTextInputConfig;

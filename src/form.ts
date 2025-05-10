@@ -1,4 +1,4 @@
-import { arrayToSelectOptions, htmlQuery, I18n, I18nCreateArgs, R } from ".";
+import { arrayToSelectOptions, htmlQuery, I18n, I18nCreateArgs, IterableSelectOptions, R } from ".";
 import fields = foundry.applications.fields;
 
 function createFormData<E extends HTMLFormElement>(
@@ -94,7 +94,7 @@ type BaseCreateInputConfig<T extends { name: string }> = PartialExcept<T, "name"
 type CreateTextInputConfig = BaseCreateInputConfig<FormInputConfig>;
 
 type CreateSelectInputConfig = Omit<BaseCreateInputConfig<SelectInputConfig>, "options"> & {
-    options: (FormSelectOption | string)[] | ReadonlyArray<FormSelectOption | string>;
+    options: IterableSelectOptions[] | ReadonlyArray<IterableSelectOptions>;
 };
 
 type CreateGroupInputConfigMap = {
