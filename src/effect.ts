@@ -35,7 +35,7 @@ function createCustomPersistentDamage(
     return createCustomCondition({
         ...options,
         slug: "persistent-damage",
-        img: PERSISTENT_DAMAGE_IMAGES[options.type],
+        img: options.img || PERSISTENT_DAMAGE_IMAGES[options.type],
         alterations: [
             {
                 mode: "override",
@@ -93,15 +93,12 @@ function createCustomCondition(
         });
     }
 
-    const prefix = game.i18n.localize("TYPES.Item.effect");
-    const effectOptions: CustomEffectOptions = {
+    return createCustomEffect({
         ...options,
-        name: options.name || `${prefix}: ${condition.name}`,
+        name: options.name || `${game.i18n.localize("TYPES.Item.effect")}: ${condition.name}`,
         img: options.img || condition.img,
         rules: [rule],
-    };
-
-    return createCustomEffect(effectOptions);
+    });
 }
 
 function createCustomEffect({
@@ -150,8 +147,8 @@ function createCustomEffect({
 }
 
 type CustomPersistentDamageOptions = Omit<
-    WithPartial<CustomEffectOptions, "name">,
-    "slug" | "img"
+    WithPartial<CustomEffectOptions, "name" | "img">,
+    "slug"
 > & {
     die: string;
     type: DamageType;

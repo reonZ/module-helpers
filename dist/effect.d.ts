@@ -2,7 +2,7 @@ import { ConditionSlug, ConditionSource, DamageType, DurationData, EffectSource,
 declare function createCustomPersistentDamage(options: CustomPersistentDamageOptions): PreCreate<EffectSource | ConditionSource> | undefined;
 declare function createCustomCondition(options: CustomConditionOptions): PreCreate<EffectSource | ConditionSource> | undefined;
 declare function createCustomEffect({ duration, img, name, rules, slug, unidentified, }: CustomEffectOptions): PreCreate<EffectSource>;
-type CustomPersistentDamageOptions = Omit<WithPartial<CustomEffectOptions, "name">, "slug" | "img"> & {
+type CustomPersistentDamageOptions = Omit<WithPartial<CustomEffectOptions, "name" | "img">, "slug"> & {
     die: string;
     type: DamageType;
     dc: number;

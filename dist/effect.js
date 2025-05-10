@@ -21,7 +21,7 @@ function createCustomPersistentDamage(options) {
     return createCustomCondition({
         ...options,
         slug: "persistent-damage",
-        img: PERSISTENT_DAMAGE_IMAGES[options.type],
+        img: options.img || PERSISTENT_DAMAGE_IMAGES[options.type],
         alterations: [
             {
                 mode: "override",
@@ -68,14 +68,12 @@ function createCustomCondition(options) {
             value: counter,
         });
     }
-    const prefix = game.i18n.localize("TYPES.Item.effect");
-    const effectOptions = {
+    return createCustomEffect({
         ...options,
-        name: options.name || `${prefix}: ${condition.name}`,
+        name: options.name || `${game.i18n.localize("TYPES.Item.effect")}: ${condition.name}`,
         img: options.img || condition.img,
         rules: [rule],
-    };
-    return createCustomEffect(effectOptions);
+    });
 }
 function createCustomEffect({ duration, img, name, rules, slug, unidentified, }) {
     const system = {
