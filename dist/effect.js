@@ -81,6 +81,7 @@ function createCustomEffect({ duration, img, name, origin, rules, slug, unidenti
     const system = {
         unidentified,
         duration,
+        tokenIcon: { show: false },
     };
     if (rules?.length) {
         system.rules = rules;

@@ -116,6 +116,7 @@ function createCustomEffect({
     const system: DeepPartial<EffectSource["system"]> = {
         unidentified,
         duration,
+        tokenIcon: { show: false },
     };
 
     if (rules?.length) {
