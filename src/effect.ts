@@ -53,7 +53,7 @@ function createCustomPersistentDamage(
 function createCustomCondition(
     options: CustomConditionOptions
 ): PreCreate<EffectSource | ConditionSource> | undefined {
-    const { slug, duration, unidentified, origin, counter = 1 } = options;
+    const { slug, duration, unidentified, counter = 1 } = options;
     const condition = game.pf2e.ConditionManager.conditions.get(slug);
 
     if (!condition) return;
@@ -64,7 +64,7 @@ function createCustomCondition(
     if (
         // we do not handle dying or unconcious condition+effect combo
         ["dying", "unconscious"].includes(slug) ||
-        (unit === "unlimited" && !unidentified && !origin)
+        (unit === "unlimited" && !unidentified && !duration?.origin)
     ) {
         const source = condition.toObject();
 
@@ -108,7 +108,6 @@ function createCustomEffect({
     duration,
     img,
     name,
-    origin,
     rules,
     slug,
     unidentified,
@@ -127,11 +126,13 @@ function createCustomEffect({
         system.slug = slug;
     }
 
-    if (origin) {
+    if (duration?.origin) {
+        const { actor, token } = duration.origin;
+
         system.context = {
             origin: {
-                actor: origin.actor.uuid,
-                token: origin.token?.uuid ?? origin.actor.token?.uuid ?? null,
+                actor: actor.uuid,
+                token: token?.uuid ?? actor.token?.uuid ?? null,
                 item: null,
                 spellcasting: null,
             },
@@ -167,10 +168,11 @@ type CustomConditionOptions = Omit<
 };
 
 type CustomEffectOptions = {
-    duration?: DurationData;
+    duration?: DurationData & {
+        origin?: TargetDocuments;
+    };
     img: ImageFilePath;
     name: string;
-    origin?: TargetDocuments;
     rules?: RuleElementSource[];
     slug?: string;
     unidentified?: boolean;
