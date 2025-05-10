@@ -1,4 +1,10 @@
-import { ModifierAdjustment, RuleElementSynthetics } from "foundry-pf2e";
+import {
+    ChoiceSetSource,
+    ItemPF2e,
+    ModifierAdjustment,
+    RuleElementSource,
+    RuleElementSynthetics,
+} from "foundry-pf2e";
 import { R } from ".";
 
 /**
@@ -13,4 +19,19 @@ function extractModifierAdjustments(
     return adjustments.filter((a) => [slug, null].includes(a.slug));
 }
 
-export { extractModifierAdjustments };
+function getChoiceSetSelection<T extends any = string>(
+    item: ItemPF2e,
+    { option, flag }: { option?: string; flag?: string } = {}
+) {
+    const rules = item._source.system.rules as RuleElementSource[];
+    const rule = rules.find((rule: ChoiceSetSource): rule is ChoiceSetSource => {
+        return (
+            rule.key === "ChoiceSet" &&
+            (!option || rule.rollOption === option) &&
+            (!flag || rule.flag === flag)
+        );
+    });
+    return rule?.selection as T | undefined;
+}
+
+export { extractModifierAdjustments, getChoiceSetSelection };
