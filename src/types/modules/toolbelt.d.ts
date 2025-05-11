@@ -7,6 +7,19 @@ import {
 
 declare global {
     namespace toolbelt {
+        interface GamePF2e {
+            getToolSetting<K extends keyof Settings, S extends keyof Settings[K]>(
+                name: K,
+                setting: S
+            ): Settings[K][S];
+        }
+
+        interface Settings {
+            global: {
+                withContent: boolean;
+            };
+        }
+
         namespace targetHelper {
             type TargetMessageType = "damage" | "spell-damage" | "spell-save" | "action" | "check";
 

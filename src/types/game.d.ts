@@ -7,5 +7,7 @@ declare module "foundry-pf2e" {
         trigger?: {
             test: () => void;
         };
+
+        toolbelt?: toolbelt.GamePF2e;
     }
 }
