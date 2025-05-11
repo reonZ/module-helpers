@@ -5,6 +5,7 @@ declare function createHookList(hooks: {
 }[]): PersistentHook;
 declare function executeWhenReady(fn: () => void): void;
 type PersistentHook = {
+    get enabled(): boolean;
     activate(): void;
     disable(): void;
     toggle(enabled?: boolean): void;

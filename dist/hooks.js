@@ -2,8 +2,11 @@ function createHook(hook, listener) {
     const _ids = [];
     const _hook = Array.isArray(hook) ? hook : [hook];
     return {
+        get enabled() {
+            return _ids.length > 0;
+        },
         activate() {
-            if (_ids.length)
+            if (this.enabled)
                 return;
             for (const path of _hook) {
                 _ids.push({
@@ -13,14 +16,15 @@ function createHook(hook, listener) {
             }
         },
         disable() {
-            if (!_ids.length)
+            if (!this.enabled)
                 return;
             for (const { path, id } of _ids) {
                 Hooks.off(path, id);
             }
             _ids.length = 0;
         },
-        toggle(enabled = !_ids.length) {
+        toggle(enabled) {
+            enabled ??= !this.enabled;
             if (enabled) {
                 this.activate();
             }
@@ -34,8 +38,11 @@ function createHookList(hooks) {
     let _active = false;
     const _hooks = hooks.map(({ path, listener }) => createHook(path, listener));
     return {
+        get enabled() {
+            return _active;
+        },
         activate() {
-            if (_active)
+            if (this.enabled)
                 return;
             _active = true;
             for (const hook of _hooks) {
@@ -43,14 +50,15 @@ function createHookList(hooks) {
             }
         },
         disable() {
-            if (!_active)
+            if (!this.enabled)
                 return;
             _active = false;
             for (const hook of _hooks) {
                 hook.disable();
             }
         },
-        toggle(enabled = !_active) {
+        toggle(enabled) {
+            enabled ??= !this.enabled;
             if (enabled) {
                 this.activate();
             }

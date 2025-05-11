@@ -5,6 +5,7 @@ declare function activateWrappers(wrappers: Wrapper[]): void;
 declare function disableWrappers(wrappers: Wrapper[]): void;
 declare function toggleWrappers(wrappers: Wrapper[], enabled?: boolean): void;
 type Wrapper = {
+    get enabled(): boolean;
     activate(): void;
     disable(): void;
     toggle(enabled?: boolean): void;

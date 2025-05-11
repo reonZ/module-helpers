@@ -24,8 +24,11 @@ function unregisterWrapper(id) {
 function createToggleableWrapper(type, path, callback, options = {}) {
     let wrapperIds = null;
     return {
+        get enabled() {
+            return !!wrapperIds;
+        },
         activate() {
-            if (wrapperIds)
+            if (this.enabled)
                 return;
             wrapperIds = registerWrapper(type, path, callback, options.context);
             options.onActivate?.();
@@ -37,7 +40,8 @@ function createToggleableWrapper(type, path, callback, options = {}) {
             wrapperIds = null;
             options.onDisable?.();
         },
-        toggle(enabled = !wrapperIds) {
+        toggle(enabled) {
+            enabled ??= !this.enabled;
             if (enabled) {
                 this.activate();
             }

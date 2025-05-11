@@ -42,8 +42,11 @@ function createToggleableWrapper(
     let wrapperIds: number[] | null = null;
 
     return {
+        get enabled(): boolean {
+            return !!wrapperIds;
+        },
         activate() {
-            if (wrapperIds) return;
+            if (this.enabled) return;
 
             wrapperIds = registerWrapper(type, path, callback, options.context);
             options.onActivate?.();
@@ -55,7 +58,9 @@ function createToggleableWrapper(
             wrapperIds = null;
             options.onDisable?.();
         },
-        toggle(enabled: boolean = !wrapperIds) {
+        toggle(enabled?: boolean) {
+            enabled ??= !this.enabled;
+
             if (enabled) {
                 this.activate();
             } else {
@@ -84,6 +89,7 @@ function toggleWrappers(wrappers: Wrapper[], enabled?: boolean) {
 }
 
 type Wrapper = {
+    get enabled(): boolean;
     activate(): void;
     disable(): void;
     toggle(enabled?: boolean): void;

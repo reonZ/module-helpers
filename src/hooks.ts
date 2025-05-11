@@ -3,8 +3,11 @@ function createHook(hook: string | string[], listener: RegisterHookCallback): Pe
     const _hook = Array.isArray(hook) ? hook : [hook];
 
     return {
+        get enabled(): boolean {
+            return _ids.length > 0;
+        },
         activate() {
-            if (_ids.length) return;
+            if (this.enabled) return;
 
             for (const path of _hook) {
                 _ids.push({
@@ -14,7 +17,7 @@ function createHook(hook: string | string[], listener: RegisterHookCallback): Pe
             }
         },
         disable() {
-            if (!_ids.length) return;
+            if (!this.enabled) return;
 
             for (const { path, id } of _ids) {
                 Hooks.off(path, id);
@@ -22,7 +25,9 @@ function createHook(hook: string | string[], listener: RegisterHookCallback): Pe
 
             _ids.length = 0;
         },
-        toggle(enabled: boolean = !_ids.length) {
+        toggle(enabled?: boolean) {
+            enabled ??= !this.enabled;
+
             if (enabled) {
                 this.activate();
             } else {
@@ -39,8 +44,11 @@ function createHookList(
     const _hooks = hooks.map(({ path, listener }) => createHook(path, listener));
 
     return {
+        get enabled(): boolean {
+            return _active;
+        },
         activate() {
-            if (_active) return;
+            if (this.enabled) return;
             _active = true;
 
             for (const hook of _hooks) {
@@ -48,14 +56,16 @@ function createHookList(
             }
         },
         disable() {
-            if (!_active) return;
+            if (!this.enabled) return;
             _active = false;
 
             for (const hook of _hooks) {
                 hook.disable();
             }
         },
-        toggle(enabled: boolean = !_active) {
+        toggle(enabled?: boolean) {
+            enabled ??= !this.enabled;
+
             if (enabled) {
                 this.activate();
             } else {
@@ -74,6 +84,7 @@ function executeWhenReady(fn: () => void) {
 }
 
 type PersistentHook = {
+    get enabled(): boolean;
     activate(): void;
     disable(): void;
     toggle(enabled?: boolean): void;
