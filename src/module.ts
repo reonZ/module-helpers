@@ -1,24 +1,26 @@
-import type { ModuleMigrations } from ".";
-import { joinStr, R, registerMigrations } from ".";
+import type { ModuleMigrations, ModuleSettings } from ".";
+import { joinStr, R, registerMigrations, registerModuleSettings } from ".";
 
-let MODULE_ID = "";
-let GROUP_LOG = false;
-let GAME_CONTEXT = "";
-let EXPOSE: Record<"api" | "debug" | "dev", Record<string, any>> = {
-    api: {},
-    debug: {},
-    dev: {},
+const _MODULE = {
+    id: "",
+    groupLog: false,
+    gameContext: "",
+    expose: {
+        api: {},
+        debug: {},
+        dev: {},
+    } as Record<"api" | "debug" | "dev", Record<string, any>>,
 };
 
 const MODULE = {
     get id(): string {
-        if (!MODULE_ID) {
+        if (!_MODULE.id) {
             throw new Error("Module needs to be registered.");
         }
-        return MODULE_ID;
+        return _MODULE.id;
     },
     get name(): string {
-        if (!MODULE_ID) {
+        if (!_MODULE.id) {
             throw new Error("Module needs to be registered.");
         }
         return this.current.title;
@@ -31,7 +33,7 @@ const MODULE = {
         return CONFIG.debug.modules === true;
     },
     get gameContext(): string {
-        return GAME_CONTEXT;
+        return _MODULE.gameContext;
     },
     Error(str: string): Error {
         return new Error(`\n[${this.name}] ${str}`);
@@ -48,7 +50,7 @@ const MODULE = {
         console.error(message);
     },
     log(...args: any[]) {
-        if (GROUP_LOG) {
+        if (_MODULE.groupLog) {
             console.log(...args);
         } else {
             console.log(`[${this.name}]`, ...args);
@@ -56,12 +58,12 @@ const MODULE = {
     },
     group(label: string) {
         this.groupEnd();
-        GROUP_LOG = true;
+        _MODULE.groupLog = true;
         console.group(`[${this.name}] ${label}`);
     },
     groupEnd() {
         console.groupEnd();
-        GROUP_LOG = false;
+        _MODULE.groupLog = false;
     },
     debug(...args: any[]) {
         if (this.isDebug) {
@@ -72,7 +74,7 @@ const MODULE = {
         const isDebug = this.isDebug;
 
         for (const [k, v] of R.entries(expose)) {
-            EXPOSE.debug[k] = v;
+            _MODULE.expose.debug[k] = v;
 
             if (isDebug) {
                 // @ts-expect-error
@@ -92,7 +94,7 @@ const MODULE = {
         // @ts-expect-error
         CONFIG.debug.modules = true;
 
-        for (const [key, value] of R.entries(EXPOSE.debug)) {
+        for (const [key, value] of R.entries(_MODULE.expose.debug)) {
             // @ts-expect-error
             window[key] = value;
         }
@@ -105,18 +107,24 @@ const MODULE = {
         return joined ? `${this.id}.${joined}` : `${this.id}`;
     },
     register(id: string, options: ModuleRegisterOptions = {}) {
-        if (MODULE_ID) {
+        if (_MODULE.id) {
             throw new Error("Module was already registered.");
         }
 
-        MODULE_ID = id;
-        GAME_CONTEXT = options.game ?? id.replace(/^pf2e-/, "");
+        _MODULE.id = id;
+        _MODULE.gameContext = options.game ?? id.replace(/^pf2e-/, "");
 
         registerMigrations(options.migrations);
 
+        Hooks.once("init", () => {
+            if (options.settings) {
+                registerModuleSettings(options.settings);
+            }
+        });
+
         Hooks.once("ready", () => {
             for (const type of ["api", "dev"] as const) {
-                for (const key of R.keys(EXPOSE[type])) {
+                for (const key of R.keys(_MODULE.expose[type])) {
                     gameExpose(type, key);
                 }
             }
@@ -128,7 +136,7 @@ function addGameExpose(type: "api" | "dev", expose: Record<string, any>) {
     const isReady = game.ready;
 
     for (const [key, value] of R.entries(expose)) {
-        EXPOSE[type][key] = value;
+        _MODULE.expose[type][key] = value;
 
         if (isReady) {
             gameExpose(type, key);
@@ -137,12 +145,17 @@ function addGameExpose(type: "api" | "dev", expose: Record<string, any>) {
 }
 
 function gameExpose(type: "api" | "dev", key: string) {
-    foundry.utils.setProperty(game, `${GAME_CONTEXT}.${type}.${key}`, EXPOSE[type][key]);
+    foundry.utils.setProperty(
+        game,
+        `${_MODULE.gameContext}.${type}.${key}`,
+        _MODULE.expose[type][key]
+    );
 }
 
 type ModuleRegisterOptions = {
     game?: string;
     migrations?: ModuleMigrations;
+    settings?: ModuleSettings;
 };
 
 export { MODULE };

@@ -12,10 +12,14 @@ declare function setUserSetting(user: UserPF2e | string, key: string, value: any
 declare function hasSetting(key: string): boolean;
 declare function registerSetting(key: string, options: RegisterSettingOptions): void;
 declare function registerSettingMenu(key: string, options: RegisterSettingMenuOptions): void;
+declare function registerModuleSettings(settings: ModuleSettings): void;
+type ModuleSettings = Record<string, ReadonlyArray<RegisterSettingOptions>> | ReadonlyArray<RegisterSettingOptions>;
 type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope"> & {
     gmOnly?: boolean;
     name?: string;
+    key: string;
     scope: "client" | "world" | "user";
 };
 type RegisterSettingMenuOptions = PartialExcept<SettingSubmenuConfig, "type" | "restricted">;
-export { getSetting, getUsersSetting, hasSetting, registerSetting, registerSettingMenu, setSetting, setUserSetting, };
+export { getSetting, getUsersSetting, hasSetting, registerModuleSettings, registerSetting, registerSettingMenu, setSetting, setUserSetting, };
+export type { ModuleSettings, RegisterSettingOptions };

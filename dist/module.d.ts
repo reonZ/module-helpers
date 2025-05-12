@@ -1,4 +1,4 @@
-import type { ModuleMigrations } from ".";
+import type { ModuleMigrations, ModuleSettings } from ".";
 declare const MODULE: {
     readonly id: string;
     readonly name: string;
@@ -23,5 +23,6 @@ declare const MODULE: {
 type ModuleRegisterOptions = {
     game?: string;
     migrations?: ModuleMigrations;
+    settings?: ModuleSettings;
 };
 export { MODULE };

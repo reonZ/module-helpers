@@ -1,5 +1,14 @@
 import { UserPF2e } from "foundry-pf2e";
-import { MODULE, R, userIsGM } from ".";
+import {
+    createHTMLElement,
+    htmlClosest,
+    htmlQuery,
+    localize,
+    MODULE,
+    R,
+    sharedLocalize,
+    userIsGM,
+} from ".";
 
 function settingPath(...path: string[]): string {
     return MODULE.path("settings", ...path);
@@ -113,20 +122,115 @@ function cleanJSON(setting: SettingConfig, value: unknown): string {
     return JSON.stringify(value);
 }
 
+function registerModuleSettings(settings: ModuleSettings) {
+    const groups = R.isArray(settings) ? { [""]: settings } : settings;
+
+    for (const [group, entries] of R.entries(groups)) {
+        for (const setting of entries) {
+            setting.key = group ? `${group}.${setting.key}` : setting.key;
+            registerSetting(setting.key, setting);
+        }
+    }
+
+    Hooks.on("renderSettingsConfig", (_, html, options: RenderSettingsConfigOptions) =>
+        onRenderSettingsConfig(html, options, settings)
+    );
+}
+
+function onRenderSettingsConfig(
+    html: HTMLFormElement,
+    options: RenderSettingsConfigOptions,
+    settings: ModuleSettings
+) {
+    const id = MODULE.id;
+    const category = options.categories[id];
+    if (!category) return;
+
+    const tab = htmlQuery(
+        html,
+        `[data-application-part="main"] [data-group="categories"][data-tab="${id}"][data-category="${id}"]`
+    );
+
+    if (!tab) return;
+
+    const gmOnlyLabel = sharedLocalize("gmOnly");
+    const reloadLabel = sharedLocalize("reloadRequired");
+
+    for (const entry of category.entries) {
+        if (entry.menu) continue;
+
+        const name = entry.field.name;
+        const extras: string[] = [];
+        const setting = game.settings.settings.get(name) as RegisterSettingOptions;
+        if (!setting) continue;
+
+        if (setting.gmOnly) {
+            extras.push(gmOnlyLabel);
+        }
+
+        if (setting.requiresReload) {
+            extras.push(reloadLabel);
+        }
+
+        if (!extras.length) continue;
+
+        const input = htmlQuery(tab, `input[name="${name}"]`);
+        const group = htmlClosest(input, ".form-group");
+        const label = htmlQuery(group, "label");
+        const span = createHTMLElement("span", {
+            content: ` (${extras.join(", ")})`,
+        });
+
+        label?.append(span);
+    }
+
+    for (const key of R.keys(settings)) {
+        if (!key) continue;
+
+        const input = htmlQuery(tab, `input[name^="${MODULE.id}.${key}"]`);
+        const group = htmlClosest(input, ".form-group");
+        const title = createHTMLElement("h3", {
+            content: localize("settings", key, "title"),
+        });
+
+        group?.before(title);
+    }
+}
+
+type ModuleSettings =
+    | Record<string, ReadonlyArray<RegisterSettingOptions>>
+    | ReadonlyArray<RegisterSettingOptions>;
+
 type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope"> & {
     gmOnly?: boolean;
     name?: string;
+    key: string;
     scope: "client" | "world" | "user";
 };
 
 type RegisterSettingMenuOptions = PartialExcept<SettingSubmenuConfig, "type" | "restricted">;
 
+type RenderSettingsConfigOptions = {
+    categories: Record<string, { entries: RenderSettingsConfigCategory[] }>;
+};
+
+type RenderSettingsConfigCategory = {
+    label: string;
+    menu: boolean;
+    field: {
+        name: string;
+    };
+};
+
 export {
     getSetting,
     getUsersSetting,
     hasSetting,
+    registerModuleSettings,
     registerSetting,
     registerSettingMenu,
     setSetting,
     setUserSetting,
 };
+
+export type { ModuleSettings, RegisterSettingOptions };

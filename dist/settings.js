@@ -1,4 +1,4 @@
-import { MODULE, R, userIsGM } from ".";
+import { createHTMLElement, htmlClosest, htmlQuery, localize, MODULE, R, sharedLocalize, userIsGM, } from ".";
 function settingPath(...path) {
     return MODULE.path("settings", ...path);
 }
@@ -89,4 +89,59 @@ function cleanJSON(setting, value) {
         value = setting.default;
     return JSON.stringify(value);
 }
-export { getSetting, getUsersSetting, hasSetting, registerSetting, registerSettingMenu, setSetting, setUserSetting, };
+function registerModuleSettings(settings) {
+    const groups = R.isArray(settings) ? { [""]: settings } : settings;
+    for (const [group, entries] of R.entries(groups)) {
+        for (const setting of entries) {
+            setting.key = group ? `${group}.${setting.key}` : setting.key;
+            registerSetting(setting.key, setting);
+        }
+    }
+    Hooks.on("renderSettingsConfig", (_, html, options) => onRenderSettingsConfig(html, options, settings));
+}
+function onRenderSettingsConfig(html, options, settings) {
+    const id = MODULE.id;
+    const category = options.categories[id];
+    if (!category)
+        return;
+    const tab = htmlQuery(html, `[data-application-part="main"] [data-group="categories"][data-tab="${id}"][data-category="${id}"]`);
+    if (!tab)
+        return;
+    const gmOnlyLabel = sharedLocalize("gmOnly");
+    const reloadLabel = sharedLocalize("reloadRequired");
+    for (const entry of category.entries) {
+        if (entry.menu)
+            continue;
+        const name = entry.field.name;
+        const extras = [];
+        const setting = game.settings.settings.get(name);
+        if (!setting)
+            continue;
+        if (setting.gmOnly) {
+            extras.push(gmOnlyLabel);
+        }
+        if (setting.requiresReload) {
+            extras.push(reloadLabel);
+        }
+        if (!extras.length)
+            continue;
+        const input = htmlQuery(tab, `input[name="${name}"]`);
+        const group = htmlClosest(input, ".form-group");
+        const label = htmlQuery(group, "label");
+        const span = createHTMLElement("span", {
+            content: ` (${extras.join(", ")})`,
+        });
+        label?.append(span);
+    }
+    for (const key of R.keys(settings)) {
+        if (!key)
+            continue;
+        const input = htmlQuery(tab, `input[name^="${MODULE.id}.${key}"]`);
+        const group = htmlClosest(input, ".form-group");
+        const title = createHTMLElement("h3", {
+            content: localize("settings", key, "title"),
+        });
+        group?.before(title);
+    }
+}
+export { getSetting, getUsersSetting, hasSetting, registerModuleSettings, registerSetting, registerSettingMenu, setSetting, setUserSetting, };
