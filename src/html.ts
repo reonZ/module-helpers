@@ -68,6 +68,11 @@ function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null {
     return parent.querySelector<HTMLElement>(selectors);
 }
 
+function htmlQueryAll(parent: MaybeHTML, selectors: string): HTMLElement[] {
+    if (!(parent instanceof Element || parent instanceof Document)) return [];
+    return Array.from(parent.querySelectorAll<HTMLElement>(selectors));
+}
+
 function addListener<K extends keyof HTMLElementTagNameMap, TEvent extends EventType = "click">(
     parent: MaybeHTML,
     selectors: K,
@@ -244,6 +249,7 @@ export {
     dataToDatasetString,
     htmlClosest,
     htmlQuery,
+    htmlQueryAll,
 };
 
 export type { DatasetData, DatasetValue, IterableSelectOptions };

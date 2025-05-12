@@ -43,6 +43,11 @@ function htmlQuery(parent, selectors) {
         return null;
     return parent.querySelector(selectors);
 }
+function htmlQueryAll(parent, selectors) {
+    if (!(parent instanceof Element || parent instanceof Document))
+        return [];
+    return Array.from(parent.querySelectorAll(selectors));
+}
 function addListener(parent, selectors, ...args) {
     if (!(parent instanceof Element || parent instanceof Document))
         return;
@@ -109,4 +114,4 @@ function datasetToData(dataset) {
     }
     return data;
 }
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, htmlQueryAll, };
