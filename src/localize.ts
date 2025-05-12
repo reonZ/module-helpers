@@ -15,6 +15,10 @@ function localize(...args: LocalizeArgs): string {
     return localizeOrFormat(path, data);
 }
 
+function sharedLocalize(key: keyof LEVIKTIMES): string {
+    return game.i18n.localize(`LEVIKTIMES.${key}`);
+}
+
 function localizeIfExist(...args: LocalizeArgs) {
     const { data, path } = getLocalizeData(...args);
     if (game.i18n.has(path, false)) {
@@ -112,5 +116,15 @@ type NotificationArgs = LocalizeArgs | [...LocalizeArgs, string | LocalizeData |
 
 type LocalizeArgs = string[] | [...string[], string | LocalizeData];
 
-export { error, I18n, info, localize, localizeIfExist, localizePath, notify, warning };
+export {
+    error,
+    I18n,
+    info,
+    localize,
+    localizeIfExist,
+    localizePath,
+    notify,
+    sharedLocalize,
+    warning,
+};
 export type { I18nCreateArgs, LocalizeArgs, LocalizeData };

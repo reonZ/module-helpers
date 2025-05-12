@@ -1,4 +1,5 @@
 declare function localize(...args: LocalizeArgs): string;
+declare function sharedLocalize(key: keyof LEVIKTIMES): string;
 declare function localizeIfExist(...args: LocalizeArgs): string | undefined;
 declare function localizePath(...args: string[]): string;
 declare function notify(type: "info" | "warning" | "error", ...args: NotificationArgs): number;
@@ -25,5 +26,5 @@ type I18nCreateArgs = string | I18nObject | I18n;
 type LocalizeData = Record<string, any>;
 type NotificationArgs = LocalizeArgs | [...LocalizeArgs, string | LocalizeData | boolean];
 type LocalizeArgs = string[] | [...string[], string | LocalizeData];
-export { error, I18n, info, localize, localizeIfExist, localizePath, notify, warning };
+export { error, I18n, info, localize, localizeIfExist, localizePath, notify, sharedLocalize, warning, };
 export type { I18nCreateArgs, LocalizeArgs, LocalizeData };

@@ -11,6 +11,9 @@ function localize(...args) {
     const { data, path } = getLocalizeData(...args);
     return localizeOrFormat(path, data);
 }
+function sharedLocalize(key) {
+    return game.i18n.localize(`LEVIKTIMES.${key}`);
+}
 function localizeIfExist(...args) {
     const { data, path } = getLocalizeData(...args);
     if (game.i18n.has(path, false)) {
@@ -82,4 +85,4 @@ class I18n {
         }
     }
 }
-export { error, I18n, info, localize, localizeIfExist, localizePath, notify, warning };
+export { error, I18n, info, localize, localizeIfExist, localizePath, notify, sharedLocalize, warning, };
