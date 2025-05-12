@@ -1,5 +1,5 @@
-import { MODULE } from "./module";
 import { R } from ".";
+import { MODULE } from "./module";
 let _DamageRoll;
 let _DamageInstance;
 function getDamageRollClass() {
@@ -32,4 +32,9 @@ function isUuidOf(uuid, type) {
     const result = foundry.utils.parseUuid(uuid);
     return !!result.type && types.includes(result.type) && !!result.documentId;
 }
-export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, isClientDocument, isScriptMacro, isUuidOf, setInMemory, };
+function isValidTargetDocuments(target) {
+    return (R.isPlainObject(target) &&
+        target.actor instanceof Actor &&
+        (!target.token || target.token instanceof TokenDocument));
+}
+export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, isClientDocument, isScriptMacro, isUuidOf, isValidTargetDocuments, setInMemory, };
