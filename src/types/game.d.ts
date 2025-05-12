@@ -1,4 +1,4 @@
-export {};
+import { ActorPF2e } from "foundry-pf2e";
 
 declare module "foundry-pf2e" {
     interface GamePF2e {
@@ -6,6 +6,10 @@ declare module "foundry-pf2e" {
 
         trigger?: {
             test: () => void;
+            execute: (
+                actorOrTarget: Maybe<ActorPF2e | TargetDocuments>,
+                values?: unknown[]
+            ) => void;
         };
 
         toolbelt?: toolbelt.GamePF2e;
