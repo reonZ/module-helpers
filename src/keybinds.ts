@@ -11,7 +11,7 @@ function registerKeybind(name: string, data: Partial<KeybindingActionConfig>) {
 function registerModuleKeybinds(keybinds: ModuleKeybinds) {
     for (const [group, entries] of R.entries(keybinds)) {
         for (const keybind of entries) {
-            game.keybindings.register(MODULE.id, `${group}.${keybind.name}`, {
+            game.keybindings.register(MODULE.id, `${group}-${keybind.name}`, {
                 ...keybind,
                 name: MODULE.path("keybindings", group, keybind.name, "name"),
                 hint: MODULE.path("keybindings", group, keybind.name, "hint"),
