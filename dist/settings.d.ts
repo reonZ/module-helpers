@@ -13,12 +13,13 @@ declare function hasSetting(key: string): boolean;
 declare function registerSetting(key: string, options: RegisterSettingOptions): void;
 declare function registerSettingMenu(key: string, options: RegisterSettingMenuOptions): void;
 declare function registerModuleSettings(settings: ModuleSettings): void;
-type ModuleSettings = Record<string, ReadonlyArray<RegisterSettingOptions>> | ReadonlyArray<RegisterSettingOptions>;
-type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope"> & {
+type ModuleSettings = Record<string, ReadonlyArray<RegisterSettingOptions>>;
+type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope" | "onChange"> & {
     gmOnly?: boolean;
     name?: string;
     key: string;
     scope: "client" | "world" | "user";
+    onChange?: (choice: any) => void | Promise<void>;
 };
 type RegisterSettingMenuOptions = PartialExcept<SettingSubmenuConfig, "type" | "restricted">;
 export { getSetting, getUsersSetting, hasSetting, registerModuleSettings, registerSetting, registerSettingMenu, setSetting, setUserSetting, };

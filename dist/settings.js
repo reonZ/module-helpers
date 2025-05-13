@@ -90,8 +90,7 @@ function cleanJSON(setting, value) {
     return JSON.stringify(value);
 }
 function registerModuleSettings(settings) {
-    const groups = R.isArray(settings) ? { [""]: settings } : settings;
-    for (const [group, entries] of R.entries(groups)) {
+    for (const [group, entries] of R.entries(settings)) {
         for (const setting of entries) {
             setting.key = group ? `${group}.${setting.key}` : setting.key;
             registerSetting(setting.key, setting);

@@ -1,4 +1,4 @@
-import { joinStr, R, registerMigrations, registerModuleSettings } from ".";
+import { joinStr, R } from ".";
 const _MODULE = {
     id: "",
     groupLog: false,
@@ -105,12 +105,6 @@ const MODULE = {
         }
         _MODULE.id = id;
         _MODULE.gameContext = options.game ?? id.replace(/^pf2e-/, "");
-        registerMigrations(options.migrations);
-        Hooks.once("init", () => {
-            if (options.settings) {
-                registerModuleSettings(options.settings);
-            }
-        });
         Hooks.once("ready", () => {
             for (const type of ["api", "dev"]) {
                 for (const key of R.keys(_MODULE.expose[type])) {

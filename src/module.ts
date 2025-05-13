@@ -1,5 +1,4 @@
-import type { ModuleMigrations, ModuleSettings } from ".";
-import { joinStr, R, registerMigrations, registerModuleSettings } from ".";
+import { joinStr, R } from ".";
 
 const _MODULE = {
     id: "",
@@ -114,14 +113,6 @@ const MODULE = {
         _MODULE.id = id;
         _MODULE.gameContext = options.game ?? id.replace(/^pf2e-/, "");
 
-        registerMigrations(options.migrations);
-
-        Hooks.once("init", () => {
-            if (options.settings) {
-                registerModuleSettings(options.settings);
-            }
-        });
-
         Hooks.once("ready", () => {
             for (const type of ["api", "dev"] as const) {
                 for (const key of R.keys(_MODULE.expose[type])) {
@@ -154,8 +145,6 @@ function gameExpose(type: "api" | "dev", key: string) {
 
 type ModuleRegisterOptions = {
     game?: string;
-    migrations?: ModuleMigrations;
-    settings?: ModuleSettings;
 };
 
 export { MODULE };

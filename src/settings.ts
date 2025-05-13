@@ -123,9 +123,7 @@ function cleanJSON(setting: SettingConfig, value: unknown): string {
 }
 
 function registerModuleSettings(settings: ModuleSettings) {
-    const groups = R.isArray(settings) ? { [""]: settings } : settings;
-
-    for (const [group, entries] of R.entries(groups)) {
+    for (const [group, entries] of R.entries(settings)) {
         for (const setting of entries) {
             setting.key = group ? `${group}.${setting.key}` : setting.key;
             registerSetting(setting.key, setting);
@@ -197,15 +195,14 @@ function onRenderSettingsConfig(
     }
 }
 
-type ModuleSettings =
-    | Record<string, ReadonlyArray<RegisterSettingOptions>>
-    | ReadonlyArray<RegisterSettingOptions>;
+type ModuleSettings = Record<string, ReadonlyArray<RegisterSettingOptions>>;
 
-type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope"> & {
+type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope" | "onChange"> & {
     gmOnly?: boolean;
     name?: string;
     key: string;
     scope: "client" | "world" | "user";
+    onChange?: (choice: any) => void | Promise<void>;
 };
 
 type RegisterSettingMenuOptions = PartialExcept<SettingSubmenuConfig, "type" | "restricted">;
