@@ -42,7 +42,7 @@ function onRenderControlsConfig(
 
         const group = htmlQuery(tab, `.form-group[data-action-id^="${MODULE.id}.${key}"]`);
         const title = createHTMLElement("h3", {
-            content: localize("settings", key, "title"),
+            content: localize("keybindings", key, "title"),
         });
 
         group?.before(title);
