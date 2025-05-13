@@ -10,7 +10,10 @@ function render(template, data) {
     if (R.isString(data.i18n)) {
         data.i18n = templateLocalize(data.i18n);
     }
-    const path = templatePath(...[template].flat());
+    else if (!("i18n" in data)) {
+        data.i18n = templateLocalize(template);
+    }
+    const path = templatePath(template);
     return foundry.applications.handlebars.renderTemplate(path, data);
 }
 function templateLocalize(...subKeys) {

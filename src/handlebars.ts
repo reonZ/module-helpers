@@ -10,15 +10,14 @@ function imagePath(...args: [...string[], "svg" | "webp"]): ImageFilePath {
     return `modules/${MODULE.id}/images/${joinStr("/", args)}.${ext}` as ImageFilePath;
 }
 
-function render<TData extends RenderTemplateData>(
-    template: string | string[],
-    data: TData
-): Promise<string> {
+function render<TData extends RenderTemplateData>(template: string, data: TData): Promise<string> {
     if (R.isString(data.i18n)) {
         data.i18n = templateLocalize(data.i18n);
+    } else if (!("i18n" in data)) {
+        data.i18n = templateLocalize(template);
     }
 
-    const path = templatePath(...[template].flat());
+    const path = templatePath(template);
     return foundry.applications.handlebars.renderTemplate(path, data);
 }
 
