@@ -12,10 +12,11 @@ type CustomConditionOptions = Omit<WithPartial<CustomEffectOptions, "img" | "nam
     counter?: number;
     alterations?: Record<string, JSONValue>[];
 };
+type CustomEffectDuration = DurationData & {
+    origin?: TargetDocuments;
+};
 type CustomEffectOptions = {
-    duration?: DurationData & {
-        origin?: TargetDocuments;
-    };
+    duration?: CustomEffectDuration;
     img: ImageFilePath;
     name: string;
     rules?: RuleElementSource[];
@@ -23,4 +24,4 @@ type CustomEffectOptions = {
     unidentified?: boolean;
 };
 export { createCustomCondition, createCustomEffect, createCustomPersistentDamage };
-export type { CustomConditionOptions, CustomEffectOptions };
+export type { CustomConditionOptions, CustomEffectOptions, CustomEffectDuration };
