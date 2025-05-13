@@ -12,6 +12,7 @@ export * from "./handlebars";
 export * from "./hooks";
 export * from "./html";
 export * from "./item";
+export * from "./keybinds";
 export * from "./libwrapper";
 export * from "./localize";
 export * from "./migration";
