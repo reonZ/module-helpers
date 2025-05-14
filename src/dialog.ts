@@ -57,7 +57,6 @@ async function waitDialog<T extends Record<string, any>>({
     }
 
     classes.push(MODULE.id);
-    classes.push(i18n);
 
     const options: ModuleDialogOptions<DialogWaitOptions> = {
         buttons: [

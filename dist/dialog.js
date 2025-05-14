@@ -21,7 +21,6 @@ async function waitDialog({ content, classes = [], data, focus, i18n, no, positi
         data.i18n = templateLocalize(i18n);
     }
     classes.push(MODULE.id);
-    classes.push(i18n);
     const options = {
         buttons: [
             {
