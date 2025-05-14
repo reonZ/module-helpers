@@ -74,7 +74,7 @@ declare global {
         ? NumberConstructor
         : T extends boolean
         ? BooleanConstructor
-        : never;
+        : ConstructorOf<T>;
 
     type ExtractSelectionOption<
         T extends ReadonlyArray<string | { value: string; label: string }>
