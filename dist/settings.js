@@ -7,7 +7,9 @@ function getSetting(key) {
 }
 function getUsersSetting(key) {
     const moduleKey = MODULE.path(key);
-    return game.settings.storage.get("user").filter((setting) => setting.key === moduleKey);
+    return game.settings.storage
+        .get("user")
+        .filter((setting) => !!setting.user && setting.key === moduleKey);
 }
 function setSetting(key, value) {
     return game.settings.set(MODULE.id, key, value);
@@ -143,4 +145,4 @@ function onRenderSettingsConfig(html, options, settings) {
         group?.before(title);
     }
 }
-export { getSetting, getUsersSetting, hasSetting, registerModuleSettings, registerSetting, registerSettingMenu, setSetting, setUserSetting, };
+export { getSetting, getUsersSetting, hasSetting, registerModuleSettings, registerSetting, registerSettingMenu, setSetting, settingPath, setUserSetting, };

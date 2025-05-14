@@ -20,10 +20,12 @@ function getSetting(key: string) {
     return game.settings.get(MODULE.id, key);
 }
 
-function getUsersSetting<T = boolean>(key: string): T[];
+function getUsersSetting<T = boolean>(key: string): (Setting & { value: T; user: string })[];
 function getUsersSetting(key: string) {
     const moduleKey = MODULE.path(key);
-    return game.settings.storage.get("user").filter((setting) => setting.key === moduleKey);
+    return game.settings.storage
+        .get("user")
+        .filter((setting) => !!setting.user && setting.key === moduleKey);
 }
 
 function setSetting(key: "__migrationSchema", value: number): Promise<number>;
@@ -195,13 +197,12 @@ function onRenderSettingsConfig(
     }
 }
 
-type ModuleSettings = Record<string, ReadonlyArray<RegisterSettingOptions>>;
+type ModuleSettings = Record<string, ReadonlyArray<RegisterSettingOptions & { key: string }>>;
 
 type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope" | "onChange"> & {
     gmOnly?: boolean;
     name?: string;
-    key: string;
-    scope: "client" | "world" | "user";
+    scope: "world" | "user";
     onChange?: (choice: any) => void | Promise<void>;
 };
 
@@ -227,6 +228,7 @@ export {
     registerSetting,
     registerSettingMenu,
     setSetting,
+    settingPath,
     setUserSetting,
 };
 
