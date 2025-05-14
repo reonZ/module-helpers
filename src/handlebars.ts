@@ -1,5 +1,6 @@
 import { HelperDelegate, HelperOptions } from "handlebars";
-import { joinStr, localize, LocalizeData, MODULE, R } from ".";
+import { joinStr, localize, LocalizeArgs, LocalizeData, MODULE, R } from ".";
+import { ApplicationConfiguration } from "foundry-pf2e/foundry/client-esm/applications/_types.js";
 
 function templatePath(...path: string[]): string {
     return `modules/${MODULE.id}/templates/${joinStr("/", path)}.hbs`;
@@ -10,11 +11,14 @@ function imagePath(...args: [...string[], "svg" | "webp"]): ImageFilePath {
     return `modules/${MODULE.id}/images/${joinStr("/", args)}.${ext}` as ImageFilePath;
 }
 
-function render<TData extends RenderTemplateData>(template: string, data: TData): Promise<string> {
+function render<TData extends RenderTemplateData>(
+    template: string,
+    data = {} as TData
+): Promise<string> {
     if (R.isString(data.i18n)) {
         data.i18n = templateLocalize(data.i18n);
     } else if (!("i18n" in data)) {
-        data.i18n = templateLocalize(template);
+        data.i18n = templateLocalize(template.replace(/\//, "."));
     }
 
     const path = templatePath(template);
@@ -48,11 +52,19 @@ function templateTooltip(...args: [...string[], TemplateToolipOptions]) {
     // return `data-tooltip="${tooltip}" aria-label="${tooltip}"`;
 }
 
+function setApplicationTitle(
+    options: DeepPartial<ApplicationConfiguration>,
+    ...args: LocalizeArgs
+) {
+    const title = localize(...args);
+    foundry.utils.setProperty(options, "window.title", title);
+}
+
 type RenderTemplateData = Record<string, any> & { i18n?: string | TemplateLocalize };
 
 type TemplateLocalize = ReturnType<typeof templateLocalize>;
 
 type TemplateToolipOptions = LocalizeData & { localize?: boolean };
 
-export { imagePath, render, templateLocalize, templatePath, templateTooltip };
+export { imagePath, render, setApplicationTitle, templateLocalize, templatePath, templateTooltip };
 export type { RenderTemplateData, TemplateLocalize };

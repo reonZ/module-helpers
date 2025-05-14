@@ -6,12 +6,12 @@ function imagePath(...args) {
     const ext = args.pop();
     return `modules/${MODULE.id}/images/${joinStr("/", args)}.${ext}`;
 }
-function render(template, data) {
+function render(template, data = {}) {
     if (R.isString(data.i18n)) {
         data.i18n = templateLocalize(data.i18n);
     }
     else if (!("i18n" in data)) {
-        data.i18n = templateLocalize(template);
+        data.i18n = templateLocalize(template.replace(/\//, "."));
     }
     const path = templatePath(template);
     return foundry.applications.handlebars.renderTemplate(path, data);
@@ -39,4 +39,8 @@ function templateTooltip(...args) {
     return `data-tooltip="${tooltip}"`;
     // return `data-tooltip="${tooltip}" aria-label="${tooltip}"`;
 }
-export { imagePath, render, templateLocalize, templatePath, templateTooltip };
+function setApplicationTitle(options, ...args) {
+    const title = localize(...args);
+    foundry.utils.setProperty(options, "window.title", title);
+}
+export { imagePath, render, setApplicationTitle, templateLocalize, templatePath, templateTooltip };
