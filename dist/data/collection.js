@@ -12,6 +12,9 @@ class DataModelCollection extends Collection {
         }), R.filter(R.isTruthy));
         super(models);
     }
+    add(entry) {
+        return this.set(entry.id, entry);
+    }
 }
 class SettingCollection extends DataModelCollection {
     #setting;

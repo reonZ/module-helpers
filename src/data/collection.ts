@@ -20,6 +20,10 @@ class DataModelCollection<T extends DataModelWithId> extends Collection<T> {
 
         super(models);
     }
+
+    add(entry: T): this {
+        return this.set(entry.id, entry);
+    }
 }
 
 class SettingCollection<T extends DataModelWithId> extends DataModelCollection<T> {
