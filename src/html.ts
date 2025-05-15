@@ -58,16 +58,25 @@ function htmlQuery<K extends keyof HTMLElementTagNameMap>(
     parent: MaybeHTML,
     selectors: K
 ): HTMLElementTagNameMap[K] | null;
-function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null;
 function htmlQuery<E extends HTMLElement = HTMLElement>(
     parent: MaybeHTML,
     selectors: string
 ): E | null;
+function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null;
 function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null {
     if (!(parent instanceof Element || parent instanceof Document)) return null;
     return parent.querySelector<HTMLElement>(selectors);
 }
 
+function htmlQueryAll<K extends keyof HTMLElementTagNameMap>(
+    parent: MaybeHTML,
+    selectors: K
+): HTMLElementTagNameMap[K];
+function htmlQueryAll<E extends HTMLElement = HTMLElement>(
+    parent: MaybeHTML,
+    selectors: string
+): E[];
+function htmlQueryAll(parent: MaybeHTML, selectors: string): HTMLElement[];
 function htmlQueryAll(parent: MaybeHTML, selectors: string): HTMLElement[] {
     if (!(parent instanceof Element || parent instanceof Document)) return [];
     return Array.from(parent.querySelectorAll<HTMLElement>(selectors));
