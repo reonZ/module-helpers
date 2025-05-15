@@ -25,13 +25,16 @@ function onRenderControlsConfig(html, options, keybinds) {
     const tab = htmlQuery(html, `[data-application-part="main"] [data-group="categories"][data-tab="${id}"][data-category="${id}"]`);
     if (!tab)
         return;
-    for (const key of R.keys(keybinds)) {
+    const keybindKeys = R.keys(keybinds);
+    for (let i = 0; i < keybindKeys.length; i++) {
+        const key = keybindKeys[i];
         if (!key)
             continue;
         const group = htmlQuery(tab, `.form-group[data-action-id^="${MODULE.id}.${key}"]`);
-        const title = createHTMLElement("h3", {
+        const title = createHTMLElement("h4", {
             content: localize("keybindings", key, "title"),
         });
+        title.style.marginBlock = i === 0 ? "0" : "0.5em 0em";
         group?.before(title);
     }
 }
