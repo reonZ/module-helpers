@@ -11,6 +11,7 @@ export * from "./form";
 export * from "./handlebars";
 export * from "./hooks";
 export * from "./html";
+export * from "./game";
 export * from "./item";
 export * from "./keybinds";
 export * from "./libwrapper";
