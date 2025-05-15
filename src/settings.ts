@@ -20,8 +20,7 @@ function getSetting(key: string) {
     return game.settings.get(MODULE.id, key);
 }
 
-function getUsersSetting<T = boolean>(key: string): (Setting & { value: T; user: string })[];
-function getUsersSetting(key: string) {
+function getUsersSetting<T = boolean>(key: string): (Setting & { value: T; user: string })[] {
     const moduleKey = MODULE.path(key);
     return game.settings.storage
         .get("user")
@@ -184,14 +183,18 @@ function onRenderSettingsConfig(
         label?.append(span);
     }
 
-    for (const key of R.keys(settings)) {
+    const settingKeys = R.keys(settings);
+    for (let i = 0; i < settingKeys.length; i++) {
+        const key = settingKeys[i];
         if (!key) continue;
 
         const input = htmlQuery(tab, `input[name^="${MODULE.id}.${key}"]`);
         const group = htmlClosest(input, ".form-group");
-        const title = createHTMLElement("h3", {
+        const title = createHTMLElement("h4", {
             content: localize("settings", key, "title"),
         });
+
+        title.style.marginBlock = i === 0 ? "0" : "0.5em 0em";
 
         group?.before(title);
     }
@@ -203,7 +206,7 @@ type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope" | "onCh
     gmOnly?: boolean;
     name?: string;
     scope: "world" | "user";
-    onChange?: (choice: any) => void | Promise<void>;
+    onChange?: (value: any, operation: object, userId: string) => void | Promise<void>;
 };
 
 type RegisterSettingMenuOptions = PartialExcept<SettingSubmenuConfig, "type" | "restricted">;

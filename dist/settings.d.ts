@@ -24,7 +24,7 @@ type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope" | "onCh
     gmOnly?: boolean;
     name?: string;
     scope: "world" | "user";
-    onChange?: (choice: any) => void | Promise<void>;
+    onChange?: (value: any, operation: object, userId: string) => void | Promise<void>;
 };
 type RegisterSettingMenuOptions = PartialExcept<SettingSubmenuConfig, "type" | "restricted">;
 export { getSetting, getUsersSetting, hasSetting, registerModuleSettings, registerSetting, registerSettingMenu, setSetting, settingPath, setUserSetting, };
