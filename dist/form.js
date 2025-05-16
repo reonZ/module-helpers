@@ -5,7 +5,14 @@ function createFormData(html, { expand = false, disabled, readonly } = {}) {
     if (!form)
         return null;
     const formData = new foundry.applications.ux.FormDataExtended(form, { disabled, readonly });
-    const data = R.mapValues(formData.object, (value) => typeof value === "string" ? value.trim() : value);
+    const data = R.mapValues(formData.object, (value) => {
+        return typeof value === "string" ? value.trim() : value;
+    });
+    for (const element of form.elements) {
+        if (!(element instanceof HTMLInputElement) || element.type !== "file")
+            continue;
+        data[element.name] = element.files?.[0];
+    }
     return expand ? foundry.utils.expandObject(data) : data;
 }
 function generateFormInput(type, i18n, inputConfig) {
