@@ -1,4 +1,10 @@
-import { ActorPF2e, ContainerPF2e, ItemPF2e, PhysicalItemSource } from "foundry-pf2e";
+import {
+    ActorPF2e,
+    ContainerPF2e,
+    ItemPF2e,
+    PhysicalItemPF2e,
+    PhysicalItemSource,
+} from "foundry-pf2e";
 import { R } from ".";
 
 async function giveItemToActor(
@@ -85,4 +91,14 @@ function getItemContentSources(
         .flat();
 }
 
+type ActorTransferItemArgs = [
+    targetActor: ActorPF2e,
+    item: PhysicalItemPF2e<ActorPF2e>,
+    quantity: number,
+    containerId?: string,
+    newStack?: boolean,
+    isPurchase?: boolean | null
+];
+
 export { giveItemToActor };
+export type { ActorTransferItemArgs };
