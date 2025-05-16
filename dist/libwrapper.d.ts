@@ -1,14 +1,15 @@
 declare function registerWrapper(type: libWrapper.RegisterType, path: string | string[], callback: libWrapper.RegisterCallback, context?: WrapperContext): number[];
 declare function unregisterWrapper(id: number | number[]): void;
-declare function createSharedWrapper<T extends ClientDocument>(type: Exclude<libWrapper.RegisterType, "OVERRIDE">, path: string, sharedCallback: (this: T, registered: (() => void)[], wrapped: libWrapper.RegisterCallback) => void): {
-    register(listener: libWrapper.RegisterCallback, { context, priority }?: {
-        context?: WrapperContext;
-        priority?: number | undefined;
-    }): {
-        readonly enabled: boolean;
-        activate(): void;
-        disable(): void;
-        toggle(enabled?: boolean): void;
+declare function createSharedWrapper<TDocument extends ClientDocument, TListener extends libWrapper.RegisterCallback>(type: Exclude<libWrapper.RegisterType, "OVERRIDE">, path: string, sharedCallback: (this: TDocument, registered: libWrapper.RegisterCallback[], wrapped: libWrapper.RegisterCallback) => void): {
+    register: {
+        (listener: (document: TDocument, ...args: Parameters<TListener>) => ReturnType<TListener>, options: {
+            context: WrapperContext;
+            priority?: number;
+        }): Wrapper;
+        (listener: (this: TDocument, ...args: Parameters<TListener>) => ReturnType<TListener>, options?: {
+            context?: undefined;
+            priority?: number;
+        }): Wrapper;
     };
 };
 declare function createToggleableWrapper(type: libWrapper.RegisterType, path: string | string[], callback: libWrapper.RegisterCallback, options?: WrapperOptions): Wrapper;

@@ -33,19 +33,22 @@ function unregisterWrapper(id: number | number[]) {
     }
 }
 
-function createSharedWrapper<T extends ClientDocument>(
+function createSharedWrapper<
+    TDocument extends ClientDocument,
+    TListener extends libWrapper.RegisterCallback
+>(
     type: Exclude<libWrapper.RegisterType, "OVERRIDE">,
     path: string,
     sharedCallback: (
-        this: T,
-        registered: (() => void)[],
+        this: TDocument,
+        registered: libWrapper.RegisterCallback[],
         wrapped: libWrapper.RegisterCallback
     ) => void
 ) {
     let sharedId: number[] | null = null;
     const _registered = new Collection<SharedRegistered>();
 
-    function wrapper(this: T, wrapped: libWrapper.RegisterCallback, ...args: any[]) {
+    function wrapper(this: TDocument, wrapped: libWrapper.RegisterCallback, ...args: any[]) {
         const registered = R.pipe(
             _registered.contents,
             R.sortBy(R.prop("priority")),
@@ -89,41 +92,51 @@ function createSharedWrapper<T extends ClientDocument>(
         }
     };
 
+    function register(
+        listener: (document: TDocument, ...args: Parameters<TListener>) => ReturnType<TListener>,
+        options: { context: WrapperContext; priority?: number }
+    ): Wrapper;
+    function register(
+        listener: (this: TDocument, ...args: Parameters<TListener>) => ReturnType<TListener>,
+        options?: { context?: undefined; priority?: number }
+    ): Wrapper;
+    function register(
+        listener: libWrapper.RegisterCallback,
+        { context, priority = 0 }: { context?: WrapperContext; priority?: number } = {}
+    ): Wrapper {
+        const registerId = foundry.utils.randomID();
+
+        _registered.set(registerId, {
+            listener,
+            context,
+            priority,
+            active: false,
+        });
+
+        return {
+            get enabled() {
+                return !!_registered.get(registerId)?.active;
+            },
+            activate() {
+                activateWrapper(registerId);
+            },
+            disable() {
+                disableWrapper(registerId);
+            },
+            toggle(enabled?: boolean) {
+                enabled ??= !this.enabled;
+
+                if (enabled) {
+                    this.activate();
+                } else {
+                    this.disable();
+                }
+            },
+        };
+    }
+
     return {
-        register(
-            listener: libWrapper.RegisterCallback,
-            { context, priority = 0 }: { context?: WrapperContext; priority?: number } = {}
-        ) {
-            const registerId = foundry.utils.randomID();
-
-            _registered.set(registerId, {
-                listener,
-                context,
-                priority,
-                active: false,
-            });
-
-            return {
-                get enabled() {
-                    return !!_registered.get(registerId)?.active;
-                },
-                activate() {
-                    activateWrapper(registerId);
-                },
-                disable() {
-                    disableWrapper(registerId);
-                },
-                toggle(enabled?: boolean) {
-                    enabled ??= !this.enabled;
-
-                    if (enabled) {
-                        this.activate();
-                    } else {
-                        this.disable();
-                    }
-                },
-            };
-        },
+        register,
     };
 }
 

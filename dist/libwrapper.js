@@ -57,36 +57,37 @@ function createSharedWrapper(type, path, sharedCallback) {
             sharedId = null;
         }
     };
+    function register(listener, { context, priority = 0 } = {}) {
+        const registerId = foundry.utils.randomID();
+        _registered.set(registerId, {
+            listener,
+            context,
+            priority,
+            active: false,
+        });
+        return {
+            get enabled() {
+                return !!_registered.get(registerId)?.active;
+            },
+            activate() {
+                activateWrapper(registerId);
+            },
+            disable() {
+                disableWrapper(registerId);
+            },
+            toggle(enabled) {
+                enabled ??= !this.enabled;
+                if (enabled) {
+                    this.activate();
+                }
+                else {
+                    this.disable();
+                }
+            },
+        };
+    }
     return {
-        register(listener, { context, priority = 0 } = {}) {
-            const registerId = foundry.utils.randomID();
-            _registered.set(registerId, {
-                listener,
-                context,
-                priority,
-                active: false,
-            });
-            return {
-                get enabled() {
-                    return !!_registered.get(registerId)?.active;
-                },
-                activate() {
-                    activateWrapper(registerId);
-                },
-                disable() {
-                    disableWrapper(registerId);
-                },
-                toggle(enabled) {
-                    enabled ??= !this.enabled;
-                    if (enabled) {
-                        this.activate();
-                    }
-                    else {
-                        this.disable();
-                    }
-                },
-            };
-        },
+        register,
     };
 }
 function createToggleableWrapper(type, path, callback, options = {}) {
