@@ -4,6 +4,7 @@ const _MODULE = {
     id: "",
     groupLog: false,
     gameContext: "",
+    current: undefined as Module | undefined,
     expose: {
         api: {},
         debug: {},
@@ -24,8 +25,8 @@ const MODULE = {
         }
         return this.current.title;
     },
-    get current() {
-        return game.modules.get(this.id) as Module & { api?: Record<string, any> };
+    get current(): Module {
+        return (_MODULE.current ??= game.modules.get(this.id) as Module);
     },
     get isDebug(): boolean {
         // @ts-expect-error
@@ -136,11 +137,10 @@ function addGameExpose(type: "api" | "dev", expose: Record<string, any>) {
 }
 
 function gameExpose(type: "api" | "dev", key: string) {
-    foundry.utils.setProperty(
-        game,
-        `${_MODULE.gameContext}.${type}.${key}`,
-        _MODULE.expose[type][key]
-    );
+    const entry = _MODULE.expose[type][key];
+
+    foundry.utils.setProperty(game, `${_MODULE.gameContext}.${type}.${key}`, entry);
+    foundry.utils.setProperty(MODULE.current, `${type}.${key}`, entry);
 }
 
 type ModuleRegisterOptions = {

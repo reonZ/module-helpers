@@ -3,6 +3,7 @@ const _MODULE = {
     id: "",
     groupLog: false,
     gameContext: "",
+    current: undefined,
     expose: {
         api: {},
         debug: {},
@@ -23,7 +24,7 @@ const MODULE = {
         return this.current.title;
     },
     get current() {
-        return game.modules.get(this.id);
+        return (_MODULE.current ??= game.modules.get(this.id));
     },
     get isDebug() {
         // @ts-expect-error
@@ -124,6 +125,8 @@ function addGameExpose(type, expose) {
     }
 }
 function gameExpose(type, key) {
-    foundry.utils.setProperty(game, `${_MODULE.gameContext}.${type}.${key}`, _MODULE.expose[type][key]);
+    const entry = _MODULE.expose[type][key];
+    foundry.utils.setProperty(game, `${_MODULE.gameContext}.${type}.${key}`, entry);
+    foundry.utils.setProperty(MODULE.current, `${type}.${key}`, entry);
 }
 export { MODULE };

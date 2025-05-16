@@ -1,9 +1,7 @@
 declare const MODULE: {
     readonly id: string;
     readonly name: string;
-    readonly current: Module & {
-        api?: Record<string, any> | undefined;
-    };
+    readonly current: Module;
     readonly isDebug: boolean;
     readonly gameContext: string;
     Error(str: string): Error;
