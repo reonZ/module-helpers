@@ -1,4 +1,6 @@
 import {
+    AbstractEffectPF2e,
+    ActorPF2e,
     ConditionSlug,
     ConditionSource,
     DamageType,
@@ -177,5 +179,24 @@ type CustomEffectOptions = {
     unidentified?: boolean;
 };
 
+interface EffectsPanelViewData {
+    afflictions: EffectViewData[];
+    conditions: EffectViewData[];
+    effects: EffectViewData[];
+    actor: ActorPF2e | null;
+    user: { isGM: boolean };
+}
+
+interface EffectViewData {
+    effect: AbstractEffectPF2e<ActorPF2e>;
+    description: string;
+    remaining: string | null;
+}
+
 export { createCustomCondition, createCustomEffect, createCustomPersistentDamage };
-export type { CustomConditionOptions, CustomEffectOptions, CustomEffectDuration };
+export type {
+    CustomConditionOptions,
+    CustomEffectDuration,
+    CustomEffectOptions,
+    EffectsPanelViewData,
+};

@@ -1,4 +1,4 @@
-import { ConditionSlug, ConditionSource, DamageType, DurationData, EffectSource, RuleElementSource } from "foundry-pf2e";
+import { AbstractEffectPF2e, ActorPF2e, ConditionSlug, ConditionSource, DamageType, DurationData, EffectSource, RuleElementSource } from "foundry-pf2e";
 declare function createCustomPersistentDamage(options: CustomPersistentDamageOptions): PreCreate<EffectSource | ConditionSource> | undefined;
 declare function createCustomCondition(options: CustomConditionOptions): PreCreate<EffectSource | ConditionSource> | undefined;
 declare function createCustomEffect({ duration, img, name, rules, slug, unidentified, }: CustomEffectOptions): PreCreate<EffectSource>;
@@ -23,5 +23,19 @@ type CustomEffectOptions = {
     slug?: string;
     unidentified?: boolean;
 };
+interface EffectsPanelViewData {
+    afflictions: EffectViewData[];
+    conditions: EffectViewData[];
+    effects: EffectViewData[];
+    actor: ActorPF2e | null;
+    user: {
+        isGM: boolean;
+    };
+}
+interface EffectViewData {
+    effect: AbstractEffectPF2e<ActorPF2e>;
+    description: string;
+    remaining: string | null;
+}
 export { createCustomCondition, createCustomEffect, createCustomPersistentDamage };
-export type { CustomConditionOptions, CustomEffectOptions, CustomEffectDuration };
+export type { CustomConditionOptions, CustomEffectDuration, CustomEffectOptions, EffectsPanelViewData, };
