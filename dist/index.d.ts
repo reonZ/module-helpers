@@ -22,6 +22,7 @@ export * from "./object";
 export * from "./pixi";
 export * from "./rules";
 export * from "./settings";
+export * from "./socket";
 export * from "./trade";
 export * from "./user";
 export * from "./utils";

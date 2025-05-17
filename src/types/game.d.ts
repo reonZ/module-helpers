@@ -15,3 +15,7 @@ declare module "foundry-pf2e" {
         toolbelt?: toolbelt.GamePF2e;
     }
 }
+
+declare global {
+    type SocketCallback<T = any> = (packet: T, senderId: string) => void;
+}
