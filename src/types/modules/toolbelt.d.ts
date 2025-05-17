@@ -9,7 +9,7 @@ declare global {
     namespace toolbelt {
         interface GamePF2e {
             getToolSetting<K extends keyof Settings, S extends keyof Settings[K]>(
-                name: K,
+                tool: K,
                 setting: S
             ): Settings[K][S];
         }

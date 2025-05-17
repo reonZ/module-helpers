@@ -3,7 +3,6 @@ declare const MODULE: {
     readonly name: string;
     readonly current: Module;
     readonly isDebug: boolean;
-    readonly gameContext: string;
     Error(str: string): Error;
     error(str: string, error?: Error): void;
     log(...args: any[]): void;

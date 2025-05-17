@@ -1,4 +1,4 @@
-import { joinStr, R } from ".";
+import { getSetting, joinStr, R } from ".";
 
 const _MODULE = {
     id: "",
@@ -9,7 +9,7 @@ const _MODULE = {
         api: {},
         debug: {},
         dev: {},
-    } as Record<"api" | "debug" | "dev", Record<string, any>>,
+    } as ModuleExposed,
 };
 
 const MODULE = {
@@ -31,9 +31,6 @@ const MODULE = {
     get isDebug(): boolean {
         // @ts-expect-error
         return CONFIG.debug.modules === true;
-    },
-    get gameContext(): string {
-        return _MODULE.gameContext;
     },
     Error(str: string): Error {
         return new Error(`\n[${this.name}] ${str}`);
@@ -114,34 +111,55 @@ const MODULE = {
         _MODULE.id = id;
         _MODULE.gameContext = options.game ?? id.replace(/^pf2e-/, "");
 
-        Hooks.once("ready", () => {
+        Hooks.once("init", () => {
+            // @ts-expect-error
+            const context = (game[_MODULE.gameContext] ??= {});
+            const current = MODULE.current;
+
+            Object.defineProperties(context, {
+                active: {
+                    get: function () {
+                        return MODULE.current.active;
+                    },
+                    configurable: false,
+                    enumerable: false,
+                },
+                getSetting: {
+                    value: function (setting: string) {
+                        return MODULE.current.active ? getSetting(setting) : undefined;
+                    },
+                    writable: false,
+                    configurable: false,
+                    enumerable: false,
+                },
+            });
+
             for (const type of ["api", "dev"] as const) {
-                for (const key of R.keys(_MODULE.expose[type])) {
-                    gameExpose(type, key);
-                }
+                Object.defineProperty(current, type, {
+                    value: _MODULE.expose[type],
+                    writable: false,
+                    configurable: false,
+                    enumerable: false,
+                });
+
+                Object.defineProperty(context, type, {
+                    value: _MODULE.expose[type],
+                    writable: false,
+                    configurable: false,
+                    enumerable: false,
+                });
             }
         });
     },
 };
 
 function addGameExpose(type: "api" | "dev", expose: Record<string, any>) {
-    const isReady = game.ready;
-
     for (const [key, value] of R.entries(expose)) {
         _MODULE.expose[type][key] = value;
-
-        if (isReady) {
-            gameExpose(type, key);
-        }
     }
 }
 
-function gameExpose(type: "api" | "dev", key: string) {
-    const entry = _MODULE.expose[type][key];
-
-    foundry.utils.setProperty(game, `${_MODULE.gameContext}.${type}.${key}`, entry);
-    foundry.utils.setProperty(MODULE.current, `${type}.${key}`, entry);
-}
+type ModuleExposed = Record<"api" | "debug" | "dev", Record<string, any>>;
 
 type ModuleRegisterOptions = {
     game?: string;

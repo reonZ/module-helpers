@@ -1,4 +1,4 @@
-import { joinStr, R } from ".";
+import { getSetting, joinStr, R } from ".";
 const _MODULE = {
     id: "",
     groupLog: false,
@@ -29,9 +29,6 @@ const MODULE = {
     get isDebug() {
         // @ts-expect-error
         return CONFIG.debug.modules === true;
-    },
-    get gameContext() {
-        return _MODULE.gameContext;
     },
     Error(str) {
         return new Error(`\n[${this.name}] ${str}`);
@@ -106,27 +103,47 @@ const MODULE = {
         }
         _MODULE.id = id;
         _MODULE.gameContext = options.game ?? id.replace(/^pf2e-/, "");
-        Hooks.once("ready", () => {
+        Hooks.once("init", () => {
+            // @ts-expect-error
+            const context = (game[_MODULE.gameContext] ??= {});
+            const current = MODULE.current;
+            Object.defineProperties(context, {
+                active: {
+                    get: function () {
+                        return MODULE.current.active;
+                    },
+                    configurable: false,
+                    enumerable: false,
+                },
+                getSetting: {
+                    value: function (setting) {
+                        return MODULE.current.active ? getSetting(setting) : undefined;
+                    },
+                    writable: false,
+                    configurable: false,
+                    enumerable: false,
+                },
+            });
             for (const type of ["api", "dev"]) {
-                for (const key of R.keys(_MODULE.expose[type])) {
-                    gameExpose(type, key);
-                }
+                Object.defineProperty(current, type, {
+                    value: _MODULE.expose[type],
+                    writable: false,
+                    configurable: false,
+                    enumerable: false,
+                });
+                Object.defineProperty(context, type, {
+                    value: _MODULE.expose[type],
+                    writable: false,
+                    configurable: false,
+                    enumerable: false,
+                });
             }
         });
     },
 };
 function addGameExpose(type, expose) {
-    const isReady = game.ready;
     for (const [key, value] of R.entries(expose)) {
         _MODULE.expose[type][key] = value;
-        if (isReady) {
-            gameExpose(type, key);
-        }
     }
-}
-function gameExpose(type, key) {
-    const entry = _MODULE.expose[type][key];
-    foundry.utils.setProperty(game, `${_MODULE.gameContext}.${type}.${key}`, entry);
-    foundry.utils.setProperty(MODULE.current, `${type}.${key}`, entry);
 }
 export { MODULE };
