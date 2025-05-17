@@ -98,4 +98,10 @@ declare global {
         left: number;
         right: number;
     };
+
+    type CollapseOf<T extends object> = {
+        [Key in keyof T & string]: T[Key] extends object
+            ? `${Key}` | `${Key}.${CollapseOf<T[Key]>}`
+            : `${Key}`;
+    }[keyof T & string];
 }

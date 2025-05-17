@@ -1,4 +1,4 @@
-import { assignStyle, error, MODULE, R, sharedLocalize } from ".";
+import { assignStyle, MODULE, R, sharedLocalize } from ".";
 const EMITING_STYLE = {
     position: "absolute",
     display: "flex",
@@ -28,7 +28,7 @@ function socketEmit(packet) {
 let _emitingElement;
 function displayEmiting() {
     const emitingElement = (_emitingElement ??= (() => {
-        const label = sharedLocalize("emiting");
+        const label = sharedLocalize("emiting.label");
         const el = document.createElement("div");
         el.innerHTML = `${label}<i class="fa-solid fa-wifi"></i>`;
         assignStyle(el, EMITING_STYLE);
@@ -61,7 +61,7 @@ function createEmitable(prefix, callback) {
             }
             else {
                 if (!game.users.activeGM) {
-                    error("A GM must be online in order to enact this request.");
+                    ui.notifications.error(sharedLocalize("emiting.noGm"));
                     return;
                 }
                 displayEmiting();

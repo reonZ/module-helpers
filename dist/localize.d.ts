@@ -1,5 +1,5 @@
 declare function localize(...args: LocalizeArgs): string;
-declare function sharedLocalize(key: keyof LEVIKTIMES): string;
+declare function sharedLocalize(key: CollapseOf<LEVIKTIMES>): string;
 declare function localizeIfExist(...args: LocalizeArgs): string | undefined;
 declare function localizePath(...args: string[]): string;
 declare function notify(type: "info" | "warning" | "error", ...args: NotificationArgs): number;

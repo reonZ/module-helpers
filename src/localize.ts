@@ -15,7 +15,7 @@ function localize(...args: LocalizeArgs): string {
     return localizeOrFormat(path, data);
 }
 
-function sharedLocalize(key: keyof LEVIKTIMES): string {
+function sharedLocalize(key: CollapseOf<LEVIKTIMES>): string {
     return game.i18n.localize(`LEVIKTIMES.${key}`);
 }
 

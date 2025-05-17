@@ -33,7 +33,7 @@ function socketEmit<T extends object = object>(packet: T) {
 let _emitingElement: HTMLElement;
 function displayEmiting() {
     const emitingElement = (_emitingElement ??= (() => {
-        const label = sharedLocalize("emiting");
+        const label = sharedLocalize("emiting.label");
         const el = document.createElement("div");
 
         el.innerHTML = `${label}<i class="fa-solid fa-wifi"></i>`;
@@ -76,7 +76,7 @@ function createEmitable<T extends Record<string, any>>(
                 return callback(callOptions, userId ?? game.userId);
             } else {
                 if (!game.users.activeGM) {
-                    error("A GM must be online in order to enact this request.");
+                    ui.notifications.error(sharedLocalize("emiting.noGm"));
                     return;
                 }
 
