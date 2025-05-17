@@ -1,4 +1,4 @@
-import { assignStyle, error, MODULE, R, sharedLocalize } from ".";
+import { assignStyle, MODULE, R, sharedLocalize } from ".";
 
 const EMITING_STYLE: Partial<CSSStyleDeclaration> = {
     position: "absolute",
