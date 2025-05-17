@@ -22,7 +22,7 @@ async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack 
     itemSource.system.equipped.carryType = "worn";
     const contentSources = withContent && isContainer ? getItemContentSources(item, itemId) : [];
     if (owner) {
-        const toDelete = contentSources.map((x) => x._id);
+        const toDelete = contentSources.map((x) => x._previousId);
         const remainingQty = existingQty - giveQty;
         if (remainingQty < 1) {
             toDelete.push(item.id);
@@ -52,6 +52,7 @@ function getItemContentSources(container, containerId) {
         const itemId = foundry.utils.randomID();
         const source = item.toObject();
         source._id = itemId;
+        source._previousId = item.id;
         source.system.containerId = containerId;
         return item.isOfType("backpack")
             ? [source, ...getItemContentSources(item, itemId)]

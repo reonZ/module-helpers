@@ -42,7 +42,7 @@ async function giveItemToActor(
     const contentSources = withContent && isContainer ? getItemContentSources(item, itemId) : [];
 
     if (owner) {
-        const toDelete: string[] = contentSources.map((x) => x._id);
+        const toDelete: string[] = contentSources.map((x) => x._previousId);
         const remainingQty = existingQty - giveQty;
 
         if (remainingQty < 1) {
@@ -75,13 +75,14 @@ async function giveItemToActor(
 function getItemContentSources(
     container: ContainerPF2e,
     containerId: string
-): (PhysicalItemSource & { _id: string })[] {
+): ContainerContentSource[] {
     return container.contents
         .map((item) => {
             const itemId = foundry.utils.randomID();
-            const source = item.toObject();
+            const source = item.toObject() as ContainerContentSource;
 
             source._id = itemId;
+            source._previousId = item.id;
             source.system.containerId = containerId;
 
             return item.isOfType("backpack")
@@ -90,6 +91,8 @@ function getItemContentSources(
         })
         .flat();
 }
+
+type ContainerContentSource = PhysicalItemSource & { _id: string; _previousId: string };
 
 type ActorTransferItemArgs = [
     targetActor: ActorPF2e,
