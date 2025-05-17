@@ -1,6 +1,6 @@
 declare function registerWrapper(type: libWrapper.RegisterType, path: string | string[], callback: libWrapper.RegisterCallback, context?: WrapperContext): number[];
 declare function unregisterWrapper(id: number | number[]): void;
-declare function createSharedWrapper<TDocument extends ClientDocument, TListener extends libWrapper.RegisterCallback>(type: Exclude<libWrapper.RegisterType, "OVERRIDE">, path: string, sharedCallback: (this: TDocument, registered: libWrapper.RegisterCallback[], wrapped: libWrapper.RegisterCallback) => void): {
+declare function createSharedWrapper<TDocument extends ClientDocument, TListener extends libWrapper.RegisterCallback>(type: Exclude<libWrapper.RegisterType, "OVERRIDE">, path: string, sharedCallback: (this: TDocument, registered: (() => ReturnType<TListener>)[], wrapped: libWrapper.RegisterCallback) => void): {
     register: {
         (listener: (document: TDocument, ...args: Parameters<TListener>) => ReturnType<TListener>, options: {
             context: WrapperContext;

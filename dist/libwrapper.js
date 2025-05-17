@@ -27,10 +27,10 @@ function createSharedWrapper(type, path, sharedCallback) {
     function wrapper(wrapped, ...args) {
         const registered = R.pipe(_registered.contents, R.sortBy(R.prop("priority")), R.filter(({ active }) => active), R.map(({ listener, context }) => () => {
             if (context) {
-                listener.call(context, this, ...args);
+                return listener.call(context, this, ...args);
             }
             else {
-                listener.call(this, ...args);
+                return listener.call(this, ...args);
             }
         }));
         sharedCallback.call(this, registered, () => wrapped(...args));

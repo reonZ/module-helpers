@@ -41,7 +41,7 @@ function createSharedWrapper<
     path: string,
     sharedCallback: (
         this: TDocument,
-        registered: libWrapper.RegisterCallback[],
+        registered: (() => ReturnType<TListener>)[],
         wrapped: libWrapper.RegisterCallback
     ) => void
 ) {
@@ -55,9 +55,9 @@ function createSharedWrapper<
             R.filter(({ active }) => active),
             R.map(({ listener, context }) => () => {
                 if (context) {
-                    listener.call(context, this, ...args);
+                    return listener.call(context, this, ...args);
                 } else {
-                    listener.call(this, ...args);
+                    return listener.call(this, ...args);
                 }
             })
         );
