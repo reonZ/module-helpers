@@ -1,4 +1,4 @@
-import { assignStyle, MODULE, R, sharedLocalize } from ".";
+import { assignStyle, MODULE, R, sharedLocalize, userIsGM } from ".";
 
 const EMITING_STYLE: Partial<CSSStyleDeclaration> = {
     position: "absolute",
@@ -89,7 +89,7 @@ function createEmitable<T extends Record<string, any>>(
             }
         },
         activate() {
-            if (this.enabled || !game.user.isGM) return;
+            if (this.enabled || !userIsGM()) return;
             _enabled = true;
             socketOn(onSocket);
         },
@@ -115,10 +115,7 @@ async function convertToCallOptions(options: Record<string, any>): Promise<Recor
 
     await Promise.all(
         R.entries(options).map(async ([key, value]) => {
-            if (R.isPlainObject(value)) {
-                callOptions[key] = await convertToCallOptions(value);
-                return;
-            } else if (!R.isString(value)) {
+            if (!R.isString(value)) {
                 callOptions[key] = value;
                 return;
             }
@@ -146,11 +143,7 @@ async function convertToCallOptions(options: Record<string, any>): Promise<Recor
 
 function convertToEmitOptions<T extends Record<string, any>>(options: T): EmitablePacket<T> {
     return R.mapValues(options, (value) => {
-        return value instanceof foundry.abstract.Document
-            ? value.uuid
-            : R.isPlainObject(value)
-            ? convertToEmitOptions(value)
-            : value;
+        return value instanceof foundry.abstract.Document ? value.uuid : value;
     }) as EmitablePacket<T>;
 }
 
@@ -159,11 +152,7 @@ type WithSocketOptionsRequired<
     TRequired = RequiredFieldsOnly<TOptions>
 > = TRequired extends Record<infer TKey, any>
     ? {
-          [k in TKey]: TRequired[k] extends ClientDocument
-              ? TRequired[k] | string
-              : TRequired[k] extends Record<string, any>
-              ? WithSocketOptions<TRequired[k]>
-              : TRequired[k];
+          [k in TKey]: TRequired[k] extends ClientDocument ? TRequired[k] | string : TRequired[k];
       }
     : never;
 
@@ -173,9 +162,7 @@ type WithSocketOptionsPartial<
 > = TPartial extends Partial<Record<infer TKey, any>>
     ? {
           [k in TKey]?: NonNullable<TPartial[k]> extends ClientDocument
-              ? TPartial[k] | string
-              : NonNullable<TPartial[k]> extends Record<string, any>
-              ? WithSocketOptions<TPartial[k]>
+              ? TPartial[k] | string | null
               : TPartial[k];
       }
     : never;

@@ -1,4 +1,4 @@
-import { assignStyle, MODULE, R, sharedLocalize } from ".";
+import { assignStyle, MODULE, R, sharedLocalize, userIsGM } from ".";
 const EMITING_STYLE = {
     position: "absolute",
     display: "flex",
@@ -71,7 +71,7 @@ function createEmitable(prefix, callback) {
             }
         },
         activate() {
-            if (this.enabled || !game.user.isGM)
+            if (this.enabled || !userIsGM())
                 return;
             _enabled = true;
             socketOn(onSocket);
@@ -96,11 +96,7 @@ function createEmitable(prefix, callback) {
 async function convertToCallOptions(options) {
     const callOptions = {};
     await Promise.all(R.entries(options).map(async ([key, value]) => {
-        if (R.isPlainObject(value)) {
-            callOptions[key] = await convertToCallOptions(value);
-            return;
-        }
-        else if (!R.isString(value)) {
+        if (!R.isString(value)) {
             callOptions[key] = value;
             return;
         }
@@ -123,11 +119,7 @@ async function convertToCallOptions(options) {
 }
 function convertToEmitOptions(options) {
     return R.mapValues(options, (value) => {
-        return value instanceof foundry.abstract.Document
-            ? value.uuid
-            : R.isPlainObject(value)
-                ? convertToEmitOptions(value)
-                : value;
+        return value instanceof foundry.abstract.Document ? value.uuid : value;
     });
 }
 export { createEmitable, socketEmit, socketOff, socketOn };
