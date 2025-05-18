@@ -1,4 +1,4 @@
-import { getActionGlyph, getPreferredName, R } from ".";
+import { getActionGlyph, getPreferredName, htmlQuery, R } from ".";
 async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack = true) {
     const withContent = game.toolbelt?.getToolSetting("trade", "withContent");
     const target = R.isString(targetOrUuid)
@@ -97,4 +97,23 @@ function getContainerContentSources(container, containerId) {
     })
         .flat();
 }
-export { createTradeMessage, giveItemToActor };
+function updateItemTransferDialog(html, { button, prompt, title, noStack }) {
+    const titleElement = htmlQuery(html, ":scope > header h4");
+    if (titleElement) {
+        titleElement.innerText = title;
+    }
+    const buttonElement = htmlQuery(html, "form button");
+    if (buttonElement) {
+        buttonElement.innerText = button ?? title;
+    }
+    const questionElement = htmlQuery(html, "form > label");
+    if (questionElement) {
+        questionElement.innerText = prompt;
+    }
+    if (noStack) {
+        const input = htmlQuery(html, "[name='newStack']");
+        input?.previousElementSibling?.remove();
+        input?.remove();
+    }
+}
+export { createTradeMessage, giveItemToActor, updateItemTransferDialog };

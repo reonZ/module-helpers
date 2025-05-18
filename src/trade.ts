@@ -5,7 +5,7 @@ import {
     PhysicalItemPF2e,
     PhysicalItemSource,
 } from "foundry-pf2e";
-import { getActionGlyph, getPreferredName, R } from ".";
+import { getActionGlyph, getPreferredName, htmlQuery, R } from ".";
 
 async function giveItemToActor(
     itemOrUuid: PhysicalItemPF2e | EmbeddedItemUUID,
@@ -154,6 +154,39 @@ function getContainerContentSources(
         .flat();
 }
 
+function updateItemTransferDialog(
+    html: HTMLElement,
+    { button, prompt, title, noStack }: UpdateItemTransferDialogOptions
+) {
+    const titleElement = htmlQuery(html, ":scope > header h4");
+    if (titleElement) {
+        titleElement.innerText = title;
+    }
+
+    const buttonElement = htmlQuery(html, "form button");
+    if (buttonElement) {
+        buttonElement.innerText = button ?? title;
+    }
+
+    const questionElement = htmlQuery(html, "form > label");
+    if (questionElement) {
+        questionElement.innerText = prompt;
+    }
+
+    if (noStack) {
+        const input = htmlQuery(html, "[name='newStack']");
+        input?.previousElementSibling?.remove();
+        input?.remove();
+    }
+}
+
+type UpdateItemTransferDialogOptions = {
+    title: string;
+    button?: string;
+    prompt: string;
+    noStack?: boolean;
+};
+
 type TradeMessageOptions = {
     /** localization key */
     cost?: string | number | null | ActionCost;
@@ -177,5 +210,5 @@ type ActorTransferItemArgs = [
     isPurchase?: boolean | null
 ];
 
-export { createTradeMessage, giveItemToActor };
+export { createTradeMessage, giveItemToActor, updateItemTransferDialog };
 export type { ActorTransferItemArgs };

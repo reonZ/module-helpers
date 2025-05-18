@@ -5,6 +5,13 @@ declare function giveItemToActor(itemOrUuid: PhysicalItemPF2e | EmbeddedItemUUID
     withContent: boolean;
 } | undefined>;
 declare function createTradeMessage({ cost, item, message, quantity, source, subtitle, target, userId, }: TradeMessageOptions): Promise<import("foundry-pf2e/pf2e/module/chat-message/document.js").ChatMessagePF2e | undefined>;
+declare function updateItemTransferDialog(html: HTMLElement, { button, prompt, title, noStack }: UpdateItemTransferDialogOptions): void;
+type UpdateItemTransferDialogOptions = {
+    title: string;
+    button?: string;
+    prompt: string;
+    noStack?: boolean;
+};
 type TradeMessageOptions = {
     /** localization key */
     cost?: string | number | null | ActionCost;
@@ -24,5 +31,5 @@ type ActorTransferItemArgs = [
     newStack?: boolean,
     isPurchase?: boolean | null
 ];
-export { createTradeMessage, giveItemToActor };
+export { createTradeMessage, giveItemToActor, updateItemTransferDialog };
 export type { ActorTransferItemArgs };
