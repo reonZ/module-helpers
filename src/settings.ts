@@ -173,7 +173,7 @@ function onRenderSettingsConfig(
 
         if (!extras.length) continue;
 
-        const input = htmlQuery(tab, `input[name="${name}"]`);
+        const input = htmlQuery(tab, `[name="${name}"]`);
         const group = htmlClosest(input, ".form-group");
         const label = htmlQuery(group, "label");
         const span = createHTMLElement("span", {
@@ -188,7 +188,7 @@ function onRenderSettingsConfig(
         const key = settingKeys[i];
         if (!key) continue;
 
-        const input = htmlQuery(tab, `input[name^="${MODULE.id}.${key}"]`);
+        const input = htmlQuery(tab, `[name^="${MODULE.id}.${key}"]`);
         const group = htmlClosest(input, ".form-group");
         const title = createHTMLElement("h4", {
             content: localize("settings", key, "title"),
