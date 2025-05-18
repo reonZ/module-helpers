@@ -1,4 +1,4 @@
-import { ActorPF2e } from "foundry-pf2e";
+import { ActorPF2e, CreaturePF2e } from "foundry-pf2e";
 import { R } from ".";
 
 function actorsRespectAlliance(
@@ -18,7 +18,16 @@ function hasRollOption(actor: ActorPF2e, option: string) {
     return rolloptionsDomains.some((rollOptions) => rollOptions[option]);
 }
 
+function playersCanSeeName(actor: ActorPF2e, user = game.user) {
+    return (
+        actor.token?.playersCanSeeName ||
+        actor.alliance === "party" ||
+        actor.testUserPermission(user, "LIMITED") ||
+        (actor as CreaturePF2e).parties?.some((party) => party.testUserPermission(user, "LIMITED"))
+    );
+}
+
 type ActorTargetAlliance = "all" | "allies" | "enemies";
 
-export { actorsRespectAlliance, hasRollOption };
+export { actorsRespectAlliance, hasRollOption, playersCanSeeName };
 export type { ActorTargetAlliance };
