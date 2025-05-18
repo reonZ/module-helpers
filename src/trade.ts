@@ -13,7 +13,7 @@ async function giveItemToActor(
     quantity = 1,
     newStack = true
 ): Promise<{ item: PhysicalItemPF2e; quantity: number; withContent: boolean } | undefined> {
-    const withContent = game.toolbelt?.getToolSetting("trade", "withContent");
+    const withContent = game.toolbelt?.getToolSetting("betterTrade", "withContent");
     const target = R.isString(targetOrUuid)
         ? await fromUuid<ActorPF2e>(targetOrUuid)
         : targetOrUuid;

@@ -1,6 +1,6 @@
 import { getActionGlyph, getPreferredName, htmlQuery, R } from ".";
 async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack = true) {
-    const withContent = game.toolbelt?.getToolSetting("trade", "withContent");
+    const withContent = game.toolbelt?.getToolSetting("betterTrade", "withContent");
     const target = R.isString(targetOrUuid)
         ? await fromUuid(targetOrUuid)
         : targetOrUuid;
