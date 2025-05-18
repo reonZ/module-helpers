@@ -53,6 +53,44 @@ function onRenderControlsConfig(
     }
 }
 
+function createToggleKeybind(options: WithRequired<KeybindingActionConfig, "onDown" | "onUp">) {
+    const _actions = {
+        onDown: (context: KeyboardEventContext) => {},
+        onUp: (context: KeyboardEventContext) => {},
+    };
+
+    return {
+        configs: {
+            ...options,
+            onDown: (context: KeyboardEventContext) => {
+                _actions.onDown(context);
+            },
+            onUp: (context: KeyboardEventContext) => {
+                _actions.onUp(context);
+            },
+        } satisfies KeybindingActionConfig,
+        activate() {
+            _actions.onDown = (context: KeyboardEventContext) => {
+                options.onDown(context);
+            };
+            _actions.onUp = (context: KeyboardEventContext) => {
+                options.onUp(context);
+            };
+        },
+        disable() {
+            _actions.onDown = (context: KeyboardEventContext) => {};
+            _actions.onUp = (context: KeyboardEventContext) => {};
+        },
+        toggle(enabled: boolean) {
+            if (enabled) {
+                this.activate();
+            } else {
+                this.disable();
+            }
+        },
+    };
+}
+
 type ModuleKeybinds = Record<string, ReadonlyArray<KeybindingActionConfig>>;
 
 type RenderControlsConfigOptions = {
@@ -64,4 +102,4 @@ type RenderControlsConfigCategory = {
     id: string;
 };
 
-export { registerKeybind, registerModuleKeybinds };
+export { createToggleKeybind, registerKeybind, registerModuleKeybinds };

@@ -38,4 +38,41 @@ function onRenderControlsConfig(html, options, keybinds) {
         group?.before(title);
     }
 }
-export { registerKeybind, registerModuleKeybinds };
+function createToggleKeybind(options) {
+    const _actions = {
+        onDown: (context) => { },
+        onUp: (context) => { },
+    };
+    return {
+        configs: {
+            ...options,
+            onDown: (context) => {
+                _actions.onDown(context);
+            },
+            onUp: (context) => {
+                _actions.onUp(context);
+            },
+        },
+        activate() {
+            _actions.onDown = (context) => {
+                options.onDown(context);
+            };
+            _actions.onUp = (context) => {
+                options.onUp(context);
+            };
+        },
+        disable() {
+            _actions.onDown = (context) => { };
+            _actions.onUp = (context) => { };
+        },
+        toggle(enabled) {
+            if (enabled) {
+                this.activate();
+            }
+            else {
+                this.disable();
+            }
+        },
+    };
+}
+export { createToggleKeybind, registerKeybind, registerModuleKeybinds };
