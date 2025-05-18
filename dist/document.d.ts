@@ -1,4 +1,4 @@
-import { ActorPF2e, DamageInstance, DamageRoll, MacroPF2e, TokenDocumentPF2e } from "foundry-pf2e";
+import { ActorPF2e, DamageInstance, DamageRoll, MacroPF2e, TokenDocumentPF2e, UserPF2e } from "foundry-pf2e";
 declare function getDamageRollClass(): typeof DamageRoll;
 declare function getDamageInstanceClass(): typeof DamageInstance;
 declare function getInMemory<T>(obj: ClientDocument, ...path: string[]): T | undefined;
@@ -11,5 +11,9 @@ declare function isValidTargetDocuments(target: Maybe<{
     actor: Maybe<ActorPF2e>;
     token?: Maybe<TokenDocumentPF2e>;
 }>): target is TargetDocuments;
+/**
+ * https://github.com/foundryvtt/pf2e/blob/89892b6fafec1456a0358de8c6d7b102e3fe2da2/src/module/actor/item-transfer.ts#L117
+ */
+declare function getPreferredName(document: ActorPF2e | UserPF2e): string;
 type DocumentType = "Item" | "Actor" | "Macro";
-export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, isClientDocument, isScriptMacro, isUuidOf, isValidTargetDocuments, setInMemory, };
+export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, getPreferredName, isClientDocument, isScriptMacro, isUuidOf, isValidTargetDocuments, setInMemory, };

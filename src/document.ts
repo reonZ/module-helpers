@@ -1,4 +1,11 @@
-import { ActorPF2e, DamageInstance, DamageRoll, MacroPF2e, TokenDocumentPF2e } from "foundry-pf2e";
+import {
+    ActorPF2e,
+    DamageInstance,
+    DamageRoll,
+    MacroPF2e,
+    TokenDocumentPF2e,
+    UserPF2e,
+} from "foundry-pf2e";
 import { R } from ".";
 import { MODULE } from "./module";
 
@@ -48,7 +55,7 @@ function isUuidOf(
 
     const types = R.isArray(type) ? type : [type];
     const result = foundry.utils.parseUuid(uuid);
-    return !!result.type && types.includes(result.type as DocumentType) && !!result.documentId;
+    return !!result?.type && types.includes(result.type as DocumentType) && !!result.documentId;
 }
 
 function isValidTargetDocuments(
@@ -61,6 +68,29 @@ function isValidTargetDocuments(
     );
 }
 
+/**
+ * https://github.com/foundryvtt/pf2e/blob/89892b6fafec1456a0358de8c6d7b102e3fe2da2/src/module/actor/item-transfer.ts#L117
+ */
+function getPreferredName(document: ActorPF2e | UserPF2e) {
+    if ("items" in document) {
+        // Use a special moniker for party actors
+        if (document.isOfType("party")) return game.i18n.localize("PF2E.loot.PartyStash");
+        // Synthetic actor: use its token name or, failing that, actor name
+        if (document.token) return document.token.name;
+
+        // Linked actor: use its token prototype name
+        return document.prototypeToken?.name ?? document.name;
+    }
+    // User with an assigned character
+    if (document.character) {
+        const token = canvas.tokens.placeables.find((t) => t.actor?.id === document.id);
+        return token?.name ?? document.character?.name;
+    }
+
+    // User with no assigned character (should never happen)
+    return document.name;
+}
+
 type DocumentType = "Item" | "Actor" | "Macro";
 
 export {
@@ -68,6 +98,7 @@ export {
     getDamageInstanceClass,
     getDamageRollClass,
     getInMemory,
+    getPreferredName,
     isClientDocument,
     isScriptMacro,
     isUuidOf,
