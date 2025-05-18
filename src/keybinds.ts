@@ -1,4 +1,4 @@
-import { createHTMLElement, htmlQuery, localize, MODULE, R } from ".";
+import { createHTMLElement, htmlQuery, localize, localizeIfExist, MODULE, R } from ".";
 
 function registerKeybind(name: string, data: Partial<KeybindingActionConfig>) {
     game.keybindings.register(MODULE.id, name, {
@@ -44,7 +44,8 @@ function onRenderControlsConfig(
 
         const group = htmlQuery(tab, `.form-group[data-action-id^="${MODULE.id}.${key}"]`);
         const title = createHTMLElement("h4", {
-            content: localize("keybindings", key, "title"),
+            content:
+                localizeIfExist("keybindings", key, "title") ?? localize("settings", key, "title"),
         });
 
         title.style.marginBlock = i === 0 ? "0" : "0.5em 0em";
