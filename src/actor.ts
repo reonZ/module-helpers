@@ -27,7 +27,11 @@ function playersCanSeeName(actor: ActorPF2e, user = game.user) {
     );
 }
 
+function isAllyActor(actor: ActorPF2e) {
+    return actor.alliance === "party" || actor.testUserPermission(game.user, "OBSERVER");
+}
+
 type ActorTargetAlliance = "all" | "allies" | "enemies";
 
-export { actorsRespectAlliance, hasRollOption, playersCanSeeName };
+export { actorsRespectAlliance, hasRollOption, isAllyActor, playersCanSeeName };
 export type { ActorTargetAlliance };

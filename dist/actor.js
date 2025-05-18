@@ -16,4 +16,7 @@ function playersCanSeeName(actor, user = game.user) {
         actor.testUserPermission(user, "LIMITED") ||
         actor.parties?.some((party) => party.testUserPermission(user, "LIMITED")));
 }
-export { actorsRespectAlliance, hasRollOption, playersCanSeeName };
+function isAllyActor(actor) {
+    return actor.alliance === "party" || actor.testUserPermission(game.user, "OBSERVER");
+}
+export { actorsRespectAlliance, hasRollOption, isAllyActor, playersCanSeeName };
