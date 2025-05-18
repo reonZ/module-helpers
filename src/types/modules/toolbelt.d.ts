@@ -15,7 +15,7 @@ declare global {
         }
 
         interface Settings {
-            global: {
+            trade: {
                 withContent: boolean;
             };
         }

@@ -20,10 +20,11 @@ declare function registerModuleSettings(settings: ModuleSettings): void;
 type ModuleSettings = Record<string, ReadonlyArray<RegisterSettingOptions & {
     key: string;
 }>>;
-type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope" | "onChange"> & {
+type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope" | "onChange" | "choices"> & {
     gmOnly?: boolean;
     name?: string;
     scope: "world" | "user";
+    choices?: Record<string, string> | string[];
     onChange?: (value: any, operation: object, userId: string) => void | Promise<void>;
 };
 type RegisterSettingMenuOptions = PartialExcept<SettingSubmenuConfig, "type" | "restricted">;
