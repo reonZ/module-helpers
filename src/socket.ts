@@ -56,7 +56,7 @@ function createEmitable<T extends Record<string, any>>(
     let _enabled = false;
 
     const onSocket = async (packet: WithPartial<EmitablePacket<T>, "__type__">, userId: string) => {
-        if (packet.__type__ !== prefix) return;
+        if (packet.__type__ !== prefix || !game.user.isActiveGM) return;
 
         delete packet.__type__;
 
@@ -89,7 +89,7 @@ function createEmitable<T extends Record<string, any>>(
             }
         },
         activate() {
-            if (this.enabled) return;
+            if (this.enabled || !game.user.isGM) return;
             _enabled = true;
             socketOn(onSocket);
         },

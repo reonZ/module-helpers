@@ -42,7 +42,7 @@ function displayEmiting() {
 function createEmitable(prefix, callback) {
     let _enabled = false;
     const onSocket = async (packet, userId) => {
-        if (packet.__type__ !== prefix)
+        if (packet.__type__ !== prefix || !game.user.isActiveGM)
             return;
         delete packet.__type__;
         const callOptions = (await convertToCallOptions(packet));
@@ -71,7 +71,7 @@ function createEmitable(prefix, callback) {
             }
         },
         activate() {
-            if (this.enabled)
+            if (this.enabled || !game.user.isGM)
                 return;
             _enabled = true;
             socketOn(onSocket);
