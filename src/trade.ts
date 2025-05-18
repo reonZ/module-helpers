@@ -1,12 +1,18 @@
-import { ActorPF2e, ContainerPF2e, PhysicalItemPF2e, PhysicalItemSource } from "foundry-pf2e";
-import { R } from ".";
+import {
+    ActionCost,
+    ActorPF2e,
+    ContainerPF2e,
+    PhysicalItemPF2e,
+    PhysicalItemSource,
+} from "foundry-pf2e";
+import { getActionGlyph, getPreferredName, R } from ".";
 
 async function giveItemToActor(
     itemOrUuid: PhysicalItemPF2e | EmbeddedItemUUID,
     targetOrUuid: ActorPF2e | ActorUUID,
     quantity = 1,
     newStack = true
-): Promise<{ item: PhysicalItemPF2e; quantity: number } | undefined> {
+): Promise<{ item: PhysicalItemPF2e; quantity: number; withContent: boolean } | undefined> {
     const withContent = game.toolbelt?.getToolSetting("trade", "withContent");
     const target = R.isString(targetOrUuid)
         ? await fromUuid<ActorPF2e>(targetOrUuid)
@@ -56,17 +62,75 @@ async function giveItemToActor(
 
         if (existingItem) {
             await existingItem.update({ "system.quantity": existingItem.quantity + giveQuantity });
-            return { item: existingItem, quantity: giveQuantity };
+            return { item: existingItem, quantity: giveQuantity, withContent: false };
         }
     }
 
+    const hasContent = contentSources.length > 0;
     const [newItem] = await target.createEmbeddedDocuments("Item", [itemSource], { keepId: true });
 
-    if (newItem && contentSources.length) {
+    if (newItem && hasContent) {
         await target.createEmbeddedDocuments("Item", contentSources, { keepId: true });
     }
 
-    return { item: newItem as PhysicalItemPF2e, quantity: giveQuantity };
+    return { item: newItem as PhysicalItemPF2e, quantity: giveQuantity, withContent: hasContent };
+}
+
+async function createTradeMessage({
+    cost,
+    item,
+    message,
+    quantity,
+    source,
+    subtitle,
+    target,
+    userId,
+}: TradeMessageOptions) {
+    const sourceName = getPreferredName(source);
+    const targetName = target ? getPreferredName(target) : "";
+
+    const formattedMessageData = {
+        source: sourceName,
+        target: targetName,
+        seller: sourceName,
+        buyer: targetName,
+        quantity: quantity ?? 1,
+        item: await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.link),
+    };
+
+    const glyph = getActionGlyph(
+        cost ?? (source.isOfType("loot") && target?.isOfType("loot") ? 2 : 1)
+    );
+
+    const flavor = await foundry.applications.handlebars.renderTemplate(
+        "./systems/pf2e/templates/chat/action/flavor.hbs",
+        {
+            action: { title: "PF2E.Actions.Interact.Title", subtitle, glyph },
+            traits: [
+                {
+                    name: "manipulate",
+                    label: CONFIG.PF2E.featTraits.manipulate,
+                    description: CONFIG.PF2E.traitsDescriptions.manipulate,
+                },
+            ],
+        }
+    );
+
+    const content = await foundry.applications.handlebars.renderTemplate(
+        "./systems/pf2e/templates/chat/action/content.hbs",
+        {
+            imgPath: item.img,
+            message: game.i18n.format(message, formattedMessageData).replace(/\b1 × /, ""),
+        }
+    );
+
+    return getDocumentClass("ChatMessage").create({
+        author: userId ?? game.userId,
+        speaker: { alias: sourceName },
+        style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
+        flavor,
+        content,
+    });
 }
 
 /** @recursive */
@@ -90,6 +154,18 @@ function getContainerContentSources(
         .flat();
 }
 
+type TradeMessageOptions = {
+    /** localization key */
+    cost?: string | number | null | ActionCost;
+    item: PhysicalItemPF2e;
+    message: string;
+    quantity?: number;
+    source: ActorPF2e;
+    subtitle: string;
+    target?: ActorPF2e;
+    userId?: string;
+};
+
 type ContainerContentSource = PhysicalItemSource & { _id: string; _previousId: string };
 
 type ActorTransferItemArgs = [
@@ -101,5 +177,5 @@ type ActorTransferItemArgs = [
     isPurchase?: boolean | null
 ];
 
-export { giveItemToActor };
+export { createTradeMessage, giveItemToActor };
 export type { ActorTransferItemArgs };

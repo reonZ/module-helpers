@@ -1,4 +1,4 @@
-import { R } from ".";
+import { getActionGlyph, getPreferredName, R } from ".";
 async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack = true) {
     const withContent = game.toolbelt?.getToolSetting("trade", "withContent");
     const target = R.isString(targetOrUuid)
@@ -38,14 +38,49 @@ async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack 
         const existingItem = target.inventory.findStackableItem(itemSource);
         if (existingItem) {
             await existingItem.update({ "system.quantity": existingItem.quantity + giveQuantity });
-            return { item: existingItem, quantity: giveQuantity };
+            return { item: existingItem, quantity: giveQuantity, withContent: false };
         }
     }
+    const hasContent = contentSources.length > 0;
     const [newItem] = await target.createEmbeddedDocuments("Item", [itemSource], { keepId: true });
-    if (newItem && contentSources.length) {
+    if (newItem && hasContent) {
         await target.createEmbeddedDocuments("Item", contentSources, { keepId: true });
     }
-    return { item: newItem, quantity: giveQuantity };
+    return { item: newItem, quantity: giveQuantity, withContent: hasContent };
+}
+async function createTradeMessage({ cost, item, message, quantity, source, subtitle, target, userId, }) {
+    const sourceName = getPreferredName(source);
+    const targetName = target ? getPreferredName(target) : "";
+    const formattedMessageData = {
+        source: sourceName,
+        target: targetName,
+        seller: sourceName,
+        buyer: targetName,
+        quantity: quantity ?? 1,
+        item: await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.link),
+    };
+    const glyph = getActionGlyph(cost ?? (source.isOfType("loot") && target?.isOfType("loot") ? 2 : 1));
+    const flavor = await foundry.applications.handlebars.renderTemplate("./systems/pf2e/templates/chat/action/flavor.hbs", {
+        action: { title: "PF2E.Actions.Interact.Title", subtitle, glyph },
+        traits: [
+            {
+                name: "manipulate",
+                label: CONFIG.PF2E.featTraits.manipulate,
+                description: CONFIG.PF2E.traitsDescriptions.manipulate,
+            },
+        ],
+    });
+    const content = await foundry.applications.handlebars.renderTemplate("./systems/pf2e/templates/chat/action/content.hbs", {
+        imgPath: item.img,
+        message: game.i18n.format(message, formattedMessageData).replace(/\b1 × /, ""),
+    });
+    return getDocumentClass("ChatMessage").create({
+        author: userId ?? game.userId,
+        speaker: { alias: sourceName },
+        style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
+        flavor,
+        content,
+    });
 }
 /** @recursive */
 function getContainerContentSources(container, containerId) {
@@ -62,4 +97,4 @@ function getContainerContentSources(container, containerId) {
     })
         .flat();
 }
-export { giveItemToActor };
+export { createTradeMessage, giveItemToActor };

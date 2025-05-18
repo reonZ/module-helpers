@@ -1,8 +1,21 @@
-import { ActorPF2e, PhysicalItemPF2e } from "foundry-pf2e";
+import { ActionCost, ActorPF2e, PhysicalItemPF2e } from "foundry-pf2e";
 declare function giveItemToActor(itemOrUuid: PhysicalItemPF2e | EmbeddedItemUUID, targetOrUuid: ActorPF2e | ActorUUID, quantity?: number, newStack?: boolean): Promise<{
     item: PhysicalItemPF2e;
     quantity: number;
+    withContent: boolean;
 } | undefined>;
+declare function createTradeMessage({ cost, item, message, quantity, source, subtitle, target, userId, }: TradeMessageOptions): Promise<import("foundry-pf2e/pf2e/module/chat-message/document.js").ChatMessagePF2e | undefined>;
+type TradeMessageOptions = {
+    /** localization key */
+    cost?: string | number | null | ActionCost;
+    item: PhysicalItemPF2e;
+    message: string;
+    quantity?: number;
+    source: ActorPF2e;
+    subtitle: string;
+    target?: ActorPF2e;
+    userId?: string;
+};
 type ActorTransferItemArgs = [
     targetActor: ActorPF2e,
     item: PhysicalItemPF2e<ActorPF2e>,
@@ -11,5 +24,5 @@ type ActorTransferItemArgs = [
     newStack?: boolean,
     isPurchase?: boolean | null
 ];
-export { giveItemToActor };
+export { createTradeMessage, giveItemToActor };
 export type { ActorTransferItemArgs };
