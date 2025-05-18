@@ -6,7 +6,7 @@ async function giveItemToActor(
     targetOrUuid: ActorPF2e | ActorUUID,
     quantity = 1,
     newStack = true
-): Promise<PhysicalItemPF2e | undefined> {
+): Promise<{ item: PhysicalItemPF2e; quantity: number } | undefined> {
     const withContent = game.toolbelt?.getToolSetting("trade", "withContent");
     const target = R.isString(targetOrUuid)
         ? await fromUuid<ActorPF2e>(targetOrUuid)
@@ -20,24 +20,25 @@ async function giveItemToActor(
     if (!(item instanceof Item) || !item.isOfType("physical") || owner?.uuid === target.uuid)
         return;
 
-    const existingQty = item.quantity ?? 0;
-    if (existingQty < 1) return;
+    const allowedQuantity = item.quantity ?? 0;
+    if (allowedQuantity < 1) return;
 
     const isContainer = item.isOfType("backpack");
-    const giveQty = isContainer && withContent ? 1 : Math.clamp(quantity, 1, existingQty);
+    const giveQuantity = isContainer && withContent ? 1 : Math.clamp(quantity, 1, allowedQuantity);
 
     const itemId = foundry.utils.randomID();
     const itemSource = item.toObject();
 
     itemSource._id = itemId;
-    itemSource.system.quantity = giveQty;
+    itemSource.system.quantity = giveQuantity;
     itemSource.system.equipped.carryType = "worn";
 
-    const contentSources = withContent && isContainer ? getItemContentSources(item, itemId) : [];
+    const contentSources =
+        withContent && isContainer ? getContainerContentSources(item, itemId) : [];
 
     if (owner) {
         const toDelete: string[] = contentSources.map((x) => x._previousId);
-        const remainingQty = existingQty - giveQty;
+        const remainingQty = allowedQuantity - giveQuantity;
 
         if (remainingQty < 1) {
             toDelete.push(item.id);
@@ -51,10 +52,11 @@ async function giveItemToActor(
     }
 
     if (!newStack && !isContainer) {
-        const existingitem = target.inventory.findStackableItem(itemSource);
+        const existingItem = target.inventory.findStackableItem(itemSource);
 
-        if (existingitem) {
-            return existingitem.update({ "system.quantity": existingitem.quantity + giveQty });
+        if (existingItem) {
+            await existingItem.update({ "system.quantity": existingItem.quantity + giveQuantity });
+            return { item: existingItem, quantity: giveQuantity };
         }
     }
 
@@ -64,11 +66,11 @@ async function giveItemToActor(
         await target.createEmbeddedDocuments("Item", contentSources, { keepId: true });
     }
 
-    return newItem as PhysicalItemPF2e;
+    return { item: newItem as PhysicalItemPF2e, quantity: giveQuantity };
 }
 
 /** @recursive */
-function getItemContentSources(
+function getContainerContentSources(
     container: ContainerPF2e,
     containerId: string
 ): ContainerContentSource[] {
@@ -82,7 +84,7 @@ function getItemContentSources(
             source.system.containerId = containerId;
 
             return item.isOfType("backpack")
-                ? [source, ...getItemContentSources(item, itemId)]
+                ? [source, ...getContainerContentSources(item, itemId)]
                 : [source];
         })
         .flat();

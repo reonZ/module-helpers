@@ -1,5 +1,8 @@
 import { ActorPF2e, PhysicalItemPF2e } from "foundry-pf2e";
-declare function giveItemToActor(itemOrUuid: PhysicalItemPF2e | EmbeddedItemUUID, targetOrUuid: ActorPF2e | ActorUUID, quantity?: number, newStack?: boolean): Promise<PhysicalItemPF2e | undefined>;
+declare function giveItemToActor(itemOrUuid: PhysicalItemPF2e | EmbeddedItemUUID, targetOrUuid: ActorPF2e | ActorUUID, quantity?: number, newStack?: boolean): Promise<{
+    item: PhysicalItemPF2e;
+    quantity: number;
+} | undefined>;
 type ActorTransferItemArgs = [
     targetActor: ActorPF2e,
     item: PhysicalItemPF2e<ActorPF2e>,

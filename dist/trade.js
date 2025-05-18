@@ -10,20 +10,20 @@ async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack 
     const owner = item?.actor;
     if (!(item instanceof Item) || !item.isOfType("physical") || owner?.uuid === target.uuid)
         return;
-    const existingQty = item.quantity ?? 0;
-    if (existingQty < 1)
+    const allowedQuantity = item.quantity ?? 0;
+    if (allowedQuantity < 1)
         return;
     const isContainer = item.isOfType("backpack");
-    const giveQty = isContainer && withContent ? 1 : Math.clamp(quantity, 1, existingQty);
+    const giveQuantity = isContainer && withContent ? 1 : Math.clamp(quantity, 1, allowedQuantity);
     const itemId = foundry.utils.randomID();
     const itemSource = item.toObject();
     itemSource._id = itemId;
-    itemSource.system.quantity = giveQty;
+    itemSource.system.quantity = giveQuantity;
     itemSource.system.equipped.carryType = "worn";
-    const contentSources = withContent && isContainer ? getItemContentSources(item, itemId) : [];
+    const contentSources = withContent && isContainer ? getContainerContentSources(item, itemId) : [];
     if (owner) {
         const toDelete = contentSources.map((x) => x._previousId);
-        const remainingQty = existingQty - giveQty;
+        const remainingQty = allowedQuantity - giveQuantity;
         if (remainingQty < 1) {
             toDelete.push(item.id);
         }
@@ -35,19 +35,20 @@ async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack 
         }
     }
     if (!newStack && !isContainer) {
-        const existingitem = target.inventory.findStackableItem(itemSource);
-        if (existingitem) {
-            return existingitem.update({ "system.quantity": existingitem.quantity + giveQty });
+        const existingItem = target.inventory.findStackableItem(itemSource);
+        if (existingItem) {
+            await existingItem.update({ "system.quantity": existingItem.quantity + giveQuantity });
+            return { item: existingItem, quantity: giveQuantity };
         }
     }
     const [newItem] = await target.createEmbeddedDocuments("Item", [itemSource], { keepId: true });
     if (newItem && contentSources.length) {
         await target.createEmbeddedDocuments("Item", contentSources, { keepId: true });
     }
-    return newItem;
+    return { item: newItem, quantity: giveQuantity };
 }
 /** @recursive */
-function getItemContentSources(container, containerId) {
+function getContainerContentSources(container, containerId) {
     return container.contents
         .map((item) => {
         const itemId = foundry.utils.randomID();
@@ -56,7 +57,7 @@ function getItemContentSources(container, containerId) {
         source._previousId = item.id;
         source.system.containerId = containerId;
         return item.isOfType("backpack")
-            ? [source, ...getItemContentSources(item, itemId)]
+            ? [source, ...getContainerContentSources(item, itemId)]
             : [source];
     })
         .flat();
