@@ -1,6 +1,6 @@
 import { R } from ".";
 async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack = true) {
-    const withContent = game.toolbelt?.getToolSetting("global", "withContent");
+    const withContent = game.toolbelt?.getToolSetting("trade", "withContent");
     const target = R.isString(targetOrUuid)
         ? await fromUuid(targetOrUuid)
         : targetOrUuid;
@@ -44,6 +44,7 @@ async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack 
     if (newItem && contentSources.length) {
         await target.createEmbeddedDocuments("Item", contentSources, { keepId: true });
     }
+    return newItem;
 }
 /** @recursive */
 function getItemContentSources(container, containerId) {

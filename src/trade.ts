@@ -1,26 +1,20 @@
-import {
-    ActorPF2e,
-    ContainerPF2e,
-    ItemPF2e,
-    PhysicalItemPF2e,
-    PhysicalItemSource,
-} from "foundry-pf2e";
+import { ActorPF2e, ContainerPF2e, PhysicalItemPF2e, PhysicalItemSource } from "foundry-pf2e";
 import { R } from ".";
 
 async function giveItemToActor(
-    itemOrUuid: ItemPF2e | EmbeddedItemUUID,
+    itemOrUuid: PhysicalItemPF2e | EmbeddedItemUUID,
     targetOrUuid: ActorPF2e | ActorUUID,
     quantity = 1,
     newStack = true
-) {
-    const withContent = game.toolbelt?.getToolSetting("global", "withContent");
+): Promise<PhysicalItemPF2e | undefined> {
+    const withContent = game.toolbelt?.getToolSetting("trade", "withContent");
     const target = R.isString(targetOrUuid)
         ? await fromUuid<ActorPF2e>(targetOrUuid)
         : targetOrUuid;
 
     if (!(target instanceof Actor)) return;
 
-    const item = R.isString(itemOrUuid) ? await fromUuid<ItemPF2e>(itemOrUuid) : itemOrUuid;
+    const item = R.isString(itemOrUuid) ? await fromUuid<PhysicalItemPF2e>(itemOrUuid) : itemOrUuid;
     const owner = item?.actor;
 
     if (!(item instanceof Item) || !item.isOfType("physical") || owner?.uuid === target.uuid)
@@ -69,6 +63,8 @@ async function giveItemToActor(
     if (newItem && contentSources.length) {
         await target.createEmbeddedDocuments("Item", contentSources, { keepId: true });
     }
+
+    return newItem as PhysicalItemPF2e;
 }
 
 /** @recursive */
