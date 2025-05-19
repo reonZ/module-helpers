@@ -68,12 +68,12 @@ function createEmitable<T extends Record<string, any>>(
         get enabled(): boolean {
             return _enabled;
         },
-        async call(options: WithSocketOptions<T>, userId?: string): Promise<void> {
+        async call(options: WithSocketOptions<T>): Promise<void> {
             if (!R.isPlainObject(options)) return;
 
             if (game.user.isGM) {
                 const callOptions = (await convertToCallOptions(options)) as T;
-                return callback(callOptions, userId ?? game.userId);
+                return callback(callOptions, game.userId);
             } else {
                 if (!game.users.activeGM) {
                     ui.notifications.error(sharedLocalize("emiting.noGm"));
@@ -173,7 +173,7 @@ type WithSocketOptions<TOptions extends Record<string, any>> = Prettify<
 
 type Emitable<TOptions extends Record<string, any>> = {
     get enabled(): boolean;
-    call: (options: WithSocketOptions<TOptions>, userId?: string) => Promise<void>;
+    call: (options: WithSocketOptions<TOptions>) => Promise<void>;
     activate(): void;
     disable(): void;
     toggle(enabled?: boolean): void;

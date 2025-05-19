@@ -11,7 +11,7 @@ type WithSocketOptionsPartial<TOptions extends Record<string, any>, TPartial = P
 type WithSocketOptions<TOptions extends Record<string, any>> = Prettify<WithSocketOptionsRequired<TOptions> & WithSocketOptionsPartial<TOptions>>;
 type Emitable<TOptions extends Record<string, any>> = {
     get enabled(): boolean;
-    call: (options: WithSocketOptions<TOptions>, userId?: string) => Promise<void>;
+    call: (options: WithSocketOptions<TOptions>) => Promise<void>;
     activate(): void;
     disable(): void;
     toggle(enabled?: boolean): void;

@@ -52,12 +52,12 @@ function createEmitable(prefix, callback) {
         get enabled() {
             return _enabled;
         },
-        async call(options, userId) {
+        async call(options) {
             if (!R.isPlainObject(options))
                 return;
             if (game.user.isGM) {
                 const callOptions = (await convertToCallOptions(options));
-                return callback(callOptions, userId ?? game.userId);
+                return callback(callOptions, game.userId);
             }
             else {
                 if (!game.users.activeGM) {
