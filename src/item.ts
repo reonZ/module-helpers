@@ -104,12 +104,6 @@ function getItemSourceId(item: ItemPF2e): string {
     return item.sourceId ?? item.uuid;
 }
 
-function isEmbeddedItem<T extends ItemPF2e | ItemPF2e<ActorPF2e>>(
-    item: T
-): item is Exclude<T, ItemPF2e> {
-    return !!item.actor;
-}
-
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/helpers.ts#L13
  */
@@ -147,6 +141,5 @@ export {
     getItemSource,
     getItemSourceFromUuid,
     getItemSourceId,
-    isEmbeddedItem,
     itemIsOfType,
 };

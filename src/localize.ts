@@ -26,8 +26,8 @@ function localizeIfExist(...args: LocalizeArgs) {
     }
 }
 
-function localizePath(...args: string[]): string {
-    return MODULE.path(...args);
+function localizePath(...path: string[]): string {
+    return MODULE.path(...path);
 }
 
 function notify(type: "info" | "warning" | "error", ...args: NotificationArgs): number {

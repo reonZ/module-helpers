@@ -66,11 +66,8 @@ async function getItemSourceFromUuid(uuid) {
 function getItemSourceId(item) {
     return item.sourceId ?? item.uuid;
 }
-function isEmbeddedItem(item) {
-    return !!item.actor;
-}
 function itemIsOfType(item, ...types) {
     return (typeof item.name === "string" &&
         types.some((t) => t === "physical" ? setHasElement(PHYSICAL_ITEM_TYPES, item.type) : item.type === t));
 }
-export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, isEmbeddedItem, itemIsOfType, };
+export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, itemIsOfType, };

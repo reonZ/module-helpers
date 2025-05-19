@@ -20,8 +20,8 @@ function localizeIfExist(...args) {
         return localizeOrFormat(path, data);
     }
 }
-function localizePath(...args) {
-    return MODULE.path(...args);
+function localizePath(...path) {
+    return MODULE.path(...path);
 }
 function notify(type, ...args) {
     const permanent = R.isBoolean(args.at(-1)) ? args.pop() : false;
