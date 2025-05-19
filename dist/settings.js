@@ -49,6 +49,14 @@ function registerSetting(key, options) {
     options.name ??= settingPath(key, "name");
     options.hint ??= settingPath(key, "hint");
     options.config ??= true;
+    if (options.scope === "user" && !options.broadcast && options.onChange) {
+        const _onChange = options.onChange;
+        options.onChange = (value, operation, userId) => {
+            if (userId !== game.userId)
+                return;
+            _onChange(value, operation, userId);
+        };
+    }
     game.settings.register(MODULE.id, key, options);
 }
 function registerSettingMenu(key, options) {

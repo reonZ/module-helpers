@@ -21,6 +21,7 @@ type ModuleSettings = Record<string, ReadonlyArray<RegisterSettingOptions & {
     key: string;
 }>>;
 type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope" | "onChange" | "choices"> & {
+    broadcast?: boolean;
     gmOnly?: boolean;
     name?: string;
     scope: "world" | "user";

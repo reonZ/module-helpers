@@ -75,6 +75,14 @@ function registerSetting(key: string, options: RegisterSettingOptions) {
     options.hint ??= settingPath(key, "hint");
     options.config ??= true;
 
+    if (options.scope === "user" && !options.broadcast && options.onChange) {
+        const _onChange = options.onChange;
+        options.onChange = (value, operation, userId) => {
+            if (userId !== game.userId) return;
+            _onChange(value, operation, userId);
+        };
+    }
+
     game.settings.register(MODULE.id, key, options as SettingRegistration);
 }
 
@@ -206,6 +214,7 @@ type RegisterSettingOptions = Omit<
     SettingRegistration,
     "name" | "scope" | "onChange" | "choices"
 > & {
+    broadcast?: boolean;
     gmOnly?: boolean;
     name?: string;
     scope: "world" | "user";
