@@ -1,4 +1,17 @@
-import { R } from ".";
+import { R, setHasElement } from ".";
+/**
+ * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
+ */
+const PHYSICAL_ITEM_TYPES = new Set([
+    "armor",
+    "backpack",
+    "book",
+    "consumable",
+    "equipment",
+    "shield",
+    "treasure",
+    "weapon",
+]);
 function* actorItems(actor, type) {
     const types = R.isArray(type) && type.length
         ? type
@@ -53,4 +66,8 @@ async function getItemSourceFromUuid(uuid) {
 function getItemSourceId(item) {
     return item.sourceId ?? item.uuid;
 }
-export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, };
+function itemIsOfType(item, ...types) {
+    return (typeof item.name === "string" &&
+        types.some((t) => t === "physical" ? setHasElement(PHYSICAL_ITEM_TYPES, item.type) : item.type === t));
+}
+export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, itemIsOfType, };
