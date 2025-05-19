@@ -1,6 +1,41 @@
-import { getActionGlyph, getPreferredName, htmlQuery, R } from ".";
-async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack = true) {
+import { getActionGlyph, getPreferredName, htmlQuery, ItemTransferDialog, R, } from ".";
+async function initiateTrade(item, { prompt, targetActor, title } = {}) {
+    if (item.quantity <= 0) {
+        return null;
+    }
+    if (item.isOfType("backpack") || item.quantity === 1) {
+        return { quantity: 1, newStack: false };
+    }
+    return new ItemTransferDialog(item, {
+        targetActor,
+        lockStack: !targetActor?.inventory.findStackableItem(item._source),
+        title,
+        prompt,
+        button: title,
+    }).resolve();
+}
+function getTradeData(item, quantity = 1) {
+    const allowedQuantity = item.quantity ?? 0;
+    if (allowedQuantity < 1)
+        return;
+    const isContainer = item.isOfType("backpack");
     const withContent = game.toolbelt?.getToolSetting("betterTrade", "withContent");
+    const giveQuantity = isContainer && withContent ? 1 : Math.clamp(quantity, 1, allowedQuantity);
+    const itemId = foundry.utils.randomID();
+    const itemSource = item.toObject();
+    itemSource._id = itemId;
+    itemSource.system.quantity = giveQuantity;
+    itemSource.system.equipped.carryType = "worn";
+    const contentSources = withContent && isContainer ? getContainerContentSources(item, itemId) : [];
+    return {
+        allowedQuantity,
+        contentSources,
+        giveQuantity,
+        isContainer,
+        itemSource,
+    };
+}
+async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack = true) {
     const target = R.isString(targetOrUuid)
         ? await fromUuid(targetOrUuid)
         : targetOrUuid;
@@ -10,17 +45,10 @@ async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack 
     const owner = item?.actor;
     if (!(item instanceof Item) || !item.isOfType("physical") || owner?.uuid === target.uuid)
         return;
-    const allowedQuantity = item.quantity ?? 0;
-    if (allowedQuantity < 1)
+    const tradeData = getTradeData(item, quantity);
+    if (!tradeData)
         return;
-    const isContainer = item.isOfType("backpack");
-    const giveQuantity = isContainer && withContent ? 1 : Math.clamp(quantity, 1, allowedQuantity);
-    const itemId = foundry.utils.randomID();
-    const itemSource = item.toObject();
-    itemSource._id = itemId;
-    itemSource.system.quantity = giveQuantity;
-    itemSource.system.equipped.carryType = "worn";
-    const contentSources = withContent && isContainer ? getContainerContentSources(item, itemId) : [];
+    const { allowedQuantity, contentSources, giveQuantity, isContainer, itemSource } = tradeData;
     if (owner) {
         const toDelete = contentSources.map((x) => x._previousId);
         const remainingQty = allowedQuantity - giveQuantity;
@@ -38,7 +66,7 @@ async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack 
         const existingItem = target.inventory.findStackableItem(itemSource);
         if (existingItem) {
             await existingItem.update({ "system.quantity": existingItem.quantity + giveQuantity });
-            return { item: existingItem, quantity: giveQuantity, withContent: false };
+            return { item: existingItem, giveQuantity, hasContent: false };
         }
     }
     const hasContent = contentSources.length > 0;
@@ -46,7 +74,7 @@ async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack 
     if (newItem && hasContent) {
         await target.createEmbeddedDocuments("Item", contentSources, { keepId: true });
     }
-    return { item: newItem, quantity: giveQuantity, withContent: hasContent };
+    return { item: newItem, giveQuantity, hasContent };
 }
 async function createTradeMessage({ cost, item, message, quantity, source, subtitle, target, userId, }) {
     const sourceName = getPreferredName(source);
@@ -116,4 +144,4 @@ function updateItemTransferDialog(html, { button, prompt, title, noStack }) {
         input?.remove();
     }
 }
-export { createTradeMessage, giveItemToActor, updateItemTransferDialog };
+export { createTradeMessage, getTradeData, giveItemToActor, initiateTrade, updateItemTransferDialog, };

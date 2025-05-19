@@ -1,9 +1,8 @@
-import { ActionCost, ActorPF2e, PhysicalItemPF2e } from "foundry-pf2e";
-declare function giveItemToActor(itemOrUuid: PhysicalItemPF2e | EmbeddedItemUUID, targetOrUuid: ActorPF2e | ActorUUID, quantity?: number, newStack?: boolean): Promise<{
-    item: PhysicalItemPF2e;
-    quantity: number;
-    withContent: boolean;
-} | undefined>;
+import { ActionCost, ActorPF2e, PhysicalItemPF2e, PhysicalItemSource } from "foundry-pf2e";
+import { MoveLootFormData } from ".";
+declare function initiateTrade(item: PhysicalItemPF2e, { prompt, targetActor, title }?: InitiateTradeOptions): Promise<MoveLootFormData | null>;
+declare function getTradeData(item: PhysicalItemPF2e, quantity?: number): TradeData | undefined;
+declare function giveItemToActor(itemOrUuid: PhysicalItemPF2e | EmbeddedItemUUID, targetOrUuid: ActorPF2e | ActorUUID, quantity?: number, newStack?: boolean): Promise<GiveItemData | undefined>;
 declare function createTradeMessage({ cost, item, message, quantity, source, subtitle, target, userId, }: TradeMessageOptions): Promise<import("foundry-pf2e/pf2e/module/chat-message/document.js").ChatMessagePF2e | undefined>;
 declare function updateItemTransferDialog(html: HTMLElement, { button, prompt, title, noStack }: UpdateItemTransferDialogOptions): void;
 type UpdateItemTransferDialogOptions = {
@@ -23,6 +22,10 @@ type TradeMessageOptions = {
     target?: ActorPF2e;
     userId?: string;
 };
+type ContainerContentSource = PhysicalItemSource & {
+    _id: string;
+    _previousId: string;
+};
 type ActorTransferItemArgs = [
     targetActor: ActorPF2e,
     item: PhysicalItemPF2e<ActorPF2e>,
@@ -31,5 +34,22 @@ type ActorTransferItemArgs = [
     newStack?: boolean,
     isPurchase?: boolean | null
 ];
-export { createTradeMessage, giveItemToActor, updateItemTransferDialog };
+type InitiateTradeOptions = {
+    targetActor?: ActorPF2e;
+    title?: string;
+    prompt?: string;
+};
+type TradeData = {
+    allowedQuantity: number;
+    contentSources: ContainerContentSource[];
+    giveQuantity: number;
+    isContainer: boolean;
+    itemSource: PhysicalItemSource;
+};
+type GiveItemData = {
+    item: PhysicalItemPF2e;
+    giveQuantity: number;
+    hasContent: boolean;
+};
+export { createTradeMessage, getTradeData, giveItemToActor, initiateTrade, updateItemTransferDialog, };
 export type { ActorTransferItemArgs };

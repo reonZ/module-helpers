@@ -5,15 +5,69 @@ import {
     PhysicalItemPF2e,
     PhysicalItemSource,
 } from "foundry-pf2e";
-import { getActionGlyph, getPreferredName, htmlQuery, R } from ".";
+import {
+    getActionGlyph,
+    getPreferredName,
+    htmlQuery,
+    ItemTransferDialog,
+    MoveLootFormData,
+    R,
+} from ".";
+
+async function initiateTrade(
+    item: PhysicalItemPF2e,
+    { prompt, targetActor, title }: InitiateTradeOptions = {}
+): Promise<MoveLootFormData | null> {
+    if (item.quantity <= 0) {
+        return null;
+    }
+
+    if (item.isOfType("backpack") || item.quantity === 1) {
+        return { quantity: 1, newStack: false };
+    }
+
+    return new ItemTransferDialog(item, {
+        targetActor,
+        lockStack: !targetActor?.inventory.findStackableItem(item._source),
+        title,
+        prompt,
+        button: title,
+    }).resolve();
+}
+
+function getTradeData(item: PhysicalItemPF2e, quantity = 1): TradeData | undefined {
+    const allowedQuantity = item.quantity ?? 0;
+    if (allowedQuantity < 1) return;
+
+    const isContainer = item.isOfType("backpack");
+    const withContent = game.toolbelt?.getToolSetting("betterTrade", "withContent");
+    const giveQuantity = isContainer && withContent ? 1 : Math.clamp(quantity, 1, allowedQuantity);
+
+    const itemId = foundry.utils.randomID();
+    const itemSource = item.toObject();
+
+    itemSource._id = itemId;
+    itemSource.system.quantity = giveQuantity;
+    itemSource.system.equipped.carryType = "worn";
+
+    const contentSources =
+        withContent && isContainer ? getContainerContentSources(item, itemId) : [];
+
+    return {
+        allowedQuantity,
+        contentSources,
+        giveQuantity,
+        isContainer,
+        itemSource,
+    };
+}
 
 async function giveItemToActor(
     itemOrUuid: PhysicalItemPF2e | EmbeddedItemUUID,
     targetOrUuid: ActorPF2e | ActorUUID,
     quantity = 1,
     newStack = true
-): Promise<{ item: PhysicalItemPF2e; quantity: number; withContent: boolean } | undefined> {
-    const withContent = game.toolbelt?.getToolSetting("betterTrade", "withContent");
+): Promise<GiveItemData | undefined> {
     const target = R.isString(targetOrUuid)
         ? await fromUuid<ActorPF2e>(targetOrUuid)
         : targetOrUuid;
@@ -26,21 +80,10 @@ async function giveItemToActor(
     if (!(item instanceof Item) || !item.isOfType("physical") || owner?.uuid === target.uuid)
         return;
 
-    const allowedQuantity = item.quantity ?? 0;
-    if (allowedQuantity < 1) return;
+    const tradeData = getTradeData(item, quantity);
+    if (!tradeData) return;
 
-    const isContainer = item.isOfType("backpack");
-    const giveQuantity = isContainer && withContent ? 1 : Math.clamp(quantity, 1, allowedQuantity);
-
-    const itemId = foundry.utils.randomID();
-    const itemSource = item.toObject();
-
-    itemSource._id = itemId;
-    itemSource.system.quantity = giveQuantity;
-    itemSource.system.equipped.carryType = "worn";
-
-    const contentSources =
-        withContent && isContainer ? getContainerContentSources(item, itemId) : [];
+    const { allowedQuantity, contentSources, giveQuantity, isContainer, itemSource } = tradeData;
 
     if (owner) {
         const toDelete: string[] = contentSources.map((x) => x._previousId);
@@ -62,7 +105,7 @@ async function giveItemToActor(
 
         if (existingItem) {
             await existingItem.update({ "system.quantity": existingItem.quantity + giveQuantity });
-            return { item: existingItem, quantity: giveQuantity, withContent: false };
+            return { item: existingItem, giveQuantity, hasContent: false };
         }
     }
 
@@ -73,7 +116,7 @@ async function giveItemToActor(
         await target.createEmbeddedDocuments("Item", contentSources, { keepId: true });
     }
 
-    return { item: newItem as PhysicalItemPF2e, quantity: giveQuantity, withContent: hasContent };
+    return { item: newItem as PhysicalItemPF2e, giveQuantity, hasContent };
 }
 
 async function createTradeMessage({
@@ -210,5 +253,31 @@ type ActorTransferItemArgs = [
     isPurchase?: boolean | null
 ];
 
-export { createTradeMessage, giveItemToActor, updateItemTransferDialog };
+type InitiateTradeOptions = {
+    targetActor?: ActorPF2e;
+    title?: string;
+    prompt?: string;
+};
+
+type TradeData = {
+    allowedQuantity: number;
+    contentSources: ContainerContentSource[];
+    giveQuantity: number;
+    isContainer: boolean;
+    itemSource: PhysicalItemSource;
+};
+
+type GiveItemData = {
+    item: PhysicalItemPF2e;
+    giveQuantity: number;
+    hasContent: boolean;
+};
+
+export {
+    createTradeMessage,
+    getTradeData,
+    giveItemToActor,
+    initiateTrade,
+    updateItemTransferDialog,
+};
 export type { ActorTransferItemArgs };
