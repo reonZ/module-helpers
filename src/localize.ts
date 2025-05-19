@@ -127,4 +127,4 @@ export {
     sharedLocalize,
     warning,
 };
-export type { I18nCreateArgs, LocalizeArgs, LocalizeData };
+export type { I18nCreateArgs, LocalizeArgs, LocalizeData, NotificationArgs };

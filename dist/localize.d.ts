@@ -27,4 +27,4 @@ type LocalizeData = Record<string, any>;
 type NotificationArgs = LocalizeArgs | [...LocalizeArgs, string | LocalizeData | boolean];
 type LocalizeArgs = string[] | [...string[], string | LocalizeData];
 export { error, I18n, info, localize, localizeIfExist, localizePath, notify, sharedLocalize, warning, };
-export type { I18nCreateArgs, LocalizeArgs, LocalizeData };
+export type { I18nCreateArgs, LocalizeArgs, LocalizeData, NotificationArgs };
