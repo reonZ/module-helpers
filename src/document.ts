@@ -24,16 +24,16 @@ function getDamageInstanceClass(): typeof DamageInstance {
     ) as typeof DamageInstance);
 }
 
-function getInMemory<T>(obj: ClientDocument, ...path: string[]): T | undefined {
+function getInMemory<T>(obj: ClientDocument | Token, ...path: string[]): T | undefined {
     return foundry.utils.getProperty(obj, `modules.${MODULE.id}.${path.join(".")}`);
 }
 
-function setInMemory<T>(obj: ClientDocument, ...args: [...string[], T]): boolean {
+function setInMemory<T>(obj: ClientDocument | Token, ...args: [...string[], T]): boolean {
     const value = args.pop();
     return foundry.utils.setProperty(obj, `modules.${MODULE.id}.${args.join(".")}`, value);
 }
 
-function deleteInMemory(obj: ClientDocument, ...path: string[]) {
+function deleteInMemory(obj: ClientDocument | Token, ...path: string[]) {
     return foundry.utils.deleteProperty(obj, `modules.${MODULE.id}.${path.join(".")}`);
 }
 
