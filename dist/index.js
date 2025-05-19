@@ -28,5 +28,6 @@ export * from "./settings";
 export * from "./socket";
 export * from "./token";
 export * from "./trade";
+export * from "./trade-dialog";
 export * from "./user";
 export * from "./utils";
