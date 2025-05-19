@@ -35,6 +35,19 @@ function getTradeData(item, quantity = 1) {
         itemSource,
     };
 }
+async function updateTradedItemSource(item, { contentSources, allowedQuantity, giveQuantity }) {
+    const toDelete = contentSources.map((x) => x._previousId);
+    const remainingQty = allowedQuantity - giveQuantity;
+    if (remainingQty < 1) {
+        toDelete.push(item.id);
+    }
+    else {
+        await item.update({ "system.quantity": remainingQty });
+    }
+    if (toDelete.length) {
+        await item.actor.deleteEmbeddedDocuments("Item", toDelete);
+    }
+}
 async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack = true) {
     const target = R.isString(targetOrUuid)
         ? await fromUuid(targetOrUuid)
@@ -48,19 +61,9 @@ async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack 
     const tradeData = getTradeData(item, quantity);
     if (!tradeData)
         return;
-    const { allowedQuantity, contentSources, giveQuantity, isContainer, itemSource } = tradeData;
+    const { contentSources, giveQuantity, isContainer, itemSource } = tradeData;
     if (owner) {
-        const toDelete = contentSources.map((x) => x._previousId);
-        const remainingQty = allowedQuantity - giveQuantity;
-        if (remainingQty < 1) {
-            toDelete.push(item.id);
-        }
-        else {
-            await item.update({ "system.quantity": remainingQty });
-        }
-        if (toDelete.length) {
-            await owner.deleteEmbeddedDocuments("Item", toDelete);
-        }
+        await updateTradedItemSource(item, tradeData);
     }
     if (!newStack && !isContainer) {
         const existingItem = target.inventory.findStackableItem(itemSource);
@@ -144,4 +147,4 @@ function updateItemTransferDialog(html, { button, prompt, title, noStack }) {
         input?.remove();
     }
 }
-export { createTradeMessage, getTradeData, giveItemToActor, initiateTrade, updateItemTransferDialog, };
+export { createTradeMessage, getTradeData, giveItemToActor, initiateTrade, updateItemTransferDialog, updateTradedItemSource, };

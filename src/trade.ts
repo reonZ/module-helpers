@@ -62,6 +62,24 @@ function getTradeData(item: PhysicalItemPF2e, quantity = 1): TradeData | undefin
     };
 }
 
+async function updateTradedItemSource(
+    item: PhysicalItemPF2e<ActorPF2e>,
+    { contentSources, allowedQuantity, giveQuantity }: TradeData
+) {
+    const toDelete: string[] = contentSources.map((x) => x._previousId);
+    const remainingQty = allowedQuantity - giveQuantity;
+
+    if (remainingQty < 1) {
+        toDelete.push(item.id);
+    } else {
+        await item.update({ "system.quantity": remainingQty });
+    }
+
+    if (toDelete.length) {
+        await item.actor.deleteEmbeddedDocuments("Item", toDelete);
+    }
+}
+
 async function giveItemToActor(
     itemOrUuid: PhysicalItemPF2e | EmbeddedItemUUID,
     targetOrUuid: ActorPF2e | ActorUUID,
@@ -83,21 +101,10 @@ async function giveItemToActor(
     const tradeData = getTradeData(item, quantity);
     if (!tradeData) return;
 
-    const { allowedQuantity, contentSources, giveQuantity, isContainer, itemSource } = tradeData;
+    const { contentSources, giveQuantity, isContainer, itemSource } = tradeData;
 
     if (owner) {
-        const toDelete: string[] = contentSources.map((x) => x._previousId);
-        const remainingQty = allowedQuantity - giveQuantity;
-
-        if (remainingQty < 1) {
-            toDelete.push(item.id);
-        } else {
-            await item.update({ "system.quantity": remainingQty });
-        }
-
-        if (toDelete.length) {
-            await owner.deleteEmbeddedDocuments("Item", toDelete);
-        }
+        await updateTradedItemSource(item as PhysicalItemPF2e<ActorPF2e>, tradeData);
     }
 
     if (!newStack && !isContainer) {
@@ -279,5 +286,6 @@ export {
     giveItemToActor,
     initiateTrade,
     updateItemTransferDialog,
+    updateTradedItemSource,
 };
 export type { ActorTransferItemArgs };

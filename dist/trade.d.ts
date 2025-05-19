@@ -2,6 +2,7 @@ import { ActionCost, ActorPF2e, PhysicalItemPF2e, PhysicalItemSource } from "fou
 import { MoveLootFormData } from ".";
 declare function initiateTrade(item: PhysicalItemPF2e, { prompt, targetActor, title }?: InitiateTradeOptions): Promise<MoveLootFormData | null>;
 declare function getTradeData(item: PhysicalItemPF2e, quantity?: number): TradeData | undefined;
+declare function updateTradedItemSource(item: PhysicalItemPF2e<ActorPF2e>, { contentSources, allowedQuantity, giveQuantity }: TradeData): Promise<void>;
 declare function giveItemToActor(itemOrUuid: PhysicalItemPF2e | EmbeddedItemUUID, targetOrUuid: ActorPF2e | ActorUUID, quantity?: number, newStack?: boolean): Promise<GiveItemData | undefined>;
 declare function createTradeMessage({ cost, item, message, quantity, source, subtitle, target, userId, }: TradeMessageOptions): Promise<import("foundry-pf2e/pf2e/module/chat-message/document.js").ChatMessagePF2e | undefined>;
 declare function updateItemTransferDialog(html: HTMLElement, { button, prompt, title, noStack }: UpdateItemTransferDialogOptions): void;
@@ -51,5 +52,5 @@ type GiveItemData = {
     giveQuantity: number;
     hasContent: boolean;
 };
-export { createTradeMessage, getTradeData, giveItemToActor, initiateTrade, updateItemTransferDialog, };
+export { createTradeMessage, getTradeData, giveItemToActor, initiateTrade, updateItemTransferDialog, updateTradedItemSource, };
 export type { ActorTransferItemArgs };
