@@ -1,5 +1,6 @@
 import { I18n } from ".";
 declare function createHTMLElement<K extends keyof HTMLElementTagNameMap>(nodeName: K, { classes, dataset, content, id }?: CreateHTMLElementOptions): HTMLElementTagNameMap[K];
+declare function createHTMLElementContent(options?: CreateHTMLElementOptions): HTMLElement;
 declare function createHTMLButton({ icon, label, action, type }: ButtonData): HTMLButtonElement;
 declare function createHTMLButtons(data: ButtonData[], wrapperClass?: string): HTMLElement;
 declare function htmlQuery<K extends keyof HTMLElementTagNameMap>(parent: MaybeHTML, selectors: K): HTMLElementTagNameMap[K] | null;
@@ -38,5 +39,5 @@ type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
 type ListenerCallbackArgs<E extends HTMLElement, TEvent extends EventType> = [TEvent, ListenerCallback<E, TEvent>, boolean] | [TEvent, ListenerCallback<E, TEvent>] | [ListenerCallback<E, TEvent>, boolean] | [ListenerCallback<E, TEvent>];
 type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = (event: HTMLElementEventMap[TEvent], element: TElement) => void;
 type IterableSelectOptions = SelectOption | string | FormSelectOption;
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, htmlQueryAll, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, htmlQueryAll, };
 export type { DatasetData, DatasetValue, IterableSelectOptions };

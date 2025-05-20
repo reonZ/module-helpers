@@ -28,6 +28,10 @@ function createHTMLElement<K extends keyof HTMLElementTagNameMap>(
     return element;
 }
 
+function createHTMLElementContent(options?: CreateHTMLElementOptions): HTMLElement {
+    return createHTMLElement("div", options).firstChild as HTMLElement;
+}
+
 function createHTMLButton({ icon, label, action, type }: ButtonData): HTMLButtonElement {
     const button = document.createElement("button");
 
@@ -254,6 +258,7 @@ export {
     createHTMLButton,
     createHTMLButtons,
     createHTMLElement,
+    createHTMLElementContent,
     datasetToData,
     dataToDatasetString,
     htmlClosest,

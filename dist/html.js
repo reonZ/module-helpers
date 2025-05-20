@@ -20,6 +20,9 @@ function createHTMLElement(nodeName, { classes = [], dataset = {}, content, id }
     }
     return element;
 }
+function createHTMLElementContent(options) {
+    return createHTMLElement("div", options).firstChild;
+}
 function createHTMLButton({ icon, label, action, type }) {
     const button = document.createElement("button");
     button.type = type ?? "button";
@@ -114,4 +117,4 @@ function datasetToData(dataset) {
     }
     return data;
 }
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, htmlQueryAll, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, htmlQueryAll, };
