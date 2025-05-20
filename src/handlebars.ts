@@ -1,6 +1,5 @@
 import { HelperDelegate, HelperOptions } from "handlebars";
-import { joinStr, localize, LocalizeArgs, LocalizeData, MODULE, R } from ".";
-import { ApplicationConfiguration } from "foundry-pf2e/foundry/client-esm/applications/_types.js";
+import { joinStr, localize, LocalizeData, MODULE, R } from ".";
 
 function templatePath(...path: string[]): string {
     return `modules/${MODULE.id}/templates/${joinStr("/", path)}.hbs`;
@@ -52,19 +51,11 @@ function templateTooltip(...args: [...string[], TemplateToolipOptions]) {
     // return `data-tooltip="${tooltip}" aria-label="${tooltip}"`;
 }
 
-function setApplicationTitle(
-    options: DeepPartial<ApplicationConfiguration>,
-    ...args: LocalizeArgs
-) {
-    const title = localize(...args);
-    foundry.utils.setProperty(options, "window.title", title);
-}
-
 type RenderTemplateData = Record<string, any> & { i18n?: string | TemplateLocalize };
 
 type TemplateLocalize = ReturnType<typeof templateLocalize>;
 
 type TemplateToolipOptions = LocalizeData & { localize?: boolean };
 
-export { imagePath, render, setApplicationTitle, templateLocalize, templatePath, templateTooltip };
+export { imagePath, render, templateLocalize, templatePath, templateTooltip };
 export type { RenderTemplateData, TemplateLocalize };

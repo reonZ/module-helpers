@@ -39,8 +39,4 @@ function templateTooltip(...args) {
     return `data-tooltip="${tooltip}"`;
     // return `data-tooltip="${tooltip}" aria-label="${tooltip}"`;
 }
-function setApplicationTitle(options, ...args) {
-    const title = localize(...args);
-    foundry.utils.setProperty(options, "window.title", title);
-}
-export { imagePath, render, setApplicationTitle, templateLocalize, templatePath, templateTooltip };
+export { imagePath, render, templateLocalize, templatePath, templateTooltip };
