@@ -8,6 +8,14 @@ function getFlag<T>(doc: foundry.abstract.Document, ...path: string[]): T | unde
     return doc.getFlag(MODULE.id, path.join(".")) as T | undefined;
 }
 
+function setFlag<D extends foundry.abstract.Document, T>(
+    doc: D,
+    ...args: [...string[], T]
+): Promise<D> {
+    const value = args.pop();
+    return doc.setFlag(MODULE.id, args.join("."), value);
+}
+
 function setFlagProperty<T extends object>(obj: T, ...args: [...string[], any]): T {
     const value = args.pop();
     foundry.utils.setProperty(obj, flagPath(...args), value);
@@ -23,4 +31,4 @@ function setFlagProperties<T extends object>(
     return obj;
 }
 
-export { getFlag, setFlagProperties, setFlagProperty };
+export { getFlag, setFlag, setFlagProperties, setFlagProperty };
