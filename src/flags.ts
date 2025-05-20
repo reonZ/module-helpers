@@ -1,10 +1,10 @@
 import { MODULE } from ".";
 
-function flagPath(...path: string[]) {
+function flagPath(...path: string[]): string {
     return `flags.${MODULE.path(path)}`;
 }
 
-function getFlag<T>(doc: foundry.abstract.Document, ...path: string[]) {
+function getFlag<T>(doc: foundry.abstract.Document, ...path: string[]): T | undefined {
     return doc.getFlag(MODULE.id, path.join(".")) as T | undefined;
 }
 
