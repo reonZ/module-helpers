@@ -177,24 +177,6 @@ function createToggleableWrapper(
     };
 }
 
-function activateWrappers(wrappers: Wrapper[]) {
-    for (const wrapper of wrappers) {
-        wrapper.activate();
-    }
-}
-
-function disableWrappers(wrappers: Wrapper[]) {
-    for (const wrapper of wrappers) {
-        wrapper.disable();
-    }
-}
-
-function toggleWrappers(wrappers: Wrapper[], enabled?: boolean) {
-    for (const wrapper of wrappers) {
-        wrapper.toggle(enabled);
-    }
-}
-
 type SharedRegistered = {
     listener: libWrapper.RegisterCallback;
     context?: WrapperContext;
@@ -217,14 +199,6 @@ type WrapperOptions = {
 
 type WrapperContext = InstanceType<new (...args: any[]) => any>;
 
-export {
-    activateWrappers,
-    createSharedWrapper,
-    createToggleableWrapper,
-    disableWrappers,
-    registerWrapper,
-    toggleWrappers,
-    unregisterWrapper,
-};
+export { createSharedWrapper, createToggleableWrapper, registerWrapper, unregisterWrapper };
 
 export type { Wrapper };

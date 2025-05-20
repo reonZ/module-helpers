@@ -1,4 +1,6 @@
 import * as R from "remeda";
+import { PersistentHook } from "./hooks";
+import { Wrapper } from "./libwrapper";
 
 function joinStr(separator: StringSeparator, ...path: any[]): string {
     return R.pipe(
@@ -32,6 +34,33 @@ function isDecimal(num: number): boolean {
     return num % 1 !== 0;
 }
 
+function activateHooksAndWrappers(entries: (Wrapper | PersistentHook)[]) {
+    for (const entry of entries) {
+        entry.activate();
+    }
+}
+
+function disableHooksAndWrappers(entries: (Wrapper | PersistentHook)[]) {
+    for (const entry of entries) {
+        entry.disable();
+    }
+}
+
+function toggleHooksAndWrappers(entries: (Wrapper | PersistentHook)[], enabled?: boolean) {
+    for (const entry of entries) {
+        entry.toggle(enabled);
+    }
+}
+
 type StringSeparator = "/" | "." | "-" | ",";
 
-export { arrayIncludes, isDecimal, joinStr, roundToStep, splitStr };
+export {
+    activateHooksAndWrappers,
+    arrayIncludes,
+    disableHooksAndWrappers,
+    isDecimal,
+    joinStr,
+    roundToStep,
+    splitStr,
+    toggleHooksAndWrappers,
+};

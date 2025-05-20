@@ -120,19 +120,4 @@ function createToggleableWrapper(type, path, callback, options = {}) {
         },
     };
 }
-function activateWrappers(wrappers) {
-    for (const wrapper of wrappers) {
-        wrapper.activate();
-    }
-}
-function disableWrappers(wrappers) {
-    for (const wrapper of wrappers) {
-        wrapper.disable();
-    }
-}
-function toggleWrappers(wrappers, enabled) {
-    for (const wrapper of wrappers) {
-        wrapper.toggle(enabled);
-    }
-}
-export { activateWrappers, createSharedWrapper, createToggleableWrapper, disableWrappers, registerWrapper, toggleWrappers, unregisterWrapper, };
+export { createSharedWrapper, createToggleableWrapper, registerWrapper, unregisterWrapper };

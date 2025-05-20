@@ -17,4 +17,19 @@ function roundToStep(value, step) {
 function isDecimal(num) {
     return num % 1 !== 0;
 }
-export { arrayIncludes, isDecimal, joinStr, roundToStep, splitStr };
+function activateHooksAndWrappers(entries) {
+    for (const entry of entries) {
+        entry.activate();
+    }
+}
+function disableHooksAndWrappers(entries) {
+    for (const entry of entries) {
+        entry.disable();
+    }
+}
+function toggleHooksAndWrappers(entries, enabled) {
+    for (const entry of entries) {
+        entry.toggle(enabled);
+    }
+}
+export { activateHooksAndWrappers, arrayIncludes, disableHooksAndWrappers, isDecimal, joinStr, roundToStep, splitStr, toggleHooksAndWrappers, };
