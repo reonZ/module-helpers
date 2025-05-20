@@ -4,4 +4,7 @@ function getCurrentUser() {
 function userIsGM(user = getCurrentUser()) {
     return user && user.role >= CONST.USER_ROLES.ASSISTANT;
 }
-export { userIsGM };
+function isPrimaryUpdater(actor) {
+    return actor.primaryUpdater === game.user;
+}
+export { isPrimaryUpdater, userIsGM };
