@@ -60,7 +60,7 @@ function addListener(parent, selectors, ...args) {
     const event = typeof args[0] === "string" ? args[0] : "click";
     const listener = typeof args[0] === "function" ? args[0] : args[1];
     const useCapture = typeof args[1] === "boolean" ? args[1] : args[2];
-    element.addEventListener(event, (e) => listener(e, element), useCapture);
+    element.addEventListener(event, (e) => listener(element, e), useCapture);
 }
 function addListenerAll(parent, selectors, ...args) {
     if (!(parent instanceof Element || parent instanceof Document))
@@ -72,7 +72,7 @@ function addListenerAll(parent, selectors, ...args) {
     for (const element of elements) {
         if (!(element instanceof HTMLElement))
             continue;
-        element.addEventListener(event, (e) => listener(e, element), useCapture);
+        element.addEventListener(event, (e) => listener(element, e), useCapture);
     }
 }
 function htmlClosest(child, selectors) {

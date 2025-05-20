@@ -115,7 +115,7 @@ function addListener(
     const listener = typeof args[0] === "function" ? args[0] : args[1];
     const useCapture = typeof args[1] === "boolean" ? args[1] : args[2];
 
-    element.addEventListener(event, (e) => listener(e, element), useCapture);
+    element.addEventListener(event, (e) => listener(element, e), useCapture);
 }
 
 function addListenerAll<K extends keyof HTMLElementTagNameMap, TEvent extends EventType = "click">(
@@ -147,7 +147,7 @@ function addListenerAll(
 
     for (const element of elements) {
         if (!(element instanceof HTMLElement)) continue;
-        element.addEventListener(event, (e) => listener(e, element), useCapture);
+        element.addEventListener(event, (e) => listener(element, e), useCapture);
     }
 }
 
@@ -244,8 +244,8 @@ type ListenerCallbackArgs<E extends HTMLElement, TEvent extends EventType> =
     | [ListenerCallback<E, TEvent>];
 
 type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = (
-    event: HTMLElementEventMap[TEvent],
-    element: TElement
+    element: TElement,
+    event: HTMLElementEventMap[TEvent]
 ) => void;
 
 type IterableSelectOptions = SelectOption | string | FormSelectOption;

@@ -37,7 +37,7 @@ type ButtonData = {
 type DatasetValue = Maybe<string | number | boolean | object>;
 type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
 type ListenerCallbackArgs<E extends HTMLElement, TEvent extends EventType> = [TEvent, ListenerCallback<E, TEvent>, boolean] | [TEvent, ListenerCallback<E, TEvent>] | [ListenerCallback<E, TEvent>, boolean] | [ListenerCallback<E, TEvent>];
-type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = (event: HTMLElementEventMap[TEvent], element: TElement) => void;
+type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = (element: TElement, event: HTMLElementEventMap[TEvent]) => void;
 type IterableSelectOptions = SelectOption | string | FormSelectOption;
 export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, htmlQueryAll, };
 export type { DatasetData, DatasetValue, IterableSelectOptions };
