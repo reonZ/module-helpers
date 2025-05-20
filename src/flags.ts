@@ -16,6 +16,10 @@ function setFlag<D extends foundry.abstract.Document, T>(
     return doc.setFlag(MODULE.id, args.join("."), value);
 }
 
+function unsetFlag<D extends foundry.abstract.Document>(doc: D, ...path: string[]): Promise<D> {
+    return doc.unsetFlag(MODULE.id, path.join("."));
+}
+
 function setFlagProperty<T extends object>(obj: T, ...args: [...string[], any]): T {
     const value = args.pop();
     foundry.utils.setProperty(obj, flagPath(...args), value);
@@ -31,4 +35,4 @@ function setFlagProperties<T extends object>(
     return obj;
 }
 
-export { getFlag, setFlag, setFlagProperties, setFlagProperty };
+export { getFlag, setFlag, setFlagProperties, setFlagProperty, unsetFlag };

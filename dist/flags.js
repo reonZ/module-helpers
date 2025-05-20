@@ -9,6 +9,9 @@ function setFlag(doc, ...args) {
     const value = args.pop();
     return doc.setFlag(MODULE.id, args.join("."), value);
 }
+function unsetFlag(doc, ...path) {
+    return doc.unsetFlag(MODULE.id, path.join("."));
+}
 function setFlagProperty(obj, ...args) {
     const value = args.pop();
     foundry.utils.setProperty(obj, flagPath(...args), value);
@@ -19,4 +22,4 @@ function setFlagProperties(obj, ...args) {
     foundry.utils.setProperty(obj, flagPath(...args), properties);
     return obj;
 }
-export { getFlag, setFlag, setFlagProperties, setFlagProperty };
+export { getFlag, setFlag, setFlagProperties, setFlagProperty, unsetFlag };
