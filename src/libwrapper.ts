@@ -226,3 +226,5 @@ export {
     toggleWrappers,
     unregisterWrapper,
 };
+
+export type { Wrapper };

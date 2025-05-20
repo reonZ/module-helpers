@@ -29,3 +29,4 @@ type WrapperOptions = {
 };
 type WrapperContext = InstanceType<new (...args: any[]) => any>;
 export { activateWrappers, createSharedWrapper, createToggleableWrapper, disableWrappers, registerWrapper, toggleWrappers, unregisterWrapper, };
+export type { Wrapper };
