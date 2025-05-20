@@ -5,4 +5,11 @@ function setHasElement<T extends Set<unknown>>(set: T, value: unknown): value is
     return set.has(value);
 }
 
-export { setHasElement };
+/**
+ * https://github.com/foundryvtt/pf2e/blob/78e7f116221c6138e4f3d7e03177bd85936c6939/src/util/misc.ts#L216
+ */
+function ErrorPF2e(message: string): Error {
+    return Error(`PF2e System | ${message}`);
+}
+
+export { ErrorPF2e, setHasElement };
