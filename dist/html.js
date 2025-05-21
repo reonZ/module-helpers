@@ -1,6 +1,9 @@
 import { R } from ".";
 function createHTMLElement(nodeName, { classes = [], dataset = {}, content, id } = {}) {
     const element = document.createElement(nodeName);
+    if (element instanceof HTMLButtonElement) {
+        element.type = "button";
+    }
     if (id) {
         element.id = id;
     }

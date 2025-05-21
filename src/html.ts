@@ -6,6 +6,10 @@ function createHTMLElement<K extends keyof HTMLElementTagNameMap>(
 ): HTMLElementTagNameMap[K] {
     const element = document.createElement(nodeName);
 
+    if (element instanceof HTMLButtonElement) {
+        element.type = "button";
+    }
+
     if (id) {
         element.id = id;
     }
