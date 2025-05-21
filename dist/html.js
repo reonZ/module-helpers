@@ -15,6 +15,9 @@ function createHTMLElement(nodeName, { classes = [], dataset = {}, content, id }
     if (R.isString(content)) {
         element.innerHTML = content;
     }
+    else if (content instanceof Element) {
+        element.append(content);
+    }
     else if (content) {
         element.append(...content);
     }

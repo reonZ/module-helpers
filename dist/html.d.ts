@@ -24,7 +24,7 @@ declare function dataToDatasetString(data: DatasetData): string;
 declare function datasetToData<T extends Record<string, any>>(dataset: DOMStringMap): T;
 interface CreateHTMLElementOptions {
     classes?: string[];
-    content?: string | HTMLCollection | (Element | string)[];
+    content?: string | HTMLCollection | (Element | string)[] | Element;
     dataset?: Record<string, string | number | boolean | null | undefined>;
     id?: string;
 }

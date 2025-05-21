@@ -21,6 +21,8 @@ function createHTMLElement<K extends keyof HTMLElementTagNameMap>(
 
     if (R.isString(content)) {
         element.innerHTML = content;
+    } else if (content instanceof Element) {
+        element.append(content);
     } else if (content) {
         element.append(...content);
     }
@@ -222,7 +224,7 @@ function datasetToData<T extends Record<string, any>>(dataset: DOMStringMap): T 
 
 interface CreateHTMLElementOptions {
     classes?: string[];
-    content?: string | HTMLCollection | (Element | string)[];
+    content?: string | HTMLCollection | (Element | string)[] | Element;
     dataset?: Record<string, string | number | boolean | null | undefined>;
     id?: string;
 }
