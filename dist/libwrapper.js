@@ -6,7 +6,7 @@ function registerWrapper(type, path, callback, context) {
     const wrapped = context
         ? function (...args) {
             args.unshift(this);
-            callback.apply(context, args);
+            return callback.apply(context, args);
         }
         : callback;
     for (const key of paths) {

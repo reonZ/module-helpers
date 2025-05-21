@@ -13,7 +13,7 @@ function registerWrapper(
     const wrapped = context
         ? function (this: any, ...args: any[]) {
               args.unshift(this);
-              callback.apply(context, args);
+              return callback.apply(context, args);
           }
         : callback;
 

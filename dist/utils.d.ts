@@ -7,6 +7,6 @@ declare function roundToStep(value: number, step: number): number;
 declare function isDecimal(num: number): boolean;
 declare function activateHooksAndWrappers(entries: (Wrapper | PersistentHook)[]): void;
 declare function disableHooksAndWrappers(entries: (Wrapper | PersistentHook)[]): void;
-declare function toggleHooksAndWrappers(entries: (Wrapper | PersistentHook)[], enabled?: boolean): void;
+declare function toggleHooksAndWrappers(entries: (Wrapper | PersistentHook)[], enabled: boolean): void;
 type StringSeparator = "/" | "." | "-" | ",";
 export { activateHooksAndWrappers, arrayIncludes, disableHooksAndWrappers, isDecimal, joinStr, roundToStep, splitStr, toggleHooksAndWrappers, };

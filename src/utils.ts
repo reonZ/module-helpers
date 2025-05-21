@@ -46,7 +46,7 @@ function disableHooksAndWrappers(entries: (Wrapper | PersistentHook)[]) {
     }
 }
 
-function toggleHooksAndWrappers(entries: (Wrapper | PersistentHook)[], enabled?: boolean) {
+function toggleHooksAndWrappers(entries: (Wrapper | PersistentHook)[], enabled: boolean) {
     for (const entry of entries) {
         entry.toggle(enabled);
     }
