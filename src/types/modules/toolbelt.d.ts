@@ -1,6 +1,9 @@
 import {
+    AbilityItemPF2e,
     DegreeAdjustmentsRecord,
     DegreeOfSuccessString,
+    FeatPF2e,
+    MacroPF2e,
     RollNoteSource,
     SaveType,
 } from "foundry-pf2e";
@@ -8,6 +11,7 @@ import {
 declare global {
     namespace toolbelt {
         interface GamePF2e {
+            api: Api;
             getToolSetting<K extends keyof Settings, S extends keyof Settings[K]>(
                 tool: K,
                 setting: S
@@ -15,8 +19,17 @@ declare global {
         }
 
         interface Settings {
+            actionable: {
+                apply: boolean;
+            };
             betterTrade: {
                 withContent: boolean;
+            };
+        }
+
+        interface Api {
+            actionable: {
+                getActionMacro: (action: AbilityItemPF2e | FeatPF2e) => Promise<Maybe<MacroPF2e>>;
             };
         }
 

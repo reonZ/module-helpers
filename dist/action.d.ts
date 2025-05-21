@@ -1,4 +1,4 @@
-import { ActionCost } from "foundry-pf2e";
+import { AbilityItemPF2e, ActionCost, ActorPF2e, ChatMessagePF2e, FeatPF2e } from "foundry-pf2e";
 /**
  * https://github.com/foundryvtt/pf2e/blob/89892b6fafec1456a0358de8c6d7b102e3fe2da2/src/util/misc.ts#L205
  */
@@ -10,4 +10,6 @@ declare function getActionIcon(actionType: string | ActionCost | null, fallback:
 declare function getActionIcon(actionType: string | ActionCost | null, fallback: ImageFilePath | null): ImageFilePath | null;
 declare function getActionIcon(actionType: string | ActionCost | null): ImageFilePath;
 declare function isDefaultActionIcon(img: string, action: string | ActionCost | null): boolean;
-export { getActionGlyph, getActionIcon, isDefaultActionIcon };
+declare function updateActionFrequency<T extends AbilityItemPF2e | FeatPF2e>(action: T): Promise<T | undefined>;
+declare function useAction(item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e>, event?: Event): Promise<ChatMessagePF2e | null | undefined>;
+export { getActionGlyph, getActionIcon, isDefaultActionIcon, updateActionFrequency, useAction };
