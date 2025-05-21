@@ -20,10 +20,6 @@ function splitStr(str: string, separator: StringSeparator = ","): string[] {
     );
 }
 
-function arrayIncludes(arr: any[], test: any[]): boolean {
-    return test.some((entry) => arr.includes(entry));
-}
-
 function roundToStep(value: number, step: number): number {
     step = value < 0 ? step * -1 : step;
     const half = step / 2;
@@ -56,7 +52,6 @@ type StringSeparator = "/" | "." | "-" | ",";
 
 export {
     activateHooksAndWrappers,
-    arrayIncludes,
     disableHooksAndWrappers,
     isDecimal,
     joinStr,

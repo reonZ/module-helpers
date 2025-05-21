@@ -1,8 +1,11 @@
 import { R } from ".";
-function createHTMLElement(nodeName, { classes = [], dataset = {}, content, id } = {}) {
+function createHTMLElement(nodeName, { classes = [], dataset = {}, content, id, style } = {}) {
     const element = document.createElement(nodeName);
     if (element instanceof HTMLButtonElement) {
         element.type = "button";
+    }
+    if (style) {
+        assignStyle(element, style);
     }
     if (id) {
         element.id = id;
@@ -28,24 +31,6 @@ function createHTMLElement(nodeName, { classes = [], dataset = {}, content, id }
 }
 function createHTMLElementContent(options) {
     return createHTMLElement("div", options).firstChild;
-}
-function createHTMLButton({ icon, label, action, type }) {
-    const button = document.createElement("button");
-    button.type = type ?? "button";
-    button.innerHTML = `<i class="${icon}"></i> ${label}`;
-    if (action) {
-        button.dataset.action = action;
-    }
-    return button;
-}
-function createHTMLButtons(data, wrapperClass = "buttons") {
-    const wrapper = document.createElement("div");
-    wrapper.classList.add(wrapperClass);
-    for (const entry of data) {
-        const button = createHTMLButton(entry);
-        wrapper.appendChild(button);
-    }
-    return wrapper;
 }
 function htmlQuery(parent, selectors) {
     if (!(parent instanceof Element || parent instanceof Document))
@@ -123,4 +108,4 @@ function datasetToData(dataset) {
     }
     return data;
 }
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, htmlQueryAll, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, htmlQueryAll, };

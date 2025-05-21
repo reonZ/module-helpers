@@ -28,6 +28,12 @@ function renderItemSheets(type: ItemSheetType | ItemSheetType[] = ["ItemSheetPF2
     renderApplications(type);
 }
 
-type ItemSheetType = "AbilitySheetPF2e" | "FeatSheetPF2e" | "ItemSheetPF2e" | "SpellSheetPF2e";
+type ItemSheetType =
+    | "AbilitySheetPF2e"
+    | "ConsumableSheetPF2e"
+    | "EquipmentSheetPF2e"
+    | "FeatSheetPF2e"
+    | "ItemSheetPF2e"
+    | "SpellSheetPF2e";
 
 export { renderCharacterSheets, renderItemSheets, setApplicationTitle };

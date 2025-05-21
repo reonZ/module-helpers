@@ -1,8 +1,6 @@
 import { I18n } from ".";
-declare function createHTMLElement<K extends keyof HTMLElementTagNameMap>(nodeName: K, { classes, dataset, content, id }?: CreateHTMLElementOptions): HTMLElementTagNameMap[K];
+declare function createHTMLElement<K extends keyof HTMLElementTagNameMap>(nodeName: K, { classes, dataset, content, id, style }?: CreateHTMLElementOptions): HTMLElementTagNameMap[K];
 declare function createHTMLElementContent(options?: CreateHTMLElementOptions): HTMLElement;
-declare function createHTMLButton({ icon, label, action, type }: ButtonData): HTMLButtonElement;
-declare function createHTMLButtons(data: ButtonData[], wrapperClass?: string): HTMLElement;
 declare function htmlQuery<K extends keyof HTMLElementTagNameMap>(parent: MaybeHTML, selectors: K): HTMLElementTagNameMap[K] | null;
 declare function htmlQuery<E extends HTMLElement = HTMLElement>(parent: MaybeHTML, selectors: string): E | null;
 declare function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null;
@@ -27,17 +25,12 @@ interface CreateHTMLElementOptions {
     content?: string | HTMLCollection | (Element | string)[] | Element;
     dataset?: Record<string, string | number | boolean | null | undefined>;
     id?: string;
+    style?: Partial<CSSStyleDeclaration>;
 }
-type ButtonData = {
-    icon: string;
-    label: string;
-    action?: string;
-    type?: "button" | "submit" | "reset";
-};
 type DatasetValue = Maybe<string | number | boolean | object>;
 type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
 type ListenerCallbackArgs<E extends HTMLElement, TEvent extends EventType> = [TEvent, ListenerCallback<E, TEvent>, boolean] | [TEvent, ListenerCallback<E, TEvent>] | [ListenerCallback<E, TEvent>, boolean] | [ListenerCallback<E, TEvent>];
 type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = (element: TElement, event: HTMLElementEventMap[TEvent]) => void;
 type IterableSelectOptions = SelectOption | string | FormSelectOption;
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLButton, createHTMLButtons, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, htmlQueryAll, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, htmlClosest, htmlQuery, htmlQueryAll, };
 export type { DatasetData, DatasetValue, IterableSelectOptions };

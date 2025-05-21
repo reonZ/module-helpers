@@ -6,9 +6,6 @@ function joinStr(separator, ...path) {
 function splitStr(str, separator = ",") {
     return R.pipe(str, R.split(separator), R.map((x) => x.trim()), R.filter(R.isTruthy));
 }
-function arrayIncludes(arr, test) {
-    return test.some((entry) => arr.includes(entry));
-}
 function roundToStep(value, step) {
     step = value < 0 ? step * -1 : step;
     const half = step / 2;
@@ -32,4 +29,4 @@ function toggleHooksAndWrappers(entries, enabled) {
         entry.toggle(enabled);
     }
 }
-export { activateHooksAndWrappers, arrayIncludes, disableHooksAndWrappers, isDecimal, joinStr, roundToStep, splitStr, toggleHooksAndWrappers, };
+export { activateHooksAndWrappers, disableHooksAndWrappers, isDecimal, joinStr, roundToStep, splitStr, toggleHooksAndWrappers, };

@@ -2,12 +2,16 @@ import { I18n, R } from ".";
 
 function createHTMLElement<K extends keyof HTMLElementTagNameMap>(
     nodeName: K,
-    { classes = [], dataset = {}, content, id }: CreateHTMLElementOptions = {}
+    { classes = [], dataset = {}, content, id, style }: CreateHTMLElementOptions = {}
 ): HTMLElementTagNameMap[K] {
     const element = document.createElement(nodeName);
 
     if (element instanceof HTMLButtonElement) {
         element.type = "button";
+    }
+
+    if (style) {
+        assignStyle(element, style);
     }
 
     if (id) {
@@ -36,32 +40,6 @@ function createHTMLElement<K extends keyof HTMLElementTagNameMap>(
 
 function createHTMLElementContent(options?: CreateHTMLElementOptions): HTMLElement {
     return createHTMLElement("div", options).firstChild as HTMLElement;
-}
-
-function createHTMLButton({ icon, label, action, type }: ButtonData): HTMLButtonElement {
-    const button = document.createElement("button");
-
-    button.type = type ?? "button";
-    button.innerHTML = `<i class="${icon}"></i> ${label}`;
-
-    if (action) {
-        button.dataset.action = action;
-    }
-
-    return button;
-}
-
-function createHTMLButtons(data: ButtonData[], wrapperClass = "buttons"): HTMLElement {
-    const wrapper = document.createElement("div");
-
-    wrapper.classList.add(wrapperClass);
-
-    for (const entry of data) {
-        const button = createHTMLButton(entry);
-        wrapper.appendChild(button);
-    }
-
-    return wrapper;
 }
 
 function htmlQuery<K extends keyof HTMLElementTagNameMap>(
@@ -231,14 +209,8 @@ interface CreateHTMLElementOptions {
     content?: string | HTMLCollection | (Element | string)[] | Element;
     dataset?: Record<string, string | number | boolean | null | undefined>;
     id?: string;
+    style?: Partial<CSSStyleDeclaration>;
 }
-
-type ButtonData = {
-    icon: string;
-    label: string;
-    action?: string;
-    type?: "button" | "submit" | "reset";
-};
 
 type DatasetValue = Maybe<string | number | boolean | object>;
 type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
@@ -261,8 +233,6 @@ export {
     addListenerAll,
     arrayToSelectOptions,
     assignStyle,
-    createHTMLButton,
-    createHTMLButtons,
     createHTMLElement,
     createHTMLElementContent,
     datasetToData,
