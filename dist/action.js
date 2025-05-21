@@ -68,7 +68,7 @@ async function useAction(item, event) {
     }
     await updateActionFrequency(item);
     if (hasSelfEffect) {
-        useSelfAppliedAction(item, eventToRollMode(event));
+        useSelfAppliedAction(item, event);
     }
     else {
         macro?.execute({ actor: item.actor, item });
@@ -79,11 +79,16 @@ async function useAction(item, event) {
  * https://github.com/foundryvtt/pf2e/blob/07c666035850e084835e0c8c3ca365b06dcd0a75/src/module/chat-message/helpers.ts#L16
  * https://github.com/foundryvtt/pf2e/blob/98ee106cc8faf8ebbcbbb7b612b3b267645ef91e/src/module/apps/sidebar/chat-log.ts#L121
  */
-async function useSelfAppliedAction(item, rollMode = "roll") {
-    const effect = item.system.selfEffect ? await fromUuid(item.system.selfEffect.uuid) : undefined;
+async function useSelfAppliedAction(item, rollMode, effect) {
+    const isSpell = item.isOfType("spell");
+    effect ??=
+        !isSpell && item.system.selfEffect
+            ? await fromUuid(item.system.selfEffect.uuid)
+            : undefined;
     if (!effect)
         return;
-    const { actor, actionCost } = item;
+    const actor = item.actor;
+    const actionCost = isSpell ? item.actionGlyph : item.actionCost;
     const token = actor.getActiveTokens(true, true).shift() ?? null;
     const traits = item.system.traits.value?.filter((t) => t in CONFIG.PF2E.Item.documentClasses.effect.validTraits) ?? [];
     const effectSource = foundry.utils.mergeObject(effect.toObject(), {
@@ -133,6 +138,7 @@ async function useSelfAppliedAction(item, rollMode = "roll") {
                 : null,
             preview: descriptionPreview,
         },
+        selfEffect: false,
     });
     const flags = {
         pf2e: {
@@ -145,7 +151,7 @@ async function useSelfAppliedAction(item, rollMode = "roll") {
     const effectSection = `<div class="message-buttons">
         <span class="effect-applied">${effectLink}</span>
     </div>`;
-    const messageData = ChatMessagePF2eCls.applyRollMode({ speaker, flavor, content: content + effectSection, flags }, rollMode);
+    const messageData = ChatMessagePF2eCls.applyRollMode({ speaker, flavor, content: content + effectSection, flags }, (rollMode instanceof Event ? eventToRollMode(rollMode) : rollMode) ?? "roll");
     return (await ChatMessagePF2eCls.create(messageData)) ?? null;
 }
-export { getActionGlyph, getActionIcon, isDefaultActionIcon, updateActionFrequency, useAction };
+export { getActionGlyph, getActionIcon, isDefaultActionIcon, updateActionFrequency, useAction, useSelfAppliedAction, };
