@@ -29,5 +29,23 @@ type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope" | "onCh
     onChange?: (value: any, operation: object, userId: string) => void | Promise<void>;
 };
 type RegisterSettingMenuOptions = PartialExcept<SettingSubmenuConfig, "type" | "restricted">;
+type RenderSettingsConfigOptions = {
+    categories: Record<string, RenderSettingsConfigCategory>;
+};
+type RenderSettingsConfigCategory = {
+    id: string;
+    entries: RenderSettingsConfigCategoryEntry[];
+};
+type RenderSettingsConfigCategoryEntry = {
+    label: string;
+} & ({
+    menu: true;
+    key: string;
+} | {
+    menu: false;
+    field: {
+        name: string;
+    };
+});
 export { getSetting, getUsersSetting, hasSetting, registerModuleSettings, registerSetting, registerSettingMenu, setSetting, settingPath, setUserSetting, };
-export type { ModuleSettings, RegisterSettingOptions };
+export type { ModuleSettings, RegisterSettingOptions, RenderSettingsConfigOptions };

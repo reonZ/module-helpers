@@ -225,16 +225,28 @@ type RegisterSettingOptions = Omit<
 type RegisterSettingMenuOptions = PartialExcept<SettingSubmenuConfig, "type" | "restricted">;
 
 type RenderSettingsConfigOptions = {
-    categories: Record<string, { entries: RenderSettingsConfigCategory[] }>;
+    categories: Record<string, RenderSettingsConfigCategory>;
 };
 
 type RenderSettingsConfigCategory = {
-    label: string;
-    menu: boolean;
-    field: {
-        name: string;
-    };
+    id: string;
+    entries: RenderSettingsConfigCategoryEntry[];
 };
+
+type RenderSettingsConfigCategoryEntry = {
+    label: string;
+} & (
+    | {
+          menu: true;
+          key: string;
+      }
+    | {
+          menu: false;
+          field: {
+              name: string;
+          };
+      }
+);
 
 export {
     getSetting,
@@ -248,4 +260,4 @@ export {
     setUserSetting,
 };
 
-export type { ModuleSettings, RegisterSettingOptions };
+export type { ModuleSettings, RegisterSettingOptions, RenderSettingsConfigOptions };
