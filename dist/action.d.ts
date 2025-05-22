@@ -10,12 +10,11 @@ declare function getActionIcon(actionType: string | ActionCost | null, fallback:
 declare function getActionIcon(actionType: string | ActionCost | null, fallback: ImageFilePath | null): ImageFilePath | null;
 declare function getActionIcon(actionType: string | ActionCost | null): ImageFilePath;
 declare function isDefaultActionIcon(img: string, action: string | ActionCost | null): boolean;
-declare function updateActionFrequency<T extends AbilityItemPF2e | FeatPF2e>(action: T): Promise<T | undefined>;
-declare function useAction(event: Event, item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e>): Promise<ChatMessagePF2e | null | undefined>;
+declare function useAction(event: Event, item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e>): Promise<unknown>;
 /**
  * converted version of
  * https://github.com/foundryvtt/pf2e/blob/07c666035850e084835e0c8c3ca365b06dcd0a75/src/module/chat-message/helpers.ts#L16
  * https://github.com/foundryvtt/pf2e/blob/98ee106cc8faf8ebbcbbb7b612b3b267645ef91e/src/module/apps/sidebar/chat-log.ts#L121
  */
-declare function useSelfAppliedAction(item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e> | SpellPF2e<ActorPF2e> | EquipmentPF2e<ActorPF2e> | ConsumablePF2e<ActorPF2e>, rollMode: RollMode | "roll" | Event | undefined, effect?: EffectPF2e | null): Promise<ChatMessagePF2e | undefined>;
-export { getActionGlyph, getActionIcon, isDefaultActionIcon, updateActionFrequency, useAction, useSelfAppliedAction, };
+declare function createSelfApplyMessage(item: SpellPF2e<ActorPF2e> | EquipmentPF2e<ActorPF2e> | ConsumablePF2e<ActorPF2e>, effect: EffectPF2e, event?: Event): Promise<ChatMessagePF2e | undefined>;
+export { createSelfApplyMessage, getActionGlyph, getActionIcon, isDefaultActionIcon, useAction };

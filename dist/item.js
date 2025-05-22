@@ -1,4 +1,4 @@
-import { createHTMLElementContent, getDamageRollClass, htmlQuery, R, setHasElement, useSelfAppliedAction, } from ".";
+import { createHTMLElementContent, createSelfApplyMessage, getDamageRollClass, htmlQuery, R, setHasElement, } from ".";
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
  */
@@ -97,7 +97,7 @@ async function usePhysicalItem(event, item) {
         });
     }
     if (linked instanceof Item) {
-        await useSelfAppliedAction(item, event, linked);
+        await createSelfApplyMessage(item, linked, event);
     }
     return use();
 }

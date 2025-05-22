@@ -11,11 +11,11 @@ import {
 } from "foundry-pf2e";
 import {
     createHTMLElementContent,
+    createSelfApplyMessage,
     getDamageRollClass,
     htmlQuery,
     R,
     setHasElement,
-    useSelfAppliedAction,
 } from ".";
 
 /**
@@ -176,7 +176,7 @@ async function usePhysicalItem(
     }
 
     if (linked instanceof Item) {
-        await useSelfAppliedAction(item, event, linked);
+        await createSelfApplyMessage(item, linked, event);
     }
 
     return use();
