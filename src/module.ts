@@ -1,4 +1,4 @@
-import { getSetting, joinStr, R } from ".";
+import { getSetting, joinStr, localize, LocalizeArgs, R } from ".";
 
 const _MODULE = {
     id: "",
@@ -118,15 +118,23 @@ const MODULE = {
 
             Object.defineProperties(context, {
                 active: {
-                    get: function () {
+                    get: function (): boolean {
                         return MODULE.current.active;
                     },
                     configurable: false,
                     enumerable: false,
                 },
                 getSetting: {
-                    value: function (setting: string) {
+                    value: function (setting: string): unknown {
                         return MODULE.current.active ? getSetting(setting) : undefined;
+                    },
+                    writable: false,
+                    configurable: false,
+                    enumerable: false,
+                },
+                localize: {
+                    value: function (...args: LocalizeArgs): string {
+                        return localize(...args);
                     },
                     writable: false,
                     configurable: false,

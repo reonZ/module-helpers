@@ -1,4 +1,4 @@
-import { getSetting, joinStr, R } from ".";
+import { getSetting, joinStr, localize, R } from ".";
 const _MODULE = {
     id: "",
     groupLog: false,
@@ -118,6 +118,14 @@ const MODULE = {
                 getSetting: {
                     value: function (setting) {
                         return MODULE.current.active ? getSetting(setting) : undefined;
+                    },
+                    writable: false,
+                    configurable: false,
+                    enumerable: false,
+                },
+                localize: {
+                    value: function (...args) {
+                        return localize(...args);
                     },
                     writable: false,
                     configurable: false,
