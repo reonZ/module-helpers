@@ -4,8 +4,10 @@ import {
     ActorPF2e,
     ChatMessageFlagsPF2e,
     ChatMessagePF2e,
+    ConsumablePF2e,
     EffectPF2e,
     EffectSource,
+    EquipmentPF2e,
     FeatPF2e,
     SpellPF2e,
 } from "foundry-pf2e";
@@ -96,21 +98,34 @@ async function updateActionFrequency<T extends AbilityItemPF2e | FeatPF2e>(
     }
 }
 
-async function useAction(item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e>, event?: Event) {
+async function useAction(event: Event, item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e>) {
     const hasSelfEffect = item.system.selfEffect;
     const selfApply = hasSelfEffect && game.toolbelt?.getToolSetting("actionable", "apply");
-    const macro = await game.toolbelt?.api.actionable.getActionMacro(item);
+    const macro = game.toolbelt?.getToolSetting("actionable", "action")
+        ? await game.toolbelt?.api.actionable.getActionMacro(item)
+        : undefined;
 
     if (!selfApply && !macro) {
         return game.pf2e.rollItemMacro(item.uuid, event);
     }
 
-    await updateActionFrequency(item);
-
     if (hasSelfEffect) {
-        useSelfAppliedAction(item, event);
+        await updateActionFrequency(item);
+        return useSelfAppliedAction(item, event);
     } else {
-        macro?.execute({ actor: item.actor, item });
+        // we let the macro handle the action usage or cancelation
+        macro?.execute({
+            actor: item.actor,
+            item,
+            use: async () => {
+                await updateActionFrequency(item);
+                return game.pf2e.rollItemMacro(item.uuid, event);
+            },
+            cancel: () => {
+                const msg = game.toolbelt!.localize("actionable.action.cancel", item);
+                return ui.notifications.warn(msg, { localize: false });
+            },
+        });
     }
 }
 
@@ -120,21 +135,27 @@ async function useAction(item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e>,
  * https://github.com/foundryvtt/pf2e/blob/98ee106cc8faf8ebbcbbb7b612b3b267645ef91e/src/module/apps/sidebar/chat-log.ts#L121
  */
 async function useSelfAppliedAction(
-    item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e> | SpellPF2e<ActorPF2e>,
+    item:
+        | AbilityItemPF2e<ActorPF2e>
+        | FeatPF2e<ActorPF2e>
+        | SpellPF2e<ActorPF2e>
+        | EquipmentPF2e<ActorPF2e>
+        | ConsumablePF2e<ActorPF2e>,
     rollMode: RollMode | "roll" | Event | undefined,
     effect?: EffectPF2e | null
-) {
+): Promise<ChatMessagePF2e | undefined> {
     const isSpell = item.isOfType("spell");
+    const isAction = item.isOfType("action", "feat");
 
     effect ??=
-        !isSpell && item.system.selfEffect
+        isAction && item.system.selfEffect
             ? await fromUuid<EffectPF2e>(item.system.selfEffect.uuid)
             : undefined;
 
     if (!effect) return;
 
     const actor = item.actor;
-    const actionCost = isSpell ? item.actionGlyph : item.actionCost;
+    const actionCost = isSpell ? item.actionGlyph : isAction ? item.actionCost : null;
     const token = actor.getActiveTokens(true, true).shift() ?? null;
     const traits =
         item.system.traits.value?.filter(
@@ -226,7 +247,8 @@ async function useSelfAppliedAction(
         { speaker, flavor, content: content + effectSection, flags },
         (rollMode instanceof Event ? eventToRollMode(rollMode) : rollMode) ?? "roll"
     ) as ChatMessageCreateData<ChatMessagePF2e>;
-    return (await ChatMessagePF2eCls.create(messageData)) ?? null;
+
+    return ChatMessagePF2eCls.create(messageData);
 }
 
 export {

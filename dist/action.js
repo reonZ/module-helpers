@@ -59,19 +59,33 @@ async function updateActionFrequency(action) {
         return action.update({ "system.frequency.value": newValue });
     }
 }
-async function useAction(item, event) {
+async function useAction(event, item) {
     const hasSelfEffect = item.system.selfEffect;
     const selfApply = hasSelfEffect && game.toolbelt?.getToolSetting("actionable", "apply");
-    const macro = await game.toolbelt?.api.actionable.getActionMacro(item);
+    const macro = game.toolbelt?.getToolSetting("actionable", "action")
+        ? await game.toolbelt?.api.actionable.getActionMacro(item)
+        : undefined;
     if (!selfApply && !macro) {
         return game.pf2e.rollItemMacro(item.uuid, event);
     }
-    await updateActionFrequency(item);
     if (hasSelfEffect) {
-        useSelfAppliedAction(item, event);
+        await updateActionFrequency(item);
+        return useSelfAppliedAction(item, event);
     }
     else {
-        macro?.execute({ actor: item.actor, item });
+        // we let the macro handle the action usage or cancelation
+        macro?.execute({
+            actor: item.actor,
+            item,
+            use: async () => {
+                await updateActionFrequency(item);
+                return game.pf2e.rollItemMacro(item.uuid, event);
+            },
+            cancel: () => {
+                const msg = game.toolbelt.localize("actionable.action.cancel", item);
+                return ui.notifications.warn(msg, { localize: false });
+            },
+        });
     }
 }
 /**
@@ -81,14 +95,15 @@ async function useAction(item, event) {
  */
 async function useSelfAppliedAction(item, rollMode, effect) {
     const isSpell = item.isOfType("spell");
+    const isAction = item.isOfType("action", "feat");
     effect ??=
-        !isSpell && item.system.selfEffect
+        isAction && item.system.selfEffect
             ? await fromUuid(item.system.selfEffect.uuid)
             : undefined;
     if (!effect)
         return;
     const actor = item.actor;
-    const actionCost = isSpell ? item.actionGlyph : item.actionCost;
+    const actionCost = isSpell ? item.actionGlyph : isAction ? item.actionCost : null;
     const token = actor.getActiveTokens(true, true).shift() ?? null;
     const traits = item.system.traits.value?.filter((t) => t in CONFIG.PF2E.Item.documentClasses.effect.validTraits) ?? [];
     const effectSource = foundry.utils.mergeObject(effect.toObject(), {
@@ -152,6 +167,6 @@ async function useSelfAppliedAction(item, rollMode, effect) {
         <span class="effect-applied">${effectLink}</span>
     </div>`;
     const messageData = ChatMessagePF2eCls.applyRollMode({ speaker, flavor, content: content + effectSection, flags }, (rollMode instanceof Event ? eventToRollMode(rollMode) : rollMode) ?? "roll");
-    return (await ChatMessagePF2eCls.create(messageData)) ?? null;
+    return ChatMessagePF2eCls.create(messageData);
 }
 export { getActionGlyph, getActionIcon, isDefaultActionIcon, updateActionFrequency, useAction, useSelfAppliedAction, };
