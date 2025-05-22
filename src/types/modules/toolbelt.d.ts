@@ -2,7 +2,9 @@ import {
     AbilityItemPF2e,
     DegreeAdjustmentsRecord,
     DegreeOfSuccessString,
+    EffectPF2e,
     FeatPF2e,
+    ItemPF2e,
     MacroPF2e,
     RollNoteSource,
     SaveType,
@@ -10,8 +12,7 @@ import {
 
 declare global {
     namespace toolbelt {
-        interface GamePF2e {
-            api: Api;
+        interface GamePF2e extends MyModule.GamePF2e<ToolbeltApi> {
             getToolSetting<K extends keyof Settings, S extends keyof Settings[K]>(
                 tool: K,
                 setting: S
@@ -20,16 +21,21 @@ declare global {
 
         interface Settings {
             actionable: {
+                action: boolean;
                 apply: boolean;
+                item: boolean;
+                spell: boolean;
+                use: boolean;
             };
             betterTrade: {
                 withContent: boolean;
             };
         }
 
-        interface Api {
+        interface ToolbeltApi {
             actionable: {
                 getActionMacro: (action: AbilityItemPF2e | FeatPF2e) => Promise<Maybe<MacroPF2e>>;
+                getItemLink: (item: ItemPF2e) => Promise<Maybe<MacroPF2e | EffectPF2e>>;
             };
         }
 
