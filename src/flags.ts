@@ -1,4 +1,4 @@
-import { MODULE } from ".";
+import { joinStr, MODULE, R } from ".";
 
 function flagPath(...path: string[]): string {
     return `flags.${MODULE.path(path)}`;
@@ -44,8 +44,39 @@ function setFlagProperties<T extends object>(
     return obj;
 }
 
+function getDataFlag<T extends foundry.abstract.DataModel | foundry.abstract.DataModel[]>(
+    doc: foundry.abstract.Document,
+    Model: ConstructorOf<T extends foundry.abstract.DataModel[] ? T[number] : T>,
+    ...path: string[]
+): undefined | T {
+    const flag = getFlag(doc, ...path);
+    if (!flag) return;
+
+    try {
+        if (R.isArray(flag)) {
+            return R.pipe(
+                flag,
+                R.map((data): foundry.abstract.DataModel => new Model(data)),
+                R.filter((model) => !model.invalid)
+            ) as T;
+        } else {
+            const model = new Model(flag);
+            return model.invalid ? undefined : (model as T);
+        }
+    } catch (error) {
+        const name = Model.name;
+        const joinPath = joinStr(".", ...path);
+
+        MODULE.error(
+            `An error occured while trying the create a '${name}' DataModel at path: '${joinPath}'`,
+            error
+        );
+    }
+}
+
 export {
     deleteFlagProperty,
+    getDataFlag,
     getFlag,
     getFlagProperty,
     setFlag,

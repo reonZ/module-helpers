@@ -5,4 +5,5 @@ declare function getFlagProperty<T>(obj: object, ...path: string[]): T | undefin
 declare function setFlagProperty<T extends object>(obj: T, ...args: [...string[], any]): T;
 declare function deleteFlagProperty<T extends object>(obj: T, ...path: string[]): T;
 declare function setFlagProperties<T extends object>(obj: T, ...args: [...string[], properties: Record<string, any>]): T;
-export { deleteFlagProperty, getFlag, getFlagProperty, setFlag, setFlagProperties, setFlagProperty, unsetFlag, };
+declare function getDataFlag<T extends foundry.abstract.DataModel | foundry.abstract.DataModel[]>(doc: foundry.abstract.Document, Model: ConstructorOf<T extends foundry.abstract.DataModel[] ? T[number] : T>, ...path: string[]): undefined | T;
+export { deleteFlagProperty, getDataFlag, getFlag, getFlagProperty, setFlag, setFlagProperties, setFlagProperty, unsetFlag, };
