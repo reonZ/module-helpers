@@ -52,7 +52,7 @@ function htmlQuery<E extends HTMLElement = HTMLElement>(
 ): E | null;
 function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null;
 function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null {
-    if (!(parent instanceof Element || parent instanceof Document)) return null;
+    if (!(parent instanceof Element)) return null;
     return parent.querySelector<HTMLElement>(selectors);
 }
 

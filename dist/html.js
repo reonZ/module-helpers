@@ -33,7 +33,7 @@ function createHTMLElementContent(options) {
     return createHTMLElement("div", options).firstChild;
 }
 function htmlQuery(parent, selectors) {
-    if (!(parent instanceof Element || parent instanceof Document))
+    if (!(parent instanceof Element))
         return null;
     return parent.querySelector(selectors);
 }
