@@ -1,5 +1,6 @@
 import {
     AbilityItemPF2e,
+    ChatMessagePF2e,
     DegreeAdjustmentsRecord,
     DegreeOfSuccessString,
     EffectPF2e,
@@ -36,6 +37,13 @@ declare global {
             actionable: {
                 getActionMacro: (action: AbilityItemPF2e | FeatPF2e) => Promise<Maybe<MacroPF2e>>;
                 getItemMacro: (item: ItemPF2e) => Promise<Maybe<MacroPF2e>>;
+            };
+            targetHelper: {
+                getMessageTargets: (message: ChatMessagePF2e) => string[];
+                setMessageFlagTargets: <T extends Record<string, any>>(
+                    updates: T,
+                    targets: string[]
+                ) => T;
             };
         }
 
