@@ -35,7 +35,7 @@ declare global {
         interface ToolbeltApi {
             actionable: {
                 getActionMacro: (action: AbilityItemPF2e | FeatPF2e) => Promise<Maybe<MacroPF2e>>;
-                getItemLink: (item: ItemPF2e) => Promise<Maybe<MacroPF2e | EffectPF2e>>;
+                getItemMacro: (item: ItemPF2e) => Promise<Maybe<MacroPF2e>>;
             };
         }
 

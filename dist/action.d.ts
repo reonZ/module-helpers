@@ -1,4 +1,4 @@
-import { AbilityItemPF2e, ActionCost, ActorPF2e, ChatMessagePF2e, ConsumablePF2e, EffectPF2e, EquipmentPF2e, FeatPF2e, SpellPF2e } from "foundry-pf2e";
+import { AbilityItemPF2e, ActionCost, ActorPF2e, FeatPF2e } from "foundry-pf2e";
 /**
  * https://github.com/foundryvtt/pf2e/blob/89892b6fafec1456a0358de8c6d7b102e3fe2da2/src/util/misc.ts#L205
  */
@@ -11,10 +11,4 @@ declare function getActionIcon(actionType: string | ActionCost | null, fallback:
 declare function getActionIcon(actionType: string | ActionCost | null): ImageFilePath;
 declare function isDefaultActionIcon(img: string, action: string | ActionCost | null): boolean;
 declare function useAction(event: Event, item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e>): Promise<unknown>;
-/**
- * converted version of
- * https://github.com/foundryvtt/pf2e/blob/07c666035850e084835e0c8c3ca365b06dcd0a75/src/module/chat-message/helpers.ts#L16
- * https://github.com/foundryvtt/pf2e/blob/98ee106cc8faf8ebbcbbb7b612b3b267645ef91e/src/module/apps/sidebar/chat-log.ts#L121
- */
-declare function createSelfApplyMessage(item: SpellPF2e<ActorPF2e> | EquipmentPF2e<ActorPF2e> | ConsumablePF2e<ActorPF2e>, effect: EffectPF2e, event?: Event): Promise<ChatMessagePF2e | undefined>;
-export { createSelfApplyMessage, getActionGlyph, getActionIcon, isDefaultActionIcon, useAction };
+export { getActionGlyph, getActionIcon, isDefaultActionIcon, useAction };

@@ -1,4 +1,4 @@
-import { createHTMLElementContent, createSelfApplyMessage, getDamageRollClass, htmlQuery, R, setHasElement, } from ".";
+import { createHTMLElementContent, getDamageRollClass, htmlQuery, R, setHasElement } from ".";
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
  */
@@ -75,18 +75,18 @@ function isCastConsumable(item) {
 }
 async function usePhysicalItem(event, item) {
     const isConsumable = item.isOfType("consumable");
-    const linked = game.toolbelt?.getToolSetting("actionable", "item")
-        ? await game.toolbelt.api.actionable.getItemLink(item)
-        : undefined;
     if (isConsumable && isCastConsumable(item)) {
         return item.consume();
     }
+    const macro = game.toolbelt?.getToolSetting("actionable", "item")
+        ? await game.toolbelt.api.actionable.getItemMacro(item)
+        : undefined;
     const use = isConsumable
         ? () => consumeItem(event, item)
         : () => game.pf2e.rollItemMacro(item.uuid, event);
-    if (linked instanceof Macro) {
+    if (macro) {
         // we let the macro handle item consumption
-        return linked.execute({
+        return macro.execute({
             actor: item.actor,
             item,
             use,
@@ -95,9 +95,6 @@ async function usePhysicalItem(event, item) {
                 return ui.notifications.warn(msg, { localize: false });
             },
         });
-    }
-    if (linked instanceof Item) {
-        await createSelfApplyMessage(item, linked, event);
     }
     return use();
 }

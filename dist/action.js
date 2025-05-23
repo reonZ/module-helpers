@@ -1,4 +1,3 @@
-import { eventToRollMode, traitSlugToObject } from ".";
 /**
  * https://github.com/foundryvtt/pf2e/blob/89892b6fafec1456a0358de8c6d7b102e3fe2da2/src/util/misc.ts#L188C1-L199C3
  */
@@ -57,88 +56,21 @@ async function useAction(event, item) {
     const macro = game.toolbelt?.getToolSetting("actionable", "action")
         ? await game.toolbelt?.api.actionable.getActionMacro(item)
         : undefined;
-    if (!macro) {
+    const use = async () => {
         return game.pf2e.rollItemMacro(item.uuid, event);
+    };
+    if (!macro) {
+        return use();
     }
     // we let the macro handle the action usage or cancelation
     return macro.execute({
         actor: item.actor,
         item,
-        use: async () => {
-            return game.pf2e.rollItemMacro(item.uuid, event);
-        },
+        use,
         cancel: () => {
             const msg = game.toolbelt.localize("actionable.action.cancel", item);
             return ui.notifications.warn(msg, { localize: false });
         },
     });
 }
-/**
- * converted version of
- * https://github.com/foundryvtt/pf2e/blob/07c666035850e084835e0c8c3ca365b06dcd0a75/src/module/chat-message/helpers.ts#L16
- * https://github.com/foundryvtt/pf2e/blob/98ee106cc8faf8ebbcbbb7b612b3b267645ef91e/src/module/apps/sidebar/chat-log.ts#L121
- */
-async function createSelfApplyMessage(item, effect, event) {
-    const actor = item.actor;
-    const isSpell = item.isOfType("spell");
-    const actionCost = isSpell ? item.actionGlyph : null;
-    const token = actor.getActiveTokens(true, true).shift() ?? null;
-    const ChatMessagePF2eCls = getDocumentClass("ChatMessage");
-    const flavor = await foundry.applications.handlebars.renderTemplate("systems/pf2e/templates/chat/action/flavor.hbs", {
-        action: { title: item.name, glyph: getActionGlyph(actionCost) },
-        item,
-        traits: item.system.traits.value.map((t) => traitSlugToObject(t, CONFIG.PF2E.actionTraits)),
-    });
-    const previewLength = 100;
-    const descriptionPreview = (() => {
-        if (item.actor.pack)
-            return null;
-        const tempDiv = document.createElement("div");
-        const documentTypes = [...CONST.DOCUMENT_LINK_TYPES, "Compendium", "UUID"];
-        const linkPattern = new RegExp(`@(${documentTypes.join("|")})\\[([^#\\]]+)(?:#([^\\]]+))?](?:{([^}]+)})?`, "g");
-        tempDiv.innerHTML = item.description.replace(linkPattern, (_match, ...args) => args[3]);
-        return tempDiv.innerText.slice(0, previewLength);
-    })();
-    const content = await foundry.applications.handlebars.renderTemplate("systems/pf2e/templates/chat/action/collapsed.hbs", {
-        actor: item.actor,
-        description: {
-            full: descriptionPreview && descriptionPreview.length < previewLength
-                ? item.description
-                : null,
-            preview: descriptionPreview,
-        },
-        selfEffect: false,
-    });
-    const traits = item.system.traits.value?.filter((t) => t in CONFIG.PF2E.Item.documentClasses.effect.validTraits) ?? [];
-    const effectSource = foundry.utils.mergeObject(effect.toObject(), {
-        _id: null,
-        system: {
-            context: {
-                origin: {
-                    actor: actor.uuid,
-                    token: token?.uuid ?? null,
-                    item: item.uuid,
-                    spellcasting: null,
-                    rollOptions: item.getOriginData().rollOptions,
-                },
-                target: {
-                    actor: actor.uuid,
-                    token: token?.uuid ?? null,
-                },
-                roll: null,
-            },
-            traits: { value: traits },
-        },
-    });
-    await actor.createEmbeddedDocuments("Item", [effectSource]);
-    const effectLink = game.i18n.format("PF2E.Item.Ability.SelfAppliedEffect.Applied", {
-        effect: effect.toAnchor({ attrs: { draggable: "true" } }).outerHTML,
-    });
-    const effectSection = `<div class="message-buttons">
-            <span class="effect-applied">${effectLink}</span>
-        </div>`;
-    const speaker = ChatMessagePF2eCls.getSpeaker({ actor, token });
-    const messageData = ChatMessagePF2eCls.applyRollMode({ speaker, flavor, content: content + effectSection }, eventToRollMode(event));
-    return ChatMessagePF2eCls.create(messageData);
-}
-export { createSelfApplyMessage, getActionGlyph, getActionIcon, isDefaultActionIcon, useAction };
+export { getActionGlyph, getActionIcon, isDefaultActionIcon, useAction };
