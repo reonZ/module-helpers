@@ -12,9 +12,16 @@ function setFlag(doc, ...args) {
 function unsetFlag(doc, ...path) {
     return doc.unsetFlag(MODULE.id, path.join("."));
 }
+function getFlagProperty(obj, ...path) {
+    return foundry.utils.getProperty(obj, flagPath(...path));
+}
 function setFlagProperty(obj, ...args) {
     const value = args.pop();
     foundry.utils.setProperty(obj, flagPath(...args), value);
+    return obj;
+}
+function deleteFlagProperty(obj, ...path) {
+    foundry.utils.deleteProperty(obj, flagPath(...path));
     return obj;
 }
 function setFlagProperties(obj, ...args) {
@@ -22,4 +29,4 @@ function setFlagProperties(obj, ...args) {
     foundry.utils.setProperty(obj, flagPath(...args), properties);
     return obj;
 }
-export { getFlag, setFlag, setFlagProperties, setFlagProperty, unsetFlag };
+export { deleteFlagProperty, getFlag, getFlagProperty, setFlag, setFlagProperties, setFlagProperty, unsetFlag, };

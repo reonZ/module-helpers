@@ -20,9 +20,18 @@ function unsetFlag<D extends foundry.abstract.Document>(doc: D, ...path: string[
     return doc.unsetFlag(MODULE.id, path.join("."));
 }
 
+function getFlagProperty<T>(obj: object, ...path: string[]): T | undefined {
+    return foundry.utils.getProperty(obj, flagPath(...path)) as T | undefined;
+}
+
 function setFlagProperty<T extends object>(obj: T, ...args: [...string[], any]): T {
     const value = args.pop();
     foundry.utils.setProperty(obj, flagPath(...args), value);
+    return obj;
+}
+
+function deleteFlagProperty<T extends object>(obj: T, ...path: string[]): T {
+    foundry.utils.deleteProperty(obj, flagPath(...path));
     return obj;
 }
 
@@ -35,4 +44,12 @@ function setFlagProperties<T extends object>(
     return obj;
 }
 
-export { getFlag, setFlag, setFlagProperties, setFlagProperty, unsetFlag };
+export {
+    deleteFlagProperty,
+    getFlag,
+    getFlagProperty,
+    setFlag,
+    setFlagProperties,
+    setFlagProperty,
+    unsetFlag,
+};
