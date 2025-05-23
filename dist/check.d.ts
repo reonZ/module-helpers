@@ -1,4 +1,5 @@
 import { DegreeOfSuccessString, ZeroToThree } from "foundry-pf2e";
+declare const DEGREE_STRINGS: readonly ["criticalFailure", "failure", "success", "criticalSuccess"];
 declare function isDegreeOfSuccessValue(value: string | number): value is ZeroToThree | DegreeOfSuccessString;
 declare function degreeOfSuccessNumber(value: string | number): ZeroToThree | undefined;
 declare function degreeOfSuccessString(value: number): DegreeOfSuccessString | undefined;
@@ -12,4 +13,4 @@ declare function getExtraRollOptions({ traits, options }?: {
     traits?: string[] | string;
     options?: string[] | string;
 }, isBasic?: boolean): string[];
-export { degreeOfSuccessNumber, degreeOfSuccessString, getExtraRollOptions, isDegreeOfSuccessValue, };
+export { DEGREE_STRINGS, degreeOfSuccessNumber, degreeOfSuccessString, getExtraRollOptions, isDegreeOfSuccessValue, };

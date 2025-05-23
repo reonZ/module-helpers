@@ -34,4 +34,4 @@ function getExtraRollOptions({ traits, options } = {}, isBasic) {
     }
     return R.unique([maybeTraits, additionalTraits.map((t) => `item:trait:${t}`), allOptions].flat());
 }
-export { degreeOfSuccessNumber, degreeOfSuccessString, getExtraRollOptions, isDegreeOfSuccessValue, };
+export { DEGREE_STRINGS, degreeOfSuccessNumber, degreeOfSuccessString, getExtraRollOptions, isDegreeOfSuccessValue, };

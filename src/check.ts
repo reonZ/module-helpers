@@ -55,6 +55,7 @@ function getExtraRollOptions(
 }
 
 export {
+    DEGREE_STRINGS,
     degreeOfSuccessNumber,
     degreeOfSuccessString,
     getExtraRollOptions,
