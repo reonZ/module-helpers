@@ -6,6 +6,11 @@ function joinStr(separator, ...path) {
 function splitStr(str, separator = ",") {
     return R.pipe(str, R.split(separator), R.map((x) => x.trim()), R.filter(R.isTruthy));
 }
+function arraysEqual(arr1, arr2) {
+    arr1 = R.unique(arr1);
+    arr2 = R.unique(arr2);
+    return arr1.length === arr2.length && arr1.every((entry) => arr2.includes(entry));
+}
 function roundToStep(value, step) {
     step = value < 0 ? step * -1 : step;
     const half = step / 2;
@@ -29,4 +34,4 @@ function toggleHooksAndWrappers(entries, enabled) {
         entry.toggle(enabled);
     }
 }
-export { activateHooksAndWrappers, disableHooksAndWrappers, isDecimal, joinStr, roundToStep, splitStr, toggleHooksAndWrappers, };
+export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, roundToStep, splitStr, toggleHooksAndWrappers, };

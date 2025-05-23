@@ -20,6 +20,12 @@ function splitStr(str: string, separator: StringSeparator = ","): string[] {
     );
 }
 
+function arraysEqual<T extends any[]>(arr1: T, arr2: any[]): arr2 is T {
+    arr1 = R.unique(arr1) as unknown as T;
+    arr2 = R.unique(arr2);
+    return arr1.length === arr2.length && arr1.every((entry) => arr2.includes(entry));
+}
+
 function roundToStep(value: number, step: number): number {
     step = value < 0 ? step * -1 : step;
     const half = step / 2;
@@ -52,6 +58,7 @@ type StringSeparator = "/" | "." | "-" | ",";
 
 export {
     activateHooksAndWrappers,
+    arraysEqual,
     disableHooksAndWrappers,
     isDecimal,
     joinStr,
