@@ -3,7 +3,6 @@ import {
     ChatMessagePF2e,
     DegreeAdjustmentsRecord,
     DegreeOfSuccessString,
-    EffectPF2e,
     FeatPF2e,
     ItemPF2e,
     MacroPF2e,
@@ -48,7 +47,7 @@ declare global {
         }
 
         namespace targetHelper {
-            type TargetMessageType = "damage" | "spell-damage" | "spell-save" | "action" | "check";
+            type TargetMessageType = "damage" | "spell" | "action" | "check";
 
             type MessageTargetSave = {
                 private: boolean;
@@ -66,10 +65,10 @@ declare global {
             };
 
             type MessageFlag = {
-                type?: TargetMessageType;
-                targets?: string[];
+                type: TargetMessageType;
+                targets: TokenDocumentUUID[];
                 save?: MessageSaveFlag;
-                saves?: Record<string, MessageTargetSave>;
+                saves?: Record<TokenDocumentUUID, MessageTargetSave>;
                 splashIndex?: number;
                 isRegen?: boolean;
                 applied?: Record<string, boolean[]>;
@@ -83,7 +82,7 @@ declare global {
                 statistic: SaveType;
                 basic: boolean;
                 dc: number;
-                author?: string;
+                author?: ActorUUID;
             };
         }
     }
