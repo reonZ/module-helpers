@@ -17,7 +17,10 @@ import {
     TokenDocumentPF2e,
 } from "foundry-pf2e";
 
-function isInstanceOf<T extends IsInstanceOfItem>(obj: any, cls: T): obj is IsInstanceOfClasses[T];
+function isInstanceOf<T extends keyof IsInstanceOfClasses>(
+    obj: any,
+    cls: T
+): obj is IsInstanceOfClasses[T];
 function isInstanceOf<T>(obj: any, cls: string): obj is T;
 function isInstanceOf(obj: any, cls: keyof IsInstanceOfClasses | string) {
     if (typeof obj !== "object" || obj === null) return false;
@@ -52,7 +55,5 @@ type IsInstanceOfItems = {
     ConsumablePF2e: ConsumablePF2e;
     SpellcastingEntryPF2e: SpellcastingEntryPF2e;
 };
-
-type IsInstanceOfItem = keyof IsInstanceOfItems;
 
 export { isInstanceOf };
