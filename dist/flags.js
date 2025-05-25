@@ -29,17 +29,41 @@ function setFlagProperties(obj, ...args) {
     foundry.utils.setProperty(obj, flagPath(...args), properties);
     return obj;
 }
+function updateSourceFlag(doc, ...args) {
+    const value = args.pop();
+    return doc.updateSource({ [flagPath(...args)]: value });
+}
 function getDataFlag(doc, Model, ...path) {
     const flag = getFlag(doc, ...path);
     if (!flag)
         return;
     try {
         if (R.isArray(flag)) {
-            return R.pipe(flag, R.map((data) => new Model(data)), R.filter((model) => !model.invalid));
+            const models = R.pipe(flag, R.map((data) => new Model(data)), R.filter((model) => !model.invalid));
+            Object.defineProperty(models, "setFlag", {
+                value: function () {
+                    const serialized = models.map((x) => x.toJSON());
+                    setFlag(doc, ...path, serialized);
+                },
+                enumerable: false,
+                writable: false,
+                configurable: false,
+            });
+            return models;
         }
-        else {
+        else if (R.isPlainObject(flag)) {
             const model = new Model(flag);
-            return model.invalid ? undefined : model;
+            if (model.invalid)
+                return;
+            Object.defineProperty(model, "setFlag", {
+                value: function () {
+                    setFlag(doc, ...path, model.toJSON());
+                },
+                enumerable: false,
+                writable: false,
+                configurable: false,
+            });
+            return model;
         }
     }
     catch (error) {
@@ -48,4 +72,4 @@ function getDataFlag(doc, Model, ...path) {
         MODULE.error(`An error occured while trying the create a '${name}' DataModel at path: '${joinPath}'`, error);
     }
 }
-export { deleteFlagProperty, getDataFlag, getFlag, getFlagProperty, setFlag, setFlagProperties, setFlagProperty, unsetFlag, };
+export { deleteFlagProperty, getDataFlag, getFlag, getFlagProperty, setFlag, setFlagProperties, setFlagProperty, unsetFlag, updateSourceFlag, };

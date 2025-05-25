@@ -1,22 +1,20 @@
 import { joinStr, MODULE, R } from ".";
+type Document = foundry.abstract.Document;
 
 function flagPath(...path: string[]): string {
     return `flags.${MODULE.path(path)}`;
 }
 
-function getFlag<T>(doc: foundry.abstract.Document, ...path: string[]): T | undefined {
+function getFlag<T>(doc: Document, ...path: string[]): T | undefined {
     return doc.getFlag(MODULE.id, path.join(".")) as T | undefined;
 }
 
-function setFlag<D extends foundry.abstract.Document, T>(
-    doc: D,
-    ...args: [...string[], T]
-): Promise<D> {
+function setFlag<D extends Document, T>(doc: D, ...args: [...string[], T]): Promise<D> {
     const value = args.pop();
     return doc.setFlag(MODULE.id, args.join("."), value);
 }
 
-function unsetFlag<D extends foundry.abstract.Document>(doc: D, ...path: string[]): Promise<D> {
+function unsetFlag<D extends Document>(doc: D, ...path: string[]): Promise<D> {
     return doc.unsetFlag(MODULE.id, path.join("."));
 }
 
@@ -44,24 +42,55 @@ function setFlagProperties<T extends object>(
     return obj;
 }
 
+function updateSourceFlag<T extends Document>(
+    doc: T,
+    ...args: [...string[], any]
+): DeepPartial<T["_source"]> {
+    const value = args.pop();
+    return doc.updateSource({ [flagPath(...args)]: value });
+}
+
 function getDataFlag<T extends foundry.abstract.DataModel | foundry.abstract.DataModel[]>(
-    doc: foundry.abstract.Document,
+    doc: Document,
     Model: ConstructorOf<T extends foundry.abstract.DataModel[] ? T[number] : T>,
     ...path: string[]
-): undefined | T {
+): undefined | FlagDataModel<T> {
     const flag = getFlag(doc, ...path);
     if (!flag) return;
 
     try {
         if (R.isArray(flag)) {
-            return R.pipe(
+            const models = R.pipe(
                 flag,
                 R.map((data): foundry.abstract.DataModel => new Model(data)),
                 R.filter((model) => !model.invalid)
-            ) as T;
-        } else {
+            );
+
+            Object.defineProperty(models, "setFlag", {
+                value: function () {
+                    const serialized = models.map((x) => x.toJSON());
+                    setFlag(doc, ...path, serialized);
+                },
+                enumerable: false,
+                writable: false,
+                configurable: false,
+            });
+
+            return models as any;
+        } else if (R.isPlainObject(flag)) {
             const model = new Model(flag);
-            return model.invalid ? undefined : (model as T);
+            if (model.invalid) return;
+
+            Object.defineProperty(model, "setFlag", {
+                value: function () {
+                    setFlag(doc, ...path, model.toJSON());
+                },
+                enumerable: false,
+                writable: false,
+                configurable: false,
+            });
+
+            return model as any;
         }
     } catch (error) {
         const name = Model.name;
@@ -74,6 +103,10 @@ function getDataFlag<T extends foundry.abstract.DataModel | foundry.abstract.Dat
     }
 }
 
+type FlagDataModel<T> = T & {
+    setFlag: () => void;
+};
+
 export {
     deleteFlagProperty,
     getDataFlag,
@@ -83,4 +116,5 @@ export {
     setFlagProperties,
     setFlagProperty,
     unsetFlag,
+    updateSourceFlag,
 };
