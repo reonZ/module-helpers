@@ -1,4 +1,4 @@
-import { getSetting, R, setSetting } from "..";
+import { R } from "..";
 class DataModelCollection extends Collection {
     constructor(Model, entries) {
         const models = R.pipe(entries ?? [], R.map((entry) => {
@@ -16,16 +16,4 @@ class DataModelCollection extends Collection {
         return this.set(entry.id, entry);
     }
 }
-class SettingCollection extends DataModelCollection {
-    #setting;
-    constructor(setting, Model) {
-        const entries = getSetting(setting);
-        super(Model, entries);
-        this.#setting = setting;
-    }
-    save() {
-        const entries = this.map((entry) => entry.toObject());
-        return setSetting(this.#setting, entries);
-    }
-}
-export { DataModelCollection, SettingCollection };
+export { DataModelCollection };

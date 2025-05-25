@@ -1,4 +1,4 @@
-import { getSetting, R, setSetting } from "..";
+import { R } from "..";
 import DataModel = foundry.abstract.DataModel;
 
 class DataModelCollection<T extends DataModelWithId> extends Collection<T> {
@@ -26,22 +26,6 @@ class DataModelCollection<T extends DataModelWithId> extends Collection<T> {
     }
 }
 
-class SettingCollection<T extends DataModelWithId> extends DataModelCollection<T> {
-    #setting: string;
-
-    constructor(setting: string, Model: ConstructorOf<T>) {
-        const entries = getSetting<T["_source"][]>(setting);
-        super(Model, entries);
-
-        this.#setting = setting;
-    }
-
-    save(): Promise<T["_source"][]> {
-        const entries = this.map((entry) => entry.toObject());
-        return setSetting(this.#setting, entries);
-    }
-}
-
 type DataModelWithId = DataModel & { id: string };
 
-export { DataModelCollection, SettingCollection };
+export { DataModelCollection };
