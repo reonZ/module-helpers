@@ -3,9 +3,6 @@ function joinStr(separator, ...path) {
     return R.pipe(path, //
     R.flat(), R.filter(R.isString), R.join(separator));
 }
-function splitStr(str, separator = ",") {
-    return R.pipe(str, R.split(separator), R.map((x) => x.trim()), R.filter(R.isTruthy));
-}
 function arraysEqual(arr1, arr2) {
     arr1 = R.unique(arr1);
     arr2 = R.unique(arr2);
@@ -34,4 +31,4 @@ function toggleHooksAndWrappers(entries, enabled) {
         entry.toggle(enabled);
     }
 }
-export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, roundToStep, splitStr, toggleHooksAndWrappers, };
+export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, roundToStep, toggleHooksAndWrappers, };

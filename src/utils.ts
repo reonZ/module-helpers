@@ -2,21 +2,12 @@ import * as R from "remeda";
 import { PersistentHook } from "./hooks";
 import { Wrapper } from "./libwrapper";
 
-function joinStr(separator: StringSeparator, ...path: any[]): string {
+function joinStr(separator: string, ...path: any[]): string {
     return R.pipe(
         path, //
         R.flat(),
         R.filter(R.isString),
         R.join(separator)
-    );
-}
-
-function splitStr(str: string, separator: StringSeparator = ","): string[] {
-    return R.pipe(
-        str,
-        R.split(separator),
-        R.map((x) => x.trim()),
-        R.filter(R.isTruthy)
     );
 }
 
@@ -54,8 +45,6 @@ function toggleHooksAndWrappers(entries: (Wrapper | PersistentHook)[], enabled: 
     }
 }
 
-type StringSeparator = "/" | "." | "-" | ",";
-
 export {
     activateHooksAndWrappers,
     arraysEqual,
@@ -63,6 +52,5 @@ export {
     isDecimal,
     joinStr,
     roundToStep,
-    splitStr,
     toggleHooksAndWrappers,
 };

@@ -1,4 +1,4 @@
-import { R, splitStr } from ".";
+import { R, splitListString } from ".";
 const DEGREE_VALUES = {
     0: 0,
     1: 1,
@@ -9,6 +9,7 @@ const DEGREE_VALUES = {
     success: 2,
     criticalSuccess: 3,
 };
+const SAVE_TYPES = ["fortitude", "reflex", "will"];
 const DEGREE_STRINGS = ["criticalFailure", "failure", "success", "criticalSuccess"];
 function isDegreeOfSuccessValue(value) {
     return value in DEGREE_VALUES;
@@ -26,12 +27,12 @@ function degreeOfSuccessString(value) {
  * traits & options can also be arrays of strings
  */
 function getExtraRollOptions({ traits, options } = {}, isBasic) {
-    const maybeTraits = R.isString(traits) ? splitStr(traits) : traits ?? [];
+    const maybeTraits = R.isString(traits) ? splitListString(traits) : traits ?? [];
     const additionalTraits = maybeTraits.filter((t) => t in CONFIG.PF2E.actionTraits);
-    const allOptions = R.isString(options) ? splitStr(options) : options?.slice() ?? [];
+    const allOptions = R.isString(options) ? splitListString(options) : options?.slice() ?? [];
     if (isBasic && !allOptions.includes("damaging-effect")) {
         allOptions.push("damaging-effect");
     }
     return R.unique([maybeTraits, additionalTraits.map((t) => `item:trait:${t}`), allOptions].flat());
 }
-export { DEGREE_STRINGS, degreeOfSuccessNumber, degreeOfSuccessString, getExtraRollOptions, isDegreeOfSuccessValue, };
+export { DEGREE_STRINGS, degreeOfSuccessNumber, degreeOfSuccessString, getExtraRollOptions, isDegreeOfSuccessValue, SAVE_TYPES, };

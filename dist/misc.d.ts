@@ -1,4 +1,8 @@
 /**
+ * https://github.com/foundryvtt/pf2e/blob/f7d7441acbf856b490a4e0c0d799809cd6e3dc5d/src/util/misc.ts#L259
+ */
+declare function splitListString(str: string, { delimiter, unique }?: SplitListStringOptions): string[];
+/**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/util/misc.ts#L58
  */
 declare function setHasElement<T extends Set<unknown>>(set: T, value: unknown): value is SetElement<T>;
@@ -18,6 +22,16 @@ declare function objectHasKey<O extends object>(obj: O, key: unknown): key is ke
  * https://github.com/foundryvtt/pf2e/blob/07c666035850e084835e0c8c3ca365b06dcd0a75/src/module/sheet/helpers.ts#L149
  */
 declare function eventToRollMode(event: Maybe<Event>): RollMode | "roll";
+/**
+ * https://github.com/foundryvtt/pf2e/blob/f7d7441acbf856b490a4e0c0d799809cd6e3dc5d/src/module/system/text-editor.ts#L344
+ */
+declare function parseInlineParams(paramString: string, options?: {
+    first?: string;
+}): Record<string, string | undefined> | null;
+interface SplitListStringOptions {
+    delimiter?: string | RegExp;
+    unique?: boolean;
+}
 interface TraitViewData {
     /** The name of this action. */
     name: string;
@@ -32,4 +46,4 @@ interface TraitViewData {
     /** The description of the trait */
     description: string | null;
 }
-export { ErrorPF2e, eventToRollMode, objectHasKey, setHasElement, traitSlugToObject };
+export { ErrorPF2e, eventToRollMode, objectHasKey, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };

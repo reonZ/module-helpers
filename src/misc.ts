@@ -1,3 +1,19 @@
+import { R } from ".";
+
+/**
+ * https://github.com/foundryvtt/pf2e/blob/f7d7441acbf856b490a4e0c0d799809cd6e3dc5d/src/util/misc.ts#L259
+ */
+function splitListString(
+    str: string,
+    { delimiter = ",", unique = true }: SplitListStringOptions = {}
+): string[] {
+    const list = str
+        .split(delimiter)
+        .map((el) => el.trim())
+        .filter((el) => el !== "");
+    return unique ? R.unique(list) : list;
+}
+
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/util/misc.ts#L58
  */
@@ -57,6 +73,36 @@ function eventToRollMode(event: Maybe<Event>): RollMode | "roll" {
     return game.user.isGM ? "gmroll" : "blindroll";
 }
 
+/**
+ * https://github.com/foundryvtt/pf2e/blob/f7d7441acbf856b490a4e0c0d799809cd6e3dc5d/src/module/system/text-editor.ts#L344
+ */
+function parseInlineParams(
+    paramString: string,
+    options: { first?: string } = {}
+): Record<string, string | undefined> | null {
+    const parts = splitListString(paramString, { delimiter: "|" });
+    const result = parts.reduce((result, part, idx) => {
+        if (idx === 0 && options.first && !part.includes(":")) {
+            result[options.first] = part.trim();
+            return result;
+        }
+
+        const colonIdx = part.indexOf(":");
+        const portions =
+            colonIdx >= 0 ? [part.slice(0, colonIdx), part.slice(colonIdx + 1)] : [part, ""];
+        result[portions[0]] = portions[1];
+
+        return result;
+    }, {} as Record<string, string | undefined>);
+
+    return result;
+}
+
+interface SplitListStringOptions {
+    delimiter?: string | RegExp;
+    unique?: boolean;
+}
+
 interface TraitViewData {
     /** The name of this action. */
     name: string;
@@ -72,4 +118,12 @@ interface TraitViewData {
     description: string | null;
 }
 
-export { ErrorPF2e, eventToRollMode, objectHasKey, setHasElement, traitSlugToObject };
+export {
+    ErrorPF2e,
+    eventToRollMode,
+    objectHasKey,
+    parseInlineParams,
+    setHasElement,
+    splitListString,
+    traitSlugToObject,
+};

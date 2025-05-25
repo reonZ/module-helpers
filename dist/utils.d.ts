@@ -1,12 +1,10 @@
 import { PersistentHook } from "./hooks";
 import { Wrapper } from "./libwrapper";
-declare function joinStr(separator: StringSeparator, ...path: any[]): string;
-declare function splitStr(str: string, separator?: StringSeparator): string[];
+declare function joinStr(separator: string, ...path: any[]): string;
 declare function arraysEqual<T extends any[]>(arr1: T, arr2: any[]): arr2 is T;
 declare function roundToStep(value: number, step: number): number;
 declare function isDecimal(num: number): boolean;
 declare function activateHooksAndWrappers(entries: (Wrapper | PersistentHook)[]): void;
 declare function disableHooksAndWrappers(entries: (Wrapper | PersistentHook)[]): void;
 declare function toggleHooksAndWrappers(entries: (Wrapper | PersistentHook)[], enabled: boolean): void;
-type StringSeparator = "/" | "." | "-" | ",";
-export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, roundToStep, splitStr, toggleHooksAndWrappers, };
+export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, roundToStep, toggleHooksAndWrappers, };

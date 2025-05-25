@@ -1,5 +1,5 @@
 import { AbilityTrait, DegreeOfSuccessString, ZeroToThree } from "foundry-pf2e";
-import { R, splitStr } from ".";
+import { R, splitListString } from ".";
 
 const DEGREE_VALUES: Record<ZeroToThree | DegreeOfSuccessString, ZeroToThree> = {
     0: 0,
@@ -11,6 +11,8 @@ const DEGREE_VALUES: Record<ZeroToThree | DegreeOfSuccessString, ZeroToThree> = 
     success: 2,
     criticalSuccess: 3,
 };
+
+const SAVE_TYPES = ["fortitude", "reflex", "will"] as const;
 
 const DEGREE_STRINGS = ["criticalFailure", "failure", "success", "criticalSuccess"] as const;
 
@@ -38,12 +40,12 @@ function getExtraRollOptions(
     { traits, options }: { traits?: string[] | string; options?: string[] | string } = {},
     isBasic?: boolean
 ): string[] {
-    const maybeTraits = R.isString(traits) ? splitStr(traits) : traits ?? [];
+    const maybeTraits = R.isString(traits) ? splitListString(traits) : traits ?? [];
     const additionalTraits = maybeTraits.filter(
         (t): t is AbilityTrait => t in CONFIG.PF2E.actionTraits
     );
 
-    const allOptions = R.isString(options) ? splitStr(options) : options?.slice() ?? [];
+    const allOptions = R.isString(options) ? splitListString(options) : options?.slice() ?? [];
 
     if (isBasic && !allOptions.includes("damaging-effect")) {
         allOptions.push("damaging-effect");
@@ -60,4 +62,5 @@ export {
     degreeOfSuccessString,
     getExtraRollOptions,
     isDegreeOfSuccessValue,
+    SAVE_TYPES,
 };
