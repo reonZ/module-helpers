@@ -13,4 +13,27 @@ function positionTokenFromCoords({ x, y }, token, snapped = true) {
     }
     return position;
 }
-export { positionTokenFromCoords, selectTokens };
+async function pingToken(token) {
+    if (!canvas.ready)
+        return false;
+    return canvas.ping(token.center);
+}
+function emitTokenHover(event, token, hover) {
+    if (!canvas.ready)
+        return;
+    const tokenObj = token instanceof Token ? token : token.object;
+    if (hover && tokenObj?.isVisible && !tokenObj.controlled) {
+        tokenObj.emitHoverIn(event);
+    }
+    else if (!hover) {
+        tokenObj?.emitHoverOut(event);
+    }
+}
+function panToToken(token, control) {
+    if (control) {
+        const tokenObj = token instanceof Token ? token : token.object;
+        tokenObj?.control({ releaseOthers: true });
+    }
+    canvas.animatePan(token.center);
+}
+export { emitTokenHover, panToToken, pingToken, positionTokenFromCoords, selectTokens };
