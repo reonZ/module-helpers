@@ -34,31 +34,27 @@ function generateFormInput<T extends FormGroupType>(
     type: T,
     i18n: I18n,
     inputConfig: CreateGroupInputConfigMap[T]
-) {
+): HTMLInputElement | HTMLSelectElement | undefined {
     const _i18n = I18n.from(inputConfig.i18n) ?? i18n;
 
-    switch (type) {
-        case "text": {
-            const configs = inputConfig as CreateTextInputConfig;
-            return fields.createTextInput({
-                ...configs,
-                value: "value" in configs ? String(configs.value) : "",
-                placeholder: configs.placeholder ?? _i18n.localizeIfExist("placeholder"),
-            } satisfies FormInputConfig);
+    if (type === "text") {
+        const configs = inputConfig as CreateTextInputConfig;
+        return fields.createTextInput({
+            ...configs,
+            value: "value" in configs ? String(configs.value) : "",
+            placeholder: configs.placeholder ?? _i18n.localizeIfExist("placeholder"),
+        } satisfies FormInputConfig);
+    } else if (type === "select") {
+        const configs = inputConfig as CreateSelectInputConfig;
+
+        if (configs.options.length <= 1) {
+            configs.disabled = true;
         }
 
-        case "select": {
-            const configs = inputConfig as CreateSelectInputConfig;
-
-            if (configs.options.length <= 1) {
-                configs.disabled = true;
-            }
-
-            return fields.createSelectInput({
-                ...configs,
-                options: arrayToSelectOptions(configs.options, _i18n),
-            });
-        }
+        return fields.createSelectInput({
+            ...configs,
+            options: arrayToSelectOptions(configs.options, _i18n),
+        });
     }
 }
 
