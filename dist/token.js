@@ -1,3 +1,4 @@
+import { isInstanceOf } from "./object";
 function selectTokens(tokens) {
     canvas.tokens.releaseAll();
     for (const token of tokens) {
@@ -21,7 +22,7 @@ async function pingToken(token) {
 function emitTokenHover(event, token, hover) {
     if (!canvas.ready)
         return;
-    const tokenObj = token instanceof Token ? token : token.object;
+    const tokenObj = isInstanceOf(token, "TokenPF2e") ? token : token.object;
     if (hover && tokenObj?.isVisible && !tokenObj.controlled) {
         tokenObj.emitHoverIn(event);
     }
@@ -31,7 +32,7 @@ function emitTokenHover(event, token, hover) {
 }
 function panToToken(token, control) {
     if (control) {
-        const tokenObj = token instanceof Token ? token : token.object;
+        const tokenObj = isInstanceOf(token, "TokenPF2e") ? token : token.object;
         tokenObj?.control({ releaseOthers: true });
     }
     canvas.animatePan(token.center);
