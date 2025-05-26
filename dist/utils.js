@@ -31,4 +31,11 @@ function toggleHooksAndWrappers(entries, enabled) {
         entry.toggle(enabled);
     }
 }
-export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, roundToStep, toggleHooksAndWrappers, };
+function removeIndexFromArray(array, index, copy = true) {
+    const usedArray = (copy ? array.slice() : array);
+    if (index < 0 || index >= array.length)
+        return usedArray;
+    usedArray.splice(index, 1);
+    return usedArray;
+}
+export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, removeIndexFromArray, roundToStep, toggleHooksAndWrappers, };

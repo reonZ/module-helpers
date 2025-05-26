@@ -7,4 +7,5 @@ declare function isDecimal(num: number): boolean;
 declare function activateHooksAndWrappers(entries: (Wrapper | PersistentHook)[]): void;
 declare function disableHooksAndWrappers(entries: (Wrapper | PersistentHook)[]): void;
 declare function toggleHooksAndWrappers(entries: (Wrapper | PersistentHook)[], enabled: boolean): void;
-export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, roundToStep, toggleHooksAndWrappers, };
+declare function removeIndexFromArray<T extends any[]>(array: T, index: number, copy?: boolean): T;
+export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, removeIndexFromArray, roundToStep, toggleHooksAndWrappers, };

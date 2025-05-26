@@ -45,12 +45,21 @@ function toggleHooksAndWrappers(entries: (Wrapper | PersistentHook)[], enabled: 
     }
 }
 
+function removeIndexFromArray<T extends any[]>(array: T, index: number, copy = true): T {
+    const usedArray = (copy ? array.slice() : array) as T;
+    if (index < 0 || index >= array.length) return usedArray;
+
+    usedArray.splice(index, 1);
+    return usedArray;
+}
+
 export {
     activateHooksAndWrappers,
     arraysEqual,
     disableHooksAndWrappers,
     isDecimal,
     joinStr,
+    removeIndexFromArray,
     roundToStep,
     toggleHooksAndWrappers,
 };
