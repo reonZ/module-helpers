@@ -50,39 +50,41 @@ declare global {
             type TargetMessageType = "damage" | "spell" | "action" | "check";
 
             type MessageTargetSave = {
-                private: boolean;
-                value: number;
                 die: number;
-                success: DegreeOfSuccessString;
-                roll: string;
-                notes: RollNoteSource[];
                 dosAdjustments: DegreeAdjustmentsRecord | undefined;
-                unadjustedOutcome?: DegreeOfSuccessString | null;
                 modifiers: { label: string; modifier: number }[];
-                significantModifiers: modifiersMatter.SignificantModifier[] | undefined;
+                notes: RollNoteSource[];
+                private: boolean;
                 rerolled?: "hero" | "new" | "lower" | "higher";
+                roll: string;
+                significantModifiers: modifiersMatter.SignificantModifier[] | undefined;
                 statistic: SaveType;
+                success: DegreeOfSuccessString;
+                unadjustedOutcome?: DegreeOfSuccessString | null;
+                value: number;
             };
 
+            type MessageTargetApplied = Record<`${number}` | number, boolean>;
+
             type MessageFlag = {
-                type: TargetMessageType;
-                targets: TokenDocumentUUID[];
-                save?: MessageSaveFlag;
-                saves?: Record<TokenDocumentUUID, MessageTargetSave>;
-                splashIndex?: number;
+                applied?: Record<string, MessageTargetApplied>;
                 isRegen?: boolean;
-                applied?: Record<string, boolean[]>;
-                options?: string[];
-                traits?: string[];
                 item?: ItemUUID;
+                options?: string[];
+                save?: MessageSaveFlag;
+                saves?: Record<string, MessageTargetSave>;
+                splashIndex?: number;
                 splashTargets?: string[];
+                targets?: TokenDocumentUUID[];
+                traits?: string[];
+                type?: TargetMessageType;
             };
 
             type MessageSaveFlag = {
-                statistic: SaveType;
+                author?: ActorUUID;
                 basic: boolean;
                 dc: number;
-                author?: ActorUUID;
+                statistic: SaveType;
             };
         }
     }

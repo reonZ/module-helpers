@@ -7,8 +7,10 @@ declare function setFlagProperty<T extends object>(obj: T, ...args: [...string[]
 declare function deleteFlagProperty<T extends object>(obj: T, ...path: string[]): T;
 declare function setFlagProperties<T extends object>(obj: T, ...args: [...string[], properties: Record<string, any>]): T;
 declare function updateSourceFlag<T extends Document>(doc: T, ...args: [...string[], any]): DeepPartial<T["_source"]>;
-declare function getDataFlag<T extends foundry.abstract.DataModel | foundry.abstract.DataModel[]>(doc: Document, Model: ConstructorOf<T extends foundry.abstract.DataModel[] ? T[number] : T>, ...path: string[]): undefined | FlagDataModel<T>;
-type FlagDataModel<T> = T & {
-    setFlag: () => void;
+declare function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(doc: D, Model: ConstructorOf<T>, ...path: string[]): undefined | FlagDataModel<T, D>;
+declare function getDataFlagArray<T extends foundry.abstract.DataModel, D extends Document>(doc: D, Model: ConstructorOf<T>, ...path: string[]): FlagDataModel<T[], D> | undefined;
+type FlagDataModel<T, D> = T & {
+    setFlag: () => Promise<D>;
 };
-export { deleteFlagProperty, getDataFlag, getFlag, getFlagProperty, setFlag, setFlagProperties, setFlagProperty, unsetFlag, updateSourceFlag, };
+export { deleteFlagProperty, getDataFlag, getDataFlagArray, getFlag, getFlagProperty, setFlag, setFlagProperties, setFlagProperty, unsetFlag, updateSourceFlag, };
+export type { FlagDataModel };

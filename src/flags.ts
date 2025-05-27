@@ -50,48 +50,28 @@ function updateSourceFlag<T extends Document>(
     return doc.updateSource({ [flagPath(...args)]: value });
 }
 
-function getDataFlag<T extends foundry.abstract.DataModel | foundry.abstract.DataModel[]>(
-    doc: Document,
-    Model: ConstructorOf<T extends foundry.abstract.DataModel[] ? T[number] : T>,
+function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(
+    doc: D,
+    Model: ConstructorOf<T>,
     ...path: string[]
-): undefined | FlagDataModel<T> {
+): undefined | FlagDataModel<T, D> {
     const flag = getFlag(doc, ...path);
-    if (!flag) return;
+    if (!R.isPlainObject(flag)) return;
 
     try {
-        if (R.isArray(flag)) {
-            const models = R.pipe(
-                flag,
-                R.map((data): foundry.abstract.DataModel => new Model(data)),
-                R.filter((model) => !model.invalid)
-            );
+        const model = new Model(flag);
+        if (model.invalid) return;
 
-            Object.defineProperty(models, "setFlag", {
-                value: function () {
-                    const serialized = models.map((x) => x.toJSON());
-                    setFlag(doc, ...path, serialized);
-                },
-                enumerable: false,
-                writable: false,
-                configurable: false,
-            });
+        Object.defineProperty(model, "setFlag", {
+            value: function (): Promise<D> {
+                return setFlag(doc, ...path, model.toJSON());
+            },
+            enumerable: false,
+            writable: false,
+            configurable: false,
+        });
 
-            return models as any;
-        } else if (R.isPlainObject(flag)) {
-            const model = new Model(flag);
-            if (model.invalid) return;
-
-            Object.defineProperty(model, "setFlag", {
-                value: function () {
-                    setFlag(doc, ...path, model.toJSON());
-                },
-                enumerable: false,
-                writable: false,
-                configurable: false,
-            });
-
-            return model as any;
-        }
+        return model as any;
     } catch (error) {
         const name = Model.name;
         const joinPath = joinStr(".", ...path);
@@ -103,13 +83,51 @@ function getDataFlag<T extends foundry.abstract.DataModel | foundry.abstract.Dat
     }
 }
 
-type FlagDataModel<T> = T & {
-    setFlag: () => void;
+function getDataFlagArray<T extends foundry.abstract.DataModel, D extends Document>(
+    doc: D,
+    Model: ConstructorOf<T>,
+    ...path: string[]
+): FlagDataModel<T[], D> | undefined {
+    const flag = getFlag(doc, ...path);
+    if (!R.isArray(flag)) return;
+
+    try {
+        const models = R.pipe(
+            flag,
+            R.map((data): foundry.abstract.DataModel => new Model(data)),
+            R.filter((model) => !model.invalid)
+        );
+
+        Object.defineProperty(models, "setFlag", {
+            value: function (): Promise<D> {
+                const serialized = models.map((x) => x.toJSON());
+                return setFlag(doc, ...path, serialized);
+            },
+            enumerable: false,
+            writable: false,
+            configurable: false,
+        });
+
+        return models as any;
+    } catch (error) {
+        const name = Model.name;
+        const joinPath = joinStr(".", ...path);
+
+        MODULE.error(
+            `An error occured while trying the create a an array of '${name}' DataModel at path: '${joinPath}'`,
+            error
+        );
+    }
+}
+
+type FlagDataModel<T, D> = T & {
+    setFlag: () => Promise<D>;
 };
 
 export {
     deleteFlagProperty,
     getDataFlag,
+    getDataFlagArray,
     getFlag,
     getFlagProperty,
     setFlag,
@@ -118,3 +136,5 @@ export {
     unsetFlag,
     updateSourceFlag,
 };
+
+export type { FlagDataModel };
