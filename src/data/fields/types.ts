@@ -21,13 +21,15 @@ type ArrayField<
 type RecordField<
     TElementField extends fields.DataField,
     TRequired extends boolean = true,
-    TNullable extends boolean = false
+    TNullable extends boolean = false,
+    THasInitial extends boolean = true
 > = fields.TypedObjectField<
     TElementField,
     Record<string, ModelPropFromDataField<TElementField>>,
     Record<string, ModelPropFromDataField<TElementField>>,
     TRequired,
-    TNullable
+    TNullable,
+    THasInitial
 >;
 
 type SchemaField<

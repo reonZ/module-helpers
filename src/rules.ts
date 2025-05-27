@@ -1,5 +1,8 @@
 import {
+    ActorPF2e,
     ChoiceSetSource,
+    ConditionSource,
+    EffectSource,
     ItemPF2e,
     ModifierAdjustment,
     RuleElementSource,
@@ -19,6 +22,57 @@ function extractModifierAdjustments(
     return adjustments.filter((a) => [slug, null].includes(a.slug));
 }
 
+/**
+ * https://github.com/foundryvtt/pf2e/blob/5a1089c6aa4725c2e73f60d67a3be01115896592/src/module/rules/helpers.ts#L88
+ */
+async function extractEphemeralEffects({
+    affects,
+    origin,
+    target,
+    item,
+    domains,
+    options,
+}: ExtractEphemeralEffectsParams): Promise<(ConditionSource | EffectSource)[]> {
+    if (!(origin && target)) return [];
+
+    const [effectsFrom, effectsTo] = affects === "target" ? [origin, target] : [target, origin];
+    const fullOptions = [
+        ...options,
+        effectsFrom.getRollOptions(domains),
+        effectsTo.getSelfRollOptions(affects),
+    ].flat();
+    const resolvables = item ? (item.isOfType("spell") ? { spell: item } : { weapon: item }) : {};
+    return (
+        await Promise.all(
+            domains
+                .flatMap((s) => effectsFrom.synthetics.ephemeralEffects[s]?.[affects] ?? [])
+                .map((d) => d({ test: fullOptions, resolvables }))
+        )
+    )
+        .filter(R.isNonNull)
+        .map((effect) => {
+            effect.system.context = {
+                origin: {
+                    actor: effectsFrom.uuid,
+                    token: null,
+                    item: null,
+                    spellcasting: null,
+                },
+                target: { actor: effectsTo.uuid, token: null },
+                roll: null,
+            };
+            if (effect.type === "effect") {
+                effect.system.duration = {
+                    value: -1,
+                    unit: "unlimited",
+                    expiry: null,
+                    sustained: false,
+                };
+            }
+            return effect;
+        });
+}
+
 function getChoiceSetSelection<T extends any = string>(
     item: ItemPF2e,
     { option, flag }: { option?: string; flag?: string } = {}
@@ -34,4 +88,13 @@ function getChoiceSetSelection<T extends any = string>(
     return rule?.selection as T | undefined;
 }
 
-export { extractModifierAdjustments, getChoiceSetSelection };
+interface ExtractEphemeralEffectsParams {
+    affects: "target" | "origin";
+    origin: ActorPF2e | null;
+    target: ActorPF2e | null;
+    item: ItemPF2e | null;
+    domains: string[];
+    options: Set<string> | string[];
+}
+
+export { extractEphemeralEffects, extractModifierAdjustments, getChoiceSetSelection };
