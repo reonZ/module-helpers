@@ -126,7 +126,7 @@ async function convertToCallOptions(options: Record<string, any>): Promise<Recor
                 if (
                     parseResult?.documentId &&
                     parseResult.type &&
-                    ["Item", "Actor", "Token"].includes(parseResult.type)
+                    ["Item", "Actor", "Token", "ChatMessage"].includes(parseResult.type)
                 ) {
                     callOptions[key] = await fromUuid(value);
                 } else {

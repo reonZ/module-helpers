@@ -104,7 +104,7 @@ async function convertToCallOptions(options) {
             const parseResult = foundry.utils.parseUuid(value);
             if (parseResult?.documentId &&
                 parseResult.type &&
-                ["Item", "Actor", "Token"].includes(parseResult.type)) {
+                ["Item", "Actor", "Token", "ChatMessage"].includes(parseResult.type)) {
                 callOptions[key] = await fromUuid(value);
             }
             else {
