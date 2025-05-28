@@ -45,6 +45,12 @@ async function extractEphemeralEffects({ affects, origin, target, item, domains,
         return effect;
     });
 }
+/**
+ * https://github.com/foundryvtt/pf2e/blob/5967df95d2645162d06d6ee317e99cf9aa03477e/src/module/rules/helpers.ts#L60
+ */
+function extractNotes(rollNotes, selectors) {
+    return selectors.flatMap((s) => (rollNotes[s] ?? []).map((n) => n.clone()));
+}
 function getChoiceSetSelection(item, { option, flag } = {}) {
     const rules = item._source.system.rules;
     const rule = rules.find((rule) => {
@@ -54,4 +60,4 @@ function getChoiceSetSelection(item, { option, flag } = {}) {
     });
     return rule?.selection;
 }
-export { extractEphemeralEffects, extractModifierAdjustments, getChoiceSetSelection };
+export { extractEphemeralEffects, extractModifierAdjustments, extractNotes, getChoiceSetSelection };
