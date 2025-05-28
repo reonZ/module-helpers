@@ -12,6 +12,7 @@ type WithSocketOptions<TOptions extends Record<string, any>> = Prettify<WithSock
 type Emitable<TOptions extends Record<string, any>> = {
     get enabled(): boolean;
     call: (options: WithSocketOptions<TOptions>) => Promise<void>;
+    emit: (options: WithSocketOptions<TOptions>) => void;
     activate(): void;
     disable(): void;
     toggle(enabled?: boolean): void;

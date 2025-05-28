@@ -48,6 +48,16 @@ function createEmitable(prefix, callback) {
         const callOptions = (await convertToCallOptions(packet));
         callback(callOptions, userId);
     };
+    const emit = (options) => {
+        if (!game.users.activeGM) {
+            ui.notifications.error(sharedLocalize("emiting.noGm"));
+            return;
+        }
+        displayEmiting();
+        const packet = convertToEmitOptions(options);
+        packet.__type__ = prefix;
+        socketEmit(packet);
+    };
     return {
         get enabled() {
             return _enabled;
@@ -60,16 +70,10 @@ function createEmitable(prefix, callback) {
                 return callback(callOptions, game.userId);
             }
             else {
-                if (!game.users.activeGM) {
-                    ui.notifications.error(sharedLocalize("emiting.noGm"));
-                    return;
-                }
-                displayEmiting();
-                const packet = convertToEmitOptions(options);
-                packet.__type__ = prefix;
-                socketEmit(packet);
+                emit(options);
             }
         },
+        emit,
         activate() {
             if (this.enabled || !userIsGM())
                 return;

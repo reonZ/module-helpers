@@ -64,6 +64,20 @@ function createEmitable<T extends Record<string, any>>(
         callback(callOptions, userId);
     };
 
+    const emit = (options: WithSocketOptions<T>) => {
+        if (!game.users.activeGM) {
+            ui.notifications.error(sharedLocalize("emiting.noGm"));
+            return;
+        }
+
+        displayEmiting();
+
+        const packet = convertToEmitOptions(options);
+        packet.__type__ = prefix;
+
+        socketEmit(packet);
+    };
+
     return {
         get enabled(): boolean {
             return _enabled;
@@ -75,19 +89,10 @@ function createEmitable<T extends Record<string, any>>(
                 const callOptions = (await convertToCallOptions(options)) as T;
                 return callback(callOptions, game.userId);
             } else {
-                if (!game.users.activeGM) {
-                    ui.notifications.error(sharedLocalize("emiting.noGm"));
-                    return;
-                }
-
-                displayEmiting();
-
-                const packet = convertToEmitOptions(options);
-                packet.__type__ = prefix;
-
-                socketEmit(packet);
+                emit(options);
             }
         },
+        emit,
         activate() {
             if (this.enabled || !userIsGM()) return;
             _enabled = true;
@@ -174,6 +179,7 @@ type WithSocketOptions<TOptions extends Record<string, any>> = Prettify<
 type Emitable<TOptions extends Record<string, any>> = {
     get enabled(): boolean;
     call: (options: WithSocketOptions<TOptions>) => Promise<void>;
+    emit: (options: WithSocketOptions<TOptions>) => void;
     activate(): void;
     disable(): void;
     toggle(enabled?: boolean): void;
