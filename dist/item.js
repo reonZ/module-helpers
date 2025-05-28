@@ -47,6 +47,8 @@ function findItemWithSourceId(actor, uuid, type) {
     return null;
 }
 async function getItemFromUuid(uuid) {
+    if (!uuid)
+        return null;
     const item = await fromUuid(uuid);
     return item instanceof Item ? item : null;
 }

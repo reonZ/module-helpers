@@ -79,7 +79,8 @@ function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     return null;
 }
 
-async function getItemFromUuid(uuid: string): Promise<ItemPF2e | null> {
+async function getItemFromUuid(uuid: Maybe<string>): Promise<ItemPF2e | null> {
+    if (!uuid) return null;
     const item = await fromUuid<ItemPF2e>(uuid);
     return item instanceof Item ? item : null;
 }
