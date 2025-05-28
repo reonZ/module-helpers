@@ -3,6 +3,7 @@ declare function actorsRespectAlliance(origin: ActorPF2e, target: ActorPF2e, all
 declare function hasRollOption(actor: ActorPF2e, option: string): boolean;
 declare function playersCanSeeName(actor: ActorPF2e, user?: Active<import("foundry-pf2e/pf2e/module/user/document.js").UserPF2e>): boolean;
 declare function isAllyActor(actor: ActorPF2e): boolean;
+declare function getActorFromUuid(uuid: Maybe<string>): Promise<ActorPF2e | null>;
 type ActorTargetAlliance = "all" | "allies" | "enemies";
-export { actorsRespectAlliance, hasRollOption, isAllyActor, playersCanSeeName };
+export { actorsRespectAlliance, hasRollOption, isAllyActor, getActorFromUuid, playersCanSeeName };
 export type { ActorTargetAlliance };

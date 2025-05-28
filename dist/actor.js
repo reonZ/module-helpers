@@ -19,4 +19,10 @@ function playersCanSeeName(actor, user = game.user) {
 function isAllyActor(actor) {
     return actor.alliance === "party" || actor.testUserPermission(game.user, "OBSERVER");
 }
-export { actorsRespectAlliance, hasRollOption, isAllyActor, playersCanSeeName };
+async function getActorFromUuid(uuid) {
+    if (!uuid)
+        return null;
+    const actor = await fromUuid(uuid);
+    return actor instanceof Actor ? actor : null;
+}
+export { actorsRespectAlliance, hasRollOption, isAllyActor, getActorFromUuid, playersCanSeeName };

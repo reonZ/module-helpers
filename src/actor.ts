@@ -31,7 +31,13 @@ function isAllyActor(actor: ActorPF2e) {
     return actor.alliance === "party" || actor.testUserPermission(game.user, "OBSERVER");
 }
 
+async function getActorFromUuid(uuid: Maybe<string>): Promise<ActorPF2e | null> {
+    if (!uuid) return null;
+    const actor = await fromUuid<ActorPF2e>(uuid);
+    return actor instanceof Actor ? actor : null;
+}
+
 type ActorTargetAlliance = "all" | "allies" | "enemies";
 
-export { actorsRespectAlliance, hasRollOption, isAllyActor, playersCanSeeName };
+export { actorsRespectAlliance, hasRollOption, isAllyActor, getActorFromUuid, playersCanSeeName };
 export type { ActorTargetAlliance };
