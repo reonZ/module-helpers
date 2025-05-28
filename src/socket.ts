@@ -2,7 +2,8 @@ import { assignStyle, MODULE, R, sharedLocalize, userIsGM } from ".";
 
 const EMITING_STYLE: Partial<CSSStyleDeclaration> = {
     alignItems: "center",
-    background: "linear-gradient(90deg, #00000000 0%, #00000099 50%, #00000000 100%)",
+    background:
+        "linear-gradient(90deg, #00000000 0%, #0000001a 20%, #00000066 50%, #0000001a 80%, #00000000 100%)",
     color: "#efe6d8c9",
     display: "flex",
     fontSize: "4em",
