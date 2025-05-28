@@ -58,6 +58,20 @@ function eventToRollMode(event) {
     return game.user.isGM ? "gmroll" : "blindroll";
 }
 /**
+ * https://github.com/foundryvtt/pf2e/blob/5967df95d2645162d06d6ee317e99cf9aa03477e/src/module/sheet/helpers.ts#L132
+ */
+function eventToRollParams(event, rollType) {
+    const key = rollType.type === "check" ? "showCheckDialogs" : "showDamageDialogs";
+    const skipDefault = !game.user.settings[key];
+    if (!isRelevantEvent(event))
+        return { skipDialog: skipDefault };
+    const params = { skipDialog: event.shiftKey ? !skipDefault : skipDefault };
+    if (event.ctrlKey || event.metaKey) {
+        params.rollMode = game.user.isGM ? "gmroll" : "blindroll";
+    }
+    return params;
+}
+/**
  * https://github.com/foundryvtt/pf2e/blob/f7d7441acbf856b490a4e0c0d799809cd6e3dc5d/src/module/system/text-editor.ts#L344
  */
 function parseInlineParams(paramString, options = {}) {
@@ -74,4 +88,4 @@ function parseInlineParams(paramString, options = {}) {
     }, {});
     return result;
 }
-export { ErrorPF2e, eventToRollMode, objectHasKey, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };
+export { ErrorPF2e, eventToRollMode, eventToRollParams, objectHasKey, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };

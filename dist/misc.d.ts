@@ -23,6 +23,12 @@ declare function objectHasKey<O extends object>(obj: O, key: unknown): key is ke
  */
 declare function eventToRollMode(event: Maybe<Event>): RollMode | "roll";
 /**
+ * https://github.com/foundryvtt/pf2e/blob/5967df95d2645162d06d6ee317e99cf9aa03477e/src/module/sheet/helpers.ts#L132
+ */
+declare function eventToRollParams(event: Maybe<Event>, rollType: {
+    type: "check" | "damage";
+}): ParamsFromEvent;
+/**
  * https://github.com/foundryvtt/pf2e/blob/f7d7441acbf856b490a4e0c0d799809cd6e3dc5d/src/module/system/text-editor.ts#L344
  */
 declare function parseInlineParams(paramString: string, options?: {
@@ -46,4 +52,8 @@ interface TraitViewData {
     /** The description of the trait */
     description: string | null;
 }
-export { ErrorPF2e, eventToRollMode, objectHasKey, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };
+type ParamsFromEvent = {
+    skipDialog: boolean;
+    rollMode?: RollMode | "roll";
+};
+export { ErrorPF2e, eventToRollMode, eventToRollParams, objectHasKey, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };
