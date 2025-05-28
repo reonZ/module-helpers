@@ -1,20 +1,19 @@
 import { assignStyle, MODULE, R, sharedLocalize, userIsGM } from ".";
 
 const EMITING_STYLE: Partial<CSSStyleDeclaration> = {
-    position: "absolute",
-    display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    background: "linear-gradient(90deg, #00000000 0%, #00000099 50%, #00000000 100%)",
+    color: "#efe6d8c9",
+    display: "flex",
     fontSize: "4em",
-    textShadow: "0 0 6px #000000",
-    color: "#e9e3e3",
     gap: "0.3em",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    background: "#00000094",
-    padding: "0.3em 0.5em",
-    borderRadius: "20px",
+    justifyContent: "center",
+    left: "0",
+    paddingBlock: "0.1em",
+    position: "absolute",
+    right: "0",
+    textShadow: "#000000 0px 0px 6px",
+    top: "10%",
     zIndex: "2147483647",
 };
 
