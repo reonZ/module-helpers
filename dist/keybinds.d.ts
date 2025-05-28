@@ -6,8 +6,8 @@ declare function createToggleKeybind(options: WithRequired<KeybindingActionConfi
         onUp: (context: KeyboardEventContext) => void;
         name: string;
         repeat?: boolean | undefined;
-        hint?: string | undefined;
         order?: number | undefined;
+        hint?: string | undefined;
         editable?: KeybindingActionBinding[] | undefined;
         namespace?: string | undefined;
         restricted?: boolean | undefined;

@@ -55,6 +55,10 @@ declare global {
     type WithPartial<T extends Record<string, any>, K extends keyof T> = Omit<T, K> &
         Partial<Pick<T, K>>;
 
+    type WithUndefined<T extends Record<string, any>, K extends keyof T> = Omit<T, K> & {
+        [k in K]: T[k] | undefined;
+    };
+
     type PartialExcept<T extends Record<string, any>, K extends keyof T> = Partial<Omit<T, K>> &
         Pick<T, K>;
 

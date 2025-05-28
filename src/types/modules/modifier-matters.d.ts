@@ -1,3 +1,5 @@
+import { ChatMessagePF2e } from "foundry-pf2e";
+
 export {};
 
 declare global {
@@ -11,4 +13,11 @@ declare global {
             value: number;
         };
     }
+
+    var pf2eMm: Maybe<{
+        checkIfChatMessageShouldHaveHighlights(msg: ChatMessagePF2e): boolean;
+        getSignificantModifiersOfMessage(
+            msg: Pick<ChatMessagePF2e, "flags" | "rolls" | "content" | "flavor">
+        ): modifiersMatter.SignificantModifier[];
+    }>;
 }
