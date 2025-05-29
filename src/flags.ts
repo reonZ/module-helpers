@@ -54,7 +54,7 @@ function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(
     doc: D,
     Model: ConstructorOf<T>,
     ...path: string[]
-): undefined | FlagDataModel<T, D> {
+): undefined | FlagData<T, D> {
     const flag = getFlag(doc, ...path);
     if (!R.isPlainObject(flag)) return;
 
@@ -63,8 +63,15 @@ function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(
         if (model.invalid) return;
 
         Object.defineProperty(model, "setFlag", {
-            value: function (): Promise<D> {
-                return setFlag(doc, ...path, model.toJSON());
+            value: function (): Promise<D | undefined> {
+                const source = model.toJSON();
+
+                if (!path.length) {
+                    return doc.update({ [`flags.==${MODULE.id}`]: source });
+                }
+
+                const lastKey = path.pop() as string;
+                return doc.update({ [flagPath(...path, `==${lastKey}`)]: source });
             },
             enumerable: false,
             writable: false,
@@ -87,7 +94,7 @@ function getDataFlagArray<T extends foundry.abstract.DataModel, D extends Docume
     doc: D,
     Model: ConstructorOf<T>,
     ...path: string[]
-): FlagDataModel<T[], D> | undefined {
+): FlagDataArray<T, D> | undefined {
     const flag = getFlag(doc, ...path);
     if (!R.isArray(flag)) return;
 
@@ -120,7 +127,11 @@ function getDataFlagArray<T extends foundry.abstract.DataModel, D extends Docume
     }
 }
 
-type FlagDataModel<T, D> = T & {
+type FlagData<T, D> = T & {
+    setFlag: () => Promise<D | undefined>;
+};
+
+type FlagDataArray<T, D> = T[] & {
     setFlag: () => Promise<D>;
 };
 
@@ -137,4 +148,4 @@ export {
     updateSourceFlag,
 };
 
-export type { FlagDataModel };
+export type { FlagData, FlagDataArray };

@@ -43,7 +43,12 @@ function getDataFlag(doc, Model, ...path) {
             return;
         Object.defineProperty(model, "setFlag", {
             value: function () {
-                return setFlag(doc, ...path, model.toJSON());
+                const source = model.toJSON();
+                if (!path.length) {
+                    return doc.update({ [`flags.==${MODULE.id}`]: source });
+                }
+                const lastKey = path.pop();
+                return doc.update({ [flagPath(...path, `==${lastKey}`)]: source });
             },
             enumerable: false,
             writable: false,
