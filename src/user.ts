@@ -1,4 +1,4 @@
-import { ActorPF2e, UserPF2e } from "foundry-pf2e";
+import { ActorPF2e, CreaturePF2e, UserPF2e } from "foundry-pf2e";
 
 function getCurrentUser(): UserPF2e {
     return game.user ?? game.data.users.find((x) => x._id === game.userId);
@@ -12,4 +12,17 @@ function isPrimaryUpdater(actor: ActorPF2e): boolean {
     return actor.primaryUpdater === game.user;
 }
 
-export { isPrimaryUpdater, userIsGM };
+function canObserveActor(actor: Maybe<ActorPF2e>, withParty: boolean = true) {
+    if (!actor) return false;
+
+    const user = game.user;
+    if (actor.testUserPermission(user, "OBSERVER")) return true;
+
+    return (
+        !!withParty &&
+        game.pf2e.settings.metagame.partyStats &&
+        (actor as CreaturePF2e).parties?.some((party) => party.testUserPermission(user, "LIMITED"))
+    );
+}
+
+export { canObserveActor, isPrimaryUpdater, userIsGM };
