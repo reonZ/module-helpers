@@ -1,3 +1,11 @@
+function registerUpstreamHook(event, listener, once) {
+    const id = Hooks[once ? "once" : "on"](event, listener);
+    const hook = Hooks.events[event].findSplice((x) => x.id === id);
+    if (hook) {
+        Hooks.events[event].unshift(hook);
+    }
+    return id;
+}
 function createHook(hook, listener) {
     const _ids = [];
     const _hook = Array.isArray(hook) ? hook : [hook];
@@ -76,4 +84,4 @@ function executeWhenReady(fn) {
         Hooks.once("ready", fn);
     }
 }
-export { createHook, createHookList, executeWhenReady };
+export { createHook, createHookList, executeWhenReady, registerUpstreamHook };

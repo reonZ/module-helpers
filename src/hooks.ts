@@ -1,3 +1,14 @@
+function registerUpstreamHook(event: string, listener: RegisterHookCallback, once?: boolean) {
+    const id = Hooks[once ? "once" : "on"](event, listener);
+    const hook = Hooks.events[event].findSplice((x) => x.id === id);
+
+    if (hook) {
+        Hooks.events[event].unshift(hook);
+    }
+
+    return id;
+}
+
 function createHook(hook: string | string[], listener: RegisterHookCallback): PersistentHook {
     const _ids: { id: number; path: string }[] = [];
     const _hook = Array.isArray(hook) ? hook : [hook];
@@ -92,5 +103,5 @@ type PersistentHook = {
 
 type RegisterHookCallback = (...args: any[]) => any;
 
-export { createHook, createHookList, executeWhenReady };
+export { createHook, createHookList, executeWhenReady, registerUpstreamHook };
 export type { PersistentHook };
