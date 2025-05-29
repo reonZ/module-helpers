@@ -1,11 +1,12 @@
 import { TokenDocumentPF2e, TokenPF2e } from "foundry-pf2e";
 import { isInstanceOf } from "./object";
 
-function selectTokens(tokens: TokenPF2e[]) {
+function selectTokens(tokens: (TokenPF2e | TokenDocumentPF2e)[]) {
     canvas.tokens.releaseAll();
 
-    for (const token of tokens) {
-        token.control({ releaseOthers: false });
+    for (const target of tokens) {
+        const token = target instanceof TokenDocument ? target.object : target;
+        token?.control({ releaseOthers: false });
     }
 }
 

@@ -1,8 +1,9 @@
 import { isInstanceOf } from "./object";
 function selectTokens(tokens) {
     canvas.tokens.releaseAll();
-    for (const token of tokens) {
-        token.control({ releaseOthers: false });
+    for (const target of tokens) {
+        const token = target instanceof TokenDocument ? target.object : target;
+        token?.control({ releaseOthers: false });
     }
 }
 function positionTokenFromCoords({ x, y }, token, snapped = true) {
