@@ -1,4 +1,8 @@
 import { createHTMLElement, htmlQuery, localize, localizeIfExist, MODULE, R } from ".";
+function isHoldingModifierKey(key) {
+    const keys = R.isArray(key) ? key : [key];
+    return keys.some((key) => game.keyboard.isModifierActive(key));
+}
 function registerKeybind(name, data) {
     game.keybindings.register(MODULE.id, name, {
         ...data,
@@ -75,4 +79,4 @@ function createToggleKeybind(options) {
         },
     };
 }
-export { createToggleKeybind, registerKeybind, registerModuleKeybinds };
+export { createToggleKeybind, isHoldingModifierKey, registerKeybind, registerModuleKeybinds };

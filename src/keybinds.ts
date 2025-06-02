@@ -1,5 +1,10 @@
 import { createHTMLElement, htmlQuery, localize, localizeIfExist, MODULE, R } from ".";
 
+function isHoldingModifierKey(key: ModifierKey | ModifierKey[]): boolean {
+    const keys = R.isArray(key) ? key : [key];
+    return keys.some((key) => game.keyboard.isModifierActive(key));
+}
+
 function registerKeybind(name: string, data: Partial<KeybindingActionConfig>) {
     game.keybindings.register(MODULE.id, name, {
         ...data,
@@ -103,4 +108,4 @@ type RenderControlsConfigCategory = {
     id: string;
 };
 
-export { createToggleKeybind, registerKeybind, registerModuleKeybinds };
+export { createToggleKeybind, isHoldingModifierKey, registerKeybind, registerModuleKeybinds };
