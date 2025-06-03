@@ -26,4 +26,7 @@ async function refreshLatestMessages(nb) {
         }
     }
 }
-export { latestChatMessages, refreshLatestMessages };
+function isSpellMessage(message) {
+    return message.getFlag("pf2e", "context.type") === "spell-cast";
+}
+export { isSpellMessage, latestChatMessages, refreshLatestMessages };
