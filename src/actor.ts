@@ -1,4 +1,4 @@
-import { ActorPF2e, CreaturePF2e } from "foundry-pf2e";
+import { ActorAlliance, ActorPF2e, CreaturePF2e } from "foundry-pf2e";
 import { R } from ".";
 
 function actorsRespectAlliance(
@@ -11,6 +11,10 @@ function actorsRespectAlliance(
         : alliance === "enemies"
         ? target.isEnemyOf(origin)
         : true;
+}
+
+function oppositeAlliance(alliance: ActorAlliance) {
+    return alliance === "party" ? "opposition" : alliance === "opposition" ? "party" : null;
 }
 
 function hasRollOption(actor: ActorPF2e, option: string) {
@@ -39,5 +43,12 @@ async function getActorFromUuid(uuid: Maybe<string>): Promise<ActorPF2e | null> 
 
 type ActorTargetAlliance = "all" | "allies" | "enemies";
 
-export { actorsRespectAlliance, hasRollOption, isAllyActor, getActorFromUuid, playersCanSeeName };
+export {
+    actorsRespectAlliance,
+    getActorFromUuid,
+    hasRollOption,
+    isAllyActor,
+    oppositeAlliance,
+    playersCanSeeName,
+};
 export type { ActorTargetAlliance };

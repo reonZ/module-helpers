@@ -1,9 +1,10 @@
-import { ActorPF2e } from "foundry-pf2e";
+import { ActorAlliance, ActorPF2e } from "foundry-pf2e";
 declare function actorsRespectAlliance(origin: ActorPF2e, target: ActorPF2e, alliance?: ActorTargetAlliance): boolean;
+declare function oppositeAlliance(alliance: ActorAlliance): "party" | "opposition" | null;
 declare function hasRollOption(actor: ActorPF2e, option: string): boolean;
 declare function playersCanSeeName(actor: ActorPF2e, user?: Active<import("foundry-pf2e/pf2e/module/user/document.js").UserPF2e>): boolean;
 declare function isAllyActor(actor: ActorPF2e): boolean;
 declare function getActorFromUuid(uuid: Maybe<string>): Promise<ActorPF2e | null>;
 type ActorTargetAlliance = "all" | "allies" | "enemies";
-export { actorsRespectAlliance, hasRollOption, isAllyActor, getActorFromUuid, playersCanSeeName };
+export { actorsRespectAlliance, getActorFromUuid, hasRollOption, isAllyActor, oppositeAlliance, playersCanSeeName, };
 export type { ActorTargetAlliance };

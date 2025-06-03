@@ -6,6 +6,9 @@ function actorsRespectAlliance(origin, target, alliance = "all") {
             ? target.isEnemyOf(origin)
             : true;
 }
+function oppositeAlliance(alliance) {
+    return alliance === "party" ? "opposition" : alliance === "opposition" ? "party" : null;
+}
 function hasRollOption(actor, option) {
     const rolloptionsDomains = R.values(actor.rollOptions);
     return rolloptionsDomains.some((rollOptions) => rollOptions[option]);
@@ -25,4 +28,4 @@ async function getActorFromUuid(uuid) {
     const actor = await fromUuid(uuid);
     return actor instanceof Actor ? actor : null;
 }
-export { actorsRespectAlliance, hasRollOption, isAllyActor, getActorFromUuid, playersCanSeeName };
+export { actorsRespectAlliance, getActorFromUuid, hasRollOption, isAllyActor, oppositeAlliance, playersCanSeeName, };
