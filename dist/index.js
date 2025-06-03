@@ -30,6 +30,7 @@ export * from "./pixi";
 export * from "./rules";
 export * from "./settings";
 export * from "./socket";
+export * from "./template";
 export * from "./text-editor";
 export * from "./token";
 export * from "./trade";
