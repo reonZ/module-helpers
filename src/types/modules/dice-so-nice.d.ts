@@ -8,10 +8,11 @@ declare global {
             roll: Roll | Rolled<Roll>,
             user?: User,
             synchronize?: boolean,
-            users?: (User | string)[],
+            users?: (User | string)[] | null,
             blind?: boolean,
             messageID?: string | null,
-            speaker?: foundry.documents.ChatSpeakerData | null
+            speaker?: foundry.documents.ChatSpeakerData | null,
+            options?: { ghost: boolean; secret: boolean }
         ): Promise<boolean>;
     }
 

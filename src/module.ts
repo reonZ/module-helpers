@@ -167,10 +167,32 @@ function addGameExpose(type: "api" | "dev", expose: Record<string, any>) {
     }
 }
 
+let _activeModules: Record<string, ExtendedModule | null> = {};
+function getActiveModule<T extends Module>(name: string): Maybe<ExtendedModule<T>> {
+    const exist = _activeModules[name] as Maybe<ExtendedModule<T>>;
+    if (exist !== undefined) {
+        return exist;
+    }
+
+    const module = game.modules.get<ExtendedModule>(name);
+    if (!module?.active) return;
+
+    module.getSetting = <T = boolean>(key: string) => game.settings.get(name, key) as T;
+    module.setSetting = <T>(key: string, value: T) => game.settings.set(name, key, value);
+
+    return (_activeModules[name] = module) as any;
+}
+
 type ModuleExposed = Record<"api" | "debug" | "dev", Record<string, any>>;
 
 type ModuleRegisterOptions = {
     game?: string;
 };
 
-export { MODULE };
+type ExtendedModule<TModule extends Module = Module> = TModule & {
+    getSetting<T = boolean>(key: string): T;
+    setSetting<T>(key: string, value: T): Promise<T>;
+};
+
+export { getActiveModule, MODULE };
+export type { ExtendedModule };

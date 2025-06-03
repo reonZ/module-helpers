@@ -154,4 +154,17 @@ function addGameExpose(type, expose) {
         _MODULE.expose[type][key] = value;
     }
 }
-export { MODULE };
+let _activeModules = {};
+function getActiveModule(name) {
+    const exist = _activeModules[name];
+    if (exist !== undefined) {
+        return exist;
+    }
+    const module = game.modules.get(name);
+    if (!module?.active)
+        return;
+    module.getSetting = (key) => game.settings.get(name, key);
+    module.setSetting = (key, value) => game.settings.set(name, key, value);
+    return (_activeModules[name] = module);
+}
+export { getActiveModule, MODULE };
