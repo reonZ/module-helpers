@@ -13,10 +13,10 @@ class ModuleDialog extends DialogV2 {
     }
     _replaceHTML(result, content, options) {
         super._replaceHTML(result, content, options);
-        content.style.minWidth = "400px";
+        content.style.minWidth = this.options.minWidth ?? "400px";
     }
 }
-async function waitDialog({ content, classes = [], data, focus, i18n, no, position = {}, onRender, skipAnimate, title, yes, }) {
+async function waitDialog({ classes = [], content, data, focus, i18n, minWidth, no, onRender, position = {}, returnOnFalse, skipAnimate, title, yes, }) {
     if (data) {
         data.i18n = templateLocalize(i18n);
     }
@@ -37,11 +37,17 @@ async function waitDialog({ content, classes = [], data, focus, i18n, no, positi
                 icon: no?.icon ?? "fa-solid fa-xmark",
                 label: no?.label ?? localizeIfExist(i18n, "no") ?? "Cancel",
                 default: !!no?.default,
-                callback: async () => false,
+                callback: async (event, btn, dialog) => {
+                    if (!returnOnFalse)
+                        return false;
+                    const data = createFormData(dialog.element);
+                    return data ? R.pick(data, returnOnFalse) : null;
+                },
             },
         ],
         classes,
         content: await generateDialogContent(content, i18n, data),
+        minWidth,
         position,
         skipAnimate,
         window: {
@@ -61,10 +67,11 @@ async function waitDialog({ content, classes = [], data, focus, i18n, no, positi
     };
     return ModuleDialog.wait(options);
 }
-async function confirmDialog(i18n, { classes = [], content, data = {}, no, position = {}, skipAnimate, title, yes, } = {}) {
+async function confirmDialog(i18n, { classes = [], content, data = {}, minWidth, no, position = {}, skipAnimate, title, yes, } = {}) {
     const options = {
         classes,
         content: await generateDialogContent(content ?? localize(i18n, "content", data), i18n),
+        minWidth,
         no: {
             default: !yes?.default,
             label: no ?? localizeIfExist(i18n, "no") ?? "No",

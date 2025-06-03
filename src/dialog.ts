@@ -35,23 +35,31 @@ class ModuleDialog extends DialogV2 {
 
     _replaceHTML(result: unknown, content: HTMLElement, options: ApplicationRenderOptions) {
         super._replaceHTML(result, content, options);
-        content.style.minWidth = "400px";
+        content.style.minWidth = this.options.minWidth ?? "400px";
     }
 }
 
-async function waitDialog<T extends Record<string, any>>({
-    content,
+async function waitDialog<T extends Record<string, any>>(
+    options: WaitDialogOptions & { returnOnFalse?: never }
+): Promise<T | false | null>;
+async function waitDialog<T extends Record<string, any>, K extends keyof T>(
+    options: WaitDialogOptions & { returnOnFalse: K[] }
+): Promise<T | Pick<T, K> | null>;
+async function waitDialog({
     classes = [],
+    content,
     data,
     focus,
     i18n,
+    minWidth,
     no,
-    position = {},
     onRender,
+    position = {},
+    returnOnFalse,
     skipAnimate,
     title,
     yes,
-}: WaitDialogOptions): Promise<T | false | null> {
+}: WaitDialogOptions & { returnOnFalse?: string[] }) {
     if (data) {
         data.i18n = templateLocalize(i18n);
     }
@@ -74,11 +82,17 @@ async function waitDialog<T extends Record<string, any>>({
                 icon: no?.icon ?? "fa-solid fa-xmark",
                 label: no?.label ?? localizeIfExist(i18n, "no") ?? "Cancel",
                 default: !!no?.default,
-                callback: async () => false,
+                callback: async (event, btn, dialog) => {
+                    if (!returnOnFalse) return false;
+
+                    const data = createFormData(dialog.element);
+                    return data ? R.pick(data, returnOnFalse) : null;
+                },
             },
         ],
         classes,
         content: await generateDialogContent(content, i18n, data),
+        minWidth,
         position,
         skipAnimate,
         window: {
@@ -106,6 +120,7 @@ async function confirmDialog(
         classes = [],
         content,
         data = {},
+        minWidth,
         no,
         position = {},
         skipAnimate,
@@ -116,6 +131,7 @@ async function confirmDialog(
     const options: ModuleDialogOptions<DialogConfirmOptions> = {
         classes,
         content: await generateDialogContent(content ?? localize(i18n, "content", data), i18n),
+        minWidth,
         no: {
             default: !yes?.default,
             label: no ?? localizeIfExist(i18n, "no") ?? "No",
@@ -157,16 +173,21 @@ interface ModuleDialog extends DialogV2 {
 type ModuleDialogConfiguration = ApplicationConfiguration &
     DialogV2Configuration & {
         skipAnimate?: boolean;
+        minWidth?: string;
     };
 
 type ModuleDialogOptions<T extends DeepPartial<ApplicationConfiguration & DialogV2Configuration>> =
-    T & { skipAnimate?: boolean };
+    T & {
+        skipAnimate?: boolean;
+        minWidth?: string;
+    };
 
 type BaseDialogOptions = {
     classes?: string[];
     data?: Record<string, any>;
     position?: Partial<ApplicationPosition>;
     skipAnimate?: boolean;
+    minWidth?: string;
     title?: string;
 };
 
