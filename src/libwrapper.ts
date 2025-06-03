@@ -35,34 +35,40 @@ function unregisterWrapper(id: number | number[]) {
 
 function createSharedWrapper<
     TDocument extends ClientDocument,
-    TListener extends libWrapper.RegisterCallback
+    TWrapperCallback extends libWrapper.RegisterCallback,
+    TListener extends (...args: any[]) => any
 >(
     type: Exclude<libWrapper.RegisterType, "OVERRIDE">,
     path: string,
     sharedCallback: (
         this: TDocument,
-        registered: (() => ReturnType<TListener>)[],
-        wrapped: libWrapper.RegisterCallback
+        registered: TListener[],
+        wrapped: () => ReturnType<TWrapperCallback>,
+        args: Parameters<TWrapperCallback>
     ) => void
 ) {
     let sharedId: number[] | null = null;
     const _registered = new Collection<SharedRegistered>();
 
-    function wrapper(this: TDocument, wrapped: libWrapper.RegisterCallback, ...args: any[]) {
-        const registered = R.pipe(
+    function wrapper(
+        this: TDocument,
+        wrapped: libWrapper.RegisterCallback,
+        ...wrapperArgs: Parameters<TWrapperCallback>
+    ) {
+        const registered: TListener[] = R.pipe(
             _registered.contents,
             R.sortBy(R.prop("priority")),
             R.filter(({ active }) => active),
-            R.map(({ listener, context }) => () => {
+            R.map(({ listener, context }): TListener => {
                 if (context) {
-                    return listener.call(context, this, ...args);
+                    return ((...args: any[]) => listener.call(context, this, ...args)) as TListener;
                 } else {
-                    return listener.call(this, ...args);
+                    return ((...args: any[]) => listener.call(this, ...args)) as TListener;
                 }
             })
         );
 
-        sharedCallback.call(this, registered, () => wrapped(...args));
+        return sharedCallback.call(this, registered, () => wrapped(...wrapperArgs), wrapperArgs);
     }
 
     const wrapperIsEnabled = () => {

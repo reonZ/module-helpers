@@ -24,16 +24,16 @@ function unregisterWrapper(id) {
 function createSharedWrapper(type, path, sharedCallback) {
     let sharedId = null;
     const _registered = new Collection();
-    function wrapper(wrapped, ...args) {
-        const registered = R.pipe(_registered.contents, R.sortBy(R.prop("priority")), R.filter(({ active }) => active), R.map(({ listener, context }) => () => {
+    function wrapper(wrapped, ...wrapperArgs) {
+        const registered = R.pipe(_registered.contents, R.sortBy(R.prop("priority")), R.filter(({ active }) => active), R.map(({ listener, context }) => {
             if (context) {
-                return listener.call(context, this, ...args);
+                return ((...args) => listener.call(context, this, ...args));
             }
             else {
-                return listener.call(this, ...args);
+                return ((...args) => listener.call(this, ...args));
             }
         }));
-        sharedCallback.call(this, registered, () => wrapped(...args));
+        return sharedCallback.call(this, registered, () => wrapped(...wrapperArgs), wrapperArgs);
     }
     const wrapperIsEnabled = () => {
         return _registered.some((x) => x.active);
