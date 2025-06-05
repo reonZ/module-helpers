@@ -108,4 +108,6 @@ declare global {
             ? `${Key}` | `${Key}.${CollapseOf<T[Key]>}`
             : `${Key}`;
     }[keyof T & string];
+
+    type Promisable<T> = Promise<T> | T;
 }
