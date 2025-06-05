@@ -46,6 +46,9 @@ function findItemWithSourceId(actor, uuid, type) {
     }
     return null;
 }
+function hasItemWithSourceId(actor, uuid, type) {
+    return !!findItemWithSourceId(actor, uuid, type);
+}
 async function getItemFromUuid(uuid, instance) {
     if (!uuid)
         return null;
@@ -161,4 +164,4 @@ async function consumeItem(event, item) {
 function getItemTypeLabel(type) {
     return game.i18n.localize(`TYPES.Item.${type}`);
 }
-export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, isCastConsumable, itemIsOfType, usePhysicalItem, };
+export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, itemIsOfType, usePhysicalItem, };

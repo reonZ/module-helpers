@@ -88,6 +88,10 @@ function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     return null;
 }
 
+function hasItemWithSourceId(actor: ActorPF2e, uuid: string, type?: ItemType): boolean {
+    return !!findItemWithSourceId(actor, uuid, type);
+}
+
 async function getItemFromUuid<T extends IsInstanceOfItem>(
     uuid: Maybe<string>,
     instance?: T
@@ -272,6 +276,7 @@ export {
     getItemSourceFromUuid,
     getItemSourceId,
     getItemTypeLabel,
+    hasItemWithSourceId,
     isCastConsumable,
     itemIsOfType,
     usePhysicalItem,

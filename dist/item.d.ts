@@ -2,6 +2,7 @@ import { ActorPF2e, ConsumablePF2e, EquipmentPF2e, ItemInstances, ItemPF2e, Item
 import { IsInstanceOfItem, IsInstanceOfItems } from ".";
 declare function actorItems<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, type?: TType | TType[]): Generator<ItemInstances<TActor>[TType]>;
 declare function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, uuid: string, type?: TType): ItemInstances<TActor>[TType] | null;
+declare function hasItemWithSourceId(actor: ActorPF2e, uuid: string, type?: ItemType): boolean;
 declare function getItemFromUuid<T extends IsInstanceOfItem>(uuid: Maybe<string>, instance?: T): Promise<IsInstanceOfItems[T] | null>;
 declare function getItemFromUuid(uuid: Maybe<string>, instance?: string): Promise<ItemPF2e | null>;
 declare function getItemSource<T extends ItemPF2e>(item: T, clearId?: boolean): T["_source"];
@@ -18,4 +19,4 @@ declare function isCastConsumable(item: ConsumablePF2e): boolean;
 declare function usePhysicalItem(event: Event, item: EquipmentPF2e<ActorPF2e> | ConsumablePF2e<ActorPF2e>): Promise<unknown>;
 declare function getItemTypeLabel(type: ItemType): string;
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
-export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, isCastConsumable, itemIsOfType, usePhysicalItem, };
+export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, itemIsOfType, usePhysicalItem, };
