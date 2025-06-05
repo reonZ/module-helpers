@@ -88,4 +88,13 @@ function parseInlineParams(paramString, options = {}) {
     }, {});
     return result;
 }
-export { ErrorPF2e, eventToRollMode, eventToRollParams, objectHasKey, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };
+let pluralRules;
+/**
+ * https://github.com/foundryvtt/pf2e/blob/5ebcd0359d1358bb00b76c47e7b84289239234b9/src/util/misc.ts#L226
+ */
+function ordinalString(value) {
+    pluralRules ??= new Intl.PluralRules(game.i18n.lang, { type: "ordinal" });
+    const suffix = game.i18n.localize(`PF2E.OrdinalSuffixes.${pluralRules.select(value)}`);
+    return game.i18n.format("PF2E.OrdinalNumber", { value, suffix });
+}
+export { ErrorPF2e, eventToRollMode, eventToRollParams, objectHasKey, ordinalString, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };

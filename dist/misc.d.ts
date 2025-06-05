@@ -34,6 +34,10 @@ declare function eventToRollParams(event: Maybe<Event>, rollType: {
 declare function parseInlineParams(paramString: string, options?: {
     first?: string;
 }): Record<string, string | undefined> | null;
+/**
+ * https://github.com/foundryvtt/pf2e/blob/5ebcd0359d1358bb00b76c47e7b84289239234b9/src/util/misc.ts#L226
+ */
+declare function ordinalString(value: number): string;
 interface SplitListStringOptions {
     delimiter?: string | RegExp;
     unique?: boolean;
@@ -56,4 +60,4 @@ type ParamsFromEvent = {
     skipDialog: boolean;
     rollMode?: RollMode | "roll";
 };
-export { ErrorPF2e, eventToRollMode, eventToRollParams, objectHasKey, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };
+export { ErrorPF2e, eventToRollMode, eventToRollParams, objectHasKey, ordinalString, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };
