@@ -158,4 +158,7 @@ async function consumeItem(event, item) {
         });
     }
 }
-export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, isCastConsumable, itemIsOfType, usePhysicalItem, };
+function getItemTypeLabel(type) {
+    return game.i18n.localize(`TYPES.Item.${type}`);
+}
+export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, isCastConsumable, itemIsOfType, usePhysicalItem, };

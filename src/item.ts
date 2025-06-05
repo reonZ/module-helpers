@@ -258,6 +258,10 @@ async function consumeItem(event: Event, item: ConsumablePF2e<ActorPF2e>) {
     }
 }
 
+function getItemTypeLabel(type: ItemType) {
+    return game.i18n.localize(`TYPES.Item.${type}`);
+}
+
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
 
 export {
@@ -267,6 +271,7 @@ export {
     getItemSource,
     getItemSourceFromUuid,
     getItemSourceId,
+    getItemTypeLabel,
     isCastConsumable,
     itemIsOfType,
     usePhysicalItem,
