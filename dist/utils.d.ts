@@ -8,4 +8,5 @@ declare function activateHooksAndWrappers(entries: (Wrapper | PersistentHook)[])
 declare function disableHooksAndWrappers(entries: (Wrapper | PersistentHook)[]): void;
 declare function toggleHooksAndWrappers(entries: (Wrapper | PersistentHook)[], enabled: boolean): void;
 declare function removeIndexFromArray<T extends any[]>(array: T, index: number, copy?: boolean): T;
-export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, removeIndexFromArray, roundToStep, toggleHooksAndWrappers, };
+declare function rollDie(faces: number, nb?: number): number;
+export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, removeIndexFromArray, rollDie, roundToStep, toggleHooksAndWrappers, };
