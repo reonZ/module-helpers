@@ -9,7 +9,16 @@ import {
     ItemType,
     PhysicalItemPF2e,
 } from "foundry-pf2e";
-import { createHTMLElementContent, getDamageRollClass, htmlQuery, R, setHasElement } from ".";
+import {
+    createHTMLElementContent,
+    getDamageRollClass,
+    htmlQuery,
+    isInstanceOf,
+    IsInstanceOfItem,
+    IsInstanceOfItems,
+    R,
+    setHasElement,
+} from ".";
 
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
@@ -79,10 +88,15 @@ function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     return null;
 }
 
-async function getItemFromUuid(uuid: Maybe<string>): Promise<ItemPF2e | null> {
+async function getItemFromUuid<T extends IsInstanceOfItem>(
+    uuid: Maybe<string>,
+    instance?: T
+): Promise<IsInstanceOfItems[T] | null>;
+async function getItemFromUuid(uuid: Maybe<string>, instance?: string): Promise<ItemPF2e | null>;
+async function getItemFromUuid(uuid: Maybe<string>, instance?: string) {
     if (!uuid) return null;
     const item = await fromUuid<ItemPF2e>(uuid);
-    return item instanceof Item ? item : null;
+    return item instanceof Item && (!instance || isInstanceOf(item, instance)) ? item : null;
 }
 
 function getItemSource<T extends ItemPF2e>(item: T, clearId?: boolean): T["_source"] {
@@ -98,8 +112,16 @@ function getItemSource<T extends ItemPF2e>(item: T, clearId?: boolean): T["_sour
     return source;
 }
 
-async function getItemSourceFromUuid(uuid: string): Promise<ItemSourcePF2e | null> {
-    const item = await getItemFromUuid(uuid);
+async function getItemSourceFromUuid<T extends IsInstanceOfItem>(
+    uuid: string,
+    instance?: T
+): Promise<IsInstanceOfItems[T]["_source"] | null>;
+async function getItemSourceFromUuid(
+    uuid: string,
+    instance?: string
+): Promise<ItemSourcePF2e | null>;
+async function getItemSourceFromUuid(uuid: string, instance?: string) {
+    const item = await getItemFromUuid(uuid, instance);
     return !!item ? getItemSource(item) : null;
 }
 

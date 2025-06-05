@@ -22,4 +22,6 @@ type IsInstanceOfItems = {
     SpellcastingEntryPF2e: SpellcastingEntryPF2e;
     SpellPF2e: SpellPF2e;
 };
+type IsInstanceOfItem = keyof IsInstanceOfItems;
 export { isInstanceOf };
+export type { IsInstanceOfItem, IsInstanceOfItems };

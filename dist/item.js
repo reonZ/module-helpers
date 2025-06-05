@@ -1,4 +1,4 @@
-import { createHTMLElementContent, getDamageRollClass, htmlQuery, R, setHasElement } from ".";
+import { createHTMLElementContent, getDamageRollClass, htmlQuery, isInstanceOf, R, setHasElement, } from ".";
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
  */
@@ -46,11 +46,11 @@ function findItemWithSourceId(actor, uuid, type) {
     }
     return null;
 }
-async function getItemFromUuid(uuid) {
+async function getItemFromUuid(uuid, instance) {
     if (!uuid)
         return null;
     const item = await fromUuid(uuid);
-    return item instanceof Item ? item : null;
+    return item instanceof Item && (!instance || isInstanceOf(item, instance)) ? item : null;
 }
 function getItemSource(item, clearId) {
     const source = item.toObject();
@@ -61,8 +61,8 @@ function getItemSource(item, clearId) {
     }
     return source;
 }
-async function getItemSourceFromUuid(uuid) {
-    const item = await getItemFromUuid(uuid);
+async function getItemSourceFromUuid(uuid, instance) {
+    const item = await getItemFromUuid(uuid, instance);
     return !!item ? getItemSource(item) : null;
 }
 function getItemSourceId(item) {
