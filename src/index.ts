@@ -35,6 +35,7 @@ export * from "./skill";
 export * from "./socket";
 export * from "./spell";
 export * from "./spell-consumable";
+export * from "./spellcasting";
 export * from "./template";
 export * from "./text-editor";
 export * from "./token";
