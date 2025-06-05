@@ -8,4 +8,7 @@ function getSpellRankLabel(group) {
         ? game.i18n.localize("PF2E.Actor.Creature.Spellcasting.Cantrips")
         : game.i18n.format("PF2E.Item.Spell.Rank.Ordinal", { rank: ordinalString(group) });
 }
-export { getSpellRankLabel, MAGIC_TRADITIONS };
+function getActorMaxRank(actor) {
+    return Math.max(1, Math.ceil(actor.level / 2));
+}
+export { getActorMaxRank, getSpellRankLabel, MAGIC_TRADITIONS };

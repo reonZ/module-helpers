@@ -1,3 +1,4 @@
+import { CreaturePF2e, OneToTen } from "foundry-pf2e";
 import { ordinalString } from ".";
 
 const MAGIC_TRADITIONS = new Set(["arcane", "divine", "occult", "primal"] as const);
@@ -11,4 +12,8 @@ function getSpellRankLabel(group: "cantrips" | number): string {
         : game.i18n.format("PF2E.Item.Spell.Rank.Ordinal", { rank: ordinalString(group) });
 }
 
-export { getSpellRankLabel, MAGIC_TRADITIONS };
+function getActorMaxRank(actor: CreaturePF2e): OneToTen {
+    return Math.max(1, Math.ceil(actor.level / 2)) as OneToTen;
+}
+
+export { getActorMaxRank, getSpellRankLabel, MAGIC_TRADITIONS };
