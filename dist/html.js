@@ -127,4 +127,11 @@ function firstElementWithText(el) {
     }
     return null;
 }
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, firstElementWithText, htmlClosest, htmlQuery, htmlQueryAll, };
+function getInputValue(el) {
+    return el.nodeName === "RANGE-PICKER" || ["number", "range"].includes(el.type)
+        ? el.valueAsNumber
+        : el.type === "checkbox"
+            ? el.checked
+            : el.value.trim();
+}
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, };

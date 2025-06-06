@@ -21,6 +21,7 @@ declare function assignStyle(el: HTMLElement, style: Partial<CSSStyleDeclaration
 declare function dataToDatasetString(data: DatasetData): string;
 declare function datasetToData<T extends Record<string, any>>(dataset: DOMStringMap): T;
 declare function firstElementWithText(el: Maybe<Element>): HTMLElement | null;
+declare function getInputValue(el: HTMLInputElement): string | number | boolean;
 interface CreateHTMLElementOptions {
     classes?: string[];
     content?: string | HTMLCollection | (Element | string)[] | Element;
@@ -33,5 +34,5 @@ type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
 type ListenerCallbackArgs<E extends HTMLElement, TEvent extends EventType> = [TEvent, ListenerCallback<E, TEvent>, boolean] | [TEvent, ListenerCallback<E, TEvent>] | [ListenerCallback<E, TEvent>, boolean] | [ListenerCallback<E, TEvent>];
 type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = (element: TElement, event: HTMLElementEventMap[TEvent]) => void;
 type IterableSelectOptions = SelectOption | string | FormSelectOption;
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, firstElementWithText, htmlClosest, htmlQuery, htmlQueryAll, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, };
 export type { DatasetData, DatasetValue, IterableSelectOptions };

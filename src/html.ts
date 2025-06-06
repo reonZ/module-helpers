@@ -226,6 +226,14 @@ function firstElementWithText(el: Maybe<Element>): HTMLElement | null {
     return null;
 }
 
+function getInputValue(el: HTMLInputElement) {
+    return el.nodeName === "RANGE-PICKER" || ["number", "range"].includes(el.type)
+        ? el.valueAsNumber
+        : el.type === "checkbox"
+        ? el.checked
+        : el.value.trim();
+}
+
 interface CreateHTMLElementOptions {
     classes?: string[];
     content?: string | HTMLCollection | (Element | string)[] | Element;
@@ -260,6 +268,7 @@ export {
     datasetToData,
     dataToDatasetString,
     firstElementWithText,
+    getInputValue,
     htmlClosest,
     htmlQuery,
     htmlQueryAll,
