@@ -5,9 +5,9 @@ declare function createToggleKeybind(options: WithRequired<KeybindingActionConfi
     configs: {
         onDown: (context: KeyboardEventContext) => void;
         onUp: (context: KeyboardEventContext) => void;
-        order?: number | undefined;
-        name: string;
         repeat?: boolean | undefined;
+        name: string;
+        order?: number | undefined;
         hint?: string | undefined;
         editable?: KeybindingActionBinding[] | undefined;
         namespace?: string | undefined;

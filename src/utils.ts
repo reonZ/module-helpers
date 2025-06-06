@@ -65,15 +65,25 @@ function stringBoolean(b: boolean | string): `${boolean}` {
     return String(b) as `${boolean}`;
 }
 
+function localeCompare(a: string, b: string) {
+    return a.localeCompare(b, game.i18n.lang);
+}
+
+function sortByLocaleCompare<T extends Record<string, any>>(list: Array<T>, key: keyof T) {
+    list.sort((a, b) => localeCompare(a[key], b[key]));
+}
+
 export {
     activateHooksAndWrappers,
     arraysEqual,
     disableHooksAndWrappers,
     isDecimal,
     joinStr,
+    localeCompare,
     removeIndexFromArray,
     rollDie,
     roundToStep,
+    sortByLocaleCompare,
     stringBoolean,
     toggleHooksAndWrappers,
 };

@@ -48,4 +48,10 @@ function rollDie(faces, nb = 1) {
 function stringBoolean(b) {
     return String(b);
 }
-export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, removeIndexFromArray, rollDie, roundToStep, stringBoolean, toggleHooksAndWrappers, };
+function localeCompare(a, b) {
+    return a.localeCompare(b, game.i18n.lang);
+}
+function sortByLocaleCompare(list, key) {
+    list.sort((a, b) => localeCompare(a[key], b[key]));
+}
+export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, localeCompare, removeIndexFromArray, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, toggleHooksAndWrappers, };

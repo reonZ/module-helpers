@@ -10,4 +10,6 @@ declare function toggleHooksAndWrappers(entries: (Wrapper | PersistentHook)[], e
 declare function removeIndexFromArray<T extends any[]>(array: T, index: number, copy?: boolean): T;
 declare function rollDie(faces: number, nb?: number): number;
 declare function stringBoolean(b: boolean | string): `${boolean}`;
-export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, removeIndexFromArray, rollDie, roundToStep, stringBoolean, toggleHooksAndWrappers, };
+declare function localeCompare(a: string, b: string): number;
+declare function sortByLocaleCompare<T extends Record<string, any>>(list: Array<T>, key: keyof T): void;
+export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, localeCompare, removeIndexFromArray, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, toggleHooksAndWrappers, };
