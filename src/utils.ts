@@ -65,6 +65,10 @@ function stringBoolean(b: boolean | string): `${boolean}` {
     return String(b) as `${boolean}`;
 }
 
+function stringNumber(b: number | string): `${number}` {
+    return String(b) as `${number}`;
+}
+
 function localeCompare(a: string, b: string) {
     return a.localeCompare(b, game.i18n.lang);
 }
@@ -85,5 +89,6 @@ export {
     roundToStep,
     sortByLocaleCompare,
     stringBoolean,
+    stringNumber,
     toggleHooksAndWrappers,
 };
