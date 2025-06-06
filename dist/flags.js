@@ -12,6 +12,9 @@ function setFlag(doc, ...args) {
 function unsetFlag(doc, ...path) {
     return doc.unsetFlag(MODULE.id, path.join("."));
 }
+function updateFlag(doc, updates) {
+    return doc.update({ flags: { [MODULE.id]: updates } });
+}
 function getFlagProperty(obj, ...path) {
     return foundry.utils.getProperty(obj, flagPath(...path));
 }
@@ -85,4 +88,4 @@ function getDataFlagArray(doc, Model, ...path) {
         MODULE.error(`An error occured while trying the create a an array of '${name}' DataModel at path: '${joinPath}'`, error);
     }
 }
-export { deleteFlagProperty, getDataFlag, getDataFlagArray, getFlag, getFlagProperty, setFlag, setFlagProperties, setFlagProperty, unsetFlag, updateSourceFlag, };
+export { deleteFlagProperty, getDataFlag, getDataFlagArray, getFlag, getFlagProperty, setFlag, setFlagProperties, setFlagProperty, unsetFlag, updateFlag, updateSourceFlag, };
