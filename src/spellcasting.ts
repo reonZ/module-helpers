@@ -1,6 +1,9 @@
 import {
     AttributeString,
+    CharacterPF2e,
+    CreaturePF2e,
     MagicTradition,
+    NPCPF2e,
     OneToTen,
     SlotKey,
     SpellcastingCategory,
@@ -10,6 +13,7 @@ import {
     ZeroToFour,
     ZeroToTen,
 } from "foundry-pf2e";
+import { R } from ".";
 
 function createSpellcastingSource({
     name,
@@ -48,6 +52,95 @@ function createSpellcastingSource({
     };
 }
 
+function getHighestSpellcastingStatistic(actor: NPCPF2e | CharacterPF2e) {
+    const entries = (actor as CreaturePF2e).spellcasting?.spellcastingFeatures;
+    if (!entries?.length) return;
+
+    const classAttribute = actor.isOfType("character") ? actor.classDC?.attribute : null;
+    const groupedEntries = R.groupBy(entries, (entry) => entry.statistic.mod);
+
+    const highestMod = R.pipe(
+        groupedEntries,
+        R.keys(),
+        R.sortBy([(x) => Number(x), "desc"]),
+        R.first()
+    );
+
+    const highestResults = groupedEntries[Number(highestMod)].map((entry) => ({
+        tradition: entry.tradition,
+        statistic: entry.statistic,
+    }));
+
+    if (highestResults.length === 1 || !classAttribute) {
+        return highestResults[0];
+    }
+
+    return (
+        highestResults.find((entry) => entry.statistic.attribute === classAttribute) ||
+        highestResults[0]
+    );
+}
+
+function getHighestSyntheticStatistic(actor: NPCPF2e | CharacterPF2e, withClassDcs = true) {
+    const isCharacter = actor.isOfType("character");
+    const synthetics = Array.from(actor.synthetics.statistics.values());
+    const statistics =
+        withClassDcs && isCharacter
+            ? [...synthetics, ...Object.values(actor.classDCs)]
+            : synthetics;
+
+    if (!statistics.length) return;
+
+    const classStatistic = isCharacter ? actor.classDC : null;
+    const groupedStatistics = R.groupBy(statistics, R.prop("mod"));
+    const highestMod = R.pipe(
+        R.keys(groupedStatistics),
+        R.firstBy([R.identity(), "desc"])
+    ) as unknown as number;
+
+    if (classStatistic && highestMod && classStatistic.mod === highestMod) {
+        return classStatistic;
+    }
+
+    return groupedStatistics[highestMod][0];
+}
+
+function createSpellcastingWithHighestStatisticSource(
+    actor: NPCPF2e | CharacterPF2e,
+    {
+        name,
+        category,
+        flags,
+        showSlotlessRanks,
+        sort,
+        withClassDcs,
+    }: CreateSpellcastingSourceWithHighestStatistic
+) {
+    const highestEntry = getHighestSpellcastingStatistic(actor);
+    const highestSynthetic = getHighestSyntheticStatistic(actor, withClassDcs);
+
+    const [tradition, statistic] =
+        highestEntry && (!highestSynthetic || highestEntry.statistic.mod >= highestSynthetic.mod)
+            ? [highestEntry.tradition, highestEntry.statistic]
+            : highestSynthetic
+            ? [null, highestSynthetic]
+            : [null, null];
+
+    if (!statistic) return;
+
+    return createSpellcastingSource({
+        name,
+        sort,
+        flags,
+        category,
+        showSlotlessRanks,
+        tradition: tradition ?? "arcane",
+        attribute: statistic.attribute,
+        proficiencyRank: statistic.rank ?? 1,
+        proficiencySlug: statistic === highestSynthetic ? statistic.slug : undefined,
+    });
+}
+
 function getSpellcastingMaxRank(entry: SpellcastingEntryPF2e, rankLimit: OneToTen = 10) {
     const slots = entry.system.slots;
     const limit = Math.clamp(rankLimit, 1, 10) as OneToTen;
@@ -82,5 +175,16 @@ type CreateSpellcastingSource = {
     flags?: Record<string, any>;
 };
 
-export { createSpellcastingSource, getSpellcastingMaxRank };
+type CreateSpellcastingSourceWithHighestStatistic = Omit<
+    CreateSpellcastingSource,
+    "attribute" | "proficiencyRank" | "proficiencySlug" | "tradition"
+> & {
+    withClassDcs?: boolean;
+};
+
+export {
+    createSpellcastingSource,
+    createSpellcastingWithHighestStatisticSource,
+    getSpellcastingMaxRank,
+};
 export type { CreatedSpellcastingEntrySource, CreateSpellcastingSource };

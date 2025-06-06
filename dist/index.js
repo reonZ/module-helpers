@@ -6,6 +6,7 @@ export * from "./application";
 export * from "./chat";
 export * from "./check";
 export * from "./combat";
+export * from "./compendium";
 export * from "./damage";
 export * from "./degree-of-success";
 export * from "./dialog";
