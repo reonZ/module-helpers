@@ -16,4 +16,4 @@ type CreateSpellcastingSource = {
     flags?: Record<string, any>;
 };
 export { createSpellcastingSource, getSpellcastingMaxRank };
-export type { CreateSpellcastingSource };
+export type { CreatedSpellcastingEntrySource, CreateSpellcastingSource };

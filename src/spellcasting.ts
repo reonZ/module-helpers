@@ -83,4 +83,4 @@ type CreateSpellcastingSource = {
 };
 
 export { createSpellcastingSource, getSpellcastingMaxRank };
-export type { CreateSpellcastingSource };
+export type { CreatedSpellcastingEntrySource, CreateSpellcastingSource };
