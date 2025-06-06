@@ -1,13 +1,4 @@
-import { ApplicationConfiguration } from "foundry-pf2e/foundry/client-esm/applications/_types.js";
-import { isInstanceOf, localize, LocalizeArgs, R } from ".";
-
-function setApplicationTitle(
-    options: DeepPartial<ApplicationConfiguration>,
-    ...args: LocalizeArgs
-) {
-    const title = localize(...args);
-    foundry.utils.setProperty(options, "window.title", title);
-}
+import { isInstanceOf, R } from ".";
 
 function renderApplications(type: string | string[]) {
     const types = Array.isArray(type) ? type : [type];
@@ -36,4 +27,4 @@ type ItemSheetType =
     | "ItemSheetPF2e"
     | "SpellSheetPF2e";
 
-export { renderCharacterSheets, renderItemSheets, setApplicationTitle };
+export { renderCharacterSheets, renderItemSheets };
