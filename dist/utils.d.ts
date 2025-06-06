@@ -9,4 +9,5 @@ declare function disableHooksAndWrappers(entries: (Wrapper | PersistentHook)[]):
 declare function toggleHooksAndWrappers(entries: (Wrapper | PersistentHook)[], enabled: boolean): void;
 declare function removeIndexFromArray<T extends any[]>(array: T, index: number, copy?: boolean): T;
 declare function rollDie(faces: number, nb?: number): number;
-export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, removeIndexFromArray, rollDie, roundToStep, toggleHooksAndWrappers, };
+declare function stringBoolean(b: boolean | string): `${boolean}`;
+export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, removeIndexFromArray, rollDie, roundToStep, stringBoolean, toggleHooksAndWrappers, };

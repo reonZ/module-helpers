@@ -61,6 +61,10 @@ function rollDie(faces: number, nb = 1) {
     return total;
 }
 
+function stringBoolean(b: boolean | string): `${boolean}` {
+    return String(b) as `${boolean}`;
+}
+
 export {
     activateHooksAndWrappers,
     arraysEqual,
@@ -70,5 +74,6 @@ export {
     removeIndexFromArray,
     rollDie,
     roundToStep,
+    stringBoolean,
     toggleHooksAndWrappers,
 };

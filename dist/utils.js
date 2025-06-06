@@ -45,4 +45,7 @@ function rollDie(faces, nb = 1) {
     }
     return total;
 }
-export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, removeIndexFromArray, rollDie, roundToStep, toggleHooksAndWrappers, };
+function stringBoolean(b) {
+    return String(b);
+}
+export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, isDecimal, joinStr, removeIndexFromArray, rollDie, roundToStep, stringBoolean, toggleHooksAndWrappers, };
