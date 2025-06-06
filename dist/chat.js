@@ -29,4 +29,15 @@ async function refreshLatestMessages(nb) {
 function isSpellMessage(message) {
     return message.getFlag("pf2e", "context.type") === "spell-cast";
 }
-export { isSpellMessage, latestChatMessages, refreshLatestMessages };
+function createChatLink(docOrUuid, { label, html } = {}) {
+    const isDocument = docOrUuid instanceof foundry.abstract.Document;
+    if (!label && isDocument) {
+        label = docOrUuid.name ?? undefined;
+    }
+    let link = `@UUID[${isDocument ? docOrUuid.uuid : docOrUuid}]`;
+    if (label) {
+        link = `${link}{${label}}`;
+    }
+    return html ? TextEditor.enrichHTML(link) : link;
+}
+export { createChatLink, isSpellMessage, latestChatMessages, refreshLatestMessages };
