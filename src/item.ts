@@ -278,6 +278,7 @@ export {
     getItemTypeLabel,
     hasItemWithSourceId,
     isCastConsumable,
+    isSupressedFeat,
     itemIsOfType,
     usePhysicalItem,
 };
