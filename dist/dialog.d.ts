@@ -37,6 +37,7 @@ type WaitDialogOptions = BaseDialogOptions & {
     yes?: {
         label?: string;
         icon?: string;
+        callback?: foundry.applications.api.DialogV2ButtonCallback;
     };
 };
 export { confirmDialog, waitDialog };

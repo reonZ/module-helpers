@@ -28,9 +28,10 @@ async function waitDialog({ classes = [], content, data, focus, i18n, minWidth, 
                 icon: yes?.icon ?? "fa-solid fa-check",
                 label: yes?.label ?? localize(i18n, "yes"),
                 default: !no?.default,
-                callback: async (event, btn, dialog) => {
-                    return createFormData(dialog.element);
-                },
+                callback: yes?.callback ??
+                    (async (event, btn, dialog) => {
+                        return createFormData(dialog.element);
+                    }),
             },
             {
                 action: "no",

@@ -73,9 +73,11 @@ async function waitDialog({
                 icon: yes?.icon ?? "fa-solid fa-check",
                 label: yes?.label ?? localize(i18n, "yes"),
                 default: !no?.default,
-                callback: async (event, btn, dialog) => {
-                    return createFormData(dialog.element);
-                },
+                callback:
+                    yes?.callback ??
+                    (async (event, btn, dialog) => {
+                        return createFormData(dialog.element);
+                    }),
             },
             {
                 action: "no",
@@ -203,7 +205,11 @@ type WaitDialogOptions = BaseDialogOptions & {
     i18n: string;
     no?: { label?: string; icon?: string; default?: true };
     onRender?: DialogV2RenderCallback;
-    yes?: { label?: string; icon?: string };
+    yes?: {
+        label?: string;
+        icon?: string;
+        callback?: foundry.applications.api.DialogV2ButtonCallback;
+    };
 };
 
 export { confirmDialog, waitDialog };
