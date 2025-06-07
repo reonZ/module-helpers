@@ -59,7 +59,7 @@ function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null {
 function htmlQueryAll<K extends keyof HTMLElementTagNameMap>(
     parent: MaybeHTML,
     selectors: K
-): HTMLElementTagNameMap[K];
+): HTMLElementTagNameMap[K][];
 function htmlQueryAll<E extends HTMLElement = HTMLElement>(
     parent: MaybeHTML,
     selectors: string
