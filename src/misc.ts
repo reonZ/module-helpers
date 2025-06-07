@@ -127,6 +127,16 @@ function ordinalString(value: number): string {
     return game.i18n.format("PF2E.OrdinalNumber", { value, suffix });
 }
 
+/**
+ * https://github.com/foundryvtt/pf2e/blob/895e512a3346ae9e7eeafbc59fdbac1b68651afa/src/util/misc.ts#L352
+ */
+function localizer(prefix: string): (...args: Parameters<Localization["format"]>) => string {
+    return (...[suffix, formatArgs]: Parameters<Localization["format"]>) =>
+        formatArgs
+            ? game.i18n.format(`${prefix}.${suffix}`, formatArgs)
+            : game.i18n.localize(`${prefix}.${suffix}`);
+}
+
 interface SplitListStringOptions {
     delimiter?: string | RegExp;
     unique?: boolean;
@@ -153,6 +163,7 @@ export {
     ErrorPF2e,
     eventToRollMode,
     eventToRollParams,
+    localizer,
     objectHasKey,
     ordinalString,
     parseInlineParams,

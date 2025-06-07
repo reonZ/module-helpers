@@ -38,6 +38,10 @@ declare function parseInlineParams(paramString: string, options?: {
  * https://github.com/foundryvtt/pf2e/blob/5ebcd0359d1358bb00b76c47e7b84289239234b9/src/util/misc.ts#L226
  */
 declare function ordinalString(value: number): string;
+/**
+ * https://github.com/foundryvtt/pf2e/blob/895e512a3346ae9e7eeafbc59fdbac1b68651afa/src/util/misc.ts#L352
+ */
+declare function localizer(prefix: string): (...args: Parameters<Localization["format"]>) => string;
 interface SplitListStringOptions {
     delimiter?: string | RegExp;
     unique?: boolean;
@@ -60,4 +64,4 @@ type ParamsFromEvent = {
     skipDialog: boolean;
     rollMode?: RollMode | "roll";
 };
-export { ErrorPF2e, eventToRollMode, eventToRollParams, objectHasKey, ordinalString, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };
+export { ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };

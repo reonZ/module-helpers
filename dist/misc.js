@@ -97,4 +97,12 @@ function ordinalString(value) {
     const suffix = game.i18n.localize(`PF2E.OrdinalSuffixes.${pluralRules.select(value)}`);
     return game.i18n.format("PF2E.OrdinalNumber", { value, suffix });
 }
-export { ErrorPF2e, eventToRollMode, eventToRollParams, objectHasKey, ordinalString, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };
+/**
+ * https://github.com/foundryvtt/pf2e/blob/895e512a3346ae9e7eeafbc59fdbac1b68651afa/src/util/misc.ts#L352
+ */
+function localizer(prefix) {
+    return (...[suffix, formatArgs]) => formatArgs
+        ? game.i18n.format(`${prefix}.${suffix}`, formatArgs)
+        : game.i18n.localize(`${prefix}.${suffix}`);
+}
+export { ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };
