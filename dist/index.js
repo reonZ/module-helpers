@@ -10,7 +10,7 @@ export * from "./compendium";
 export * from "./damage";
 export * from "./degree-of-success";
 export * from "./dialog";
-export * from "./difficulty-check";
+export * from "./difficulty-class";
 export * from "./document";
 export * from "./effect";
 export * from "./flags";
