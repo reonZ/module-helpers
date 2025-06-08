@@ -38,6 +38,7 @@ export * from "./spell-consumable";
 export * from "./spellcasting";
 export * from "./template";
 export * from "./text-editor";
+export * from "./time";
 export * from "./token";
 export * from "./trade";
 export * from "./trade-dialog";
