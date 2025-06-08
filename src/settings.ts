@@ -218,7 +218,7 @@ type RegisterSettingOptions = Omit<
     gmOnly?: boolean;
     name?: string;
     scope: "world" | "user";
-    choices?: Record<string, string> | string[];
+    choices?: Record<string, string> | string[] | ReadonlyArray<string>;
     onChange?: (value: any, operation: object, userId: string) => void | Promise<void>;
 };
 

@@ -25,7 +25,7 @@ type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope" | "onCh
     gmOnly?: boolean;
     name?: string;
     scope: "world" | "user";
-    choices?: Record<string, string> | string[];
+    choices?: Record<string, string> | string[] | ReadonlyArray<string>;
     onChange?: (value: any, operation: object, userId: string) => void | Promise<void>;
 };
 type RegisterSettingMenuOptions = PartialExcept<SettingSubmenuConfig, "type" | "restricted">;
