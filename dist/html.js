@@ -1,4 +1,27 @@
 import { R } from ".";
+function createGlobalEvent(event, listener, options) {
+    let enabled = false;
+    return {
+        activate() {
+            if (enabled)
+                return;
+            document.addEventListener(event, listener, options);
+            enabled = true;
+        },
+        disable() {
+            if (!enabled)
+                return;
+            document.removeEventListener(event, listener, options);
+            enabled = false;
+        },
+        toggle(enabled) {
+            if (enabled)
+                this.activate();
+            else
+                this.disable();
+        },
+    };
+}
 function createHTMLElement(nodeName, { classes = [], dataset = {}, content, id, style } = {}) {
     const element = document.createElement(nodeName);
     if (element instanceof HTMLButtonElement) {
@@ -134,4 +157,4 @@ function getInputValue(el) {
             ? el.checked
             : el.value.trim();
 }
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createGlobalEvent, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, };
