@@ -42,6 +42,13 @@ declare function ordinalString(value: number): string;
  * https://github.com/foundryvtt/pf2e/blob/895e512a3346ae9e7eeafbc59fdbac1b68651afa/src/util/misc.ts#L352
  */
 declare function localizer(prefix: string): (...args: Parameters<Localization["format"]>) => string;
+/**
+ * https://github.com/foundryvtt/pf2e/blob/142b2ce5524f3f331298f97f0b759dcb842731ad/src/util/misc.ts#L72
+ */
+declare function signedInteger(value: number, { emptyStringZero, zeroIsNegative }?: {
+    emptyStringZero?: boolean | undefined;
+    zeroIsNegative?: boolean | undefined;
+}): string;
 interface SplitListStringOptions {
     delimiter?: string | RegExp;
     unique?: boolean;
@@ -64,4 +71,4 @@ type ParamsFromEvent = {
     skipDialog: boolean;
     rollMode?: RollMode | "roll";
 };
-export { ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };
+export { ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, splitListString, traitSlugToObject, };

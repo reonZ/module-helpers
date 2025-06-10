@@ -137,6 +137,24 @@ function localizer(prefix: string): (...args: Parameters<Localization["format"]>
             : game.i18n.localize(`${prefix}.${suffix}`);
 }
 
+let intlNumberFormat: Intl.NumberFormat;
+/**
+ * https://github.com/foundryvtt/pf2e/blob/142b2ce5524f3f331298f97f0b759dcb842731ad/src/util/misc.ts#L72
+ */
+function signedInteger(
+    value: number,
+    { emptyStringZero = false, zeroIsNegative = false } = {}
+): string {
+    if (value === 0 && emptyStringZero) return "";
+    const nf = (intlNumberFormat ??= new Intl.NumberFormat(game.i18n.lang, {
+        maximumFractionDigits: 0,
+        signDisplay: "always",
+    }));
+    const maybeNegativeZero = zeroIsNegative && value === 0 ? -0 : value;
+
+    return nf.format(maybeNegativeZero);
+}
+
 interface SplitListStringOptions {
     delimiter?: string | RegExp;
     unique?: boolean;
@@ -168,6 +186,7 @@ export {
     ordinalString,
     parseInlineParams,
     setHasElement,
+    signedInteger,
     splitListString,
     traitSlugToObject,
 };

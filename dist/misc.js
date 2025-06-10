@@ -105,4 +105,18 @@ function localizer(prefix) {
         ? game.i18n.format(`${prefix}.${suffix}`, formatArgs)
         : game.i18n.localize(`${prefix}.${suffix}`);
 }
-export { ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, splitListString, traitSlugToObject, };
+let intlNumberFormat;
+/**
+ * https://github.com/foundryvtt/pf2e/blob/142b2ce5524f3f331298f97f0b759dcb842731ad/src/util/misc.ts#L72
+ */
+function signedInteger(value, { emptyStringZero = false, zeroIsNegative = false } = {}) {
+    if (value === 0 && emptyStringZero)
+        return "";
+    const nf = (intlNumberFormat ??= new Intl.NumberFormat(game.i18n.lang, {
+        maximumFractionDigits: 0,
+        signDisplay: "always",
+    }));
+    const maybeNegativeZero = zeroIsNegative && value === 0 ? -0 : value;
+    return nf.format(maybeNegativeZero);
+}
+export { ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, splitListString, traitSlugToObject, };
