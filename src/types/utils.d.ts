@@ -94,15 +94,6 @@ declare global {
 
     type DeepWriteable<T> = { -readonly [P in keyof T]: DeepWriteable<T[P]> };
 
-    type Rect = {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-        left: number;
-        right: number;
-    };
-
     type CollapseOf<T extends object> = {
         [Key in keyof T & string]: T[Key] extends object
             ? `${Key}` | `${Key}.${CollapseOf<T[Key]>}`
