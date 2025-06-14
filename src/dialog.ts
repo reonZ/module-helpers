@@ -13,12 +13,13 @@ import {
     CreateFormGroupParams,
     createFormTemplate,
     htmlQuery,
+    localize,
+    localizeIfExist,
     MODULE,
     R,
     render,
     templateLocalize,
 } from ".";
-import { localize, localizeIfExist } from "./localize";
 import DialogV2 = foundry.applications.api.DialogV2;
 
 class ModuleDialog extends DialogV2 {

@@ -16,4 +16,10 @@ declare global {
             yes?: Partial<DialogV2Button>;
             no?: Partial<DialogV2Button>;
         };
+
+    type DialogPromptOptions = DeepPartial<ApplicationConfiguration> &
+        Omit<DialogV2Configuration, "buttons"> &
+        DialogV2WaitOptions & {
+            ok?: Partial<DialogV2Button>;
+        };
 }
