@@ -101,4 +101,6 @@ declare global {
     }[keyof T & string];
 
     type Promisable<T> = Promise<T> | T;
+
+    type NonEmptyArray<T> = [T, ...T[]];
 }
