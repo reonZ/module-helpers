@@ -10,6 +10,7 @@ export type { PrerequisiteTagData } from "foundry-pf2e/pf2e/module/item/feat/dat
 export type * from "foundry-pf2e/foundry/common/abstract/data.d.ts";
 export type * from "foundry-pf2e/foundry/common/data/fields.d.ts";
 export type * from "foundry-pf2e/foundry/common/data/validation-failure.d.ts";
+export type * from "foundry-pf2e/foundry/common/utils/event-emiiter.ts";
 export type * from "foundry-pf2e/foundry/client-esm/applications/api/module.d.ts";
 export type * from "foundry-pf2e/foundry/client-esm/applications/module.d.ts";
 

@@ -1,17 +1,22 @@
 import { R } from ".";
-function createGlobalEvent(event, listener, options) {
+function createToggleableEvent(event, selector, listener, options) {
     let enabled = false;
+    const getElement = () => {
+        return selector ? document.querySelector(selector) : document;
+    };
     return {
         activate() {
             if (enabled)
                 return;
-            document.addEventListener(event, listener, options);
+            requestAnimationFrame(() => {
+                getElement()?.addEventListener(event, listener, options);
+            });
             enabled = true;
         },
         disable() {
             if (!enabled)
                 return;
-            document.removeEventListener(event, listener, options);
+            getElement()?.removeEventListener(event, listener, options);
             enabled = false;
         },
         toggle(enabled) {
@@ -157,4 +162,4 @@ function getInputValue(el) {
             ? el.checked
             : el.value.trim();
 }
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createGlobalEvent, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, };

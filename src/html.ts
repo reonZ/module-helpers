@@ -1,21 +1,50 @@
 import { I18n, R } from ".";
 
-function createGlobalEvent<TEvent extends keyof DocumentEventMap>(
+type PersistentEvent = {
+    activate(): void;
+    disable(): void;
+    toggle(enabled: boolean): void;
+};
+
+function createToggleableEvent<TEvent extends keyof DocumentEventMap>(
     event: TEvent,
+    selector: null,
     listener: (ev: DocumentEventMap[TEvent]) => any,
+    options?: boolean | AddEventListenerOptions
+): PersistentEvent;
+function createToggleableEvent<TEvent extends keyof HTMLElementEventMap>(
+    event: TEvent,
+    selector: string,
+    listener: (ev: HTMLElementEventMap[TEvent]) => any,
+    options?: boolean | AddEventListenerOptions
+): PersistentEvent;
+function createToggleableEvent(
+    event: EventType,
+    selector: string | null,
+    listener: (ev: Event) => any,
     options?: boolean | AddEventListenerOptions
 ) {
     let enabled = false;
 
+    const getElement = (): Document | HTMLElement | null => {
+        return selector ? document.querySelector<HTMLElement>(selector) : document;
+    };
+
     return {
         activate() {
             if (enabled) return;
-            document.addEventListener(event, listener, options);
+
+            requestAnimationFrame(() => {
+                getElement()?.addEventListener(event, listener, options);
+            });
+
             enabled = true;
         },
         disable() {
             if (!enabled) return;
-            document.removeEventListener(event, listener, options);
+
+            getElement()?.removeEventListener(event, listener, options);
+
             enabled = false;
         },
         toggle(enabled: boolean) {
@@ -288,9 +317,9 @@ export {
     addListenerAll,
     arrayToSelectOptions,
     assignStyle,
-    createGlobalEvent,
     createHTMLElement,
     createHTMLElementContent,
+    createToggleableEvent,
     datasetToData,
     dataToDatasetString,
     firstElementWithText,

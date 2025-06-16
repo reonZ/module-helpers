@@ -1,9 +1,11 @@
 import { I18n } from ".";
-declare function createGlobalEvent<TEvent extends keyof DocumentEventMap>(event: TEvent, listener: (ev: DocumentEventMap[TEvent]) => any, options?: boolean | AddEventListenerOptions): {
+type PersistentEvent = {
     activate(): void;
     disable(): void;
     toggle(enabled: boolean): void;
 };
+declare function createToggleableEvent<TEvent extends keyof DocumentEventMap>(event: TEvent, selector: null, listener: (ev: DocumentEventMap[TEvent]) => any, options?: boolean | AddEventListenerOptions): PersistentEvent;
+declare function createToggleableEvent<TEvent extends keyof HTMLElementEventMap>(event: TEvent, selector: string, listener: (ev: HTMLElementEventMap[TEvent]) => any, options?: boolean | AddEventListenerOptions): PersistentEvent;
 declare function createHTMLElement<K extends keyof HTMLElementTagNameMap>(nodeName: K, { classes, dataset, content, id, style }?: CreateHTMLElementOptions): HTMLElementTagNameMap[K];
 declare function createHTMLElementContent(options?: CreateHTMLElementOptions): HTMLElement;
 declare function htmlQuery<K extends keyof HTMLElementTagNameMap>(parent: MaybeHTML, selectors: K): HTMLElementTagNameMap[K] | null;
@@ -39,5 +41,5 @@ type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
 type ListenerCallbackArgs<E extends HTMLElement, TEvent extends EventType> = [TEvent, ListenerCallback<E, TEvent>, boolean] | [TEvent, ListenerCallback<E, TEvent>] | [ListenerCallback<E, TEvent>, boolean] | [ListenerCallback<E, TEvent>];
 type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = (element: TElement, event: HTMLElementEventMap[TEvent]) => void;
 type IterableSelectOptions = SelectOption | string | FormSelectOption;
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createGlobalEvent, createHTMLElement, createHTMLElementContent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, };
 export type { DatasetData, DatasetValue, IterableSelectOptions };
