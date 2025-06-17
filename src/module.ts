@@ -119,14 +119,14 @@ const MODULE = {
             Object.defineProperties(context, {
                 active: {
                     get: function (): boolean {
-                        return MODULE.current.active;
+                        return current.active;
                     },
                     configurable: false,
                     enumerable: false,
                 },
                 getSetting: {
                     value: function (setting: string): unknown {
-                        return MODULE.current.active ? getSetting(setting) : undefined;
+                        return current.active ? getSetting(setting) : undefined;
                     },
                     writable: false,
                     configurable: false,
