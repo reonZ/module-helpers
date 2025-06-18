@@ -98,4 +98,4 @@ function calculateCreatureDC(actor: CreaturePF2e, pwol?: boolean) {
     return calculateDC(actor.level, { pwol, rarity: actor.rarity });
 }
 
-export { calculateCreatureDC };
+export { adjustDCByRarity, calculateCreatureDC, calculateDC };
