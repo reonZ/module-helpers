@@ -119,4 +119,10 @@ function signedInteger(value, { emptyStringZero = false, zeroIsNegative = false 
     const maybeNegativeZero = zeroIsNegative && value === 0 ? -0 : value;
     return nf.format(maybeNegativeZero);
 }
-export { ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, splitListString, traitSlugToObject, };
+/**
+ * https://github.com/foundryvtt/pf2e/blob/0191f1fdac24c3903a939757a315043d1fcbfa59/src/util/misc.ts#L56
+ */
+function tupleHasValue(array, value) {
+    return array.includes(value);
+}
+export { ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, splitListString, traitSlugToObject, tupleHasValue, };

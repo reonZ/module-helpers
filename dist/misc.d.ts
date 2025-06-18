@@ -49,6 +49,10 @@ declare function signedInteger(value: number, { emptyStringZero, zeroIsNegative 
     emptyStringZero?: boolean | undefined;
     zeroIsNegative?: boolean | undefined;
 }): string;
+/**
+ * https://github.com/foundryvtt/pf2e/blob/0191f1fdac24c3903a939757a315043d1fcbfa59/src/util/misc.ts#L56
+ */
+declare function tupleHasValue<const A extends readonly unknown[]>(array: A, value: unknown): value is A[number];
 interface SplitListStringOptions {
     delimiter?: string | RegExp;
     unique?: boolean;
@@ -71,4 +75,4 @@ type ParamsFromEvent = {
     skipDialog: boolean;
     rollMode?: RollMode | "roll";
 };
-export { ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, splitListString, traitSlugToObject, };
+export { ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, splitListString, traitSlugToObject, tupleHasValue, };

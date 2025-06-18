@@ -155,6 +155,16 @@ function signedInteger(
     return nf.format(maybeNegativeZero);
 }
 
+/**
+ * https://github.com/foundryvtt/pf2e/blob/0191f1fdac24c3903a939757a315043d1fcbfa59/src/util/misc.ts#L56
+ */
+function tupleHasValue<const A extends readonly unknown[]>(
+    array: A,
+    value: unknown
+): value is A[number] {
+    return array.includes(value);
+}
+
 interface SplitListStringOptions {
     delimiter?: string | RegExp;
     unique?: boolean;
@@ -189,4 +199,5 @@ export {
     signedInteger,
     splitListString,
     traitSlugToObject,
+    tupleHasValue,
 };
