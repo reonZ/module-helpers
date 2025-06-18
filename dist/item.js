@@ -1,4 +1,4 @@
-import { createHTMLElementContent, getDamageRollClass, htmlQuery, isInstanceOf, R, setHasElement, } from ".";
+import { createHTMLElementContent, eventToRollMode, getDamageRollClass, htmlClosest, htmlQuery, isInstanceOf, R, setHasElement, } from ".";
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
  */
@@ -161,7 +161,42 @@ async function consumeItem(event, item) {
         });
     }
 }
+/**
+ * slightly modified version of
+ * https://github.com/foundryvtt/pf2e/blob/0191f1fdac24c3903a939757a315043d1fcbfa59/src/module/item/base/document.ts#L218
+ */
+async function unownedItemToMessage(actor, item, event, options = {}) {
+    const sluggify = game.pf2e.system.sluggify;
+    const ChatMessagePF2e = getDocumentClass("ChatMessage");
+    // Basic template rendering data
+    const template = `systems/pf2e/templates/chat/${sluggify(item.type)}-card.hbs`;
+    const token = actor.token;
+    const nearestItem = htmlClosest(event?.target, ".item");
+    const rollOptions = options.data ?? { ...(nearestItem?.dataset ?? {}) };
+    const templateData = {
+        actor,
+        tokenId: token ? `${token.parent?.id}.${token.id}` : null,
+        item,
+        data: await item.getChatData(undefined, rollOptions),
+    };
+    // Basic chat message data
+    const rollMode = options.rollMode ?? eventToRollMode(event);
+    const chatData = ChatMessagePF2e.applyRollMode({
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        speaker: ChatMessagePF2e.getSpeaker({
+            actor,
+            token: actor.getActiveTokens(false, true).at(0),
+        }),
+        content: await foundry.applications.handlebars.renderTemplate(template, templateData),
+        flags: { pf2e: { origin: item.getOriginData() } },
+    }, rollMode);
+    // Create the chat message
+    const operation = { rollMode, renderSheet: false };
+    return options.create ?? true
+        ? ChatMessagePF2e.create(chatData, operation)
+        : new ChatMessagePF2e(chatData, { rollMode });
+}
 function getItemTypeLabel(type) {
     return game.i18n.localize(`TYPES.Item.${type}`);
 }
-export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, itemIsOfType, usePhysicalItem, };
+export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, itemIsOfType, unownedItemToMessage, usePhysicalItem, };

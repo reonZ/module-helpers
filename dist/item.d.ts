@@ -1,4 +1,4 @@
-import { ActorPF2e, ConsumablePF2e, EquipmentPF2e, FeatPF2e, ItemInstances, ItemPF2e, ItemSourcePF2e, ItemType, PhysicalItemPF2e } from "foundry-pf2e";
+import { ActorPF2e, ChatMessagePF2e, ConsumablePF2e, EquipmentPF2e, FeatPF2e, ItemInstances, ItemPF2e, ItemSourcePF2e, ItemType, PhysicalItemPF2e } from "foundry-pf2e";
 import { IsInstanceOfItem, IsInstanceOfItems } from ".";
 declare function actorItems<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, type?: TType | TType[]): Generator<ItemInstances<TActor>[TType]>;
 declare function isSupressedFeat<TActor extends ActorPF2e | null>(item: ItemPF2e<TActor>): item is FeatPF2e<TActor>;
@@ -18,6 +18,15 @@ declare function itemIsOfType<TParent extends ActorPF2e | null, TType extends "p
 declare function itemIsOfType<TParent extends ActorPF2e | null>(item: ItemOrSource, type: "physical"): item is PhysicalItemPF2e<TParent> | PhysicalItemPF2e["_source"];
 declare function isCastConsumable(item: ConsumablePF2e): boolean;
 declare function usePhysicalItem(event: Event, item: EquipmentPF2e<ActorPF2e> | ConsumablePF2e<ActorPF2e>): Promise<unknown>;
+/**
+ * slightly modified version of
+ * https://github.com/foundryvtt/pf2e/blob/0191f1fdac24c3903a939757a315043d1fcbfa59/src/module/item/base/document.ts#L218
+ */
+declare function unownedItemToMessage(actor: ActorPF2e, item: ItemPF2e, event?: Maybe<Event>, options?: {
+    rollMode?: RollMode | "roll";
+    create?: boolean;
+    data?: Record<string, unknown>;
+}): Promise<ChatMessagePF2e | undefined>;
 declare function getItemTypeLabel(type: ItemType): string;
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
-export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, itemIsOfType, usePhysicalItem, };
+export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, itemIsOfType, unownedItemToMessage, usePhysicalItem, };
