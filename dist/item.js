@@ -1,4 +1,5 @@
 import { createHTMLElementContent, eventToRollMode, getDamageRollClass, htmlClosest, htmlQuery, isInstanceOf, R, setHasElement, } from ".";
+const ITEM_CARRY_TYPES = ["attached", "dropped", "held", "stowed", "worn"];
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
  */
@@ -199,4 +200,4 @@ async function unownedItemToMessage(actor, item, event, options = {}) {
 function getItemTypeLabel(type) {
     return game.i18n.localize(`TYPES.Item.${type}`);
 }
-export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, itemIsOfType, unownedItemToMessage, usePhysicalItem, };
+export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, unownedItemToMessage, usePhysicalItem, };

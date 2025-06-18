@@ -23,6 +23,8 @@ import {
     setHasElement,
 } from ".";
 
+const ITEM_CARRY_TYPES = ["attached", "dropped", "held", "stowed", "worn"] as const;
+
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
  */
@@ -329,6 +331,7 @@ export {
     hasItemWithSourceId,
     isCastConsumable,
     isSupressedFeat,
+    ITEM_CARRY_TYPES,
     itemIsOfType,
     unownedItemToMessage,
     usePhysicalItem,

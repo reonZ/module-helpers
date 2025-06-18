@@ -1,5 +1,6 @@
 import { ActorPF2e, ChatMessagePF2e, ConsumablePF2e, EquipmentPF2e, FeatPF2e, ItemInstances, ItemPF2e, ItemSourcePF2e, ItemType, PhysicalItemPF2e } from "foundry-pf2e";
 import { IsInstanceOfItem, IsInstanceOfItems } from ".";
+declare const ITEM_CARRY_TYPES: readonly ["attached", "dropped", "held", "stowed", "worn"];
 declare function actorItems<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, type?: TType | TType[]): Generator<ItemInstances<TActor>[TType]>;
 declare function isSupressedFeat<TActor extends ActorPF2e | null>(item: ItemPF2e<TActor>): item is FeatPF2e<TActor>;
 declare function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, uuid: string, type?: TType): ItemInstances<TActor>[TType] | null;
@@ -29,4 +30,4 @@ declare function unownedItemToMessage(actor: ActorPF2e, item: ItemPF2e, event?: 
 }): Promise<ChatMessagePF2e | undefined>;
 declare function getItemTypeLabel(type: ItemType): string;
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
-export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, itemIsOfType, unownedItemToMessage, usePhysicalItem, };
+export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, unownedItemToMessage, usePhysicalItem, };
