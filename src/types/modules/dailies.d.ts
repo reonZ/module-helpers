@@ -40,49 +40,47 @@ declare global {
         }
     }
 
-    class PF2eDailiesModule extends Module {
-        api: {
-            canCastRank: (actor: CharacterPF2e, rank: ZeroToTen) => boolean | null;
-            getStaffItem: (actor: CharacterPF2e) => PhysicalItemPF2e<CharacterPF2e> | null;
-            setStaffChargesValue: (
-                actor: CharacterPF2e,
-                value?: number | undefined
-            ) => Promise<foundry.abstract.Document> | undefined;
-            openDailiesInterface: (actor: ActorPF2e) => Promise<void>;
-            registerCustomDailies: (dailies: object[]) => void;
-            getDailiesSummary: (actor: ActorPF2e) => string;
-            canPrepareDailies: (actor: ActorPF2e) => boolean;
-            getDisabledDailies: (actor: CharacterPF2e) => Record<string, boolean>;
-            getAnimistConfigs: (actor: CharacterPF2e) => {
-                lores: boolean;
-                spells: boolean;
-                signatures: boolean;
-            };
-            getAnimistVesselsData: (actor: CharacterPF2e) => dailies.AnimistVesselsData | undefined;
-            utils: Record<string, Function>;
-            dailyHelpers: {
-                createComboSkillDaily: (
-                    key: string,
-                    uuid: string,
-                    {
-                        rank,
-                        removeRules,
-                    }?: {
-                        rank?: OneToFour | undefined;
-                        removeRules?: boolean | undefined;
-                    }
-                ) => object;
-                createLoreSkillDaily: (key: string, uuid: string) => object;
-                createLanguageDaily: (key: string, uuid: string) => object;
-                createResistanceDaily: (
-                    key: string,
-                    uuid: string,
-                    resistances: string[],
-                    resistance: string | number | "half" | "level",
-                    isRandom?: boolean
-                ) => object;
-                createScrollChainDaily: (key: string, uuids: [string, string, string]) => object;
-            };
+    interface DailiesApi {
+        canCastRank: (actor: CharacterPF2e, rank: ZeroToTen) => boolean | null;
+        canPrepareDailies: (actor: ActorPF2e) => boolean;
+        dailyHelpers: {
+            createComboSkillDaily: (
+                key: string,
+                uuid: string,
+                {
+                    rank,
+                    removeRules,
+                }?: {
+                    rank?: OneToFour | undefined;
+                    removeRules?: boolean | undefined;
+                }
+            ) => object;
+            createLanguageDaily: (key: string, uuid: string) => object;
+            createLoreSkillDaily: (key: string, uuid: string) => object;
+            createResistanceDaily: (
+                key: string,
+                uuid: string,
+                resistances: string[],
+                resistance: string | number | "half" | "level",
+                isRandom?: boolean
+            ) => object;
+            createScrollChainDaily: (key: string, uuids: [string, string, string]) => object;
         };
+        getAnimistConfigs: (actor: CharacterPF2e) => {
+            lores: boolean;
+            spells: boolean;
+            signatures: boolean;
+        };
+        getAnimistVesselsData: (actor: Maybe<ActorPF2e>) => dailies.AnimistVesselsData | undefined;
+        getDailiesSummary: (actor: ActorPF2e) => string;
+        getDisabledDailies: (actor: CharacterPF2e) => Record<string, boolean>;
+        getStaffItem: (actor: CharacterPF2e) => PhysicalItemPF2e<CharacterPF2e> | null;
+        openDailiesInterface: (actor: ActorPF2e) => Promise<void>;
+        registerCustomDailies: (dailies: object[]) => void;
+        setStaffChargesValue: (
+            actor: CharacterPF2e,
+            value?: number | undefined
+        ) => Promise<foundry.abstract.Document> | undefined;
+        utils: Record<string, Function>;
     }
 }
