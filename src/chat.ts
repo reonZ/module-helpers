@@ -64,7 +64,7 @@ function createChatLink(
         link = `${link}{${label}}`;
     }
 
-    return html ? TextEditor.enrichHTML(link) : link;
+    return html ? foundry.applications.ux.TextEditor.implementation.enrichHTML(link) : link;
 }
 
 export { createChatLink, isSpellMessage, latestChatMessages, refreshLatestMessages };
