@@ -59,10 +59,10 @@ function createToggleKeybind(options) {
         },
         activate() {
             _actions.onDown = (context) => {
-                options.onDown(context);
+                options.onDown?.(context);
             };
             _actions.onUp = (context) => {
-                options.onUp(context);
+                options.onUp?.(context);
             };
         },
         disable() {

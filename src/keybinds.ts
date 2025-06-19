@@ -59,7 +59,7 @@ function onRenderControlsConfig(
     }
 }
 
-function createToggleKeybind(options: WithRequired<KeybindingActionConfig, "onDown" | "onUp">) {
+function createToggleKeybind(options: KeybindingActionConfig) {
     const _actions = {
         onDown: (context: KeyboardEventContext) => {},
         onUp: (context: KeyboardEventContext) => {},
@@ -77,10 +77,11 @@ function createToggleKeybind(options: WithRequired<KeybindingActionConfig, "onDo
         } satisfies KeybindingActionConfig,
         activate() {
             _actions.onDown = (context: KeyboardEventContext) => {
-                options.onDown(context);
+                options.onDown?.(context);
             };
+
             _actions.onUp = (context: KeyboardEventContext) => {
-                options.onUp(context);
+                options.onUp?.(context);
             };
         },
         disable() {
