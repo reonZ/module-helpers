@@ -1,4 +1,4 @@
-import { ActorPF2e, ChatMessagePF2e, ConsumablePF2e, EquipmentPF2e, FeatPF2e, ItemInstances, ItemPF2e, ItemSourcePF2e, ItemType, PhysicalItemPF2e } from "foundry-pf2e";
+import { ActorPF2e, CharacterPF2e, ChatMessagePF2e, ConsumablePF2e, CreaturePF2e, EquipmentPF2e, FeatPF2e, ItemInstances, ItemPF2e, ItemSourcePF2e, ItemType, PhysicalItemPF2e, ZeroToTwo } from "foundry-pf2e";
 import { IsInstanceOfItem, IsInstanceOfItems } from ".";
 declare const ITEM_CARRY_TYPES: readonly ["attached", "dropped", "held", "stowed", "worn"];
 declare function actorItems<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, type?: TType | TType[]): Generator<ItemInstances<TActor>[TType]>;
@@ -30,12 +30,20 @@ declare function unownedItemToMessage(actor: ActorPF2e, item: ItemPF2e, event?: 
 }): Promise<ChatMessagePF2e | undefined>;
 declare function getItemTypeLabel(type: ItemType): string;
 declare function getEquipAnnotation(item: Maybe<PhysicalItemPF2e>): EquipAnnotationData | undefined;
+/**
+ * repurposed version of
+ * https://github.com/foundryvtt/pf2e/blob/6ff777170c93618f234929c6d483a98a37cbe363/src/module/actor/character/helpers.ts#L210
+ */
+declare function EquipItemToUse(actor: CharacterPF2e, item: PhysicalItemPF2e<CreaturePF2e>, { carryType, handsHeld, annotation, fullAnnotation, cost }: EquipAnnotationData): Promise<void>;
 type EquipAnnotationData = {
     annotation: AuxiliaryAnnotation;
     cost: 1 | 2;
+    fullAnnotation: string;
+    handsHeld: ZeroToTwo;
     label: string;
+    carryType: "held" | "worn";
 };
-type AuxiliaryAnnotation = "draw1H" | "pick-up1H" | "retrieve1H" | "sheathe";
+type AuxiliaryAnnotation = "draw" | "pick-up" | "retrieve" | "sheathe";
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
-export { actorItems, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, unownedItemToMessage, usePhysicalItem, };
+export { actorItems, EquipItemToUse, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, unownedItemToMessage, usePhysicalItem, };
 export type { EquipAnnotationData };

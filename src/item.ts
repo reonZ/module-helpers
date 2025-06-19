@@ -1,7 +1,9 @@
 import {
     ActorPF2e,
+    CharacterPF2e,
     ChatMessagePF2e,
     ConsumablePF2e,
+    CreaturePF2e,
     EquipmentPF2e,
     FeatPF2e,
     ItemInstances,
@@ -9,10 +11,12 @@ import {
     ItemSourcePF2e,
     ItemType,
     PhysicalItemPF2e,
+    ZeroToTwo,
 } from "foundry-pf2e";
 import {
     createHTMLElementContent,
     eventToRollMode,
+    getActionGlyph,
     getDamageRollClass,
     htmlClosest,
     htmlQuery,
@@ -21,6 +25,7 @@ import {
     IsInstanceOfItems,
     R,
     setHasElement,
+    traitSlugToObject,
 } from ".";
 
 const ITEM_CARRY_TYPES = ["attached", "dropped", "held", "stowed", "worn"] as const;
@@ -321,29 +326,91 @@ function getItemTypeLabel(type: ItemType) {
 function getEquipAnnotation(item: Maybe<PhysicalItemPF2e>): EquipAnnotationData | undefined {
     if (!item || item.isEquipped) return;
 
-    const annotation: AuxiliaryAnnotation =
-        item.carryType === "dropped" ? "pick-up1H" : item.isStowed ? "retrieve1H" : "draw1H";
-    const purposeKey = game.pf2e.system.sluggify(annotation, { camel: "bactrian" });
+    const { type, hands = 0 } = item.system.usage;
+    const annotation =
+        item.carryType === "dropped" ? "pick-up" : item.isStowed ? "retrieve" : "draw";
+    const fullAnnotation = `${annotation}${hands}H`;
+    const purposeKey = game.pf2e.system.sluggify(fullAnnotation, { camel: "bactrian" });
 
     return {
         annotation,
-        cost: annotation === "retrieve1H" ? 2 : 1,
+        cost: annotation === "retrieve" ? 2 : 1,
+        fullAnnotation,
+        handsHeld: hands,
         label: `PF2E.Actions.Interact.${purposeKey}.Title`,
+        carryType: type === "worn" ? "worn" : "held",
     };
+}
+
+/**
+ * repurposed version of
+ * https://github.com/foundryvtt/pf2e/blob/6ff777170c93618f234929c6d483a98a37cbe363/src/module/actor/character/helpers.ts#L210
+ */
+async function EquipItemToUse(
+    actor: CharacterPF2e,
+    item: PhysicalItemPF2e<CreaturePF2e>,
+    { carryType, handsHeld, annotation, fullAnnotation, cost }: EquipAnnotationData
+) {
+    await actor.changeCarryType(item, { carryType, handsHeld });
+    if (!game.combat) return;
+
+    const templates = {
+        flavor: "./systems/pf2e/templates/chat/action/flavor.hbs",
+        content: "./systems/pf2e/templates/chat/action/content.hbs",
+    };
+
+    const sluggify = game.pf2e.system.sluggify;
+    const fullAnnotationKey = sluggify(fullAnnotation, { camel: "bactrian" });
+    const flavorAction = {
+        title: `PF2E.Actions.Interact.Title`,
+        subtitle: fullAnnotationKey ? `PF2E.Actions.Interact.${fullAnnotationKey}.Title` : null,
+        glyph: getActionGlyph(cost),
+    };
+
+    const [traits, message] = [
+        [traitSlugToObject("manipulate", CONFIG.PF2E.actionTraits)],
+        `PF2E.Actions.Interact.${fullAnnotationKey}.Description`,
+    ];
+
+    const flavor = await foundry.applications.handlebars.renderTemplate(templates.flavor, {
+        action: flavorAction,
+        traits,
+    });
+
+    const content = await foundry.applications.handlebars.renderTemplate(templates.content, {
+        imgPath: item.img,
+        message: game.i18n.format(message, {
+            actor: actor.name,
+            weapon: item.name,
+        }),
+    });
+
+    const token = actor.getActiveTokens(false, true).shift();
+
+    await getDocumentClass("ChatMessage").create({
+        content,
+        speaker: ChatMessage.getSpeaker({ actor, token }),
+        flavor,
+        style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
+    });
 }
 
 type EquipAnnotationData = {
     annotation: AuxiliaryAnnotation;
     cost: 1 | 2;
+    fullAnnotation: string;
+    handsHeld: ZeroToTwo;
     label: string;
+    carryType: "held" | "worn";
 };
 
-type AuxiliaryAnnotation = "draw1H" | "pick-up1H" | "retrieve1H" | "sheathe";
+type AuxiliaryAnnotation = "draw" | "pick-up" | "retrieve" | "sheathe";
 
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
 
 export {
     actorItems,
+    EquipItemToUse,
     findItemWithSourceId,
     getEquipAnnotation,
     getItemFromUuid,

@@ -1,4 +1,4 @@
-import { createHTMLElementContent, eventToRollMode, getDamageRollClass, htmlClosest, htmlQuery, isInstanceOf, R, setHasElement, } from ".";
+import { createHTMLElementContent, eventToRollMode, getActionGlyph, getDamageRollClass, htmlClosest, htmlQuery, isInstanceOf, R, setHasElement, traitSlugToObject, } from ".";
 const ITEM_CARRY_TYPES = ["attached", "dropped", "held", "stowed", "worn"];
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
@@ -203,12 +203,59 @@ function getItemTypeLabel(type) {
 function getEquipAnnotation(item) {
     if (!item || item.isEquipped)
         return;
-    const annotation = item.carryType === "dropped" ? "pick-up1H" : item.isStowed ? "retrieve1H" : "draw1H";
-    const purposeKey = game.pf2e.system.sluggify(annotation, { camel: "bactrian" });
+    const { type, hands = 0 } = item.system.usage;
+    const annotation = item.carryType === "dropped" ? "pick-up" : item.isStowed ? "retrieve" : "draw";
+    const fullAnnotation = `${annotation}${hands}H`;
+    const purposeKey = game.pf2e.system.sluggify(fullAnnotation, { camel: "bactrian" });
     return {
         annotation,
-        cost: annotation === "retrieve1H" ? 2 : 1,
+        cost: annotation === "retrieve" ? 2 : 1,
+        fullAnnotation,
+        handsHeld: hands,
         label: `PF2E.Actions.Interact.${purposeKey}.Title`,
+        carryType: type === "worn" ? "worn" : "held",
     };
 }
-export { actorItems, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, unownedItemToMessage, usePhysicalItem, };
+/**
+ * repurposed version of
+ * https://github.com/foundryvtt/pf2e/blob/6ff777170c93618f234929c6d483a98a37cbe363/src/module/actor/character/helpers.ts#L210
+ */
+async function EquipItemToUse(actor, item, { carryType, handsHeld, annotation, fullAnnotation, cost }) {
+    await actor.changeCarryType(item, { carryType, handsHeld });
+    if (!game.combat)
+        return;
+    const templates = {
+        flavor: "./systems/pf2e/templates/chat/action/flavor.hbs",
+        content: "./systems/pf2e/templates/chat/action/content.hbs",
+    };
+    const sluggify = game.pf2e.system.sluggify;
+    const fullAnnotationKey = sluggify(fullAnnotation, { camel: "bactrian" });
+    const flavorAction = {
+        title: `PF2E.Actions.Interact.Title`,
+        subtitle: fullAnnotationKey ? `PF2E.Actions.Interact.${fullAnnotationKey}.Title` : null,
+        glyph: getActionGlyph(cost),
+    };
+    const [traits, message] = [
+        [traitSlugToObject("manipulate", CONFIG.PF2E.actionTraits)],
+        `PF2E.Actions.Interact.${fullAnnotationKey}.Description`,
+    ];
+    const flavor = await foundry.applications.handlebars.renderTemplate(templates.flavor, {
+        action: flavorAction,
+        traits,
+    });
+    const content = await foundry.applications.handlebars.renderTemplate(templates.content, {
+        imgPath: item.img,
+        message: game.i18n.format(message, {
+            actor: actor.name,
+            weapon: item.name,
+        }),
+    });
+    const token = actor.getActiveTokens(false, true).shift();
+    await getDocumentClass("ChatMessage").create({
+        content,
+        speaker: ChatMessage.getSpeaker({ actor, token }),
+        flavor,
+        style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
+    });
+}
+export { actorItems, EquipItemToUse, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, unownedItemToMessage, usePhysicalItem, };
