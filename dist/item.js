@@ -200,4 +200,15 @@ async function unownedItemToMessage(actor, item, event, options = {}) {
 function getItemTypeLabel(type) {
     return game.i18n.localize(`TYPES.Item.${type}`);
 }
-export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, unownedItemToMessage, usePhysicalItem, };
+function getEquipAnnotation(item) {
+    if (!item || item.isEquipped)
+        return;
+    const annotation = item.carryType === "dropped" ? "pick-up1H" : item.isStowed ? "retrieve1H" : "draw1H";
+    const purposeKey = game.pf2e.system.sluggify(annotation, { camel: "bactrian" });
+    return {
+        annotation,
+        cost: annotation === "retrieve1H" ? 2 : 1,
+        label: `PF2E.Actions.Interact.${purposeKey}.Title`,
+    };
+}
+export { actorItems, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, unownedItemToMessage, usePhysicalItem, };

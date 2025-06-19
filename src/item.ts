@@ -318,11 +318,34 @@ function getItemTypeLabel(type: ItemType) {
     return game.i18n.localize(`TYPES.Item.${type}`);
 }
 
+function getEquipAnnotation(item: Maybe<PhysicalItemPF2e>): EquipAnnotationData | undefined {
+    if (!item || item.isEquipped) return;
+
+    const annotation: AuxiliaryAnnotation =
+        item.carryType === "dropped" ? "pick-up1H" : item.isStowed ? "retrieve1H" : "draw1H";
+    const purposeKey = game.pf2e.system.sluggify(annotation, { camel: "bactrian" });
+
+    return {
+        annotation,
+        cost: annotation === "retrieve1H" ? 2 : 1,
+        label: `PF2E.Actions.Interact.${purposeKey}.Title`,
+    };
+}
+
+type EquipAnnotationData = {
+    annotation: AuxiliaryAnnotation;
+    cost: 1 | 2;
+    label: string;
+};
+
+type AuxiliaryAnnotation = "draw1H" | "pick-up1H" | "retrieve1H" | "sheathe";
+
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
 
 export {
     actorItems,
     findItemWithSourceId,
+    getEquipAnnotation,
     getItemFromUuid,
     getItemSource,
     getItemSourceFromUuid,
@@ -336,3 +359,4 @@ export {
     unownedItemToMessage,
     usePhysicalItem,
 };
+export type { EquipAnnotationData };

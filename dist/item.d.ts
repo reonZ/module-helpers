@@ -29,5 +29,13 @@ declare function unownedItemToMessage(actor: ActorPF2e, item: ItemPF2e, event?: 
     data?: Record<string, unknown>;
 }): Promise<ChatMessagePF2e | undefined>;
 declare function getItemTypeLabel(type: ItemType): string;
+declare function getEquipAnnotation(item: Maybe<PhysicalItemPF2e>): EquipAnnotationData | undefined;
+type EquipAnnotationData = {
+    annotation: AuxiliaryAnnotation;
+    cost: 1 | 2;
+    label: string;
+};
+type AuxiliaryAnnotation = "draw1H" | "pick-up1H" | "retrieve1H" | "sheathe";
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
-export { actorItems, findItemWithSourceId, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, unownedItemToMessage, usePhysicalItem, };
+export { actorItems, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, unownedItemToMessage, usePhysicalItem, };
+export type { EquipAnnotationData };
