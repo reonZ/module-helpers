@@ -346,10 +346,15 @@ function getEquipAnnotation(item: Maybe<PhysicalItemPF2e>): EquipAnnotationData 
  * repurposed version of
  * https://github.com/foundryvtt/pf2e/blob/6ff777170c93618f234929c6d483a98a37cbe363/src/module/actor/character/helpers.ts#L210
  */
-async function EquipItemToUse(
+async function equipItemToUse(
     actor: CharacterPF2e,
     item: PhysicalItemPF2e<CreaturePF2e>,
-    { carryType, handsHeld, annotation, fullAnnotation, cost }: EquipAnnotationData
+    {
+        carryType,
+        handsHeld,
+        fullAnnotation,
+        cost,
+    }: Pick<EquipAnnotationData, "carryType" | "handsHeld" | "fullAnnotation" | "cost">
 ) {
     await actor.changeCarryType(item, { carryType, handsHeld });
     if (!game.combat) return;
@@ -410,7 +415,7 @@ type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
 
 export {
     actorItems,
-    EquipItemToUse,
+    equipItemToUse,
     findItemWithSourceId,
     getEquipAnnotation,
     getItemFromUuid,

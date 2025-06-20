@@ -220,7 +220,7 @@ function getEquipAnnotation(item) {
  * repurposed version of
  * https://github.com/foundryvtt/pf2e/blob/6ff777170c93618f234929c6d483a98a37cbe363/src/module/actor/character/helpers.ts#L210
  */
-async function EquipItemToUse(actor, item, { carryType, handsHeld, annotation, fullAnnotation, cost }) {
+async function equipItemToUse(actor, item, { carryType, handsHeld, fullAnnotation, cost, }) {
     await actor.changeCarryType(item, { carryType, handsHeld });
     if (!game.combat)
         return;
@@ -258,4 +258,4 @@ async function EquipItemToUse(actor, item, { carryType, handsHeld, annotation, f
         style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
     });
 }
-export { actorItems, EquipItemToUse, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, unownedItemToMessage, usePhysicalItem, };
+export { actorItems, equipItemToUse, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, unownedItemToMessage, usePhysicalItem, };
