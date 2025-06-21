@@ -27,8 +27,7 @@ const MODULE = {
         return (_MODULE.current ??= game.modules.get(this.id));
     },
     get isDebug() {
-        // @ts-expect-error
-        return CONFIG.debug.modules === true;
+        return foundry.utils.getProperty(CONFIG, `debug.${this.id}`) === true;
     },
     Error(str) {
         return new Error(`\n[${this.name}] ${str}`);
@@ -84,8 +83,7 @@ const MODULE = {
     enableDebugMode() {
         if (this.isDebug)
             return;
-        // @ts-expect-error
-        CONFIG.debug.modules = true;
+        foundry.utils.setProperty(CONFIG, `debug.${this.id}`, true);
         for (const [key, value] of R.entries(_MODULE.expose.debug)) {
             // @ts-expect-error
             window[key] = value;
