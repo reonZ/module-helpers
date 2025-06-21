@@ -1,4 +1,4 @@
-import { joinStr, localize, MODULE, R } from ".";
+import { htmlQuery, joinStr, localize, MODULE, R } from ".";
 function templatePath(...path) {
     return `modules/${MODULE.id}/templates/${joinStr("/", path)}.hbs`;
 }
@@ -39,4 +39,39 @@ function templateTooltip(...args) {
     return `data-tooltip="${tooltip}"`;
     // return `data-tooltip="${tooltip}" aria-label="${tooltip}"`;
 }
-export { imagePath, render, templateLocalize, templatePath, templateTooltip };
+function preSyncElement(newElement, priorElement, ...scrollable) {
+    const state = { focus: undefined, scrollPositions: [] };
+    if (!priorElement) {
+        return state;
+    }
+    const focus = priorElement.querySelector(":focus");
+    if (focus?.name) {
+        state.focus = `${focus.tagName}[name="${focus.name}"]`;
+    }
+    else if (focus?.dataset.itemId) {
+        state.focus = `${focus.tagName}[data-item-id="${focus.dataset.itemId}"]`;
+    }
+    if (scrollable.length === 0) {
+        scrollable.push("");
+    }
+    for (const selector of scrollable) {
+        const el0 = selector === "" ? priorElement : htmlQuery(priorElement, selector);
+        if (el0) {
+            const el1 = selector === "" ? newElement : htmlQuery(newElement, selector);
+            if (el1) {
+                state.scrollPositions.push([el1, el0.scrollTop]);
+            }
+        }
+    }
+    return state;
+}
+function postSyncElement(newElement, state) {
+    if (state.focus) {
+        const newFocus = htmlQuery(newElement, state.focus);
+        newFocus?.focus();
+    }
+    for (const [el, scrollTop] of state.scrollPositions) {
+        el.scrollTop = scrollTop;
+    }
+}
+export { imagePath, preSyncElement, render, postSyncElement, templateLocalize, templatePath, templateTooltip, };

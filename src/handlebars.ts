@@ -1,5 +1,5 @@
 import { HelperDelegate, HelperOptions } from "handlebars";
-import { joinStr, localize, LocalizeData, MODULE, R } from ".";
+import { htmlQuery, joinStr, localize, LocalizeData, MODULE, R } from ".";
 
 function templatePath(...path: string[]): string {
     return `modules/${MODULE.id}/templates/${joinStr("/", path)}.hbs`;
@@ -51,11 +51,70 @@ function templateTooltip(...args: [...string[], TemplateToolipOptions]) {
     // return `data-tooltip="${tooltip}" aria-label="${tooltip}"`;
 }
 
+function preSyncElement(
+    newElement: HTMLElement,
+    priorElement: Maybe<HTMLElement>,
+    ...scrollable: string[]
+): SyncElementState {
+    const state: SyncElementState = { focus: undefined, scrollPositions: [] };
+
+    if (!priorElement) {
+        return state;
+    }
+
+    const focus = priorElement.querySelector<HTMLInputElement>(":focus");
+
+    if (focus?.name) {
+        state.focus = `${focus.tagName}[name="${focus.name}"]`;
+    } else if (focus?.dataset.itemId) {
+        state.focus = `${focus.tagName}[data-item-id="${focus.dataset.itemId}"]`;
+    }
+
+    if (scrollable.length === 0) {
+        scrollable.push("");
+    }
+
+    for (const selector of scrollable) {
+        const el0 = selector === "" ? priorElement : htmlQuery(priorElement, selector);
+
+        if (el0) {
+            const el1 = selector === "" ? newElement : htmlQuery(newElement, selector);
+
+            if (el1) {
+                state.scrollPositions.push([el1, el0.scrollTop]);
+            }
+        }
+    }
+
+    return state;
+}
+
+function postSyncElement(newElement: HTMLElement, state: SyncElementState) {
+    if (state.focus) {
+        const newFocus = htmlQuery(newElement, state.focus);
+        newFocus?.focus();
+    }
+
+    for (const [el, scrollTop] of state.scrollPositions) {
+        el.scrollTop = scrollTop;
+    }
+}
+
+type SyncElementState = { focus?: string; scrollPositions: [HTMLElement, number][] };
+
 type RenderTemplateData = Record<string, any> & { i18n?: string | TemplateLocalize };
 
 type TemplateLocalize = ReturnType<typeof templateLocalize>;
 
 type TemplateToolipOptions = LocalizeData & { localize?: boolean };
 
-export { imagePath, render, templateLocalize, templatePath, templateTooltip };
-export type { RenderTemplateData, TemplateLocalize };
+export {
+    imagePath,
+    preSyncElement,
+    render,
+    postSyncElement,
+    templateLocalize,
+    templatePath,
+    templateTooltip,
+};
+export type { RenderTemplateData, SyncElementState, TemplateLocalize };
