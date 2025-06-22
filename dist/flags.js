@@ -36,8 +36,8 @@ function updateSourceFlag(doc, ...args) {
     const value = args.pop();
     return doc.updateSource({ [flagPath(...args)]: value });
 }
-function getDataFlag(doc, Model, ...path) {
-    const flag = getFlag(doc, ...path);
+function getDataFlag(doc, Model, ...sourcePath) {
+    const flag = getFlag(doc, ...sourcePath);
     if (!R.isPlainObject(flag))
         return;
     try {
@@ -47,6 +47,7 @@ function getDataFlag(doc, Model, ...path) {
         Object.defineProperty(model, "setFlag", {
             value: function () {
                 const source = model.toJSON();
+                const path = sourcePath.slice();
                 if (!path.length) {
                     return doc.update({ [`flags.==${MODULE.id}`]: source });
                 }
@@ -61,7 +62,7 @@ function getDataFlag(doc, Model, ...path) {
     }
     catch (error) {
         const name = Model.name;
-        const joinPath = joinStr(".", ...path);
+        const joinPath = joinStr(".", ...sourcePath);
         MODULE.error(`An error occured while trying the create a '${name}' DataModel at path: '${joinPath}'`, error);
     }
 }

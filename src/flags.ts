@@ -60,9 +60,9 @@ function updateSourceFlag<T extends Document>(
 function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(
     doc: D,
     Model: ConstructorOf<T>,
-    ...path: string[]
+    ...sourcePath: string[]
 ): undefined | FlagData<T, D> {
-    const flag = getFlag(doc, ...path);
+    const flag = getFlag(doc, ...sourcePath);
     if (!R.isPlainObject(flag)) return;
 
     try {
@@ -72,6 +72,7 @@ function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(
         Object.defineProperty(model, "setFlag", {
             value: function (): Promise<D | undefined> {
                 const source = model.toJSON();
+                const path = sourcePath.slice();
 
                 if (!path.length) {
                     return doc.update({ [`flags.==${MODULE.id}`]: source });
@@ -88,7 +89,7 @@ function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(
         return model as any;
     } catch (error) {
         const name = Model.name;
-        const joinPath = joinStr(".", ...path);
+        const joinPath = joinStr(".", ...sourcePath);
 
         MODULE.error(
             `An error occured while trying the create a '${name}' DataModel at path: '${joinPath}'`,

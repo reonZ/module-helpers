@@ -8,7 +8,7 @@ declare function setFlagProperty<T extends object>(obj: T, ...args: [...string[]
 declare function deleteFlagProperty<T extends object>(obj: T, ...path: string[]): T;
 declare function setFlagProperties<T extends object>(obj: T, ...args: [...string[], properties: Record<string, any>]): T;
 declare function updateSourceFlag<T extends Document>(doc: T, ...args: [...string[], any]): DeepPartial<T["_source"]>;
-declare function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(doc: D, Model: ConstructorOf<T>, ...path: string[]): undefined | FlagData<T, D>;
+declare function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(doc: D, Model: ConstructorOf<T>, ...sourcePath: string[]): undefined | FlagData<T, D>;
 declare function getDataFlagArray<T extends foundry.abstract.DataModel, D extends Document>(doc: D, Model: ConstructorOf<T>, ...path: string[]): FlagDataArray<T, D> | undefined;
 type FlagData<T, D> = T & {
     setFlag: () => Promise<D | undefined>;
