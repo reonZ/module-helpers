@@ -50,17 +50,14 @@ function getActionGlyph(action: string | number | null | ActionCost): string {
 /**
  * https://github.com/foundryvtt/pf2e/blob/37b0dcab08141b3e9e4e0f44e51df9f4dfd52a71/src/util/misc.ts#L173
  */
+function getActionIcon(action: ActionIconType, fallback: ImageFilePath): ImageFilePath;
 function getActionIcon(
-    actionType: string | ActionCost | null,
-    fallback: ImageFilePath
-): ImageFilePath;
-function getActionIcon(
-    actionType: string | ActionCost | null,
+    action: ActionIconType,
     fallback: ImageFilePath | null
 ): ImageFilePath | null;
-function getActionIcon(actionType: string | ActionCost | null): ImageFilePath;
+function getActionIcon(action: ActionIconType): ImageFilePath;
 function getActionIcon(
-    action: string | ActionCost | null,
+    action: ActionIconType,
     fallback: ImageFilePath | null = "systems/pf2e/icons/actions/Empty.webp"
 ): ImageFilePath | null {
     if (action === null) return actionImgMap.passive;
@@ -100,5 +97,7 @@ async function useAction(event: Event, item: AbilityItemPF2e<ActorPF2e> | FeatPF
         },
     });
 }
+
+type ActionIconType = string | number | ActionCost | null;
 
 export { getActionGlyph, getActionIcon, isDefaultActionIcon, useAction };
