@@ -103,4 +103,18 @@ declare global {
     type Promisable<T> = Promise<T> | T;
 
     type NonEmptyArray<T> = [T, ...T[]];
+
+    type IfEquals<X, Y, A = X, B = never> = (<T>() => T extends X ? 1 : 2) extends <
+        T
+    >() => T extends Y ? 1 : 2
+        ? A
+        : B;
+
+    type Mutable<T> = { -readonly [K in keyof T]: T[K] };
+
+    type ReadonlyKeys<T> = {
+        [P in keyof T]-?: IfEquals<{ [Q in P]: T[P] }, { -readonly [Q in P]: T[P] }, never, P>;
+    }[keyof T];
+
+    type ExtractReadonly<T> = Mutable<Pick<T, ReadonlyKeys<T>>>;
 }

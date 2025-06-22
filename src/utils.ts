@@ -77,10 +77,27 @@ function sortByLocaleCompare<T extends Record<string, any>>(list: Array<T>, key:
     list.sort((a, b) => localeCompare(a[key], b[key]));
 }
 
+// this returns all the getters of an instance object into a plain data object
+function gettersToData<T extends Object>(instance: T): ExtractReadonly<T> {
+    const Cls = instance.constructor as ConstructorOf<T>;
+    const keys = Object.entries(Object.getOwnPropertyDescriptors(Cls.prototype))
+        .filter(([key, descriptor]) => typeof descriptor.get === "function")
+        .map(([key]) => key) as ReadonlyKeys<T>[];
+
+    const obj = {} as ExtractReadonly<T>;
+
+    for (const key of keys) {
+        obj[key] = instance[key];
+    }
+
+    return obj;
+}
+
 export {
     activateHooksAndWrappers,
     arraysEqual,
     disableHooksAndWrappers,
+    gettersToData,
     isDecimal,
     joinStr,
     localeCompare,
