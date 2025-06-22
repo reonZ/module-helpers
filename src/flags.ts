@@ -60,7 +60,7 @@ function updateSourceFlag<T extends Document>(
 function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(
     doc: D,
     Model: ConstructorOf<T>,
-    ...sourcePath: string[]
+    ...sourcePath: ReadonlyArray<string>
 ): undefined | FlagData<T, D> {
     const flag = getFlag(doc, ...sourcePath);
     if (!R.isPlainObject(flag)) return;
@@ -101,7 +101,7 @@ function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(
 function getDataFlagArray<T extends foundry.abstract.DataModel, D extends Document>(
     doc: D,
     Model: ConstructorOf<T>,
-    ...path: string[]
+    ...path: ReadonlyArray<string>
 ): FlagDataArray<T, D> | undefined {
     const flag = getFlag(doc, ...path);
     if (!R.isArray(flag)) return;
