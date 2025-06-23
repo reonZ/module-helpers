@@ -102,6 +102,19 @@ function hasItemWithSourceId(actor: ActorPF2e, uuid: string, type?: ItemType): b
     return !!findItemWithSourceId(actor, uuid, type);
 }
 
+function hasAnyItemWithSourceId(actor: ActorPF2e, uuids: string[], type?: ItemType): boolean {
+    for (const item of actorItems(actor, type)) {
+        if (isSupressedFeat(item)) continue;
+
+        const sourceId = item.sourceId;
+        if (sourceId && uuids.includes(sourceId)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 async function getItemFromUuid<T extends IsInstanceOfItem>(
     uuid: Maybe<string>,
     instance?: T
@@ -423,6 +436,7 @@ export {
     getItemSourceFromUuid,
     getItemSourceId,
     getItemTypeLabel,
+    hasAnyItemWithSourceId,
     hasItemWithSourceId,
     isCastConsumable,
     isSupressedFeat,
