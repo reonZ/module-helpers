@@ -117,4 +117,6 @@ declare global {
     }[keyof T];
 
     type ExtractReadonly<T> = Mutable<Pick<T, ReadonlyKeys<T>>>;
+
+    type MaybeFalsy<T> = T | false | 0 | undefined;
 }
