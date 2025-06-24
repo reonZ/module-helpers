@@ -1,4 +1,4 @@
-import { TokenDocumentPF2e, TokenPF2e } from "foundry-pf2e";
+import { ActorPF2e, TokenDocumentPF2e, TokenPF2e } from "foundry-pf2e";
 import { isInstanceOf } from "./object";
 
 function selectTokens(tokens: (TokenPF2e | TokenDocumentPF2e)[]) {
@@ -49,4 +49,35 @@ function panToToken(token: TokenPF2e | TokenDocumentPF2e, control?: boolean) {
     canvas.animatePan(token.center);
 }
 
-export { emitTokenHover, panToToken, pingToken, positionTokenFromCoords, selectTokens };
+function getFirstTokenThatMatches(
+    actor: ActorPF2e,
+    predicate: (token: TokenDocumentPF2e) => boolean
+) {
+    const scene = game.scenes.current;
+    if (!scene) return null;
+
+    for (const token of actor._dependentTokens.get(scene) ?? []) {
+        if (predicate(token)) {
+            return token;
+        }
+    }
+
+    return null;
+}
+
+function hasTokenThatMatches(
+    actor: ActorPF2e,
+    predicate: (token: TokenDocumentPF2e) => boolean
+): boolean {
+    return !!getFirstTokenThatMatches(actor, predicate);
+}
+
+export {
+    emitTokenHover,
+    getFirstTokenThatMatches,
+    hasTokenThatMatches,
+    panToToken,
+    pingToken,
+    positionTokenFromCoords,
+    selectTokens,
+};
