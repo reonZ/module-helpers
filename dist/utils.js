@@ -8,6 +8,14 @@ function arraysEqual(arr1, arr2) {
     arr2 = R.unique(arr2);
     return arr1.length === arr2.length && arr1.every((entry) => arr2.includes(entry));
 }
+function includesAny(arr, ...entries) {
+    for (const entry of entries) {
+        if (arr.includes(entry)) {
+            return true;
+        }
+    }
+    return false;
+}
 function roundToStep(value, step) {
     step = value < 0 ? step * -1 : step;
     const half = step / 2;
@@ -69,4 +77,4 @@ function gettersToData(instance) {
     }
     return obj;
 }
-export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, gettersToData, isDecimal, joinStr, localeCompare, removeIndexFromArray, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, stringNumber, toggleHooksAndWrappers, };
+export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, gettersToData, includesAny, isDecimal, joinStr, localeCompare, removeIndexFromArray, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, stringNumber, toggleHooksAndWrappers, };

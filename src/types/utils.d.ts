@@ -119,4 +119,10 @@ declare global {
     type ExtractReadonly<T> = Mutable<Pick<T, ReadonlyKeys<T>>>;
 
     type MaybeFalsy<T> = T | false | 0 | undefined;
+
+    type ExtractValuesOfType<T, V> = {
+        [K in keyof T]: T[K] extends V ? K : never;
+    };
+
+    type Stringptionel<T extends string> = T | (string & {});
 }

@@ -17,6 +17,16 @@ function arraysEqual<T extends any[]>(arr1: T, arr2: any[]): arr2 is T {
     return arr1.length === arr2.length && arr1.every((entry) => arr2.includes(entry));
 }
 
+function includesAny(arr: any[], ...entries: any[]): boolean {
+    for (const entry of entries) {
+        if (arr.includes(entry)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function roundToStep(value: number, step: number): number {
     step = value < 0 ? step * -1 : step;
     const half = step / 2;
@@ -98,6 +108,7 @@ export {
     arraysEqual,
     disableHooksAndWrappers,
     gettersToData,
+    includesAny,
     isDecimal,
     joinStr,
     localeCompare,
