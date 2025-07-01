@@ -38,6 +38,9 @@ function panToToken(token, control) {
     }
     canvas.animatePan(token.center);
 }
+function getFirstActiveToken(actor) {
+    return getFirstTokenThatMatches(actor, () => true);
+}
 function getFirstTokenThatMatches(actor, predicate) {
     const scene = game.scenes.current;
     if (!scene)
@@ -52,4 +55,4 @@ function getFirstTokenThatMatches(actor, predicate) {
 function hasTokenThatMatches(actor, predicate) {
     return !!getFirstTokenThatMatches(actor, predicate);
 }
-export { emitTokenHover, getFirstTokenThatMatches, hasTokenThatMatches, panToToken, pingToken, positionTokenFromCoords, selectTokens, };
+export { emitTokenHover, getFirstActiveToken, getFirstTokenThatMatches, hasTokenThatMatches, panToToken, pingToken, positionTokenFromCoords, selectTokens, };

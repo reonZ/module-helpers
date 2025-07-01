@@ -49,6 +49,10 @@ function panToToken(token: TokenPF2e | TokenDocumentPF2e, control?: boolean) {
     canvas.animatePan(token.center);
 }
 
+function getFirstActiveToken(actor: ActorPF2e) {
+    return getFirstTokenThatMatches(actor, () => true);
+}
+
 function getFirstTokenThatMatches(
     actor: ActorPF2e,
     predicate: (token: TokenDocumentPF2e) => boolean
@@ -74,6 +78,7 @@ function hasTokenThatMatches(
 
 export {
     emitTokenHover,
+    getFirstActiveToken,
     getFirstTokenThatMatches,
     hasTokenThatMatches,
     panToToken,
