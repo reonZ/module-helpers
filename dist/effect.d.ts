@@ -33,7 +33,7 @@ interface EffectsPanelViewData {
     };
 }
 interface EffectViewData {
-    effect: AbstractEffectPF2e<ActorPF2e>;
+    effect: AbstractEffectPF2e;
     description: string;
     remaining: string | null;
 }
