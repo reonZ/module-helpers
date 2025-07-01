@@ -1,4 +1,5 @@
 import {
+    AbstractEffectPF2e,
     ActorPF2e,
     ArithmeticExpression,
     ChatMessagePF2e,
@@ -50,6 +51,7 @@ type IsInstanceOfClasses = IsInstanceOfItems & {
 };
 
 type IsInstanceOfItems = {
+    AbstractEffectPF2e: AbstractEffectPF2e;
     ConsumablePF2e: ConsumablePF2e;
     EffectPF2e: EffectPF2e;
     FeatPF2e: FeatPF2e;

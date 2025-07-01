@@ -1,4 +1,4 @@
-import { ActorPF2e, ArithmeticExpression, ChatMessagePF2e, ConsumablePF2e, CreatureConfig, CreaturePF2e, DamageRoll, EffectPF2e, FeatPF2e, Grouping, ItemPF2e, LootPF2e, MacroPF2e, SpellcastingEntryPF2e, SpellPF2e, TokenDocumentPF2e, TokenPF2e } from "foundry-pf2e";
+import { AbstractEffectPF2e, ActorPF2e, ArithmeticExpression, ChatMessagePF2e, ConsumablePF2e, CreatureConfig, CreaturePF2e, DamageRoll, EffectPF2e, FeatPF2e, Grouping, ItemPF2e, LootPF2e, MacroPF2e, SpellcastingEntryPF2e, SpellPF2e, TokenDocumentPF2e, TokenPF2e } from "foundry-pf2e";
 declare function isInstanceOf<T extends keyof IsInstanceOfClasses>(obj: any, cls: T): obj is IsInstanceOfClasses[T];
 declare function isInstanceOf<T>(obj: any, cls: string): obj is T;
 type IsInstanceOfClasses = IsInstanceOfItems & {
@@ -15,6 +15,7 @@ type IsInstanceOfClasses = IsInstanceOfItems & {
     TokenDocumentPF2e: TokenDocumentPF2e;
 };
 type IsInstanceOfItems = {
+    AbstractEffectPF2e: AbstractEffectPF2e;
     ConsumablePF2e: ConsumablePF2e;
     EffectPF2e: EffectPF2e;
     FeatPF2e: FeatPF2e;
