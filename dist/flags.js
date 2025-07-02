@@ -36,13 +36,22 @@ function updateSourceFlag(doc, ...args) {
     const value = args.pop();
     return doc.updateSource({ [flagPath(...args)]: value });
 }
-function getDataFlag(doc, Model, ...sourcePath) {
+function getDataFlag(doc, Model, ...args) {
+    const [sourcePath, options] = typeof args.at(-1) === "object"
+        ? [args.slice(0, -1), args.at(-1)]
+        : [args.slice(), {}];
     const flag = getFlag(doc, ...sourcePath);
-    if (!R.isPlainObject(flag))
+    if (options.strict && !R.isPlainObject(flag))
         return;
+    const source = foundry.utils.mergeObject(flag ?? {}, options.fallback ?? {}, {
+        inplace: false,
+        insertKeys: true,
+        overwrite: false,
+        recursive: true,
+    });
     try {
-        const model = new Model(flag);
-        if (model.invalid)
+        const model = new Model(source);
+        if (!options.invalid && model.invalid)
             return;
         Object.defineProperty(model, "setFlag", {
             value: function () {

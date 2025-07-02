@@ -60,14 +60,26 @@ function updateSourceFlag<T extends Document>(
 function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(
     doc: D,
     Model: ConstructorOf<T>,
-    ...sourcePath: ReadonlyArray<string>
-): undefined | FlagData<T, D> {
+    ...args: DataFlagArgs<T>
+): undefined | FlagData<T> {
+    const [sourcePath, options] =
+        typeof args.at(-1) === "object"
+            ? ([args.slice(0, -1), args.at(-1)] as [ReadonlyArray<string>, DataFlagOptions<T>])
+            : ([args.slice(), {}] as [ReadonlyArray<string>, DataFlagOptions<T>]);
+
     const flag = getFlag(doc, ...sourcePath);
-    if (!R.isPlainObject(flag)) return;
+    if (options.strict && !R.isPlainObject(flag)) return;
+
+    const source = foundry.utils.mergeObject(flag ?? {}, options.fallback ?? {}, {
+        inplace: false,
+        insertKeys: true,
+        overwrite: false,
+        recursive: true,
+    });
 
     try {
-        const model = new Model(flag);
-        if (model.invalid) return;
+        const model = new Model(source);
+        if (!options.invalid && model.invalid) return;
 
         Object.defineProperty(model, "setFlag", {
             value: function (): Promise<D | undefined> {
@@ -135,13 +147,26 @@ function getDataFlagArray<T extends foundry.abstract.DataModel, D extends Docume
     }
 }
 
-type FlagData<T, D> = T & {
-    setFlag: () => Promise<D | undefined>;
+type FlagData<T> = T & {
+    setFlag: () => Promise<any | undefined>;
 };
 
 type FlagDataArray<T, D> = T[] & {
     setFlag: () => Promise<D>;
 };
+
+type DataFlagOptions<T extends foundry.abstract.DataModel> = {
+    /** will be merged to the flag data before instantiation */
+    fallback?: DeepPartial<T["_source"]>;
+    /** return data even if invalid */
+    invalid?: boolean;
+    /** only return the data if there is a flag */
+    strict?: boolean;
+};
+
+type DataFlagArgs<T extends foundry.abstract.DataModel> = Readonly<
+    [...string[], string | DataFlagOptions<T>] | string[]
+>;
 
 export {
     deleteFlagProperty,
@@ -157,4 +182,4 @@ export {
     updateSourceFlag,
 };
 
-export type { FlagData, FlagDataArray };
+export type { DataFlagArgs, DataFlagOptions, FlagData, FlagDataArray };
