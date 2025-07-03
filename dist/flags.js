@@ -12,8 +12,8 @@ function setFlag(doc, ...args) {
 function unsetFlag(doc, ...path) {
     return doc.unsetFlag(MODULE.id, path.join("."));
 }
-function updateFlag(doc, updates) {
-    return doc.update({ flags: { [MODULE.id]: updates } });
+function updateFlag(doc, updates, operation) {
+    return doc.update({ flags: { [MODULE.id]: updates } }, operation);
 }
 function getFlagProperty(obj, ...path) {
     return foundry.utils.getProperty(obj, flagPath(...path));

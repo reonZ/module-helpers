@@ -18,11 +18,12 @@ function unsetFlag<D extends Document>(doc: D, ...path: string[]): Promise<D> {
     return doc.unsetFlag(MODULE.id, path.join("."));
 }
 
-function updateFlag<T extends Record<string, unknown>>(
-    doc: foundry.abstract.Document,
-    updates: Partial<T> & Partial<Record<`-=${keyof T & string}`, null>>
+function updateFlag<T extends Record<string, unknown>, D extends foundry.abstract.Document>(
+    doc: D,
+    updates: T,
+    operation?: Partial<DatabaseUpdateOperation<D>>
 ) {
-    return doc.update({ flags: { [MODULE.id]: updates } });
+    return doc.update({ flags: { [MODULE.id]: updates } }, operation);
 }
 
 function getFlagProperty<T>(obj: object, ...path: string[]): T | undefined {
