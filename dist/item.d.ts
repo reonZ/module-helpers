@@ -11,7 +11,7 @@ declare function getItemFromUuid(uuid: Maybe<string>, instance?: string): Promis
 declare function getItemSource<T extends ItemPF2e>(item: T, clearId?: boolean): T["_source"];
 declare function getItemSourceFromUuid<T extends IsInstanceOfItem>(uuid: string, instance?: T): Promise<IsInstanceOfItems[T]["_source"] | null>;
 declare function getItemSourceFromUuid(uuid: string, instance?: string): Promise<ItemSourcePF2e | null>;
-declare function getItemSourceId(item: ItemPF2e): string;
+declare function getItemSourceId(item: ItemPF2e): ItemUUID;
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/helpers.ts#L13
  */

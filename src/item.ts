@@ -152,7 +152,7 @@ async function getItemSourceFromUuid(uuid: string, instance?: string) {
     return !!item ? getItemSource(item) : null;
 }
 
-function getItemSourceId(item: ItemPF2e): string {
+function getItemSourceId(item: ItemPF2e): ItemUUID {
     return item.sourceId ?? item.uuid;
 }
 
