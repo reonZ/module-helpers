@@ -99,6 +99,10 @@ function htmlClosest(child, selectors) {
         return null;
     return child.closest(selectors);
 }
+function htmlQueryIn(child, parentSelector, siblingSelector) {
+    const parent = htmlClosest(child, parentSelector);
+    return htmlQuery(parent, siblingSelector);
+}
 function arrayToSelectOptions(entries, i18n) {
     const newEntries = [];
     for (const entry of entries) {
@@ -162,4 +166,4 @@ function getInputValue(el) {
             ? el.checked
             : el.value.trim();
 }
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, };

@@ -203,6 +203,30 @@ function htmlClosest(child: MaybeHTML, selectors: string): HTMLElement | null {
     return child.closest<HTMLElement>(selectors);
 }
 
+function htmlQueryIn<K extends keyof HTMLElementTagNameMap>(
+    child: MaybeHTML,
+    parentSelector: string,
+    siblingSelector: K
+): HTMLElementTagNameMap[K] | null;
+function htmlQueryIn(
+    child: MaybeHTML,
+    parentSelector: string,
+    siblingSelector: string
+): HTMLElement | null;
+function htmlQueryIn<E extends HTMLElement = HTMLElement>(
+    child: MaybeHTML,
+    parentSelector: string,
+    siblingSelector: string
+): E | null;
+function htmlQueryIn(
+    child: MaybeHTML,
+    parentSelector: string,
+    siblingSelector: string
+): HTMLElement | null {
+    const parent = htmlClosest(child, parentSelector);
+    return htmlQuery(parent, siblingSelector);
+}
+
 function arrayToSelectOptions(
     entries: Iterable<IterableSelectOptions>,
     i18n?: I18n
@@ -327,6 +351,7 @@ export {
     htmlClosest,
     htmlQuery,
     htmlQueryAll,
+    htmlQueryIn,
 };
 
 export type { DatasetData, DatasetValue, IterableSelectOptions };
