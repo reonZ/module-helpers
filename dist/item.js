@@ -151,7 +151,7 @@ async function consumeItem(event, item) {
             name: item.name,
             current: uses.value - 1,
         });
-        const flavor = `<h4>${use}</h4>`;
+        const flavor = `<h4 style="margin-bottom: .3em; font-size: 1.3em;">${use}</h4>`;
         ChatMessage.create({ speaker, content: `${flavor}${content}`, flags });
     }
     if (item.system.uses.autoDestroy && uses.value <= 1) {

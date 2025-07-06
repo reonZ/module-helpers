@@ -262,7 +262,7 @@ async function consumeItem(event: Event, item: ConsumablePF2e<ActorPF2e>) {
             name: item.name,
             current: uses.value - 1,
         });
-        const flavor = `<h4>${use}</h4>`;
+        const flavor = `<h4 style="margin-bottom: .3em; font-size: 1.3em;">${use}</h4>`;
 
         ChatMessage.create({ speaker, content: `${flavor}${content}`, flags });
     }
