@@ -39,12 +39,20 @@ function templateLocalize(...subKeys: string[]) {
             enumerable: false,
             configurable: false,
         },
+        root: {
+            value: (...args: Parameters<HelperDelegate>) => {
+                const { hash } = args.pop() as HelperOptions;
+                return localize(...(args as string[]), hash as LocalizeData);
+            },
+            enumerable: false,
+            configurable: false,
+        },
     });
 
     return fn;
 }
 
-function templateTooltip(...args: [...string[], TemplateToolipOptions]) {
+function templateTooltip(...args: [...string[], TemplateToolipOptions]): string {
     const options = args[0] as TemplateToolipOptions;
     const tooltip = options.localize !== false ? localize(...args) : args[0];
     return `data-tooltip="${tooltip}"`;

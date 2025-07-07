@@ -30,6 +30,14 @@ function templateLocalize(...subKeys) {
             enumerable: false,
             configurable: false,
         },
+        root: {
+            value: (...args) => {
+                const { hash } = args.pop();
+                return localize(...args, hash);
+            },
+            enumerable: false,
+            configurable: false,
+        },
     });
     return fn;
 }
