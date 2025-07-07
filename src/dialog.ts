@@ -50,6 +50,8 @@ async function waitDialog({
     classes = [],
     content,
     data,
+    // return value of disabled inputs too
+    disabled,
     focus,
     i18n,
     minWidth,
@@ -77,7 +79,7 @@ async function waitDialog({
                 callback:
                     yes?.callback ??
                     (async (event, btn, dialog) => {
-                        return createFormData(dialog.element);
+                        return createFormData(dialog.element, { disabled });
                     }),
             },
             {
@@ -88,7 +90,7 @@ async function waitDialog({
                 callback: async (event, btn, dialog) => {
                     if (!returnOnFalse) return false;
 
-                    const data = createFormData(dialog.element);
+                    const data = createFormData(dialog.element, { disabled });
                     return data ? R.pick(data, returnOnFalse) : null;
                 },
             },
@@ -202,6 +204,7 @@ type ConfirmDialogOptions = BaseDialogOptions & {
 
 type WaitDialogOptions = BaseDialogOptions & {
     content: string | CreateFormGroupParams[];
+    disabled?: boolean;
     focus?: string;
     i18n: string;
     no?: { label?: string; icon?: string; default?: true };

@@ -15,7 +15,9 @@ class ModuleDialog extends DialogV2 {
         content.style.minWidth = this.options.minWidth ?? "400px";
     }
 }
-async function waitDialog({ classes = [], content, data, focus, i18n, minWidth, no, onRender, position = {}, returnOnFalse, skipAnimate, title, yes, }) {
+async function waitDialog({ classes = [], content, data, 
+// return value of disabled inputs too
+disabled, focus, i18n, minWidth, no, onRender, position = {}, returnOnFalse, skipAnimate, title, yes, }) {
     if (data) {
         data.i18n = templateLocalize(i18n);
     }
@@ -29,7 +31,7 @@ async function waitDialog({ classes = [], content, data, focus, i18n, minWidth, 
                 default: !no?.default,
                 callback: yes?.callback ??
                     (async (event, btn, dialog) => {
-                        return createFormData(dialog.element);
+                        return createFormData(dialog.element, { disabled });
                     }),
             },
             {
@@ -40,7 +42,7 @@ async function waitDialog({ classes = [], content, data, focus, i18n, minWidth, 
                 callback: async (event, btn, dialog) => {
                     if (!returnOnFalse)
                         return false;
-                    const data = createFormData(dialog.element);
+                    const data = createFormData(dialog.element, { disabled });
                     return data ? R.pick(data, returnOnFalse) : null;
                 },
             },

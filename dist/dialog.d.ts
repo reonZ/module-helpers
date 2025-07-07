@@ -26,6 +26,7 @@ type ConfirmDialogOptions = BaseDialogOptions & {
 };
 type WaitDialogOptions = BaseDialogOptions & {
     content: string | CreateFormGroupParams[];
+    disabled?: boolean;
     focus?: string;
     i18n: string;
     no?: {
