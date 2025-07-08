@@ -77,4 +77,12 @@ function gettersToData(instance) {
     }
     return obj;
 }
-export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, gettersToData, includesAny, isDecimal, joinStr, localeCompare, removeIndexFromArray, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, stringNumber, toggleHooksAndWrappers, };
+function addToObjectIfNonNullish(obj, extra) {
+    for (const [key, value] of R.entries(extra)) {
+        if (value != null) {
+            obj[key] = value;
+        }
+    }
+    return obj;
+}
+export { activateHooksAndWrappers, addToObjectIfNonNullish, arraysEqual, disableHooksAndWrappers, gettersToData, includesAny, isDecimal, joinStr, localeCompare, removeIndexFromArray, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, stringNumber, toggleHooksAndWrappers, };

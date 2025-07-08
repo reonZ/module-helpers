@@ -103,8 +103,22 @@ function gettersToData<T extends Object>(instance: T): ExtractReadonly<T> {
     return obj;
 }
 
+function addToObjectIfNonNullish<T extends Record<string, any>, E extends Record<string, any>>(
+    obj: T & Partial<E>,
+    extra: E
+): T & Partial<E> {
+    for (const [key, value] of R.entries(extra)) {
+        if (value != null) {
+            obj[key as keyof T] = value;
+        }
+    }
+
+    return obj;
+}
+
 export {
     activateHooksAndWrappers,
+    addToObjectIfNonNullish,
     arraysEqual,
     disableHooksAndWrappers,
     gettersToData,

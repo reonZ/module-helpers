@@ -15,4 +15,5 @@ declare function stringNumber(b: number | string): `${number}`;
 declare function localeCompare(a: string, b: string): number;
 declare function sortByLocaleCompare<T extends Record<string, any>>(list: Array<T>, key: keyof T): void;
 declare function gettersToData<T extends Object>(instance: T): ExtractReadonly<T>;
-export { activateHooksAndWrappers, arraysEqual, disableHooksAndWrappers, gettersToData, includesAny, isDecimal, joinStr, localeCompare, removeIndexFromArray, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, stringNumber, toggleHooksAndWrappers, };
+declare function addToObjectIfNonNullish<T extends Record<string, any>, E extends Record<string, any>>(obj: T & Partial<E>, extra: E): T & Partial<E>;
+export { activateHooksAndWrappers, addToObjectIfNonNullish, arraysEqual, disableHooksAndWrappers, gettersToData, includesAny, isDecimal, joinStr, localeCompare, removeIndexFromArray, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, stringNumber, toggleHooksAndWrappers, };
