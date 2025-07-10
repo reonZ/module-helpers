@@ -31,7 +31,7 @@ declare global {
         };
 
         type AnimistVesselsData = {
-            entry: SpellcastingEntryPF2e;
+            entry: SpellcastingEntryPF2e<CharacterPF2e>;
             primary: string[];
         };
 
