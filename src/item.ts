@@ -5,7 +5,6 @@ import {
     ConsumablePF2e,
     CreaturePF2e,
     EquipmentPF2e,
-    FeatPF2e,
     ItemInstances,
     ItemPF2e,
     ItemSourcePF2e,
@@ -62,9 +61,7 @@ function* actorItems<TType extends ItemType, TActor extends ActorPF2e>(
     }
 }
 
-function isSupressedFeat<TActor extends ActorPF2e | null>(
-    item: ItemPF2e<TActor>
-): item is FeatPF2e<TActor> {
+function isSupressedFeat<TActor extends ActorPF2e | null>(item: ItemPF2e<TActor>): boolean {
     return item.isOfType("feat") && item.suppressed;
 }
 
