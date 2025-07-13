@@ -17,6 +17,7 @@ import {
     SpellPF2e,
     TokenDocumentPF2e,
     TokenPF2e,
+    WeaponPF2e,
 } from "foundry-pf2e";
 
 function isInstanceOf<T extends keyof IsInstanceOfClasses>(
@@ -58,6 +59,7 @@ type IsInstanceOfItems = {
     ItemPF2e: ItemPF2e;
     SpellcastingEntryPF2e: SpellcastingEntryPF2e;
     SpellPF2e: SpellPF2e;
+    WeaponPF2e: WeaponPF2e;
 };
 
 type IsInstanceOfItem = keyof IsInstanceOfItems;
