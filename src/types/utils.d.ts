@@ -1,4 +1,4 @@
-import { ActorPF2e, TokenDocumentPF2e } from "foundry-pf2e";
+import { ActorPF2e, TokenDocumentPF2e, ValueAndMax } from "foundry-pf2e";
 
 export {};
 
@@ -125,4 +125,6 @@ declare global {
     };
 
     type Stringptionel<T extends string> = T | (string & {});
+
+    type ValueAndMinMax = ValueAndMax & { min: number };
 }
