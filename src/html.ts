@@ -92,6 +92,31 @@ function createHTMLElement<K extends keyof HTMLElementTagNameMap>(
     return element;
 }
 
+function createInputElement(
+    type: "text" | "number" | "radio" | "checkbox",
+    name: string,
+    value: string | number | boolean,
+    options?: CreateHTMLInputElementOptions
+): HTMLInputElement {
+    const input = createHTMLElement("input", options);
+
+    input.type = type;
+    input.name = name;
+
+    if (type === "text") {
+        input.value = String(value);
+    } else if (type === "number") {
+        input.valueAsNumber = Number(value) || 0;
+    } else if (type === "checkbox") {
+        input.checked = Boolean(value);
+    } else {
+        input.value = String(value);
+        input.checked = !!options?.checked;
+    }
+
+    return input;
+}
+
 function createHTMLElementContent(options?: CreateHTMLElementOptions): HTMLElement {
     return createHTMLElement("div", options).firstChild as HTMLElement;
 }
@@ -312,13 +337,17 @@ function getInputValue(el: HTMLInputElement) {
         : el.value.trim();
 }
 
-interface CreateHTMLElementOptions {
+type CreateHTMLElementOptions = {
     classes?: string[];
     content?: string | HTMLCollection | (Element | string)[] | Element;
     dataset?: Record<string, string | number | boolean | null | undefined>;
     id?: string;
     style?: Partial<CSSStyleDeclaration>;
-}
+};
+
+type CreateHTMLInputElementOptions = Omit<CreateHTMLElementOptions, "content" | "id"> & {
+    checked?: boolean;
+};
 
 type DatasetValue = Maybe<string | number | boolean | object>;
 type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
@@ -343,6 +372,7 @@ export {
     assignStyle,
     createHTMLElement,
     createHTMLElementContent,
+    createInputElement,
     createToggleableEvent,
     datasetToData,
     dataToDatasetString,

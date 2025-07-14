@@ -7,6 +7,7 @@ type PersistentEvent = {
 declare function createToggleableEvent<TEvent extends keyof DocumentEventMap>(event: TEvent, selector: null, listener: (ev: DocumentEventMap[TEvent]) => any, options?: boolean | AddEventListenerOptions): PersistentEvent;
 declare function createToggleableEvent<TEvent extends keyof HTMLElementEventMap>(event: TEvent, selector: string, listener: (ev: HTMLElementEventMap[TEvent]) => any, options?: boolean | AddEventListenerOptions): PersistentEvent;
 declare function createHTMLElement<K extends keyof HTMLElementTagNameMap>(nodeName: K, { classes, dataset, content, id, style }?: CreateHTMLElementOptions): HTMLElementTagNameMap[K];
+declare function createInputElement(type: "text" | "number" | "radio" | "checkbox", name: string, value: string | number | boolean, options?: CreateHTMLInputElementOptions): HTMLInputElement;
 declare function createHTMLElementContent(options?: CreateHTMLElementOptions): HTMLElement;
 declare function htmlQuery<K extends keyof HTMLElementTagNameMap>(parent: MaybeHTML, selectors: K): HTMLElementTagNameMap[K] | null;
 declare function htmlQuery<E extends HTMLElement = HTMLElement>(parent: MaybeHTML, selectors: string): E | null;
@@ -32,17 +33,20 @@ declare function dataToDatasetString(data: DatasetData): string;
 declare function datasetToData<T extends Record<string, any>>(dataset: DOMStringMap): T;
 declare function firstElementWithText(el: Maybe<Element>): HTMLElement | null;
 declare function getInputValue(el: HTMLInputElement): string | number | boolean;
-interface CreateHTMLElementOptions {
+type CreateHTMLElementOptions = {
     classes?: string[];
     content?: string | HTMLCollection | (Element | string)[] | Element;
     dataset?: Record<string, string | number | boolean | null | undefined>;
     id?: string;
     style?: Partial<CSSStyleDeclaration>;
-}
+};
+type CreateHTMLInputElementOptions = Omit<CreateHTMLElementOptions, "content" | "id"> & {
+    checked?: boolean;
+};
 type DatasetValue = Maybe<string | number | boolean | object>;
 type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
 type ListenerCallbackArgs<E extends HTMLElement, TEvent extends EventType> = [TEvent, ListenerCallback<E, TEvent>, boolean] | [TEvent, ListenerCallback<E, TEvent>] | [ListenerCallback<E, TEvent>, boolean] | [ListenerCallback<E, TEvent>];
 type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = (element: TElement, event: HTMLElementEventMap[TEvent]) => void;
 type IterableSelectOptions = SelectOption | string | FormSelectOption;
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, createInputElement, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, };
 export type { DatasetData, DatasetValue, IterableSelectOptions };

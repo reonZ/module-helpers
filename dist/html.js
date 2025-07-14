@@ -57,6 +57,25 @@ function createHTMLElement(nodeName, { classes = [], dataset = {}, content, id, 
     }
     return element;
 }
+function createInputElement(type, name, value, options) {
+    const input = createHTMLElement("input", options);
+    input.type = type;
+    input.name = name;
+    if (type === "text") {
+        input.value = String(value);
+    }
+    else if (type === "number") {
+        input.valueAsNumber = Number(value) || 0;
+    }
+    else if (type === "checkbox") {
+        input.checked = Boolean(value);
+    }
+    else {
+        input.value = String(value);
+        input.checked = !!options?.checked;
+    }
+    return input;
+}
 function createHTMLElementContent(options) {
     return createHTMLElement("div", options).firstChild;
 }
@@ -166,4 +185,4 @@ function getInputValue(el) {
             ? el.checked
             : el.value.trim();
 }
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, };
+export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, createInputElement, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, };
