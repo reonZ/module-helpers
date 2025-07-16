@@ -6,6 +6,19 @@ function actorsRespectAlliance(origin, target, alliance = "all") {
             ? target.isEnemyOf(origin)
             : true;
 }
+function getDispositionColor(actor) {
+    const alliance = actor?.alliance;
+    const colorValue = !actor
+        ? CONFIG.Canvas.dispositionColors.NEUTRAL
+        : alliance === "party"
+            ? actor.hasPlayerOwner
+                ? CONFIG.Canvas.dispositionColors.PARTY
+                : CONFIG.Canvas.dispositionColors.FRIENDLY
+            : alliance === "opposition"
+                ? CONFIG.Canvas.dispositionColors.HOSTILE
+                : CONFIG.Canvas.dispositionColors.NEUTRAL;
+    return new Color(colorValue);
+}
 function oppositeAlliance(alliance) {
     return alliance === "party" ? "opposition" : alliance === "opposition" ? "party" : null;
 }
@@ -28,4 +41,4 @@ async function getActorFromUuid(uuid) {
     const actor = await fromUuid(uuid);
     return actor instanceof Actor ? actor : null;
 }
-export { actorsRespectAlliance, getActorFromUuid, hasRollOption, isAllyActor, oppositeAlliance, playersCanSeeName, };
+export { actorsRespectAlliance, getActorFromUuid, getDispositionColor, hasRollOption, isAllyActor, oppositeAlliance, playersCanSeeName, };
