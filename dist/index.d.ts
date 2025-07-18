@@ -24,7 +24,6 @@ export * from "./item";
 export * from "./keybinds";
 export * from "./libwrapper";
 export * from "./localize";
-export * from "./migration";
 export * from "./misc";
 export * from "./module";
 export * from "./notes";

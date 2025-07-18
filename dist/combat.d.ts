@@ -1,3 +1,4 @@
-import { ActorPF2e } from "foundry-pf2e";
+import { ActorPF2e, CombatantPF2e, EncounterPF2e, RolledCombatant } from "foundry-pf2e";
+declare function hasRolledInitiative(combatant: CombatantPF2e): combatant is RolledCombatant<EncounterPF2e>;
 declare function isCurrentCombatant(actor: ActorPF2e): boolean;
-export { isCurrentCombatant };
+export { hasRolledInitiative, isCurrentCombatant };
