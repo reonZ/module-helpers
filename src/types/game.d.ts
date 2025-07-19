@@ -12,8 +12,9 @@ declare module "foundry-pf2e" {
             ) => void;
         };
 
-        toolbelt?: toolbelt.GamePF2e;
+        hud?: MyModule.GamePF2e<HudApi>;
         dailies?: MyModule.GamePF2e<DailiesApi>;
+        toolbelt?: toolbelt.GamePF2e;
     }
 }
 
