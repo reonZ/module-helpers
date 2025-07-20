@@ -173,9 +173,6 @@ async function consumeItem(event, item) {
         });
     }
 }
-function itemWithActor(item, actor) {
-    return (item.parent ? item : new (getDocumentClass("Item"))(item.toObject(), { parent: actor }));
-}
 function getItemTypeLabel(type) {
     return game.i18n.localize(`TYPES.Item.${type}`);
 }
@@ -237,4 +234,4 @@ async function equipItemToUse(actor, item, { carryType, handsHeld, fullAnnotatio
         style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
     });
 }
-export { actorItems, equipItemToUse, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, itemWithActor, usePhysicalItem, };
+export { actorItems, equipItemToUse, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, usePhysicalItem, };

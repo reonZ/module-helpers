@@ -279,12 +279,6 @@ async function consumeItem(event: Event, item: ConsumablePF2e<ActorPF2e>) {
     }
 }
 
-function itemWithActor(item: ItemPF2e, actor: ActorPF2e): ItemPF2e<ActorPF2e> {
-    return (
-        item.parent ? item : new (getDocumentClass("Item"))(item.toObject(), { parent: actor })
-    ) as ItemPF2e<ActorPF2e>;
-}
-
 function getItemTypeLabel(type: ItemType) {
     return game.i18n.localize(`TYPES.Item.${type}`);
 }
@@ -395,7 +389,6 @@ export {
     isSupressedFeat,
     ITEM_CARRY_TYPES,
     itemIsOfType,
-    itemWithActor,
     usePhysicalItem,
 };
 export type { EquipAnnotationData };

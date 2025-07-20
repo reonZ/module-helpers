@@ -20,7 +20,6 @@ declare function itemIsOfType<TParent extends ActorPF2e | null, TType extends "p
 declare function itemIsOfType<TParent extends ActorPF2e | null>(item: ItemOrSource, type: "physical"): item is PhysicalItemPF2e<TParent> | PhysicalItemPF2e["_source"];
 declare function isCastConsumable(item: ConsumablePF2e): boolean;
 declare function usePhysicalItem(event: Event, item: EquipmentPF2e<ActorPF2e> | ConsumablePF2e<ActorPF2e>): Promise<unknown>;
-declare function itemWithActor(item: ItemPF2e, actor: ActorPF2e): ItemPF2e<ActorPF2e>;
 declare function getItemTypeLabel(type: ItemType): string;
 declare function getEquipAnnotation(item: Maybe<PhysicalItemPF2e>): EquipAnnotationData | undefined;
 /**
@@ -38,5 +37,5 @@ type EquipAnnotationData = {
 };
 type AuxiliaryAnnotation = "draw" | "pick-up" | "retrieve" | "sheathe";
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
-export { actorItems, equipItemToUse, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, itemWithActor, usePhysicalItem, };
+export { actorItems, equipItemToUse, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, usePhysicalItem, };
 export type { EquipAnnotationData };
