@@ -1,7 +1,6 @@
 import {
     ActorPF2e,
     CharacterPF2e,
-    ChatMessagePF2e,
     ConsumablePF2e,
     CreaturePF2e,
     EquipmentPF2e,
@@ -14,10 +13,8 @@ import {
 } from "foundry-pf2e";
 import {
     createHTMLElementContent,
-    eventToRollMode,
     getActionGlyph,
     getDamageRollClass,
-    htmlClosest,
     htmlQuery,
     isInstanceOf,
     IsInstanceOfItem,
@@ -282,51 +279,10 @@ async function consumeItem(event: Event, item: ConsumablePF2e<ActorPF2e>) {
     }
 }
 
-/**
- * slightly modified version of
- * https://github.com/foundryvtt/pf2e/blob/0191f1fdac24c3903a939757a315043d1fcbfa59/src/module/item/base/document.ts#L218
- */
-async function unownedItemToMessage(
-    actor: ActorPF2e,
-    item: ItemPF2e,
-    event?: Maybe<Event>,
-    options: { rollMode?: RollMode | "roll"; create?: boolean; data?: Record<string, unknown> } = {}
-): Promise<ChatMessagePF2e | undefined> {
-    const sluggify = game.pf2e.system.sluggify;
-    const ChatMessagePF2e = getDocumentClass("ChatMessage");
-
-    // Basic template rendering data
-    const template = `systems/pf2e/templates/chat/${sluggify(item.type)}-card.hbs`;
-    const token = actor.token;
-    const nearestItem = htmlClosest(event?.target, ".item");
-    const rollOptions = options.data ?? { ...(nearestItem?.dataset ?? {}) };
-    const templateData = {
-        actor,
-        tokenId: token ? `${token.parent?.id}.${token.id}` : null,
-        item,
-        data: await item.getChatData(undefined, rollOptions),
-    };
-
-    // Basic chat message data
-    const rollMode = options.rollMode ?? eventToRollMode(event);
-    const chatData = ChatMessagePF2e.applyRollMode(
-        {
-            style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-            speaker: ChatMessagePF2e.getSpeaker({
-                actor,
-                token: actor.getActiveTokens(false, true).at(0),
-            }),
-            content: await foundry.applications.handlebars.renderTemplate(template, templateData),
-            flags: { pf2e: { origin: item.getOriginData() } },
-        },
-        rollMode
-    );
-
-    // Create the chat message
-    const operation = { rollMode, renderSheet: false };
-    return options.create ?? true
-        ? ChatMessagePF2e.create(chatData, operation)
-        : new ChatMessagePF2e(chatData, { rollMode });
+function itemWithActor(item: ItemPF2e, actor: ActorPF2e): ItemPF2e<ActorPF2e> {
+    return (
+        item.parent ? item : new (getDocumentClass("Item"))(item.toObject(), { parent: actor })
+    ) as ItemPF2e<ActorPF2e>;
 }
 
 function getItemTypeLabel(type: ItemType) {
@@ -439,7 +395,7 @@ export {
     isSupressedFeat,
     ITEM_CARRY_TYPES,
     itemIsOfType,
-    unownedItemToMessage,
+    itemWithActor,
     usePhysicalItem,
 };
 export type { EquipAnnotationData };
