@@ -67,12 +67,12 @@ declare global {
             type MessageTargetApplied = Record<`${number}` | number, boolean>;
 
             type MessageFlag = {
+                author?: ActorUUID;
                 applied?: Record<string, MessageTargetApplied>;
                 isRegen?: boolean;
                 item?: ItemUUID;
                 options?: string[];
-                save?: MessageSaveFlag;
-                saves?: Record<string, MessageTargetSave>;
+                saveVariants?: Record<string, Record<string, MessageSaveFlag>>;
                 splashIndex?: number;
                 splashTargets?: string[];
                 targets?: TokenDocumentUUID[];
@@ -81,9 +81,9 @@ declare global {
             };
 
             type MessageSaveFlag = {
-                author?: ActorUUID;
                 basic: boolean;
                 dc: number;
+                saves?: Record<string, MessageTargetSave>;
                 statistic: SaveType;
             };
         }
