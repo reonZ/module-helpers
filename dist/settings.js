@@ -5,6 +5,12 @@ function settingPath(...path) {
 function getSetting(key) {
     return game.settings.get(MODULE.id, key);
 }
+function getUserSetting(userId, key) {
+    const moduleKey = MODULE.path(key);
+    return game.settings.storage
+        .get("user")
+        .find((setting) => setting.user === userId && setting.key === moduleKey);
+}
 function getUsersSetting(key) {
     const moduleKey = MODULE.path(key);
     return game.settings.storage
@@ -156,4 +162,4 @@ function onRenderSettingsConfig(html, options, settings) {
         group?.before(title);
     }
 }
-export { getSetting, getUsersSetting, hasSetting, registerModuleSettings, registerSetting, registerSettingMenu, setSetting, settingPath, setUserSetting, };
+export { getSetting, getUserSetting, getUsersSetting, hasSetting, registerModuleSettings, registerSetting, registerSettingMenu, setSetting, settingPath, setUserSetting, };

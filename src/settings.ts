@@ -20,6 +20,16 @@ function getSetting(key: string) {
     return game.settings.get(MODULE.id, key);
 }
 
+function getUserSetting<T = boolean>(
+    userId: string,
+    key: string
+): (Setting & { value: T; user: string }) | undefined {
+    const moduleKey = MODULE.path(key);
+    return game.settings.storage
+        .get("user")
+        .find((setting) => setting.user === userId && setting.key === moduleKey);
+}
+
 function getUsersSetting<T = boolean>(key: string): (Setting & { value: T; user: string })[] {
     const moduleKey = MODULE.path(key);
     return game.settings.storage
@@ -250,6 +260,7 @@ type RenderSettingsConfigCategoryEntry = {
 
 export {
     getSetting,
+    getUserSetting,
     getUsersSetting,
     hasSetting,
     registerModuleSettings,

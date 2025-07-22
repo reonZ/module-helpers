@@ -2,6 +2,10 @@ import { UserPF2e } from "foundry-pf2e";
 declare function settingPath(...path: string[]): string;
 declare function getSetting(key: "__migrationSchema"): number;
 declare function getSetting<T = boolean>(key: string): T;
+declare function getUserSetting<T = boolean>(userId: string, key: string): (Setting & {
+    value: T;
+    user: string;
+}) | undefined;
 declare function getUsersSetting<T = boolean>(key: string): (Setting & {
     value: T;
     user: string;
@@ -47,5 +51,5 @@ type RenderSettingsConfigCategoryEntry = {
         name: string;
     };
 });
-export { getSetting, getUsersSetting, hasSetting, registerModuleSettings, registerSetting, registerSettingMenu, setSetting, settingPath, setUserSetting, };
+export { getSetting, getUserSetting, getUsersSetting, hasSetting, registerModuleSettings, registerSetting, registerSettingMenu, setSetting, settingPath, setUserSetting, };
 export type { ModuleSettings, RegisterSettingOptions, RenderSettingsConfigOptions };
