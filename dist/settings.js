@@ -28,12 +28,12 @@ async function setUserSetting(user, key, value) {
     if (!game.ready) {
         throw new Error("You may not set a World-level Setting before the Game is ready.");
     }
-    const userId = user instanceof User ? user.id : user;
     const setting = assertSetting(MODULE.id, key);
+    if (!setting.id)
+        return;
+    const userId = user instanceof User ? user.id : user;
     const json = cleanJSON(setting, value);
-    const current = game.settings.get(setting.namespace, setting.key, {
-        document: true,
-    });
+    const current = game.settings.storage.get("user").getSetting(setting.id, userId);
     if (current?._id) {
         await current.update({ value: json });
         return current;

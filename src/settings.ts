@@ -52,12 +52,12 @@ async function setUserSetting(user: UserPF2e | string, key: string, value: any) 
         throw new Error("You may not set a World-level Setting before the Game is ready.");
     }
 
-    const userId = user instanceof User ? user.id : user;
     const setting = assertSetting(MODULE.id, key);
+    if (!setting.id) return;
+
+    const userId = user instanceof User ? user.id : user;
     const json = cleanJSON(setting, value);
-    const current = game.settings.get<Setting>(setting.namespace, setting.key, {
-        document: true,
-    });
+    const current = game.settings.storage.get("user").getSetting(setting.id, userId);
 
     if (current?._id) {
         await current.update({ value: json });
@@ -108,7 +108,7 @@ function registerSettingMenu(key: string, options: RegisterSettingMenuOptions) {
 /**
  * client/helpers/client-settings.mjs#247
  */
-function assertSetting(namespace: string, key: string) {
+function assertSetting(namespace: string, key: string): SettingConfig {
     const id = `${namespace}.${key}`;
     if (!namespace || !key) {
         throw new Error(
