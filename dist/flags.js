@@ -76,26 +76,27 @@ function getDataFlag(doc, Model, ...args) {
     }
 }
 function getDataFlagArray(doc, Model, ...path) {
-    const flag = getFlag(doc, ...path);
-    if (!R.isArray(flag))
-        return;
-    try {
-        const models = R.pipe(flag, R.map((data) => new Model(data)), R.filter((model) => !model.invalid));
-        Object.defineProperty(models, "setFlag", {
-            value: function () {
-                const serialized = models.map((x) => x.toJSON());
-                return setFlag(doc, ...path, serialized);
-            },
-            enumerable: false,
-            writable: false,
-            configurable: false,
-        });
-        return models;
-    }
-    catch (error) {
-        const name = Model.name;
-        const joinPath = joinStr(".", ...path);
-        MODULE.error(`An error occured while trying the create a an array of '${name}' DataModel at path: '${joinPath}'`, error);
-    }
+    const maybeFlag = getFlag(doc, ...path);
+    const flag = R.isArray(maybeFlag) ? maybeFlag?.slice() : [];
+    const models = R.pipe(flag, R.map((data) => {
+        try {
+            return R.isPlainObject(data) ? new Model(data) : undefined;
+        }
+        catch (error) {
+            const name = Model.name;
+            const joinPath = joinStr(".", ...path);
+            MODULE.error(`An error occured while trying the create a '${name}' DataModel in the array at path: '${joinPath}'`, error);
+        }
+    }), R.filter((model) => !!model && !model.invalid));
+    Object.defineProperty(models, "setFlag", {
+        value: function () {
+            const serialized = models.map((x) => x.toJSON());
+            return setFlag(doc, ...path, serialized);
+        },
+        enumerable: false,
+        writable: false,
+        configurable: false,
+    });
+    return models;
 }
 export { deleteFlagProperty, getDataFlag, getDataFlagArray, getFlag, getFlagProperty, setFlag, setFlagProperties, setFlagProperty, unsetFlag, updateFlag, updateSourceFlag, };

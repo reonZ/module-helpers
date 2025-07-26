@@ -115,37 +115,39 @@ function getDataFlagArray<T extends foundry.abstract.DataModel, D extends Docume
     doc: D,
     Model: ConstructorOf<T>,
     ...path: ReadonlyArray<string>
-): FlagDataArray<T, D> | undefined {
-    const flag = getFlag(doc, ...path);
-    if (!R.isArray(flag)) return;
+): FlagDataArray<T, D> {
+    const maybeFlag = getFlag(doc, ...path);
+    const flag = R.isArray(maybeFlag) ? maybeFlag?.slice() : [];
 
-    try {
-        const models = R.pipe(
-            flag,
-            R.map((data): foundry.abstract.DataModel => new Model(data)),
-            R.filter((model) => !model.invalid)
-        );
+    const models = R.pipe(
+        flag,
+        R.map((data): foundry.abstract.DataModel | undefined => {
+            try {
+                return R.isPlainObject(data) ? new Model(data) : undefined;
+            } catch (error) {
+                const name = Model.name;
+                const joinPath = joinStr(".", ...path);
 
-        Object.defineProperty(models, "setFlag", {
-            value: function (): Promise<D> {
-                const serialized = models.map((x) => x.toJSON());
-                return setFlag(doc, ...path, serialized);
-            },
-            enumerable: false,
-            writable: false,
-            configurable: false,
-        });
+                MODULE.error(
+                    `An error occured while trying the create a '${name}' DataModel in the array at path: '${joinPath}'`,
+                    error
+                );
+            }
+        }),
+        R.filter((model): model is foundry.abstract.DataModel => !!model && !model.invalid)
+    );
 
-        return models as any;
-    } catch (error) {
-        const name = Model.name;
-        const joinPath = joinStr(".", ...path);
+    Object.defineProperty(models, "setFlag", {
+        value: function (): Promise<D> {
+            const serialized = models.map((x) => x.toJSON());
+            return setFlag(doc, ...path, serialized);
+        },
+        enumerable: false,
+        writable: false,
+        configurable: false,
+    });
 
-        MODULE.error(
-            `An error occured while trying the create a an array of '${name}' DataModel at path: '${joinPath}'`,
-            error
-        );
-    }
+    return models as any;
 }
 
 type FlagData<T> = T & {
