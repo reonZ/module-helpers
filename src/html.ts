@@ -337,6 +337,35 @@ function getInputValue(el: HTMLInputElement) {
         : el.value.trim();
 }
 
+/**
+ * repurposed version of
+ * https://github.com/foundryvtt/pf2e/blob/c0cfa1f4c266d7d843966b50a9fd1a34d42b2051/src/module/actor/sheet/item-summary-renderer.ts#L25
+ */
+async function toggleSummary(summaryElem: HTMLElement) {
+    const duration = 0.4;
+
+    if (summaryElem.hidden) {
+        await gsap.fromTo(
+            summaryElem,
+            { height: 0, opacity: 0, hidden: false },
+            { height: "auto", opacity: 1, duration }
+        );
+    } else {
+        await gsap.to(summaryElem, {
+            height: 0,
+            duration,
+            opacity: 0,
+            paddingTop: 0,
+            paddingBottom: 0,
+            margin: 0,
+            clearProps: "all",
+            onComplete: () => {
+                summaryElem.hidden = true;
+            },
+        });
+    }
+}
+
 type CreateHTMLElementOptions = {
     classes?: string[];
     content?: string | HTMLCollection | (Element | string)[] | Element;
@@ -382,6 +411,7 @@ export {
     htmlQuery,
     htmlQueryAll,
     htmlQueryIn,
+    toggleSummary,
 };
 
 export type { DatasetData, DatasetValue, IterableSelectOptions };
