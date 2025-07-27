@@ -1,19 +1,19 @@
+import {
+    ModelPropFromDataField,
+    SourcePropFromDataField,
+} from "foundry-pf2e/foundry/common/data/fields.js";
 import fields = foundry.data.fields;
 
 class TagsField<
-    TElement extends string = string,
-    TRequired extends boolean = false,
-    TNullable extends boolean = false,
-    THasInitial extends boolean = true,
-    TSourceProp extends TElement[] = TElement[],
-    TModelProp extends TElement[] = TElement[]
+    TString extends string = string,
+    TElementField extends fields.StringField = fields.StringField<TString, TString>
 > extends fields.ArrayField<
-    fields.StringField,
-    TSourceProp,
-    TModelProp,
-    TRequired,
-    TNullable,
-    THasInitial
+    TElementField,
+    SourcePropFromDataField<TElementField>[],
+    ModelPropFromDataField<TElementField>[],
+    false,
+    false,
+    true
 > {
     static get _defaults() {
         return Object.assign(super._defaults, {
@@ -23,14 +23,19 @@ class TagsField<
     }
 
     constructor(
-        options?: fields.ArrayFieldOptions<TSourceProp, TRequired, TNullable, THasInitial>,
+        options?: fields.ArrayFieldOptions<
+            SourcePropFromDataField<TElementField>[],
+            false,
+            false,
+            true
+        >,
         context?: fields.DataFieldContext
     ) {
         super(
             new fields.StringField({
                 blank: false,
                 nullable: false,
-            }),
+            }) as TElementField,
             options,
             context
         );
