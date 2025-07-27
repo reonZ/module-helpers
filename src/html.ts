@@ -366,6 +366,20 @@ async function toggleSummary(summaryElem: HTMLElement) {
     }
 }
 
+function addEnterKeyListeners(html: HTMLElement, inputType: "number" | "text" | "all" = "all") {
+    const types: ("text" | "number")[] = inputType === "all" ? ["text", "number"] : [inputType];
+
+    for (const type of types) {
+        addListenerAll(html, `input[type="${type}"]`, "keypress", (el, event) => {
+            if (event.key === "Enter") {
+                event.stopPropagation();
+                event.preventDefault();
+                el.blur();
+            }
+        });
+    }
+}
+
 type CreateHTMLElementOptions = {
     classes?: string[];
     content?: string | HTMLCollection | (Element | string)[] | Element;
@@ -395,6 +409,7 @@ type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = 
 type IterableSelectOptions = SelectOption | string | FormSelectOption;
 
 export {
+    addEnterKeyListeners,
     addListener,
     addListenerAll,
     arrayToSelectOptions,

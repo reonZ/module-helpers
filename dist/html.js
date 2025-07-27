@@ -209,4 +209,16 @@ async function toggleSummary(summaryElem) {
         });
     }
 }
-export { addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, createInputElement, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, toggleSummary, };
+function addEnterKeyListeners(html, inputType = "all") {
+    const types = inputType === "all" ? ["text", "number"] : [inputType];
+    for (const type of types) {
+        addListenerAll(html, `input[type="${type}"]`, "keypress", (el, event) => {
+            if (event.key === "Enter") {
+                event.stopPropagation();
+                event.preventDefault();
+                el.blur();
+            }
+        });
+    }
+}
+export { addEnterKeyListeners, addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, createInputElement, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, toggleSummary, };
