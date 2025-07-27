@@ -211,14 +211,13 @@ async function toggleSummary(summaryElem) {
 }
 function addEnterKeyListeners(html, inputType = "all") {
     const types = inputType === "all" ? ["text", "number"] : [inputType];
-    for (const type of types) {
-        addListenerAll(html, `input[type="${type}"]`, "keypress", (el, event) => {
-            if (event.key === "Enter") {
-                event.stopPropagation();
-                event.preventDefault();
-                el.blur();
-            }
-        });
-    }
+    const selector = types.map((type) => `input[type="${type}"]`).join(", ");
+    addListenerAll(html, selector, "keypress", (el, event) => {
+        if (event.key === "Enter") {
+            event.stopPropagation();
+            event.preventDefault();
+            el.blur();
+        }
+    });
 }
 export { addEnterKeyListeners, addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, createInputElement, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, toggleSummary, };

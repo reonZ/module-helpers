@@ -368,16 +368,15 @@ async function toggleSummary(summaryElem: HTMLElement) {
 
 function addEnterKeyListeners(html: HTMLElement, inputType: "number" | "text" | "all" = "all") {
     const types: ("text" | "number")[] = inputType === "all" ? ["text", "number"] : [inputType];
+    const selector = types.map((type) => `input[type="${type}"]`).join(", ");
 
-    for (const type of types) {
-        addListenerAll(html, `input[type="${type}"]`, "keypress", (el, event) => {
-            if (event.key === "Enter") {
-                event.stopPropagation();
-                event.preventDefault();
-                el.blur();
-            }
-        });
-    }
+    addListenerAll(html, selector, "keypress", (el, event) => {
+        if (event.key === "Enter") {
+            event.stopPropagation();
+            event.preventDefault();
+            el.blur();
+        }
+    });
 }
 
 type CreateHTMLElementOptions = {
