@@ -53,4 +53,4 @@ type GiveItemData = {
     hasContent: boolean;
 };
 export { createTradeMessage, getTradeData, giveItemToActor, initiateTrade, updateItemTransferDialog, updateTradedItemSource, };
-export type { ActorTransferItemArgs };
+export type { ActorTransferItemArgs, TradeMessageOptions };

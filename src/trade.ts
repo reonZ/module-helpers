@@ -288,4 +288,4 @@ export {
     updateItemTransferDialog,
     updateTradedItemSource,
 };
-export type { ActorTransferItemArgs };
+export type { ActorTransferItemArgs, TradeMessageOptions };
