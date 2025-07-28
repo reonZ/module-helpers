@@ -5,35 +5,7 @@ import {
     PhysicalItemPF2e,
     PhysicalItemSource,
 } from "foundry-pf2e";
-import {
-    getActionGlyph,
-    getPreferredName,
-    htmlQuery,
-    ItemTransferDialog,
-    MoveLootFormData,
-    R,
-} from ".";
-
-async function initiateTrade(
-    item: PhysicalItemPF2e,
-    { prompt, targetActor, title }: InitiateTradeOptions = {}
-): Promise<MoveLootFormData | null> {
-    if (item.quantity <= 0) {
-        return null;
-    }
-
-    if (item.isOfType("backpack") || item.quantity === 1) {
-        return { quantity: 1, newStack: false };
-    }
-
-    return new ItemTransferDialog(item, {
-        targetActor,
-        lockStack: !targetActor?.inventory.findStackableItem(item._source),
-        title,
-        prompt,
-        button: title,
-    }).resolve();
-}
+import { getActionGlyph, getPreferredName, htmlQuery, R } from ".";
 
 function getTradeData(item: PhysicalItemPF2e, quantity = 1): TradeData | undefined {
     const allowedQuantity = item.quantity ?? 0;
@@ -260,12 +232,6 @@ type ActorTransferItemArgs = [
     isPurchase?: boolean | null
 ];
 
-type InitiateTradeOptions = {
-    targetActor?: ActorPF2e;
-    title?: string;
-    prompt?: string;
-};
-
 type TradeData = {
     allowedQuantity: number;
     contentSources: ContainerContentSource[];
@@ -284,7 +250,6 @@ export {
     createTradeMessage,
     getTradeData,
     giveItemToActor,
-    initiateTrade,
     updateItemTransferDialog,
     updateTradedItemSource,
 };

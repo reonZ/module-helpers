@@ -1,6 +1,4 @@
 import { ActionCost, ActorPF2e, PhysicalItemPF2e, PhysicalItemSource } from "foundry-pf2e";
-import { MoveLootFormData } from ".";
-declare function initiateTrade(item: PhysicalItemPF2e, { prompt, targetActor, title }?: InitiateTradeOptions): Promise<MoveLootFormData | null>;
 declare function getTradeData(item: PhysicalItemPF2e, quantity?: number): TradeData | undefined;
 declare function updateTradedItemSource(item: PhysicalItemPF2e<ActorPF2e>, { contentSources, allowedQuantity, giveQuantity }: TradeData): Promise<void>;
 declare function giveItemToActor(itemOrUuid: PhysicalItemPF2e | EmbeddedItemUUID, targetOrUuid: ActorPF2e | ActorUUID, quantity?: number, newStack?: boolean): Promise<GiveItemData | undefined>;
@@ -35,11 +33,6 @@ type ActorTransferItemArgs = [
     newStack?: boolean,
     isPurchase?: boolean | null
 ];
-type InitiateTradeOptions = {
-    targetActor?: ActorPF2e;
-    title?: string;
-    prompt?: string;
-};
 type TradeData = {
     allowedQuantity: number;
     contentSources: ContainerContentSource[];
@@ -52,5 +45,5 @@ type GiveItemData = {
     giveQuantity: number;
     hasContent: boolean;
 };
-export { createTradeMessage, getTradeData, giveItemToActor, initiateTrade, updateItemTransferDialog, updateTradedItemSource, };
+export { createTradeMessage, getTradeData, giveItemToActor, updateItemTransferDialog, updateTradedItemSource, };
 export type { ActorTransferItemArgs, TradeMessageOptions };

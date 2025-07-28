@@ -1,19 +1,4 @@
-import { getActionGlyph, getPreferredName, htmlQuery, ItemTransferDialog, R, } from ".";
-async function initiateTrade(item, { prompt, targetActor, title } = {}) {
-    if (item.quantity <= 0) {
-        return null;
-    }
-    if (item.isOfType("backpack") || item.quantity === 1) {
-        return { quantity: 1, newStack: false };
-    }
-    return new ItemTransferDialog(item, {
-        targetActor,
-        lockStack: !targetActor?.inventory.findStackableItem(item._source),
-        title,
-        prompt,
-        button: title,
-    }).resolve();
-}
+import { getActionGlyph, getPreferredName, htmlQuery, R } from ".";
 function getTradeData(item, quantity = 1) {
     const allowedQuantity = item.quantity ?? 0;
     if (allowedQuantity < 1)
@@ -147,4 +132,4 @@ function updateItemTransferDialog(html, { button, prompt, title, noStack }) {
         input?.remove();
     }
 }
-export { createTradeMessage, getTradeData, giveItemToActor, initiateTrade, updateItemTransferDialog, updateTradedItemSource, };
+export { createTradeMessage, getTradeData, giveItemToActor, updateItemTransferDialog, updateTradedItemSource, };
