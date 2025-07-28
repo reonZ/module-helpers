@@ -15,21 +15,34 @@ class ItemTransferDialog extends FormApplication {
             height: "auto",
             newStack: false,
             lockStack: false,
+            isPurchase: false,
         };
     }
     get title() {
-        return this.options.title || game.i18n.localize("PF2E.loot.MoveLoot");
+        return this.options.title || this.options.isPurchase
+            ? game.i18n.localize("PF2E.loot.Purchase")
+            : game.i18n.localize("PF2E.loot.MoveLoot");
     }
     get item() {
         return this.object;
     }
     async getData() {
         const item = this.item;
-        const prompt = this.options.prompt || game.i18n.localize("PF2E.loot.MoveLootMessage");
+        const prompt = this.options.prompt || this.options.isPurchase
+            ? game.i18n.format("PF2E.loot.PurchaseLootPrompt", {
+                buyer: this.options.targetActor?.name ?? "",
+            })
+            : game.i18n.localize("PF2E.loot.MoveLootMessage");
+        const isAmmunition = item.isOfType("consumable") && item.isAmmo;
+        const defaultQuantity = this.options.isPurchase
+            ? isAmmunition
+                ? Math.min(10, item.quantity)
+                : 1
+            : item.quantity;
         return {
             ...(await super.getData()),
             item,
-            quantity: item.quantity,
+            quantity: defaultQuantity,
             newStack: this.options.newStack,
             lockStack: this.options.lockStack,
             canGift: false,
@@ -41,6 +54,14 @@ class ItemTransferDialog extends FormApplication {
      * In situations where there are no choices (quantity is 1 and its a player purchasing), this returns immediately.
      */
     async resolve() {
+        // const canGift = this.item.isOwner;
+        // if (this.item.quantity <= 1 && !(this.options.isPurchase && canGift)) {
+        //     return {
+        //         quantity: this.item.quantity,
+        //         isPurchase: !!this.options.isPurchase,
+        //         newStack: this.options.newStack,
+        //     };
+        // }
         this.render(true);
         return new Promise((resolve) => {
             this.#resolve = resolve;
@@ -78,9 +99,11 @@ class ItemTransferDialog extends FormApplication {
     }
     async _updateObject(event, formData) {
         if (R.isNumber(formData.quantity) && formData.quantity > 0) {
+            const isGift = event.submitter?.dataset.action === "give";
             this.#resolve?.({
                 quantity: formData.quantity,
                 newStack: formData.newStack,
+                isPurchase: !!this.options.isPurchase && !isGift,
             });
         }
         else {

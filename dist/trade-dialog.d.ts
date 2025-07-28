@@ -35,6 +35,7 @@ interface MoveLootOptions extends FormApplicationOptions {
 interface MoveLootFormData {
     quantity: number;
     newStack: boolean;
+    isPurchase: boolean;
 }
 interface PopupData extends FormApplicationData {
     item: PhysicalItemPF2e;
