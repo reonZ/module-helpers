@@ -42,7 +42,6 @@ export * from "./template";
 export * from "./text-editor";
 export * from "./time";
 export * from "./token";
-export * from "./trade-dialog";
 export * from "./trade";
 export * from "./user";
 export * from "./utils";
