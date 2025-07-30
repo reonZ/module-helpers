@@ -15,9 +15,15 @@ function renderCharacterSheets() {
     renderApplications("CharacterSheetPF2e");
 }
 
+function renderActorSheets(type: ActorSheetType | ActorSheetType[] = ["ActorSheetPF2e"]) {
+    renderApplications(type);
+}
+
 function renderItemSheets(type: ItemSheetType | ItemSheetType[] = ["ItemSheetPF2e"]) {
     renderApplications(type);
 }
+
+type ActorSheetType = "ActorSheetPF2e" | "CharacterSheetPF2e" | "NPCSheetPF2e" | "LootSheetPF2e";
 
 type ItemSheetType =
     | "AbilitySheetPF2e"
@@ -27,4 +33,4 @@ type ItemSheetType =
     | "ItemSheetPF2e"
     | "SpellSheetPF2e";
 
-export { renderCharacterSheets, renderItemSheets };
+export { renderActorSheets, renderCharacterSheets, renderItemSheets };

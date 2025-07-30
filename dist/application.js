@@ -9,7 +9,10 @@ function renderApplications(type) {
 function renderCharacterSheets() {
     renderApplications("CharacterSheetPF2e");
 }
+function renderActorSheets(type = ["ActorSheetPF2e"]) {
+    renderApplications(type);
+}
 function renderItemSheets(type = ["ItemSheetPF2e"]) {
     renderApplications(type);
 }
-export { renderCharacterSheets, renderItemSheets };
+export { renderActorSheets, renderCharacterSheets, renderItemSheets };
