@@ -37,12 +37,15 @@ declare global {
                 getActionMacro: (action: AbilityItemPF2e | FeatPF2e) => Promise<Maybe<MacroPF2e>>;
                 getItemMacro: (item: ItemPF2e) => Promise<Maybe<MacroPF2e>>;
             };
+            identify: {
+                openTracker: () => void;
+            };
             targetHelper: {
                 getMessageTargets: (message: ChatMessagePF2e) => string[];
-                setMessageFlagTargets: <T extends Record<string, any>>(
-                    updates: T,
+                setMessageFlagTargets: (
+                    updates: Record<string, any>,
                     targets: string[]
-                ) => T;
+                ) => Record<string, any>;
             };
         }
 
