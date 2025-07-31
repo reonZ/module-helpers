@@ -1,3 +1,4 @@
+import { ActorType, ItemType } from "foundry-pf2e";
 import { isInstanceOf, R } from ".";
 
 function renderApplications(type: string | string[]) {
@@ -23,14 +24,8 @@ function renderItemSheets(type: ItemSheetType | ItemSheetType[] = ["ItemSheetPF2
     renderApplications(type);
 }
 
-type ActorSheetType = "ActorSheetPF2e" | "CharacterSheetPF2e" | "NPCSheetPF2e" | "LootSheetPF2e";
+type ActorSheetType = "ActorSheetPF2e" | `${Capitalize<ActorType>}SheetPF2e`;
 
-type ItemSheetType =
-    | "AbilitySheetPF2e"
-    | "ConsumableSheetPF2e"
-    | "EquipmentSheetPF2e"
-    | "FeatSheetPF2e"
-    | "ItemSheetPF2e"
-    | "SpellSheetPF2e";
+type ItemSheetType = "ItemSheetPF2e" | `${Capitalize<ItemType>}SheetPF2e`;
 
 export { renderActorSheets, renderCharacterSheets, renderItemSheets };
