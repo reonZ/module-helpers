@@ -56,10 +56,17 @@ function getIdentifyMagicDCs(
 
 /**
  * https://github.com/foundryvtt/pf2e/blob/0191f1fdac24c3903a939757a315043d1fcbfa59/src/module/item/identification.ts#L62
+ * with option fallback
  */
 function getItemIdentificationDCs(
     item: PhysicalItemPF2e,
-    { pwol = false, notMatchingTraditionModifier }: IdentifyItemOptions
+    { pwol = false, notMatchingTraditionModifier }: IdentifyItemOptions = {
+        pwol: game.pf2e.settings.variants.pwol.enabled,
+        notMatchingTraditionModifier: game.settings.get(
+            "pf2e",
+            "identifyMagicNotMatchingTraditionModifier"
+        ),
+    }
 ): IdentifyMagicDCs | IdentifyAlchemyDCs {
     const baseDC = calculateDC(item.level, { pwol });
     const rarity = getDcRarity(item);
@@ -72,6 +79,7 @@ function getItemIdentificationDCs(
 }
 
 /**
+ * modified version of
  * https://github.com/foundryvtt/pf2e/blob/0191f1fdac24c3903a939757a315043d1fcbfa59/src/module/actor/sheet/popups/identify-popup.ts#L7
  */
 class IdentifyItemPopup extends appv1.api.FormApplication<PhysicalItemPF2e> {
@@ -104,6 +112,29 @@ class IdentifyItemPopup extends appv1.api.FormApplication<PhysicalItemPF2e> {
         };
     }
 
+    // we extracted that part from activateListeners so it can be called from thirdt party
+    async postSkillChecks() {
+        const item = this.object;
+        const identifiedName = item.system.identification.identified.name;
+        const dcs: Record<string, number> = this.dcs;
+        const action = item.isMagical
+            ? "identify-magic"
+            : item.isAlchemical
+            ? "identify-alchemy"
+            : "recall-knowledge";
+
+        const path = "systems/pf2e/templates/actors/identify-item-chat-skill-checks.hbs";
+        const content = await foundry.applications.handlebars.renderTemplate(path, {
+            identifiedName,
+            action,
+            skills: R.omit(dcs, ["dc"]),
+            unidentified: item.system.identification.unidentified,
+            uuid: item.uuid,
+        });
+
+        await getDocumentClass("ChatMessage").create({ author: game.user.id, content });
+    }
+
     override activateListeners($html: JQuery): void {
         const html = $html[0];
 
@@ -114,25 +145,7 @@ class IdentifyItemPopup extends appv1.api.FormApplication<PhysicalItemPF2e> {
 
         // Add listener on Post skill checks to chat button that posts item unidentified img and name and skill checks
         html.querySelector("button.post-skill-checks")?.addEventListener("click", async () => {
-            const item = this.object;
-            const identifiedName = item.system.identification.identified.name;
-            const dcs: Record<string, number> = this.dcs;
-            const action = item.isMagical
-                ? "identify-magic"
-                : item.isAlchemical
-                ? "identify-alchemy"
-                : "recall-knowledge";
-
-            const path = "systems/pf2e/templates/actors/identify-item-chat-skill-checks.hbs";
-            const content = await foundry.applications.handlebars.renderTemplate(path, {
-                identifiedName,
-                action,
-                skills: R.omit(dcs, ["dc"]),
-                unidentified: item.system.identification.unidentified,
-                uuid: item.uuid,
-            });
-
-            await getDocumentClass("ChatMessage").create({ author: game.user.id, content });
+            await this.postSkillChecks();
         });
     }
 
@@ -157,4 +170,4 @@ interface IdentifyPopupData extends FormApplicationData {
     dcs: IdentifyMagicDCs | IdentifyAlchemyDCs;
 }
 
-export { IdentifyItemPopup };
+export { IdentifyItemPopup, getItemIdentificationDCs };
