@@ -90,6 +90,14 @@ async function confirmDialog(i18n, { classes = [], content, data = {}, minWidth,
     };
     return ModuleDialog.confirm(options);
 }
+async function promptDialog(key, data = {}) {
+    return ModuleDialog.prompt({
+        content: localize(key, "content", data),
+        window: {
+            title: localize(key, "title", data),
+        },
+    });
+}
 async function generateDialogContent(content, i18n, data) {
     if (R.isString(content)) {
         if (R.isObjectType(data)) {
@@ -101,4 +109,4 @@ async function generateDialogContent(content, i18n, data) {
     }
     return createFormTemplate(i18n, content);
 }
-export { confirmDialog, waitDialog };
+export { confirmDialog, promptDialog, waitDialog };

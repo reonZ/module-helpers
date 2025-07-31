@@ -8,6 +8,7 @@ declare function waitDialog<T extends Record<string, any>, K extends keyof T>(op
     returnOnFalse: K[];
 }): Promise<T | Pick<T, K> | null>;
 declare function confirmDialog(i18n: string, { classes, content, data, minWidth, no, position, skipAnimate, title, yes, }?: ConfirmDialogOptions): Promise<boolean | null>;
+declare function promptDialog(key: string, data?: Record<string, string>): Promise<any>;
 type BaseDialogOptions = {
     classes?: string[];
     data?: Record<string, any>;
@@ -41,4 +42,4 @@ type WaitDialogOptions = BaseDialogOptions & {
         callback?: foundry.applications.api.DialogV2ButtonCallback;
     };
 };
-export { confirmDialog, waitDialog };
+export { confirmDialog, promptDialog, waitDialog };

@@ -155,6 +155,15 @@ async function confirmDialog(
     return ModuleDialog.confirm(options);
 }
 
+async function promptDialog(key: string, data: Record<string, string> = {}) {
+    return ModuleDialog.prompt({
+        content: localize(key, "content", data),
+        window: {
+            title: localize(key, "title", data),
+        },
+    });
+}
+
 async function generateDialogContent(
     content: string | CreateFormGroupParams[],
     i18n: string,
@@ -216,4 +225,4 @@ type WaitDialogOptions = BaseDialogOptions & {
     };
 };
 
-export { confirmDialog, waitDialog };
+export { confirmDialog, promptDialog, waitDialog };
