@@ -2,6 +2,10 @@ import { joinStr, MODULE, R } from ".";
 function flagPath(...path) {
     return `flags.${MODULE.path(path)}`;
 }
+function unsetFlagPath(...path) {
+    const lastKey = path.pop();
+    return flagPath(...path, `-=${lastKey}`);
+}
 function getFlag(doc, ...path) {
     return doc.getFlag(MODULE.id, path.join("."));
 }
@@ -21,6 +25,10 @@ function getFlagProperty(obj, ...path) {
 function setFlagProperty(obj, ...args) {
     const value = args.pop();
     foundry.utils.setProperty(obj, flagPath(...args), value);
+    return obj;
+}
+function unsetFlagProperty(obj, ...path) {
+    foundry.utils.setProperty(obj, unsetFlagPath(...path), null);
     return obj;
 }
 function deleteFlagProperty(obj, ...path) {
@@ -99,4 +107,4 @@ function getDataFlagArray(doc, Model, ...path) {
     });
     return models;
 }
-export { deleteFlagProperty, getDataFlag, getDataFlagArray, getFlag, getFlagProperty, setFlag, setFlagProperties, setFlagProperty, unsetFlag, updateFlag, updateSourceFlag, };
+export { deleteFlagProperty, flagPath, getDataFlag, getDataFlagArray, getFlag, getFlagProperty, setFlag, setFlagProperties, setFlagProperty, unsetFlag, unsetFlagPath, unsetFlagProperty, updateFlag, updateSourceFlag, };

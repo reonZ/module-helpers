@@ -5,6 +5,11 @@ function flagPath(...path: string[]): string {
     return `flags.${MODULE.path(path)}`;
 }
 
+function unsetFlagPath(...path: [string, ...string[]]): string {
+    const lastKey = path.pop();
+    return flagPath(...path, `-=${lastKey}`);
+}
+
 function getFlag<T>(doc: Document, ...path: string[]): T | undefined {
     return doc.getFlag(MODULE.id, path.join(".")) as T | undefined;
 }
@@ -33,6 +38,11 @@ function getFlagProperty<T>(obj: object, ...path: string[]): T | undefined {
 function setFlagProperty<T extends object>(obj: T, ...args: [...string[], any]): T {
     const value = args.pop();
     foundry.utils.setProperty(obj, flagPath(...args), value);
+    return obj;
+}
+
+function unsetFlagProperty<T extends object>(obj: T, ...path: [string, ...string[]]): T {
+    foundry.utils.setProperty(obj, unsetFlagPath(...path), null);
     return obj;
 }
 
@@ -173,6 +183,7 @@ type DataFlagArgs<T extends foundry.abstract.DataModel> = Readonly<
 
 export {
     deleteFlagProperty,
+    flagPath,
     getDataFlag,
     getDataFlagArray,
     getFlag,
@@ -181,6 +192,8 @@ export {
     setFlagProperties,
     setFlagProperty,
     unsetFlag,
+    unsetFlagPath,
+    unsetFlagProperty,
     updateFlag,
     updateSourceFlag,
 };
