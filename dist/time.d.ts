@@ -1,15 +1,12 @@
-declare function createTimeout<TArgs extends any[]>(callback: (...args: TArgs) => void, options?: PersistentTimeoutOptions | number): {
-    start(...args: TArgs): void;
-    startWithDelay(delay: number, ...args: TArgs): void;
-    stop(): void;
+import { DateTime } from "luxon";
+declare function advanceTime(interval: TimeInterval, direction: "+" | "-"): void;
+declare function getTimeWithSeconds(time: DateTime): string;
+declare function getShortTime(time: DateTime): string;
+declare function getShortDateTime(): {
+    worldClock: import("foundry-pf2e").WorldClock;
+    worldTime: DateTime<boolean>;
+    time: string;
+    date: string;
 };
-type PersistentTimeout<TArgs extends any[] = any[]> = {
-    start: (delay: number, ...args: TArgs) => void;
-    stop(): void;
-};
-type PersistentTimeoutOptions = {
-    defaultDelay?: number;
-    minDelay?: number;
-};
-export { createTimeout };
-export type { PersistentTimeout };
+type TimeInterval = "dawn" | "noon" | "dusk" | "midnight" | `${number}` | number;
+export { advanceTime, getTimeWithSeconds, getShortTime, getShortDateTime };

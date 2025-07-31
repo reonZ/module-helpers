@@ -38,7 +38,7 @@ declare global {
                 getItemMacro: (item: ItemPF2e) => Promise<Maybe<MacroPF2e>>;
             };
             identify: {
-                openTracker: () => void;
+                openTracker: (item?: ItemPF2e) => void;
             };
             targetHelper: {
                 getMessageTargets: (message: ChatMessagePF2e) => string[];

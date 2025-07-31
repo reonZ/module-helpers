@@ -1,59 +1,46 @@
-import { R } from ".";
+import { DateTime } from "luxon";
 
-function createTimeout<TArgs extends any[]>(
-    callback: (...args: TArgs) => void,
-    options?: PersistentTimeoutOptions | number
-) {
-    let timeoutId: NodeJS.Timeout | null = null;
+function advanceTime(interval: TimeInterval, direction: "+" | "-") {
+    const sign = direction === "+" ? 1 : -1;
+    const increment = Number(interval) * sign;
 
-    const usedOptions = R.isNumber(options) ? { defaultDelay: options } : options;
+    if (increment !== 0) {
+        game.time.advance(increment);
+    }
+}
 
-    const minDelay = Math.max(usedOptions?.minDelay ?? 0, 0);
-    const defaultDelay = Math.max(usedOptions?.defaultDelay ?? 1, minDelay);
+function getTimeWithSeconds(time: DateTime) {
+    return game.pf2e.worldClock.timeConvention === 24
+        ? time.toFormat("HH:mm:ss")
+        : time.toLocaleString(DateTime.TIME_WITH_SECONDS);
+}
+
+function getShortTime(time: DateTime) {
+    return game.pf2e.worldClock.timeConvention === 24
+        ? time.toFormat("HH:mm")
+        : time.toLocaleString(DateTime.TIME_SIMPLE);
+}
+
+function getShortDateTime() {
+    const worldClock = game.pf2e.worldClock;
+    const worldTime = worldClock.worldTime;
+    const time = getShortTime(worldTime);
+
+    const date =
+        worldClock.dateTheme === "CE"
+            ? worldTime.toLocaleString(DateTime.DATE_SHORT)
+            : DateTime.local(worldClock["year"], worldTime.month, worldTime.day).toLocaleString(
+                  DateTime.DATE_SHORT
+              );
 
     return {
-        start(...args: TArgs) {
-            if (timeoutId !== null) {
-                this.stop();
-            }
-
-            if (defaultDelay < 1) {
-                callback(...args);
-            } else {
-                timeoutId = setTimeout(callback, defaultDelay, ...args);
-            }
-        },
-        startWithDelay(delay: number, ...args: TArgs) {
-            if (timeoutId !== null) {
-                this.stop();
-            }
-
-            const usedDelay = Math.max(delay, minDelay);
-
-            if (usedDelay < 1) {
-                callback(...args);
-            } else {
-                timeoutId = setTimeout(callback, usedDelay, ...args);
-            }
-        },
-        stop() {
-            if (timeoutId === null) return;
-
-            clearTimeout(timeoutId);
-            timeoutId = null;
-        },
+        worldClock,
+        worldTime,
+        time,
+        date,
     };
 }
 
-type PersistentTimeout<TArgs extends any[] = any[]> = {
-    start: (delay: number, ...args: TArgs) => void;
-    stop(): void;
-};
+type TimeInterval = "dawn" | "noon" | "dusk" | "midnight" | `${number}` | number;
 
-type PersistentTimeoutOptions = {
-    defaultDelay?: number;
-    minDelay?: number;
-};
-
-export { createTimeout };
-export type { PersistentTimeout };
+export { advanceTime, getTimeWithSeconds, getShortTime, getShortDateTime };
