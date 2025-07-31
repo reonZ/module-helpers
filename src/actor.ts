@@ -1,4 +1,4 @@
-import { ActorAlliance, ActorPF2e, CreaturePF2e } from "foundry-pf2e";
+import { ActorAlliance, ActorPF2e, CreaturePF2e, LootPF2e } from "foundry-pf2e";
 import { R } from ".";
 
 function actorsRespectAlliance(
@@ -56,6 +56,10 @@ async function getActorFromUuid(uuid: Maybe<string>): Promise<ActorPF2e | null> 
     return actor instanceof Actor ? actor : null;
 }
 
+function isMerchant(actor: Maybe<ActorPF2e>): actor is LootPF2e {
+    return !!actor?.isOfType("loot") && actor.isMerchant;
+}
+
 type ActorTargetAlliance = "all" | "allies" | "enemies";
 
 export {
@@ -64,6 +68,7 @@ export {
     getDispositionColor,
     hasRollOption,
     isAllyActor,
+    isMerchant,
     oppositeAlliance,
     playersCanSeeName,
 };

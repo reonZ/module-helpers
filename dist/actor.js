@@ -41,4 +41,7 @@ async function getActorFromUuid(uuid) {
     const actor = await fromUuid(uuid);
     return actor instanceof Actor ? actor : null;
 }
-export { actorsRespectAlliance, getActorFromUuid, getDispositionColor, hasRollOption, isAllyActor, oppositeAlliance, playersCanSeeName, };
+function isMerchant(actor) {
+    return !!actor?.isOfType("loot") && actor.isMerchant;
+}
+export { actorsRespectAlliance, getActorFromUuid, getDispositionColor, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };
