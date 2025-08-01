@@ -39,6 +39,7 @@ declare global {
             };
             identify: {
                 openTracker: (item?: ItemPF2e) => void;
+                requestIdentify: (item: Maybe<ItemPF2e>, skipNotify?: boolean) => void;
             };
             targetHelper: {
                 getMessageTargets: (message: ChatMessagePF2e) => string[];
