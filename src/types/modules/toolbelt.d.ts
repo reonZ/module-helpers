@@ -35,6 +35,10 @@ declare global {
             betterTrade: {
                 withContent: boolean;
             };
+            identify: {
+                enabled: boolean;
+                playerRequest: boolean;
+            };
         }
 
         interface ToolbeltApi {
