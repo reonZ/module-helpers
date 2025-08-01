@@ -1,11 +1,16 @@
 import {
     AbilityItemPF2e,
+    ActorPF2e,
+    CharacterPF2e,
     ChatMessagePF2e,
+    CoinsPF2e,
     DegreeAdjustmentsRecord,
     DegreeOfSuccessString,
     FeatPF2e,
     ItemPF2e,
     MacroPF2e,
+    NPCPF2e,
+    PhysicalItemPF2e,
     RollNoteSource,
     SaveType,
 } from "foundry-pf2e";
@@ -37,6 +42,12 @@ declare global {
                 getActionMacro: (action: AbilityItemPF2e | FeatPF2e) => Promise<Maybe<MacroPF2e>>;
                 getItemMacro: (item: ItemPF2e) => Promise<Maybe<MacroPF2e>>;
             };
+            betterMerchant: {
+                testItemsForMerchant: (
+                    merchant: ActorPF2e,
+                    items: ItemPF2e[]
+                ) => betterMerchant.TestItemData[];
+            };
             identify: {
                 openTracker: (item?: ItemPF2e) => void;
                 requestIdentify: (item: Maybe<ItemPF2e>, skipNotify?: boolean) => void;
@@ -47,6 +58,13 @@ declare global {
                     updates: Record<string, any>,
                     targets: string[]
                 ) => Record<string, any>;
+            };
+        }
+
+        namespace betterMerchant {
+            type TestItemData = {
+                buyPrice: CoinsPF2e;
+                item: PhysicalItemPF2e<CharacterPF2e | NPCPF2e>;
             };
         }
 
