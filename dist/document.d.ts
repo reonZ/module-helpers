@@ -3,6 +3,7 @@ declare function getDamageRollClass(): typeof DamageRoll;
 declare function getDamageInstanceClass(): typeof DamageInstance;
 declare function getInMemory<T>(obj: ClientDocument | Token, ...path: string[]): T | undefined;
 declare function setInMemory<T>(obj: ClientDocument | Token, ...args: [...string[], T]): boolean;
+declare function getOrSetInMemory<T>(obj: ClientDocument | Token, ...args: [...string[], () => T]): T;
 declare function deleteInMemory(obj: ClientDocument | Token, ...path: string[]): boolean;
 declare function isClientDocument<T>(doc: T): doc is Extract<T, ClientDocument>;
 declare function isScriptMacro(doc: any): doc is MacroPF2e;
@@ -32,4 +33,4 @@ declare function resolveActorAndItemFromHTML(html: HTMLElement): {
     appDocument: ClientDocument | null;
 };
 type DocumentType = "Item" | "Actor" | "Macro";
-export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, getPreferredName, isClientDocument, isScriptMacro, isUuidOf, isValidTargetDocuments, setInMemory, resolveActorAndItemFromHTML, };
+export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, getOrSetInMemory, getPreferredName, isClientDocument, isScriptMacro, isUuidOf, isValidTargetDocuments, resolveActorAndItemFromHTML, setInMemory, };

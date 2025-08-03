@@ -35,6 +35,21 @@ function setInMemory<T>(obj: ClientDocument | Token, ...args: [...string[], T]):
     return foundry.utils.setProperty(obj, `modules.${MODULE.id}.${args.join(".")}`, value);
 }
 
+function getOrSetInMemory<T>(obj: ClientDocument | Token, ...args: [...string[], () => T]): T {
+    const path = args.slice(0, -1) as string[];
+    const exist = getInMemory<T>(obj, ...path);
+
+    if (exist !== undefined) {
+        return exist;
+    }
+
+    const fallback = args.at(-1) as () => T;
+    const value = fallback();
+
+    setInMemory(obj, ...path, value);
+    return value;
+}
+
 function deleteInMemory(obj: ClientDocument | Token, ...path: string[]) {
     return foundry.utils.deleteProperty(obj, `modules.${MODULE.id}.${path.join(".")}`);
 }
@@ -184,11 +199,12 @@ export {
     getDamageInstanceClass,
     getDamageRollClass,
     getInMemory,
+    getOrSetInMemory,
     getPreferredName,
     isClientDocument,
     isScriptMacro,
     isUuidOf,
     isValidTargetDocuments,
-    setInMemory,
     resolveActorAndItemFromHTML,
+    setInMemory,
 };

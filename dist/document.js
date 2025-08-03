@@ -15,6 +15,17 @@ function setInMemory(obj, ...args) {
     const value = args.pop();
     return foundry.utils.setProperty(obj, `modules.${MODULE.id}.${args.join(".")}`, value);
 }
+function getOrSetInMemory(obj, ...args) {
+    const path = args.slice(0, -1);
+    const exist = getInMemory(obj, ...path);
+    if (exist !== undefined) {
+        return exist;
+    }
+    const fallback = args.at(-1);
+    const value = fallback();
+    setInMemory(obj, ...path, value);
+    return value;
+}
 function deleteInMemory(obj, ...path) {
     return foundry.utils.deleteProperty(obj, `modules.${MODULE.id}.${path.join(".")}`);
 }
@@ -118,4 +129,4 @@ function resolveActorAndItemFromHTML(html) {
         appDocument: message ?? sheetDocument,
     };
 }
-export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, getPreferredName, isClientDocument, isScriptMacro, isUuidOf, isValidTargetDocuments, setInMemory, resolveActorAndItemFromHTML, };
+export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, getOrSetInMemory, getPreferredName, isClientDocument, isScriptMacro, isUuidOf, isValidTargetDocuments, resolveActorAndItemFromHTML, setInMemory, };
