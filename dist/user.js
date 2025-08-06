@@ -7,6 +7,12 @@ function userIsGM(user = getCurrentUser()) {
 function isPrimaryUpdater(actor) {
     return actor.primaryUpdater === game.user;
 }
+function primaryPlayerOwner(actor) {
+    return game.users.getDesignatedUser((user) => user.active && !user.isGM && actor.testUserPermission(user, "OWNER"));
+}
+function isPrimaryOwner(actor, user = game.user) {
+    return user.isGM || primaryPlayerOwner(actor) === user;
+}
 function canObserveActor(actor, withParty = true) {
     if (!actor)
         return false;
@@ -17,4 +23,4 @@ function canObserveActor(actor, withParty = true) {
         game.pf2e.settings.metagame.partyStats &&
         actor.parties?.some((party) => party.testUserPermission(user, "LIMITED")));
 }
-export { canObserveActor, isPrimaryUpdater, userIsGM };
+export { canObserveActor, isPrimaryOwner, isPrimaryUpdater, primaryPlayerOwner, userIsGM };

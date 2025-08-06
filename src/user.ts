@@ -12,6 +12,16 @@ function isPrimaryUpdater(actor: ActorPF2e): boolean {
     return actor.primaryUpdater === game.user;
 }
 
+function primaryPlayerOwner(actor: ActorPF2e): UserPF2e | null {
+    return game.users.getDesignatedUser(
+        (user) => user.active && !user.isGM && actor.testUserPermission(user, "OWNER")
+    );
+}
+
+function isPrimaryOwner(actor: ActorPF2e, user = game.user): boolean {
+    return user.isGM || primaryPlayerOwner(actor) === user;
+}
+
 function canObserveActor(actor: Maybe<ActorPF2e>, withParty: boolean = true) {
     if (!actor) return false;
 
@@ -25,4 +35,4 @@ function canObserveActor(actor: Maybe<ActorPF2e>, withParty: boolean = true) {
     );
 }
 
-export { canObserveActor, isPrimaryUpdater, userIsGM };
+export { canObserveActor, isPrimaryOwner, isPrimaryUpdater, primaryPlayerOwner, userIsGM };
