@@ -2,7 +2,7 @@ import { PersistentHook } from "./hooks";
 import { Wrapper } from "./libwrapper";
 declare function joinStr(separator: string, ...path: any[]): string;
 declare function arraysEqual<T extends any[]>(arr1: T, arr2: any[]): arr2 is T;
-declare function includesAny(arr: any[], ...entries: any[]): boolean;
+declare function includesAny(arr: any[], entries: any[]): boolean;
 declare function roundToStep(value: number, step: number): number;
 declare function isDecimal(num: number): boolean;
 declare function activateHooksAndWrappers(entries: (Wrapper | PersistentHook)[]): void;

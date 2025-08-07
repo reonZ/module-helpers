@@ -17,7 +17,7 @@ function arraysEqual<T extends any[]>(arr1: T, arr2: any[]): arr2 is T {
     return arr1.length === arr2.length && arr1.every((entry) => arr2.includes(entry));
 }
 
-function includesAny(arr: any[], ...entries: any[]): boolean {
+function includesAny(arr: any[], entries: any[]): boolean {
     for (const entry of entries) {
         if (arr.includes(entry)) {
             return true;
