@@ -41,6 +41,10 @@ function getShortDateTime() {
     };
 }
 
+function timestampToLocalTime(time: number) {
+    return new Date(time).toLocaleString();
+}
+
 type TimeInterval = "dawn" | "noon" | "dusk" | "midnight" | `${number}` | number;
 
-export { advanceTime, getTimeWithSeconds, getShortTime, getShortDateTime };
+export { advanceTime, getShortDateTime, getShortTime, getTimeWithSeconds, timestampToLocalTime };

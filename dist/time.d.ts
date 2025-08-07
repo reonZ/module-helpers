@@ -8,5 +8,6 @@ declare function getShortDateTime(): {
     time: string;
     date: string;
 };
+declare function timestampToLocalTime(time: number): string;
 type TimeInterval = "dawn" | "noon" | "dusk" | "midnight" | `${number}` | number;
-export { advanceTime, getTimeWithSeconds, getShortTime, getShortDateTime };
+export { advanceTime, getShortDateTime, getShortTime, getTimeWithSeconds, timestampToLocalTime };

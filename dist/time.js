@@ -30,4 +30,7 @@ function getShortDateTime() {
         date,
     };
 }
-export { advanceTime, getTimeWithSeconds, getShortTime, getShortDateTime };
+function timestampToLocalTime(time) {
+    return new Date(time).toLocaleString();
+}
+export { advanceTime, getShortDateTime, getShortTime, getTimeWithSeconds, timestampToLocalTime };
