@@ -41,7 +41,16 @@ async function getActorFromUuid(uuid) {
     const actor = await fromUuid(uuid);
     return actor instanceof Actor ? actor : null;
 }
+function getMythicOrHeroPoints(actor) {
+    const name = actor.system.resources.mythicPoints.max ? "mythicPoints" : "heroPoints";
+    return {
+        ...(name === "mythicPoints"
+            ? actor.system.resources.mythicPoints
+            : actor.system.resources.heroPoints),
+        name,
+    };
+}
 function isMerchant(actor) {
     return !!actor?.isOfType("loot") && actor.isMerchant;
 }
-export { actorsRespectAlliance, getActorFromUuid, getDispositionColor, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };
+export { actorsRespectAlliance, getActorFromUuid, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };

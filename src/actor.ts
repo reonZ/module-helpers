@@ -1,4 +1,11 @@
-import { ActorAlliance, ActorPF2e, CreaturePF2e, LootPF2e } from "foundry-pf2e";
+import {
+    ActorAlliance,
+    ActorPF2e,
+    CharacterPF2e,
+    CreaturePF2e,
+    LootPF2e,
+    ValueAndMax,
+} from "foundry-pf2e";
 import { R } from ".";
 
 function actorsRespectAlliance(
@@ -56,6 +63,18 @@ async function getActorFromUuid(uuid: Maybe<string>): Promise<ActorPF2e | null> 
     return actor instanceof Actor ? actor : null;
 }
 
+function getMythicOrHeroPoints(
+    actor: CharacterPF2e
+): ValueAndMax & { name: "mythicPoints" | "heroPoints" } {
+    const name = actor.system.resources.mythicPoints.max ? "mythicPoints" : "heroPoints";
+    return {
+        ...(name === "mythicPoints"
+            ? actor.system.resources.mythicPoints
+            : actor.system.resources.heroPoints),
+        name,
+    };
+}
+
 function isMerchant(actor: Maybe<ActorPF2e>): actor is LootPF2e {
     return !!actor?.isOfType("loot") && actor.isMerchant;
 }
@@ -66,6 +85,7 @@ export {
     actorsRespectAlliance,
     getActorFromUuid,
     getDispositionColor,
+    getMythicOrHeroPoints,
     hasRollOption,
     isAllyActor,
     isMerchant,
