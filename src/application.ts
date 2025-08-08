@@ -26,6 +26,9 @@ function renderItemSheets(type: ItemSheetType | ItemSheetType[] = ["ItemSheetPF2
 
 type ActorSheetType = "ActorSheetPF2e" | `${Capitalize<ActorType>}SheetPF2e`;
 
-type ItemSheetType = "ItemSheetPF2e" | `${Capitalize<ItemType>}SheetPF2e`;
+type ItemSheetType =
+    | "ItemSheetPF2e"
+    | "AbilitySheetPF2e"
+    | `${Capitalize<Exclude<ItemType, "action">>}SheetPF2e`;
 
 export { renderActorSheets, renderCharacterSheets, renderItemSheets };
