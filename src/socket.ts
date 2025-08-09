@@ -131,7 +131,9 @@ async function convertToCallOptions(options: Record<string, any>): Promise<Recor
                 if (
                     parseResult?.documentId &&
                     parseResult.type &&
-                    ["Item", "Actor", "Token", "ChatMessage"].includes(parseResult.type)
+                    ["Item", "Actor", "Token", "ChatMessage", "RollTable"].includes(
+                        parseResult.type
+                    )
                 ) {
                     callOptions[key] = await fromUuid(value);
                 } else {
@@ -189,4 +191,4 @@ type EmitablePacket<TOptions extends Record<string, any>> = WithSocketOptions<TO
     __type__: string;
 };
 
-export { createEmitable, socketEmit, socketOff, socketOn };
+export { createEmitable, displayEmiting, socketEmit, socketOff, socketOn };

@@ -107,7 +107,7 @@ async function convertToCallOptions(options) {
             const parseResult = foundry.utils.parseUuid(value);
             if (parseResult?.documentId &&
                 parseResult.type &&
-                ["Item", "Actor", "Token", "ChatMessage"].includes(parseResult.type)) {
+                ["Item", "Actor", "Token", "ChatMessage", "RollTable"].includes(parseResult.type)) {
                 callOptions[key] = await fromUuid(value);
             }
             else {
@@ -125,4 +125,4 @@ function convertToEmitOptions(options) {
         return value instanceof foundry.abstract.Document ? value.uuid : value;
     });
 }
-export { createEmitable, socketEmit, socketOff, socketOn };
+export { createEmitable, displayEmiting, socketEmit, socketOff, socketOn };
