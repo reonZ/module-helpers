@@ -27,7 +27,7 @@ async function refreshLatestMessages(nb) {
     }
 }
 function isSpellMessage(message) {
-    return message.getFlag("pf2e", "context.type") === "spell-cast";
+    return typeof message.getFlag("pf2e", "casting.id") === "string";
 }
 function createChatLink(docOrUuid, { label, html } = {}) {
     const isDocument = docOrUuid instanceof foundry.abstract.Document;

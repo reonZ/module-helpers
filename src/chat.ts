@@ -37,7 +37,7 @@ async function refreshLatestMessages(nb: number) {
 }
 
 function isSpellMessage(message: ChatMessagePF2e): boolean {
-    return message.getFlag("pf2e", "context.type") === "spell-cast";
+    return typeof message.getFlag("pf2e", "casting.id") === "string";
 }
 
 function createChatLink(
