@@ -52,6 +52,25 @@ declare global {
                     items: ItemPF2e[]
                 ) => betterMerchant.TestItemData[];
             };
+            heroActions: {
+                canTrade: () => boolean;
+                discardHeroActions: (actor: CharacterPF2e, uuids: string[] | string) => void;
+                drawHeroActions: (actor: CharacterPF2e) => Promise<void>;
+                getDeckTable: () => Promise<RollTable | undefined>;
+                getHeroActionDetails: (
+                    uuid: string
+                ) => Promise<heroActions.HeroActionDetails | undefined>;
+                getHeroActions: (actor: CharacterPF2e) => heroActions.HeroAction[];
+                getHeroActionsTemplateData: (
+                    actor: CharacterPF2e
+                ) => heroActions.HeroActionsTemplateData | undefined;
+                giveHeroActions: (actor: CharacterPF2e) => Promise<void>;
+                removeHeroActions: () => Promise<void>;
+                sendActionToChat: (actor: CharacterPF2e, uuid: string) => Promise<void>;
+                tradeHeroAction: (actor: CharacterPF2e) => Promise<void>;
+                useHeroAction: (actor: CharacterPF2e, uuid: string) => Promise<void>;
+                usesCountVariant: () => boolean;
+            };
             identify: {
                 openTracker: (item?: ItemPF2e) => void;
                 requestIdentify: (item: Maybe<ItemPF2e>, skipNotify?: boolean) => void;
@@ -69,6 +88,22 @@ declare global {
             type TestItemData = {
                 buyPrice: CoinsPF2e;
                 item: PhysicalItemPF2e<CharacterPF2e | NPCPF2e>;
+            };
+        }
+
+        namespace heroActions {
+            type HeroAction = { uuid: DocumentUUID; name: string };
+
+            type HeroActionDetails = { name: string; description: string };
+
+            type HeroActionsTemplateData<T extends HeroAction[] = HeroAction[]> = {
+                actions: T;
+                usesCount: boolean;
+                mustDiscard: boolean;
+                mustDraw: boolean;
+                canUse: boolean;
+                canTrade: boolean | 0;
+                diff: number;
             };
         }
 
