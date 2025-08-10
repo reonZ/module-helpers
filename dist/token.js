@@ -39,7 +39,7 @@ function panToToken(token, control) {
     canvas.animatePan(token.center);
 }
 function getFirstActiveToken(actor, scene) {
-    return getFirstTokenThatMatches(actor, () => true, scene);
+    return actor.token ?? getFirstTokenThatMatches(actor, () => true, scene);
 }
 function getFirstTokenThatMatches(actor, predicate, scene = game.scenes.current) {
     if (!scene)

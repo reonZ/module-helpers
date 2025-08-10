@@ -50,7 +50,7 @@ function panToToken(token: TokenPF2e | TokenDocumentPF2e, control?: boolean) {
 }
 
 function getFirstActiveToken(actor: ActorPF2e, scene?: ScenePF2e | null) {
-    return getFirstTokenThatMatches(actor, () => true, scene);
+    return actor.token ?? getFirstTokenThatMatches(actor, () => true, scene);
 }
 
 function getFirstTokenThatMatches(
