@@ -49,14 +49,14 @@ function panToToken(token: TokenPF2e | TokenDocumentPF2e, control?: boolean) {
     canvas.animatePan(token.center);
 }
 
-function getFirstActiveToken(actor: ActorPF2e, scene?: ScenePF2e) {
+function getFirstActiveToken(actor: ActorPF2e, scene?: ScenePF2e | null) {
     return getFirstTokenThatMatches(actor, () => true, scene);
 }
 
 function getFirstTokenThatMatches(
     actor: ActorPF2e,
     predicate: (token: TokenDocumentPF2e) => boolean,
-    scene = game.scenes.current
+    scene: Maybe<ScenePF2e> = game.scenes.current
 ) {
     if (!scene) return null;
 
