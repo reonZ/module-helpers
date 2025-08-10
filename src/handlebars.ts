@@ -14,6 +14,8 @@ function render<TData extends RenderTemplateData>(
     template: string,
     data = {} as TData
 ): Promise<string> {
+    template = template.replace(/\./, "/");
+
     if (R.isString(data.i18n)) {
         data.i18n = templateLocalize(data.i18n);
     } else if (!("i18n" in data)) {

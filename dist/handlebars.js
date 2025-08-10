@@ -7,6 +7,7 @@ function imagePath(...args) {
     return `modules/${MODULE.id}/images/${joinStr("/", args)}.${ext}`;
 }
 function render(template, data = {}) {
+    template = template.replace(/\./, "/");
     if (R.isString(data.i18n)) {
         data.i18n = templateLocalize(data.i18n);
     }
