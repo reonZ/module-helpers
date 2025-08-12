@@ -125,4 +125,26 @@ function signedInteger(value, { emptyStringZero = false, zeroIsNegative = false 
 function tupleHasValue(array, value) {
     return array.includes(value);
 }
-export { ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, splitListString, traitSlugToObject, tupleHasValue, };
+/**
+ * https://github.com/foundryvtt/pf2e/blob/f26bfcc353ebd58efd6d1140cdb8e20688acaea8/src/module/item/spell/helpers.ts#L16
+ */
+function createSpellAreaLabel(areaData) {
+    const formatString = "PF2E.Item.Spell.Area";
+    const shape = game.i18n.localize(`PF2E.Area.Shape.${areaData.type}`);
+    // Handle special cases of very large areas
+    const largeAreaLabel = {
+        1320: "PF2E.Area.Size.Quarter",
+        2640: "PF2E.Area.Size.Half",
+        5280: "1",
+    }[areaData.value];
+    if (largeAreaLabel) {
+        const size = game.i18n.localize(largeAreaLabel);
+        const unit = game.i18n.localize("PF2E.Area.Size.Mile");
+        return game.i18n.format(formatString, { shape, size, unit, units: unit });
+    }
+    const size = Number(areaData.value);
+    const unit = game.i18n.localize("PF2E.Foot.Label");
+    const units = game.i18n.localize("PF2E.Foot.Plural");
+    return game.i18n.format(formatString, { shape, size, unit, units });
+}
+export { createSpellAreaLabel, ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, splitListString, traitSlugToObject, tupleHasValue, };

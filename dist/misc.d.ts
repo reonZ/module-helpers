@@ -1,3 +1,4 @@
+import { SpellArea } from "foundry-pf2e";
 /**
  * https://github.com/foundryvtt/pf2e/blob/f7d7441acbf856b490a4e0c0d799809cd6e3dc5d/src/util/misc.ts#L259
  */
@@ -53,6 +54,10 @@ declare function signedInteger(value: number, { emptyStringZero, zeroIsNegative 
  * https://github.com/foundryvtt/pf2e/blob/0191f1fdac24c3903a939757a315043d1fcbfa59/src/util/misc.ts#L56
  */
 declare function tupleHasValue<const A extends readonly unknown[]>(array: A, value: unknown): value is A[number];
+/**
+ * https://github.com/foundryvtt/pf2e/blob/f26bfcc353ebd58efd6d1140cdb8e20688acaea8/src/module/item/spell/helpers.ts#L16
+ */
+declare function createSpellAreaLabel(areaData: SpellArea): string;
 interface SplitListStringOptions {
     delimiter?: string | RegExp;
     unique?: boolean;
@@ -75,4 +80,4 @@ type ParamsFromEvent = {
     skipDialog: boolean;
     rollMode?: RollMode | "roll";
 };
-export { ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, splitListString, traitSlugToObject, tupleHasValue, };
+export { createSpellAreaLabel, ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, splitListString, traitSlugToObject, tupleHasValue, };
