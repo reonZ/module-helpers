@@ -113,6 +113,20 @@ function calculateSaveDC(weapon: WeaponPF2e<CharacterPF2e>): Statistic<Character
     return classDC.extend({ modifiers: itemBonus.modifier ? [itemBonus] : [] });
 }
 
+function getExtraAuxiliaryAction(item: WeaponPF2e): { label: string; glyph: string } | undefined {
+    if (!game.modules.get("sf2e-anachronism")?.active) return;
+
+    const traits = item.system.traits.value as (NPCAttackTrait | "grenade" | "automatic")[];
+    const isArea = traits.some((trait) => trait.startsWith("area-") || trait === "grenade");
+    const isAutomatic = traits.includes("automatic");
+    if (!isArea && !isAutomatic) return;
+
+    return {
+        glyph: traits.some((t) => t === "grenade") ? "1" : "2",
+        label: game.i18n.localize(`SF2E.Actions.${isArea ? "AreaFire" : "AutoFire"}.Title`),
+    };
+}
+
 type NPCAttackTraitSF2e = NPCAttackTrait | "grenade" | "automatic";
 
-export { calculateSaveDC, createAreaFireMessage, EXTRA_AREA_OPTIONS };
+export { calculateSaveDC, createAreaFireMessage, EXTRA_AREA_OPTIONS, getExtraAuxiliaryAction };
