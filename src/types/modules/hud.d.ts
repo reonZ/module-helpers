@@ -1,15 +1,7 @@
 import { AbilityItemPF2e, ActorPF2e, CreaturePF2e, FeatPF2e } from "foundry-pf2e";
 
 declare global {
-    interface HudApi {
-        addStance: (
-            actor: CreaturePF2e,
-            sourceUUID: DocumentUUID,
-            createMessage?: boolean
-        ) => Promise<void>;
-        canUseStances: (actor: ActorPF2e) => boolean;
-        getStances: (actor: CreaturePF2e) => hud.StanceData[] | undefined;
-    }
+    interface HudApi {}
 
     namespace hud {
         type StanceData = {
