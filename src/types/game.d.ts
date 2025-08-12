@@ -13,7 +13,7 @@ declare module "foundry-pf2e" {
         };
 
         hud?: MyModule.GamePF2e<HudApi>;
-        dailies?: MyModule.GamePF2e<DailiesApi>;
+        dailies?: MyModule.GamePF2e<dailies.DailiesApi>;
         toolbelt?: toolbelt.GamePF2e;
     }
 }
