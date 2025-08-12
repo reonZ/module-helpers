@@ -33,6 +33,7 @@ export * from "./object";
 export * from "./pixi";
 export * from "./rules";
 export * from "./settings";
+export * from "./sf2e";
 export * from "./skill";
 export * from "./socket";
 export * from "./spell-consumable";
