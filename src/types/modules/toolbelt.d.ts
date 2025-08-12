@@ -35,6 +35,9 @@ declare global {
             betterTrade: {
                 withContent: boolean;
             };
+            heroActions: {
+                enabled: boolean;
+            };
             identify: {
                 enabled: boolean;
                 playerRequest: boolean;
