@@ -43,6 +43,11 @@ declare global {
     interface DailiesApi {
         canCastRank: (actor: CharacterPF2e, rank: ZeroToTen) => boolean | null;
         canPrepareDailies: (actor: ActorPF2e) => boolean;
+        createRetrainBtn: (
+            actor: ActorPF2e,
+            selectedId: string,
+            type: "vessel" | "tactic"
+        ) => HTMLElement;
         dailyHelpers: {
             createComboSkillDaily: (
                 key: string,
@@ -76,6 +81,8 @@ declare global {
         getDisabledDailies: (actor: CharacterPF2e) => Record<string, boolean>;
         getStaffItem: (actor: CharacterPF2e) => PhysicalItemPF2e<CharacterPF2e> | null;
         openDailiesInterface: (actor: ActorPF2e) => Promise<void>;
+        retrainTactic: (actor: ActorPF2e, selectedId: string) => void;
+        retrainVessel: (actor: ActorPF2e, selectedId: string) => void;
         registerCustomDailies: (dailies: object[]) => void;
         setStaffChargesValue: (
             actor: CharacterPF2e,
