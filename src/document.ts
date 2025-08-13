@@ -5,7 +5,6 @@ import {
     DamageRoll,
     ItemPF2e,
     MacroPF2e,
-    TokenDocumentPF2e,
     UserPF2e,
 } from "foundry-pf2e";
 import { htmlClosest, isInstanceOf, R } from ".";
@@ -75,9 +74,7 @@ function isUuidOf(
     return !!result?.type && types.includes(result.type as DocumentType) && !!result.documentId;
 }
 
-function isValidTargetDocuments(
-    target: Maybe<{ actor: Maybe<ActorPF2e>; token?: Maybe<TokenDocumentPF2e> }>
-): target is TargetDocuments {
+function isValidTargetDocuments(target: unknown): target is TargetDocuments {
     return (
         R.isPlainObject(target) &&
         target.actor instanceof Actor &&
