@@ -11,6 +11,7 @@ export * from "./damage";
 export * from "./degree-of-success";
 export * from "./dialog";
 export * from "./difficulty-class";
+export * from "./distance";
 export * from "./document";
 export * from "./effect";
 export * from "./flags";
