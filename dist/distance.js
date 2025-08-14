@@ -1,10 +1,15 @@
+/**
+ * the helpers in this file are repurposed version of the system to use token destination instead of position
+ */
 function getRealDestinationBounds(token) {
     const bounds = token.bounds;
     const destination = token.document.movement.destination;
     return new PIXI.Rectangle(destination.x, destination.y, bounds.width, bounds.height);
 }
+function getRealElevation(token) {
+    return token?.document.movement.destination.elevation ?? 0;
+}
 /**
- * repurposed version of .. to use TokenDocument#movement.destination
  * https://github.com/foundryvtt/pf2e/blob/f26bfcc353ebd58efd6d1140cdb8e20688acaea8/src/module/canvas/token/object.ts#L478
  */
 function distanceBetween(origin, target) {
@@ -19,8 +24,8 @@ function distanceBetween(origin, target) {
         ];
         return canvas.grid.measurePath(waypoints).distance;
     }
-    const selfElevation = origin.document.elevation;
-    const targetElevation = target.document?.elevation ?? selfElevation;
+    const selfElevation = getRealElevation(origin);
+    const targetElevation = getRealElevation(target) ?? selfElevation;
     const originBounds = getRealDestinationBounds(origin);
     const targetBounds = getRealDestinationBounds(target);
     if (selfElevation === targetElevation || !origin.actor || !targetBounds || !target.actor) {
@@ -71,8 +76,8 @@ function measureDistanceCuboid(r0, r1, { reach = null, token = null, target = nu
             Math.max(r0Snapped.top - r1Snapped.bottom, r1Snapped.top - r0Snapped.bottom, 0) +
                 gridWidth;
     }
-    const selfElevation = token?.document.movement.destination.height ?? 0;
-    const targetElevation = target?.document.movement.destination.height ?? 0;
+    const selfElevation = getRealElevation(token);
+    const targetElevation = getRealElevation(target);
     if (token && target && selfElevation !== targetElevation && token.actor && target.actor) {
         const [selfDimensions, targetDimensions] = [
             token.actor.dimensions,
