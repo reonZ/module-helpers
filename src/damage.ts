@@ -111,7 +111,7 @@ type RollDamageOptions = {
 
 type RollDamageToolbeltFlag = Pick<
     toolbelt.targetHelper.MessageFlag,
-    "save" | "options" | "traits" | "item"
+    "saveVariants" | "options" | "traits" | "item"
 >;
 
 export { rollDamageFromFormula };
