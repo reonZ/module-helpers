@@ -136,7 +136,7 @@ declare global {
                 isRegen?: boolean;
                 item?: ItemUUID;
                 options?: string[];
-                saveVariants?: Record<string, Record<string, MessageSaveFlag>>;
+                saveVariants?: Record<string, MessageSaveFlag>;
                 splashIndex?: number;
                 splashTargets?: string[];
                 targets?: TokenDocumentUUID[];
