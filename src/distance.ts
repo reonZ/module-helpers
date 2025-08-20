@@ -28,7 +28,7 @@ function distanceBetween(origin: TokenPF2e, target: TokenPF2e): number {
             { x: origin.x, y: origin.y },
             { x: target.x, y: target.y },
         ];
-        return canvas.grid.measurePath(waypoints).distance;
+        return Math.round(canvas.grid.measurePath(waypoints).distance);
     }
 
     const selfElevation = getRealElevation(origin);
