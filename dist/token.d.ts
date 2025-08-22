@@ -4,7 +4,10 @@ declare function positionTokenFromCoords({ x, y }: Point, token: TokenPF2e, snap
 declare function pingToken(token: TokenPF2e | TokenDocumentPF2e): Promise<boolean>;
 declare function emitTokenHover(event: MouseEvent, token: TokenPF2e | TokenDocumentPF2e, hover: boolean): void;
 declare function panToToken(token: TokenPF2e | TokenDocumentPF2e, control?: boolean): void;
-declare function getFirstActiveToken(actor: ActorPF2e, scene?: ScenePF2e | null): TokenDocumentPF2e<ScenePF2e | null> | null;
+declare function getFirstActiveToken(actor: ActorPF2e, { linked, scene }?: {
+    linked?: boolean;
+    scene?: ScenePF2e | null;
+}): TokenDocumentPF2e<ScenePF2e | null> | null;
 declare function getFirstTokenThatMatches(actor: ActorPF2e, predicate: (token: TokenDocumentPF2e) => boolean, scene?: Maybe<ScenePF2e>): TokenDocumentPF2e<ScenePF2e | null> | null;
 declare function hasTokenThatMatches(actor: ActorPF2e, predicate: (token: TokenDocumentPF2e) => boolean): boolean;
 export { emitTokenHover, getFirstActiveToken, getFirstTokenThatMatches, hasTokenThatMatches, panToToken, pingToken, positionTokenFromCoords, selectTokens, };

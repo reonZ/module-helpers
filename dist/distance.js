@@ -22,7 +22,7 @@ function distanceBetween(origin, target) {
             { x: origin.x, y: origin.y },
             { x: target.x, y: target.y },
         ];
-        return canvas.grid.measurePath(waypoints).distance;
+        return Math.round(canvas.grid.measurePath(waypoints).distance);
     }
     const selfElevation = getRealElevation(origin);
     const targetElevation = getRealElevation(target) ?? selfElevation;

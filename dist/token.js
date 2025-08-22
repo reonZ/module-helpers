@@ -38,8 +38,9 @@ function panToToken(token, control) {
     }
     canvas.animatePan(token.center);
 }
-function getFirstActiveToken(actor, scene) {
-    return actor.token ?? getFirstTokenThatMatches(actor, () => true, scene);
+function getFirstActiveToken(actor, { linked, scene } = {}) {
+    const predicate = (token) => !linked || token.actorLink;
+    return actor.token ?? getFirstTokenThatMatches(actor, predicate, scene);
 }
 function getFirstTokenThatMatches(actor, predicate, scene = game.scenes.current) {
     if (!scene)

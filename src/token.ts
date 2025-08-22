@@ -49,8 +49,12 @@ function panToToken(token: TokenPF2e | TokenDocumentPF2e, control?: boolean) {
     canvas.animatePan(token.center);
 }
 
-function getFirstActiveToken(actor: ActorPF2e, scene?: ScenePF2e | null) {
-    return actor.token ?? getFirstTokenThatMatches(actor, () => true, scene);
+function getFirstActiveToken(
+    actor: ActorPF2e,
+    { linked, scene }: { linked?: boolean; scene?: ScenePF2e | null } = {}
+) {
+    const predicate = (token: TokenDocumentPF2e) => !linked || token.actorLink;
+    return actor.token ?? getFirstTokenThatMatches(actor, predicate, scene);
 }
 
 function getFirstTokenThatMatches(
