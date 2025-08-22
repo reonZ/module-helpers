@@ -1,5 +1,6 @@
 import { ActorPF2e, ScenePF2e, TokenDocumentPF2e, TokenPF2e } from "foundry-pf2e";
 import { isInstanceOf } from "./object";
+import { PingOptions } from "foundry-pf2e/foundry/client/pixi/board.js";
 
 function selectTokens(tokens: (TokenPF2e | TokenDocumentPF2e)[]) {
     canvas.tokens.releaseAll();
@@ -23,9 +24,35 @@ function positionTokenFromCoords({ x, y }: Point, token: TokenPF2e, snapped = tr
     return position;
 }
 
-async function pingToken(token: TokenPF2e | TokenDocumentPF2e): Promise<boolean> {
+async function pingToken(token: TokenPF2e | TokenDocumentPF2e, local?: boolean): Promise<boolean> {
     if (!canvas.ready) return false;
-    return canvas.ping(token.center);
+    return ping(token.center, { local });
+}
+
+/**
+ * slightly modified core foundry version
+ */
+async function ping(origin: Point, options?: PingOptions & { local?: boolean }): Promise<boolean> {
+    // Don't allow pinging outside of the canvas bounds
+    if (!canvas.dimensions.rect.contains(origin.x, origin.y)) return false;
+    // Configure the ping to be dispatched
+    const types = CONFIG.Canvas.pings.types;
+    const isPull = game.keyboard.isModifierActive("Shift");
+    const isAlert = game.keyboard.isModifierActive("Alt");
+    let style: string = types.PULSE;
+    if (isPull) style = types.PULL;
+    else if (isAlert) style = types.ALERT;
+    let ping = { scene: canvas.scene?.id, pull: isPull, style, zoom: canvas.stage.scale.x };
+    ping = foundry.utils.mergeObject(ping, options);
+
+    if (!options?.local) {
+        // Broadcast the ping to other connected clients
+        const activity: ActivityData = { cursor: origin, ping };
+        game.user.broadcastActivity(activity);
+    }
+
+    // Display the ping locally
+    return canvas.controls.handlePing(game.user, origin, ping);
 }
 
 function emitTokenHover(event: MouseEvent, token: TokenPF2e | TokenDocumentPF2e, hover: boolean) {
