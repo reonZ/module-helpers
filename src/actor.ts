@@ -35,6 +35,10 @@ function getDispositionColor(actor?: ActorPF2e | null) {
     return new Color(colorValue);
 }
 
+function belongToPartyAlliance(actor: ActorPF2e): boolean {
+    return actor.system.details.alliance === "party";
+}
+
 function oppositeAlliance(alliance: ActorAlliance) {
     return alliance === "party" ? "opposition" : alliance === "opposition" ? "party" : null;
 }
@@ -83,6 +87,7 @@ type ActorTargetAlliance = "all" | "allies" | "enemies";
 
 export {
     actorsRespectAlliance,
+    belongToPartyAlliance,
     getActorFromUuid,
     getDispositionColor,
     getMythicOrHeroPoints,

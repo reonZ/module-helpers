@@ -19,6 +19,9 @@ function getDispositionColor(actor) {
                 : CONFIG.Canvas.dispositionColors.NEUTRAL;
     return new Color(colorValue);
 }
+function belongToPartyAlliance(actor) {
+    return actor.system.details.alliance === "party";
+}
 function oppositeAlliance(alliance) {
     return alliance === "party" ? "opposition" : alliance === "opposition" ? "party" : null;
 }
@@ -53,4 +56,4 @@ function getMythicOrHeroPoints(actor) {
 function isMerchant(actor) {
     return !!actor?.isOfType("loot") && actor.isMerchant;
 }
-export { actorsRespectAlliance, getActorFromUuid, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };
+export { actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };
