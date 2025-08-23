@@ -14,6 +14,7 @@ declare module "foundry-pf2e" {
 
         hud?: MyModule.GamePF2e<HudApi>;
         dailies?: MyModule.GamePF2e<dailies.DailiesApi>;
+        tcal?: tcal.GamePF2e;
         toolbelt?: toolbelt.GamePF2e;
     }
 }
