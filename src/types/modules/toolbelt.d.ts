@@ -111,7 +111,7 @@ declare global {
         }
 
         namespace targetHelper {
-            type TargetMessageType = "damage" | "spell" | "action" | "check";
+            type TargetMessageType = "area" | "damage" | "spell" | "action" | "check";
 
             type MessageTargetSave = {
                 die: number;
