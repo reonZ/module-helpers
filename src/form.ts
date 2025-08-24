@@ -37,12 +37,16 @@ function generateFormInput<T extends FormGroupType>(
 ): HTMLInputElement | HTMLSelectElement | undefined {
     const _i18n = I18n.from(inputConfig.i18n) ?? i18n;
 
-    if (type === "number") {
+    if (type === "checkbox") {
+        const configs = inputConfig as CreateCheckboxInputConfig;
+        return fields.createCheckboxInput({
+            ...configs,
+        });
+    } else if (type === "number") {
         const configs = inputConfig as CreateNumberInputConfig;
         return fields.createNumberInput({
             ...configs,
             value: "value" in configs ? Number(configs.value) : 0,
-            placeholder: configs.placeholder ?? _i18n.localizeIfExist("placeholder"),
         } satisfies FormInputConfig);
     } else if (type === "text") {
         const configs = inputConfig as CreateTextInputConfig;
@@ -95,26 +99,29 @@ function createFormTemplate(i18n: I18nCreateArgs, groups: CreateFormGroupParams[
     );
 }
 
+type FormGroupType = "checkbox" | "number" | "text" | "select";
+
 type BaseCreateInputConfig<T extends { name: string }> = PartialExcept<T, "name"> & {
     i18n?: I18nCreateArgs;
     disabled?: boolean;
 };
 
+type CreateCheckboxInputConfig = BaseCreateInputConfig<FormInputConfig<boolean>>;
+
 type CreateNumberInputConfig = BaseCreateInputConfig<NumberInputConfig>;
 
-type CreateTextInputConfig = BaseCreateInputConfig<FormInputConfig>;
+type CreateTextInputConfig = BaseCreateInputConfig<FormInputConfig<string>>;
 
 type CreateSelectInputConfig = Omit<BaseCreateInputConfig<SelectInputConfig>, "options"> & {
     options: IterableSelectOptions[] | ReadonlyArray<IterableSelectOptions>;
 };
 
 type CreateGroupInputConfigMap = {
+    checkbox: CreateCheckboxInputConfig;
     number: CreateNumberInputConfig;
     text: CreateTextInputConfig;
     select: CreateSelectInputConfig;
 };
-
-type FormGroupType = "number" | "text" | "select";
 
 type FormGroupParams<T extends FormGroupType> = {
     type: T;
@@ -127,6 +134,7 @@ type CreateFormGroupConfig = Partial<FormGroupConfig> & {
 };
 
 type CreateFormGroupParams =
+    | FormGroupParams<"checkbox">
     | FormGroupParams<"number">
     | FormGroupParams<"text">
     | FormGroupParams<"select">;
