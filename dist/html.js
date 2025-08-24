@@ -76,6 +76,18 @@ function createInputElement(type, name, value, options) {
     }
     return input;
 }
+function createButtonElement(options) {
+    let content = "";
+    if (options.icon) {
+        content += `<i class="${options.icon}"> `;
+    }
+    if (options.label) {
+        content += options.label;
+    }
+    const button = createHTMLElement("button", { ...options, content });
+    button.type = "button";
+    return button;
+}
 function createHTMLElementContent(options) {
     return createHTMLElement("div", options).firstChild;
 }
@@ -220,4 +232,4 @@ function addEnterKeyListeners(html, inputType = "all") {
         }
     });
 }
-export { addEnterKeyListeners, addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, createInputElement, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, toggleSummary, };
+export { addEnterKeyListeners, addListener, addListenerAll, arrayToSelectOptions, assignStyle, createButtonElement, createHTMLElement, createHTMLElementContent, createInputElement, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, toggleSummary, };

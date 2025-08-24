@@ -117,6 +117,24 @@ function createInputElement(
     return input;
 }
 
+function createButtonElement(options: CreateHTMLButtonElementOptions): HTMLButtonElement {
+    let content = "";
+
+    if (options.icon) {
+        content += `<i class="${options.icon}"> `;
+    }
+
+    if (options.label) {
+        content += options.label;
+    }
+
+    const button = createHTMLElement("button", { ...options, content });
+
+    button.type = "button";
+
+    return button;
+}
+
 function createHTMLElementContent(options?: CreateHTMLElementOptions): HTMLElement {
     return createHTMLElement("div", options).firstChild as HTMLElement;
 }
@@ -387,6 +405,9 @@ type CreateHTMLElementOptions = {
     style?: Partial<CSSStyleDeclaration>;
 };
 
+type CreateHTMLButtonElementOptions = Omit<CreateHTMLElementOptions, "id" | "content"> &
+    RequireAtLeastOne<{ icon?: string; label?: string }>;
+
 type CreateHTMLInputElementOptions = Omit<CreateHTMLElementOptions, "content" | "id"> & {
     checked?: boolean;
 };
@@ -413,6 +434,7 @@ export {
     addListenerAll,
     arrayToSelectOptions,
     assignStyle,
+    createButtonElement,
     createHTMLElement,
     createHTMLElementContent,
     createInputElement,

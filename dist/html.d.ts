@@ -8,6 +8,7 @@ declare function createToggleableEvent<TEvent extends keyof DocumentEventMap>(ev
 declare function createToggleableEvent<TEvent extends keyof HTMLElementEventMap>(event: TEvent, selector: string, listener: (ev: HTMLElementEventMap[TEvent]) => any, options?: boolean | AddEventListenerOptions): PersistentEvent;
 declare function createHTMLElement<K extends keyof HTMLElementTagNameMap>(nodeName: K, { classes, dataset, content, id, style }?: CreateHTMLElementOptions): HTMLElementTagNameMap[K];
 declare function createInputElement(type: "text" | "number" | "radio" | "checkbox", name: string, value: string | number | boolean, options?: CreateHTMLInputElementOptions): HTMLInputElement;
+declare function createButtonElement(options: CreateHTMLButtonElementOptions): HTMLButtonElement;
 declare function createHTMLElementContent(options?: CreateHTMLElementOptions): HTMLElement;
 declare function htmlQuery<K extends keyof HTMLElementTagNameMap>(parent: MaybeHTML, selectors: K): HTMLElementTagNameMap[K] | null;
 declare function htmlQuery<E extends HTMLElement = HTMLElement>(parent: MaybeHTML, selectors: string): E | null;
@@ -46,6 +47,10 @@ type CreateHTMLElementOptions = {
     id?: string;
     style?: Partial<CSSStyleDeclaration>;
 };
+type CreateHTMLButtonElementOptions = Omit<CreateHTMLElementOptions, "id" | "content"> & RequireAtLeastOne<{
+    icon?: string;
+    label?: string;
+}>;
 type CreateHTMLInputElementOptions = Omit<CreateHTMLElementOptions, "content" | "id"> & {
     checked?: boolean;
 };
@@ -54,5 +59,5 @@ type DatasetData = Record<string, DatasetValue> | [string, DatasetValue][];
 type ListenerCallbackArgs<E extends HTMLElement, TEvent extends EventType> = [TEvent, ListenerCallback<E, TEvent>, boolean] | [TEvent, ListenerCallback<E, TEvent>] | [ListenerCallback<E, TEvent>, boolean] | [ListenerCallback<E, TEvent>];
 type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = (element: TElement, event: HTMLElementEventMap[TEvent]) => void;
 type IterableSelectOptions = SelectOption | string | FormSelectOption;
-export { addEnterKeyListeners, addListener, addListenerAll, arrayToSelectOptions, assignStyle, createHTMLElement, createHTMLElementContent, createInputElement, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, toggleSummary, };
+export { addEnterKeyListeners, addListener, addListenerAll, arrayToSelectOptions, assignStyle, createButtonElement, createHTMLElement, createHTMLElementContent, createInputElement, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, toggleSummary, };
 export type { DatasetData, DatasetValue, IterableSelectOptions };
