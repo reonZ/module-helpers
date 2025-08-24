@@ -116,6 +116,12 @@ function addToObjectIfNonNullish<T extends Record<string, any>, E extends Record
     return obj;
 }
 
+function waitTimeout(time: number = 1): Promise<void> {
+    return new Promise((resolve) => {
+        setTimeout(resolve, time);
+    });
+}
+
 export {
     activateHooksAndWrappers,
     addToObjectIfNonNullish,
@@ -133,4 +139,5 @@ export {
     stringBoolean,
     stringNumber,
     toggleHooksAndWrappers,
+    waitTimeout,
 };

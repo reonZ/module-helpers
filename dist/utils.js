@@ -85,4 +85,9 @@ function addToObjectIfNonNullish(obj, extra) {
     }
     return obj;
 }
-export { activateHooksAndWrappers, addToObjectIfNonNullish, arraysEqual, disableHooksAndWrappers, gettersToData, includesAny, isDecimal, joinStr, localeCompare, removeIndexFromArray, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, stringNumber, toggleHooksAndWrappers, };
+function waitTimeout(time = 1) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, time);
+    });
+}
+export { activateHooksAndWrappers, addToObjectIfNonNullish, arraysEqual, disableHooksAndWrappers, gettersToData, includesAny, isDecimal, joinStr, localeCompare, removeIndexFromArray, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, stringNumber, toggleHooksAndWrappers, waitTimeout, };
