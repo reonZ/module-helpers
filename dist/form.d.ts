@@ -8,15 +8,17 @@ type BaseCreateInputConfig<T extends {
     i18n?: I18nCreateArgs;
     disabled?: boolean;
 };
+type CreateNumberInputConfig = BaseCreateInputConfig<NumberInputConfig>;
 type CreateTextInputConfig = BaseCreateInputConfig<FormInputConfig>;
 type CreateSelectInputConfig = Omit<BaseCreateInputConfig<SelectInputConfig>, "options"> & {
     options: IterableSelectOptions[] | ReadonlyArray<IterableSelectOptions>;
 };
 type CreateGroupInputConfigMap = {
+    number: CreateNumberInputConfig;
     text: CreateTextInputConfig;
     select: CreateSelectInputConfig;
 };
-type FormGroupType = "text" | "select";
+type FormGroupType = "number" | "text" | "select";
 type FormGroupParams<T extends FormGroupType> = {
     type: T;
     inputConfig: CreateGroupInputConfigMap[T];
@@ -25,7 +27,7 @@ type FormGroupParams<T extends FormGroupType> = {
 type CreateFormGroupConfig = Partial<FormGroupConfig> & {
     i18n?: I18nCreateArgs;
 };
-type CreateFormGroupParams = FormGroupParams<"text"> | FormGroupParams<"select">;
+type CreateFormGroupParams = FormGroupParams<"number"> | FormGroupParams<"text"> | FormGroupParams<"select">;
 type CreateFormDataOptions = {
     expand?: boolean;
     disabled?: boolean;

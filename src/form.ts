@@ -37,7 +37,14 @@ function generateFormInput<T extends FormGroupType>(
 ): HTMLInputElement | HTMLSelectElement | undefined {
     const _i18n = I18n.from(inputConfig.i18n) ?? i18n;
 
-    if (type === "text") {
+    if (type === "number") {
+        const configs = inputConfig as CreateNumberInputConfig;
+        return fields.createNumberInput({
+            ...configs,
+            value: "value" in configs ? Number(configs.value) : 0,
+            placeholder: configs.placeholder ?? _i18n.localizeIfExist("placeholder"),
+        } satisfies FormInputConfig);
+    } else if (type === "text") {
         const configs = inputConfig as CreateTextInputConfig;
         return fields.createTextInput({
             ...configs,
@@ -93,6 +100,8 @@ type BaseCreateInputConfig<T extends { name: string }> = PartialExcept<T, "name"
     disabled?: boolean;
 };
 
+type CreateNumberInputConfig = BaseCreateInputConfig<NumberInputConfig>;
+
 type CreateTextInputConfig = BaseCreateInputConfig<FormInputConfig>;
 
 type CreateSelectInputConfig = Omit<BaseCreateInputConfig<SelectInputConfig>, "options"> & {
@@ -100,11 +109,12 @@ type CreateSelectInputConfig = Omit<BaseCreateInputConfig<SelectInputConfig>, "o
 };
 
 type CreateGroupInputConfigMap = {
+    number: CreateNumberInputConfig;
     text: CreateTextInputConfig;
     select: CreateSelectInputConfig;
 };
 
-type FormGroupType = "text" | "select";
+type FormGroupType = "number" | "text" | "select";
 
 type FormGroupParams<T extends FormGroupType> = {
     type: T;
@@ -116,7 +126,10 @@ type CreateFormGroupConfig = Partial<FormGroupConfig> & {
     i18n?: I18nCreateArgs;
 };
 
-type CreateFormGroupParams = FormGroupParams<"text"> | FormGroupParams<"select">;
+type CreateFormGroupParams =
+    | FormGroupParams<"number">
+    | FormGroupParams<"text">
+    | FormGroupParams<"select">;
 
 type CreateFormDataOptions = {
     expand?: boolean;

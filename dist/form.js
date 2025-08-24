@@ -17,7 +17,15 @@ function createFormData(html, { expand = false, disabled, readonly } = {}) {
 }
 function generateFormInput(type, i18n, inputConfig) {
     const _i18n = I18n.from(inputConfig.i18n) ?? i18n;
-    if (type === "text") {
+    if (type === "number") {
+        const configs = inputConfig;
+        return fields.createNumberInput({
+            ...configs,
+            value: "value" in configs ? Number(configs.value) : 0,
+            placeholder: configs.placeholder ?? _i18n.localizeIfExist("placeholder"),
+        });
+    }
+    else if (type === "text") {
         const configs = inputConfig;
         return fields.createTextInput({
             ...configs,
