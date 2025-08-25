@@ -128,4 +128,8 @@ declare global {
     type Stringptionel<T extends string> = T | (string & {});
 
     type ValueAndMinMax = ValueAndMax & { min: number };
+
+    type FilterableIterable<T, F = T> = {
+        filter(condition: (value: T) => boolean): F[];
+    };
 }
