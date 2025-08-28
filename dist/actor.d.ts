@@ -5,6 +5,7 @@ declare function belongToPartyAlliance(actor: ActorPF2e): boolean;
 declare function oppositeAlliance(alliance: ActorAlliance): "party" | "opposition" | null;
 declare function hasRollOption(actor: ActorPF2e, option: string): boolean;
 declare function playersCanSeeName(actor: ActorPF2e, user?: Active<import("foundry-pf2e/pf2e/module/user/document.js").UserPF2e>): boolean;
+declare function actorIsPartyMember(actor: ActorPF2e): boolean;
 declare function isAllyActor(actor: ActorPF2e): boolean;
 declare function getActorFromUuid(uuid: Maybe<string>): Promise<ActorPF2e | null>;
 declare function getMythicOrHeroPoints(actor: CharacterPF2e): ValueAndMax & {
@@ -12,5 +13,5 @@ declare function getMythicOrHeroPoints(actor: CharacterPF2e): ValueAndMax & {
 };
 declare function isMerchant(actor: Maybe<ActorPF2e>): actor is LootPF2e;
 type ActorTargetAlliance = "all" | "allies" | "enemies";
-export { actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };
+export { actorIsPartyMember, actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };
 export type { ActorTargetAlliance };

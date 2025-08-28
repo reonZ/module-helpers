@@ -57,6 +57,13 @@ function playersCanSeeName(actor: ActorPF2e, user = game.user) {
     );
 }
 
+function actorIsPartyMember(actor: ActorPF2e): boolean {
+    const activeParty = game.actors.party;
+    if (!activeParty) return false;
+
+    return (actor as CreaturePF2e).parties?.some((party) => party === activeParty);
+}
+
 function isAllyActor(actor: ActorPF2e) {
     return actor.alliance === "party" || actor.testUserPermission(game.user, "OBSERVER");
 }
@@ -86,6 +93,7 @@ function isMerchant(actor: Maybe<ActorPF2e>): actor is LootPF2e {
 type ActorTargetAlliance = "all" | "allies" | "enemies";
 
 export {
+    actorIsPartyMember,
     actorsRespectAlliance,
     belongToPartyAlliance,
     getActorFromUuid,

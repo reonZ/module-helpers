@@ -35,6 +35,12 @@ function playersCanSeeName(actor, user = game.user) {
         actor.testUserPermission(user, "LIMITED") ||
         actor.parties?.some((party) => party.testUserPermission(user, "LIMITED")));
 }
+function actorIsPartyMember(actor) {
+    const activeParty = game.actors.party;
+    if (!activeParty)
+        return false;
+    return actor.parties?.some((party) => party === activeParty);
+}
 function isAllyActor(actor) {
     return actor.alliance === "party" || actor.testUserPermission(game.user, "OBSERVER");
 }
@@ -56,4 +62,4 @@ function getMythicOrHeroPoints(actor) {
 function isMerchant(actor) {
     return !!actor?.isOfType("loot") && actor.isMerchant;
 }
-export { actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };
+export { actorIsPartyMember, actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };
