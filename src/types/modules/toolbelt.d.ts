@@ -119,7 +119,7 @@ declare global {
                 modifiers: { label: string; modifier: number }[];
                 notes: RollNoteSource[];
                 private: boolean;
-                rerolled?: "hero" | "new" | "lower" | "higher";
+                rerolled?: "hero" | "mythic" | "new" | "lower" | "higher";
                 roll: string;
                 significantModifiers: modifiersMatter.SignificantModifier[] | undefined;
                 statistic: SaveType;
