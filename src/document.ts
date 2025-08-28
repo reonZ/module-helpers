@@ -1,6 +1,7 @@
 import {
     ActorPF2e,
     ChatMessagePF2e,
+    CheckRoll,
     DamageInstance,
     DamageRoll,
     ItemPF2e,
@@ -10,17 +11,26 @@ import {
 import { htmlClosest, isInstanceOf, R } from ".";
 import { MODULE } from "./module";
 
-let _DamageRoll: typeof DamageRoll;
-let _DamageInstance: typeof DamageInstance;
+const _cached: {
+    damageRoll?: typeof DamageRoll;
+    damageInstance?: typeof DamageInstance;
+    checkRoll?: typeof CheckRoll;
+} = {};
 
 function getDamageRollClass(): typeof DamageRoll {
-    return (_DamageRoll ??= CONFIG.Dice.rolls.find(
+    return (_cached.damageRoll ??= CONFIG.Dice.rolls.find(
         (Roll) => Roll.name === "DamageRoll"
     ) as typeof DamageRoll);
 }
 
+function getCheckRollClass(): typeof CheckRoll {
+    return (_cached.checkRoll ??= CONFIG.Dice.rolls.find(
+        (Roll) => Roll.name === "CheckRoll"
+    ) as typeof CheckRoll);
+}
+
 function getDamageInstanceClass(): typeof DamageInstance {
-    return (_DamageInstance ??= CONFIG.Dice.rolls.find(
+    return (_cached.damageInstance ??= CONFIG.Dice.rolls.find(
         (Roll) => Roll.name === "DamageInstance"
     ) as typeof DamageInstance);
 }
@@ -193,6 +203,7 @@ type DocumentType = "Item" | "Actor" | "Macro";
 
 export {
     deleteInMemory,
+    getCheckRollClass,
     getDamageInstanceClass,
     getDamageRollClass,
     getInMemory,

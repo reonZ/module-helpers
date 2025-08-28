@@ -1,12 +1,14 @@
 import { htmlClosest, isInstanceOf, R } from ".";
 import { MODULE } from "./module";
-let _DamageRoll;
-let _DamageInstance;
+const _cached = {};
 function getDamageRollClass() {
-    return (_DamageRoll ??= CONFIG.Dice.rolls.find((Roll) => Roll.name === "DamageRoll"));
+    return (_cached.damageRoll ??= CONFIG.Dice.rolls.find((Roll) => Roll.name === "DamageRoll"));
+}
+function getCheckRollClass() {
+    return (_cached.checkRoll ??= CONFIG.Dice.rolls.find((Roll) => Roll.name === "CheckRoll"));
 }
 function getDamageInstanceClass() {
-    return (_DamageInstance ??= CONFIG.Dice.rolls.find((Roll) => Roll.name === "DamageInstance"));
+    return (_cached.damageInstance ??= CONFIG.Dice.rolls.find((Roll) => Roll.name === "DamageInstance"));
 }
 function getInMemory(obj, ...path) {
     return foundry.utils.getProperty(obj, `modules.${MODULE.id}.${path.join(".")}`);
@@ -129,4 +131,4 @@ function resolveActorAndItemFromHTML(html) {
         appDocument: message ?? sheetDocument,
     };
 }
-export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, getOrSetInMemory, getPreferredName, isClientDocument, isScriptMacro, isUuidOf, isValidTargetDocuments, resolveActorAndItemFromHTML, setInMemory, };
+export { deleteInMemory, getCheckRollClass, getDamageInstanceClass, getDamageRollClass, getInMemory, getOrSetInMemory, getPreferredName, isClientDocument, isScriptMacro, isUuidOf, isValidTargetDocuments, resolveActorAndItemFromHTML, setInMemory, };

@@ -1,5 +1,6 @@
-import { ActorPF2e, ChatMessagePF2e, DamageInstance, DamageRoll, ItemPF2e, MacroPF2e, UserPF2e } from "foundry-pf2e";
+import { ActorPF2e, ChatMessagePF2e, CheckRoll, DamageInstance, DamageRoll, ItemPF2e, MacroPF2e, UserPF2e } from "foundry-pf2e";
 declare function getDamageRollClass(): typeof DamageRoll;
+declare function getCheckRollClass(): typeof CheckRoll;
 declare function getDamageInstanceClass(): typeof DamageInstance;
 declare function getInMemory<T>(obj: ClientDocument | Token, ...path: string[]): T | undefined;
 declare function setInMemory<T>(obj: ClientDocument | Token, ...args: [...string[], T]): boolean;
@@ -30,4 +31,4 @@ declare function resolveActorAndItemFromHTML(html: HTMLElement): {
     appDocument: ClientDocument | null;
 };
 type DocumentType = "Item" | "Actor" | "Macro";
-export { deleteInMemory, getDamageInstanceClass, getDamageRollClass, getInMemory, getOrSetInMemory, getPreferredName, isClientDocument, isScriptMacro, isUuidOf, isValidTargetDocuments, resolveActorAndItemFromHTML, setInMemory, };
+export { deleteInMemory, getCheckRollClass, getDamageInstanceClass, getDamageRollClass, getInMemory, getOrSetInMemory, getPreferredName, isClientDocument, isScriptMacro, isUuidOf, isValidTargetDocuments, resolveActorAndItemFromHTML, setInMemory, };
