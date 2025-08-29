@@ -9,6 +9,6 @@ type RollDamageOptions = {
     target?: TargetDocuments;
     toolbelt?: RollDamageToolbeltFlag;
 };
-type RollDamageToolbeltFlag = Pick<toolbelt.targetHelper.MessageFlag, "author" | "saveVariants" | "options" | "traits" | "item">;
+type RollDamageToolbeltFlag = Pick<toolbelt.targetHelper.MessageFlag, "author" | "saveVariants" | "options" | "private" | "traits" | "item">;
 export { rollDamageFromFormula };
 export type { RollDamageOptions };
