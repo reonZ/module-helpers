@@ -16,7 +16,7 @@ function sharedLocalize(key) {
 }
 function localizeIfExist(...args) {
     const { data, path } = getLocalizeData(...args);
-    if (game.i18n.has(path, false)) {
+    if (game.i18n.has(path, true)) {
         return localizeOrFormat(path, data);
     }
 }
