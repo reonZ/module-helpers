@@ -72,7 +72,7 @@ class I18n {
     }
     localizeIfExist(...value) {
         const path = this.localizePath(...value);
-        if (game.i18n.has(path, false)) {
+        if (game.i18n.has(path, true)) {
             return game.i18n.localize(path);
         }
     }
