@@ -1,5 +1,6 @@
 import { AbstractEffectPF2e, ActorPF2e, ConditionSlug, ConditionSource, DamageType, DurationData, EffectSource, RuleElementSource } from "foundry-pf2e";
 declare function createCustomPersistentDamage(options: CustomPersistentDamageOptions): PreCreate<EffectSource | ConditionSource> | undefined;
+declare function createConditionSource(slug: ConditionSlug, counter?: number): PreCreate<ConditionSource> | undefined;
 declare function createCustomCondition(options: CustomConditionOptions): PreCreate<EffectSource | ConditionSource> | undefined;
 declare function createCustomEffect({ duration, img, name, rules, slug, unidentified, }: CustomEffectOptions): PreCreate<EffectSource>;
 type CustomPersistentDamageOptions = Omit<WithPartial<CustomEffectOptions, "name" | "img">, "slug"> & {
@@ -37,5 +38,5 @@ interface EffectViewData {
     description: string;
     remaining: string | null;
 }
-export { createCustomCondition, createCustomEffect, createCustomPersistentDamage };
+export { createConditionSource, createCustomCondition, createCustomEffect, createCustomPersistentDamage, };
 export type { CustomConditionOptions, CustomEffectDuration, CustomEffectOptions, EffectsPanelViewData, };

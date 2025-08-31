@@ -31,9 +31,22 @@ const PERSISTENT_DAMAGE_IMAGES: Partial<Record<DamageType, ImageFilePath>> = {
     void: "systems/pf2e/icons/spells/grim-tendrils.webp",
 };
 
+function isEffectlessCondition({
+    duration,
+    unidentified,
+}: CustomConditionOptions | CustomPersistentDamageOptions) {
+    return (duration?.unit ?? "unlimited") === "unlimited" && !unidentified && !duration?.origin;
+}
+
 function createCustomPersistentDamage(
     options: CustomPersistentDamageOptions
 ): PreCreate<EffectSource | ConditionSource> | undefined {
+    const { die: formula, type: damageType, dc } = options;
+
+    if (isEffectlessCondition(options)) {
+        return createPersistentDamageSource(formula, damageType, dc);
+    }
+
     return createCustomCondition({
         ...options,
         slug: "persistent-damage",
@@ -42,39 +55,50 @@ function createCustomPersistentDamage(
             {
                 mode: "override",
                 property: "persistent-damage",
-                value: {
-                    formula: options.die,
-                    damageType: options.type,
-                    dc: options.dc,
-                } satisfies PersistentSourceData,
+                value: { formula, damageType, dc } satisfies PersistentSourceData,
             },
         ],
     });
 }
 
+function createPersistentDamageSource(formula: string, damageType: DamageType, dc = 15) {
+    const baseConditionSource =
+        game.pf2e.ConditionManager.getCondition("persistent-damage").toObject();
+    return foundry.utils.mergeObject(baseConditionSource, {
+        system: { persistent: { formula, damageType, dc } },
+    });
+}
+
+function createConditionSource(
+    slug: ConditionSlug,
+    counter = 1
+): PreCreate<ConditionSource> | undefined {
+    const condition = game.pf2e.ConditionManager.conditions.get(slug);
+    if (!condition) return;
+
+    const source = condition.toObject();
+
+    if (condition.system.value.isValued && counter > 1) {
+        source.system.value.value = Math.max(counter, 1);
+    }
+
+    return source;
+}
+
 function createCustomCondition(
     options: CustomConditionOptions
 ): PreCreate<EffectSource | ConditionSource> | undefined {
-    const { slug, duration, unidentified, counter = 1 } = options;
+    const { alterations = [], counter = 1, img, name, slug } = options;
     const condition = game.pf2e.ConditionManager.conditions.get(slug);
-
     if (!condition) return;
-
-    const unit = duration?.unit ?? "unlimited";
-    const isValued = condition.system.value.isValued && counter > 1;
 
     if (
         // we do not handle dying or unconcious condition+effect combo
         ["dying", "unconscious"].includes(slug) ||
-        (unit === "unlimited" && !unidentified && !duration?.origin)
+        isEffectlessCondition(options)
     ) {
-        const source = condition.toObject();
-
-        if (isValued) {
-            source.system.value.value = Math.max(counter, 1);
-        }
-
-        return source;
+        if (slug === "persistent-damage") return;
+        return createConditionSource(slug, counter);
     }
 
     const rule: GrantItemSource & { alterations: Record<string, JSONValue>[] } = {
@@ -83,10 +107,10 @@ function createCustomCondition(
         onDeleteActions: {
             grantee: "restrict",
         },
-        alterations: options.alterations ?? [],
+        alterations,
     };
 
-    if (isValued) {
+    if (condition.system.value.isValued && counter > 1) {
         rule.inMemoryOnly = true;
         rule.alterations.push({
             mode: "override",
@@ -97,8 +121,8 @@ function createCustomCondition(
 
     return createCustomEffect({
         ...options,
-        name: options.name || `${game.i18n.localize("TYPES.Item.effect")}: ${condition.name}`,
-        img: options.img || condition.img,
+        name: name || `${game.i18n.localize("TYPES.Item.effect")}: ${condition.name}`,
+        img: img || condition.img,
         rules: [rule],
     });
 }
@@ -193,7 +217,12 @@ interface EffectViewData {
     remaining: string | null;
 }
 
-export { createCustomCondition, createCustomEffect, createCustomPersistentDamage };
+export {
+    createConditionSource,
+    createCustomCondition,
+    createCustomEffect,
+    createCustomPersistentDamage,
+};
 export type {
     CustomConditionOptions,
     CustomEffectDuration,
