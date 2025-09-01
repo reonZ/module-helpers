@@ -62,10 +62,8 @@ function createCustomCondition(options) {
     if (
     // we do not handle dying or unconcious condition+effect combo
     ["dying", "unconscious"].includes(slug) ||
-        isEffectlessCondition(options)) {
-        if (slug === "persistent-damage")
-            return;
-        return createConditionSource(slug, counter);
+        (slug === "persistent-damage" && !alterations.length)) {
+        return;
     }
     const rule = {
         key: "GrantItem",
@@ -122,4 +120,4 @@ function createCustomEffect({ duration, img, name, rules, slug, unidentified, })
         system,
     };
 }
-export { createConditionSource, createCustomCondition, createCustomEffect, createCustomPersistentDamage, };
+export { createConditionSource, createCustomCondition, createCustomEffect, createCustomPersistentDamage, isEffectlessCondition, };

@@ -34,7 +34,10 @@ const PERSISTENT_DAMAGE_IMAGES: Partial<Record<DamageType, ImageFilePath>> = {
 function isEffectlessCondition({
     duration,
     unidentified,
-}: CustomConditionOptions | CustomPersistentDamageOptions) {
+}: {
+    duration?: CustomEffectDuration;
+    unidentified?: boolean;
+}) {
     return (duration?.unit ?? "unlimited") === "unlimited" && !unidentified && !duration?.origin;
 }
 
@@ -87,7 +90,7 @@ function createConditionSource(
 
 function createCustomCondition(
     options: CustomConditionOptions
-): PreCreate<EffectSource | ConditionSource> | undefined {
+): PreCreate<EffectSource> | undefined {
     const { alterations = [], counter = 1, img, name, slug } = options;
     const condition = game.pf2e.ConditionManager.conditions.get(slug);
     if (!condition) return;
@@ -95,10 +98,9 @@ function createCustomCondition(
     if (
         // we do not handle dying or unconcious condition+effect combo
         ["dying", "unconscious"].includes(slug) ||
-        isEffectlessCondition(options)
+        (slug === "persistent-damage" && !alterations.length)
     ) {
-        if (slug === "persistent-damage") return;
-        return createConditionSource(slug, counter);
+        return;
     }
 
     const rule: GrantItemSource & { alterations: Record<string, JSONValue>[] } = {
@@ -222,6 +224,7 @@ export {
     createCustomCondition,
     createCustomEffect,
     createCustomPersistentDamage,
+    isEffectlessCondition,
 };
 export type {
     CustomConditionOptions,
