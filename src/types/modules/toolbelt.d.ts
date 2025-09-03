@@ -95,9 +95,15 @@ declare global {
         }
 
         namespace heroActions {
-            type HeroAction = { uuid: DocumentUUID; name: string };
+            type HeroAction = {
+                uuid: DocumentUUID;
+                name: string;
+            };
 
-            type HeroActionDetails = { name: string; description: string };
+            type HeroActionDetails = {
+                name: string;
+                description: string;
+            };
 
             type HeroActionsTemplateData<T extends HeroAction[] = HeroAction[]> = {
                 actions: T;
