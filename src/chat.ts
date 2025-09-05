@@ -36,6 +36,11 @@ async function refreshLatestMessages(nb: number) {
     }
 }
 
+function isActionMessage(message: ChatMessagePF2e): boolean {
+    const type = message.getFlag("pf2e", "origin.type") as string | undefined;
+    return !!type && ["feat", "action"].includes(type);
+}
+
 function isSpellMessage(message: ChatMessagePF2e): boolean {
     return typeof message.getFlag("pf2e", "casting.id") === "string";
 }
@@ -67,4 +72,10 @@ function createChatLink(
     return html ? foundry.applications.ux.TextEditor.implementation.enrichHTML(link) : link;
 }
 
-export { createChatLink, isSpellMessage, latestChatMessages, refreshLatestMessages };
+export {
+    createChatLink,
+    isActionMessage,
+    isSpellMessage,
+    latestChatMessages,
+    refreshLatestMessages,
+};

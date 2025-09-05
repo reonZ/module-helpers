@@ -1,6 +1,7 @@
 import { ChatMessagePF2e } from "foundry-pf2e";
 declare function latestChatMessages(nb: number, fromMessage?: ChatMessagePF2e): Generator<ChatMessagePF2e, void, undefined>;
 declare function refreshLatestMessages(nb: number): Promise<void>;
+declare function isActionMessage(message: ChatMessagePF2e): boolean;
 declare function isSpellMessage(message: ChatMessagePF2e): boolean;
 declare function createChatLink(docOrUuid: ClientDocument | string, options?: {
     label?: string;
@@ -10,4 +11,4 @@ declare function createChatLink(docOrUuid: ClientDocument | string, options: {
     label?: string;
     html?: false;
 }): string;
-export { createChatLink, isSpellMessage, latestChatMessages, refreshLatestMessages };
+export { createChatLink, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages, };
