@@ -31,24 +31,10 @@ const PERSISTENT_DAMAGE_IMAGES: Partial<Record<DamageType, ImageFilePath>> = {
     void: "systems/pf2e/icons/spells/grim-tendrils.webp",
 };
 
-function isEffectlessCondition({
-    duration,
-    unidentified,
-}: {
-    duration?: CustomEffectDuration;
-    unidentified?: boolean;
-}) {
-    return (duration?.unit ?? "unlimited") === "unlimited" && !unidentified && !duration?.origin;
-}
-
 function createCustomPersistentDamage(
     options: CustomPersistentDamageOptions
 ): PreCreate<EffectSource | ConditionSource> | undefined {
     const { die: formula, type: damageType, dc } = options;
-
-    if (isEffectlessCondition(options)) {
-        return createPersistentDamageSource(formula, damageType, dc);
-    }
 
     return createCustomCondition({
         ...options,
@@ -224,7 +210,7 @@ export {
     createCustomCondition,
     createCustomEffect,
     createCustomPersistentDamage,
-    isEffectlessCondition,
+    createPersistentDamageSource,
 };
 export type {
     CustomConditionOptions,

@@ -17,14 +17,8 @@ const PERSISTENT_DAMAGE_IMAGES = {
     vitality: "systems/pf2e/icons/spells/moment-of-renewal.webp",
     void: "systems/pf2e/icons/spells/grim-tendrils.webp",
 };
-function isEffectlessCondition({ duration, unidentified, }) {
-    return (duration?.unit ?? "unlimited") === "unlimited" && !unidentified && !duration?.origin;
-}
 function createCustomPersistentDamage(options) {
     const { die: formula, type: damageType, dc } = options;
-    if (isEffectlessCondition(options)) {
-        return createPersistentDamageSource(formula, damageType, dc);
-    }
     return createCustomCondition({
         ...options,
         slug: "persistent-damage",
@@ -120,4 +114,4 @@ function createCustomEffect({ duration, img, name, rules, slug, unidentified, })
         system,
     };
 }
-export { createConditionSource, createCustomCondition, createCustomEffect, createCustomPersistentDamage, isEffectlessCondition, };
+export { createConditionSource, createCustomCondition, createCustomEffect, createCustomPersistentDamage, createPersistentDamageSource, };
