@@ -133,10 +133,10 @@ function onRenderSettingsConfig(html, options, settings) {
         if (!setting)
             continue;
         if (setting.gmOnly) {
-            extras.push(gmOnlyLabel);
+            extras.push(`<i class="fa-solid fa-crown" data-tooltip="${gmOnlyLabel}"></i>`);
         }
         if (setting.requiresReload) {
-            extras.push(reloadLabel);
+            extras.push(`<i class="fa-solid fa-rotate-left" data-tooltip="${reloadLabel}"></i>`);
         }
         if (!extras.length)
             continue;
@@ -144,7 +144,7 @@ function onRenderSettingsConfig(html, options, settings) {
         const group = htmlClosest(input, ".form-group");
         const label = htmlQuery(group, "label");
         const span = createHTMLElement("span", {
-            content: ` (${extras.join(", ")})`,
+            content: `  ${extras.join(", ")}`,
         });
         label?.append(span);
     }
