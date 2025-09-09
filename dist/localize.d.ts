@@ -2,11 +2,11 @@ declare function localize(...args: LocalizeArgs): string;
 declare function sharedLocalize(key: CollapseOf<LEVIKTIMES>): string;
 declare function localizeIfExist(...args: LocalizeArgs): string | undefined;
 declare function localizePath(...path: string[]): string;
-declare function notify(type: "info" | "warning" | "error" | "success", ...args: NotificationArgs): number;
-declare function success(...args: NotificationArgs): number;
-declare function info(...args: NotificationArgs): number;
-declare function warning(...args: NotificationArgs): number;
-declare function error(...args: NotificationArgs): number;
+declare function notify(type: "info" | "warning" | "error" | "success", ...args: NotificationArgs): Notification;
+declare function success(...args: NotificationArgs): Notification;
+declare function info(...args: NotificationArgs): Notification;
+declare function warning(...args: NotificationArgs): Notification;
+declare function error(...args: NotificationArgs): Notification;
 declare class I18n {
     #private;
     constructor(prefix: string | string[], suffix?: string | string[]);

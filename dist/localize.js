@@ -26,7 +26,7 @@ function localizePath(...path) {
 function notify(type, ...args) {
     const permanent = R.isBoolean(args.at(-1)) ? args.pop() : false;
     const str = localize(...args);
-    return ui.notifications.notify(str, type, { permanent }).id;
+    return ui.notifications.notify(str, type, { permanent });
 }
 function success(...args) {
     return notify("success", ...args);

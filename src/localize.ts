@@ -30,25 +30,28 @@ function localizePath(...path: string[]): string {
     return MODULE.path(...path);
 }
 
-function notify(type: "info" | "warning" | "error" | "success", ...args: NotificationArgs): number {
+function notify(
+    type: "info" | "warning" | "error" | "success",
+    ...args: NotificationArgs
+): Notification {
     const permanent = R.isBoolean(args.at(-1)) ? (args.pop() as boolean) : false;
     const str = localize(...(args as LocalizeArgs));
-    return ui.notifications.notify(str, type, { permanent }).id;
+    return ui.notifications.notify(str, type, { permanent });
 }
 
-function success(...args: NotificationArgs) {
+function success(...args: NotificationArgs): Notification {
     return notify("success", ...args);
 }
 
-function info(...args: NotificationArgs): number {
+function info(...args: NotificationArgs): Notification {
     return notify("info", ...args);
 }
 
-function warning(...args: NotificationArgs): number {
+function warning(...args: NotificationArgs): Notification {
     return notify("warning", ...args);
 }
 
-function error(...args: NotificationArgs): number {
+function error(...args: NotificationArgs): Notification {
     return notify("error", ...args);
 }
 
