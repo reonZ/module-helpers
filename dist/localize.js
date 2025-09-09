@@ -26,7 +26,10 @@ function localizePath(...path) {
 function notify(type, ...args) {
     const permanent = R.isBoolean(args.at(-1)) ? args.pop() : false;
     const str = localize(...args);
-    return ui.notifications.notify(str, type, { permanent });
+    return ui.notifications.notify(str, type, { permanent }).id;
+}
+function success(...args) {
+    return notify("success", ...args);
 }
 function info(...args) {
     return notify("info", ...args);
@@ -85,4 +88,4 @@ class I18n {
         }
     }
 }
-export { error, I18n, info, localize, localizeIfExist, localizePath, notify, sharedLocalize, warning, };
+export { error, I18n, info, localize, localizeIfExist, localizePath, notify, sharedLocalize, success, warning, };

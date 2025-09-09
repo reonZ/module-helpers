@@ -30,10 +30,14 @@ function localizePath(...path: string[]): string {
     return MODULE.path(...path);
 }
 
-function notify(type: "info" | "warning" | "error", ...args: NotificationArgs): number {
+function notify(type: "info" | "warning" | "error" | "success", ...args: NotificationArgs): number {
     const permanent = R.isBoolean(args.at(-1)) ? (args.pop() as boolean) : false;
     const str = localize(...(args as LocalizeArgs));
-    return ui.notifications.notify(str, type, { permanent });
+    return ui.notifications.notify(str, type, { permanent }).id;
+}
+
+function success(...args: NotificationArgs) {
+    return notify("success", ...args);
 }
 
 function info(...args: NotificationArgs): number {
@@ -125,6 +129,7 @@ export {
     localizePath,
     notify,
     sharedLocalize,
+    success,
     warning,
 };
 export type { I18nCreateArgs, LocalizeArgs, LocalizeData, NotificationArgs };
