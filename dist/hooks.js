@@ -6,7 +6,7 @@ function registerUpstreamHook(event, listener, once) {
     }
     return id;
 }
-function createHook(hook, listener) {
+function createHook(hook, listener, options = {}) {
     const _ids = [];
     const _hook = Array.isArray(hook) ? hook : [hook];
     return {
@@ -22,6 +22,7 @@ function createHook(hook, listener) {
                     path,
                 });
             }
+            options.onActivate?.();
         },
         disable() {
             if (!this.enabled)
@@ -30,6 +31,7 @@ function createHook(hook, listener) {
                 Hooks.off(path, id);
             }
             _ids.length = 0;
+            options.onDisable?.();
         },
         toggle(enabled) {
             enabled ??= !this.enabled;

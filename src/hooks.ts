@@ -9,7 +9,11 @@ function registerUpstreamHook(event: string, listener: RegisterHookCallback, onc
     return id;
 }
 
-function createHook(hook: string | string[], listener: RegisterHookCallback): PersistentHook {
+function createHook(
+    hook: string | string[],
+    listener: RegisterHookCallback,
+    options: HookOptions = {}
+): PersistentHook {
     const _ids: { id: number; path: string }[] = [];
     const _hook = Array.isArray(hook) ? hook : [hook];
 
@@ -26,6 +30,8 @@ function createHook(hook: string | string[], listener: RegisterHookCallback): Pe
                     path,
                 });
             }
+
+            options.onActivate?.();
         },
         disable() {
             if (!this.enabled) return;
@@ -35,6 +41,8 @@ function createHook(hook: string | string[], listener: RegisterHookCallback): Pe
             }
 
             _ids.length = 0;
+
+            options.onDisable?.();
         },
         toggle(enabled?: boolean) {
             enabled ??= !this.enabled;
@@ -102,6 +110,11 @@ type PersistentHook = {
 };
 
 type RegisterHookCallback = (...args: any[]) => any;
+
+type HookOptions = {
+    onDisable?: () => void;
+    onActivate?: () => void;
+};
 
 export { createHook, createHookList, executeWhenReady, registerUpstreamHook };
 export type { PersistentHook };
