@@ -1,11 +1,5 @@
-import {
-    ActorPF2e,
-    CombatantPF2e,
-    CreaturePF2e,
-    EncounterPF2e,
-    FamiliarPF2e,
-    RolledCombatant,
-} from "foundry-pf2e";
+import { ActorPF2e, CombatantPF2e, EncounterPF2e, RolledCombatant } from "foundry-pf2e";
+import { getActorMaster } from ".";
 
 function hasRolledInitiative(
     combatant: CombatantPF2e
@@ -17,19 +11,11 @@ function isCurrentCombatant(actor: ActorPF2e): boolean {
     const current = game.combat?.combatant;
     if (!current) return false;
 
-    return (
-        actor.combatant === current ||
-        (actor as FamiliarPF2e).master?.combatant === current ||
-        game.toolbelt?.api.shareData.getMasterInMemory(actor as CreaturePF2e)?.combatant === current
-    );
+    return actor.combatant === current || getActorMaster(actor)?.combatant === current;
 }
 
 function isInCombat(actor: ActorPF2e): boolean {
-    return (
-        actor.inCombat ||
-        !!(actor as FamiliarPF2e).master?.inCombat ||
-        !!game.toolbelt?.api.shareData.getMasterInMemory(actor as CreaturePF2e)?.inCombat
-    );
+    return actor.inCombat || !!getActorMaster(actor)?.inCombat;
 }
 
 export { hasRolledInitiative, isCurrentCombatant, isInCombat };

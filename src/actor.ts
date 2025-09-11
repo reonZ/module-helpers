@@ -3,6 +3,7 @@ import {
     ActorPF2e,
     CharacterPF2e,
     CreaturePF2e,
+    FamiliarPF2e,
     LootPF2e,
     ValueAndMax,
 } from "foundry-pf2e";
@@ -90,6 +91,16 @@ function isMerchant(actor: Maybe<ActorPF2e>): actor is LootPF2e {
     return !!actor?.isOfType("loot") && actor.isMerchant;
 }
 
+function getActorMaster(actor: Maybe<ActorPF2e>): ActorPF2e | null {
+    if (!actor) return null;
+
+    return (
+        (actor as FamiliarPF2e).master ??
+        game.toolbelt?.api.shareData.getMasterInMemory(actor as CreaturePF2e) ??
+        null
+    );
+}
+
 type ActorTargetAlliance = "all" | "allies" | "enemies";
 
 export {
@@ -98,6 +109,7 @@ export {
     belongToPartyAlliance,
     getActorFromUuid,
     getDispositionColor,
+    getActorMaster,
     getMythicOrHeroPoints,
     hasRollOption,
     isAllyActor,
