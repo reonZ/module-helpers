@@ -28,6 +28,7 @@ type RegisterSettingOptions = Omit<SettingRegistration, "name" | "scope" | "onCh
     broadcast?: boolean;
     gmOnly?: boolean;
     name?: string;
+    playerOnly?: boolean;
     scope: "world" | "user";
     choices?: Record<string, string> | string[] | ReadonlyArray<string>;
     onChange?: (value: any, operation: object, userId: string) => void | Promise<void>;

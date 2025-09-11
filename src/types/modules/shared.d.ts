@@ -5,6 +5,7 @@ export {};
 declare global {
     interface LEVIKTIMES {
         gmOnly: "GM Only";
+        playerOnly: "Player Only";
         reloadRequired: "Requires Reload";
         emiting: {
             label: "Sending";

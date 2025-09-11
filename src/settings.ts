@@ -72,7 +72,8 @@ function hasSetting(key: string): boolean {
 }
 
 function registerSetting(key: string, options: RegisterSettingOptions) {
-    if (options.gmOnly && !userIsGM()) return;
+    const isGM = userIsGM();
+    if ((options.gmOnly && !isGM) || (options.playerOnly && isGM)) return;
 
     if ("choices" in options && Array.isArray(options.choices)) {
         options.choices = R.mapToObj(options.choices, (choice) => [
@@ -171,7 +172,11 @@ function onRenderSettingsConfig(
     if (!tab) return;
 
     const gmOnlyLabel = sharedLocalize("gmOnly");
+    const playerOnlyLabel = sharedLocalize("playerOnly");
     const reloadLabel = sharedLocalize("reloadRequired");
+    const gmOnly = `<i class="fa-solid fa-crown" data-tooltip="${gmOnlyLabel}"></i>`;
+    const player = `<i class="fa-solid fa-user-secret" data-tooltip="${playerOnlyLabel}"></i>`;
+    const reload = `<i class="fa-solid fa-rotate-left" data-tooltip="${reloadLabel}"></i>`;
 
     for (const entry of category.entries) {
         if (entry.menu) continue;
@@ -182,11 +187,15 @@ function onRenderSettingsConfig(
         if (!setting) continue;
 
         if (setting.gmOnly) {
-            extras.push(`<i class="fa-solid fa-crown" data-tooltip="${gmOnlyLabel}"></i>`);
+            extras.push(gmOnly);
+        }
+
+        if (setting.playerOnly) {
+            extras.push(player);
         }
 
         if (setting.requiresReload) {
-            extras.push(`<i class="fa-solid fa-rotate-left" data-tooltip="${reloadLabel}"></i>`);
+            extras.push(reload);
         }
 
         if (!extras.length) continue;
@@ -227,6 +236,7 @@ type RegisterSettingOptions = Omit<
     broadcast?: boolean;
     gmOnly?: boolean;
     name?: string;
+    playerOnly?: boolean;
     scope: "world" | "user";
     choices?: Record<string, string> | string[] | ReadonlyArray<string>;
     onChange?: (value: any, operation: object, userId: string) => void | Promise<void>;

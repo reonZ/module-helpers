@@ -44,7 +44,8 @@ function hasSetting(key) {
     return game.settings.settings.has(`${MODULE.id}.${key}`);
 }
 function registerSetting(key, options) {
-    if (options.gmOnly && !userIsGM())
+    const isGM = userIsGM();
+    if ((options.gmOnly && !isGM) || (options.playerOnly && isGM))
         return;
     if ("choices" in options && Array.isArray(options.choices)) {
         options.choices = R.mapToObj(options.choices, (choice) => [
@@ -123,7 +124,11 @@ function onRenderSettingsConfig(html, options, settings) {
     if (!tab)
         return;
     const gmOnlyLabel = sharedLocalize("gmOnly");
+    const playerOnlyLabel = sharedLocalize("playerOnly");
     const reloadLabel = sharedLocalize("reloadRequired");
+    const gmOnly = `<i class="fa-solid fa-crown" data-tooltip="${gmOnlyLabel}"></i>`;
+    const player = `<i class="fa-solid fa-user-secret" data-tooltip="${playerOnlyLabel}"></i>`;
+    const reload = `<i class="fa-solid fa-rotate-left" data-tooltip="${reloadLabel}"></i>`;
     for (const entry of category.entries) {
         if (entry.menu)
             continue;
@@ -133,10 +138,13 @@ function onRenderSettingsConfig(html, options, settings) {
         if (!setting)
             continue;
         if (setting.gmOnly) {
-            extras.push(`<i class="fa-solid fa-crown" data-tooltip="${gmOnlyLabel}"></i>`);
+            extras.push(gmOnly);
+        }
+        if (setting.playerOnly) {
+            extras.push(player);
         }
         if (setting.requiresReload) {
-            extras.push(`<i class="fa-solid fa-rotate-left" data-tooltip="${reloadLabel}"></i>`);
+            extras.push(reload);
         }
         if (!extras.length)
             continue;
