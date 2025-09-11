@@ -62,4 +62,11 @@ function getMythicOrHeroPoints(actor) {
 function isMerchant(actor) {
     return !!actor?.isOfType("loot") && actor.isMerchant;
 }
-export { actorIsPartyMember, actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };
+function getActorMaster(actor) {
+    if (!actor)
+        return null;
+    return (actor.master ??
+        game.toolbelt?.api.shareData.getMasterInMemory(actor) ??
+        null);
+}
+export { actorIsPartyMember, actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getDispositionColor, getActorMaster, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };

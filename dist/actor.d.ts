@@ -12,6 +12,7 @@ declare function getMythicOrHeroPoints(actor: CharacterPF2e): ValueAndMax & {
     name: "mythicPoints" | "heroPoints";
 };
 declare function isMerchant(actor: Maybe<ActorPF2e>): actor is LootPF2e;
+declare function getActorMaster(actor: Maybe<ActorPF2e>): ActorPF2e | null;
 type ActorTargetAlliance = "all" | "allies" | "enemies";
-export { actorIsPartyMember, actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };
+export { actorIsPartyMember, actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getDispositionColor, getActorMaster, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };
 export type { ActorTargetAlliance };
