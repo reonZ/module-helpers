@@ -4,6 +4,7 @@ import {
     CharacterPF2e,
     ChatMessagePF2e,
     CoinsPF2e,
+    CreaturePF2e,
     DegreeAdjustmentsRecord,
     DegreeOfSuccessString,
     FeatPF2e,
@@ -77,6 +78,11 @@ declare global {
             identify: {
                 openTracker: (item?: ItemPF2e) => void;
                 requestIdentify: (item: Maybe<ItemPF2e>, skipNotify?: boolean) => void;
+            };
+            shareData: {
+                getMasterInMemory: (actor: CreaturePF2e) => CreaturePF2e | undefined;
+                getSlavesInMemory(actor: CreaturePF2e, idOnly: false): CreaturePF2e[];
+                getSlavesInMemory(actor: CreaturePF2e, idOnly?: true): Set<ActorUUID> | undefined;
             };
             targetHelper: {
                 getMessageTargets: (message: ChatMessagePF2e) => string[];
