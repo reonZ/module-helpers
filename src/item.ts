@@ -150,6 +150,50 @@ function getItemSourceId(item: ItemPF2e): ItemUUID {
     return item.sourceId ?? item.uuid;
 }
 
+function getItemSlug(item: ItemPF2e): string {
+    return item.slug ?? game.pf2e.system.sluggify(item._source.name);
+}
+
+function findItemWithSlug<TType extends ItemType, TActor extends ActorPF2e>(
+    actor: TActor,
+    slug: string,
+    type?: TType
+): ItemInstances<TActor>[TType] | null {
+    for (const item of actorItems(actor, type)) {
+        if (isSupressedFeat(item)) continue;
+
+        const itemSlug = getItemSlug(item);
+        if (itemSlug === slug) {
+            return item;
+        }
+    }
+
+    return null;
+}
+
+function findAllItemsWithSlug<TType extends ItemType, TActor extends ActorPF2e>(
+    actor: TActor,
+    slug: string,
+    type?: TType
+): ItemInstances<TActor>[TType][] {
+    const items: ItemInstances<TActor>[TType][] = [];
+
+    for (const item of actorItems(actor, type)) {
+        if (isSupressedFeat(item)) continue;
+
+        const itemSlug = getItemSlug(item);
+        if (itemSlug === slug) {
+            items.push(item);
+        }
+    }
+
+    return items;
+}
+
+function hasItemWithSlug(actor: ActorPF2e, slug: string, type?: ItemType): boolean {
+    return !!findItemWithSlug(actor, slug, type);
+}
+
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/helpers.ts#L13
  */
@@ -376,6 +420,8 @@ type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
 export {
     actorItems,
     equipItemToUse,
+    findAllItemsWithSlug,
+    findItemWithSlug,
     findItemWithSourceId,
     getEquipAnnotation,
     getItemFromUuid,
@@ -384,6 +430,7 @@ export {
     getItemSourceId,
     getItemTypeLabel,
     hasAnyItemWithSourceId,
+    hasItemWithSlug,
     hasItemWithSourceId,
     isCastConsumable,
     isSupressedFeat,
