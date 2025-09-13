@@ -38,7 +38,7 @@ const EXTRAS: Map<DocumentUUID, { effect: DocumentUUID }> = new Map([
 ]);
 
 async function addStance(actor: CreaturePF2e, sourceUUID: DocumentUUID, createMessage?: boolean) {
-    const source = await getItemSourceFromUuid(sourceUUID, "EffectPF2e");
+    const source = await getItemSourceFromUuid(sourceUUID, "effect");
     if (!source) return;
 
     foundry.utils.setProperty(source, "flags.core.sourceId", sourceUUID);

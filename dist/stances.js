@@ -27,7 +27,7 @@ const EXTRAS = new Map([
     ],
 ]);
 async function addStance(actor, sourceUUID, createMessage) {
-    const source = await getItemSourceFromUuid(sourceUUID, "EffectPF2e");
+    const source = await getItemSourceFromUuid(sourceUUID, "effect");
     if (!source)
         return;
     foundry.utils.setProperty(source, "flags.core.sourceId", sourceUUID);
