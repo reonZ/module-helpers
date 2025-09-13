@@ -47,6 +47,18 @@ function findItemWithSourceId(actor, uuid, type) {
     }
     return null;
 }
+function findAllItemsWithSourceId(actor, uuid, type) {
+    const items = [];
+    for (const item of actorItems(actor, type)) {
+        if (isSupressedFeat(item))
+            continue;
+        const sourceId = item.sourceId;
+        if (sourceId === uuid) {
+            items.push(item);
+        }
+    }
+    return items;
+}
 function hasItemWithSourceId(actor, uuid, type) {
     return !!findItemWithSourceId(actor, uuid, type);
 }
@@ -263,4 +275,4 @@ async function equipItemToUse(actor, item, { carryType, handsHeld, fullAnnotatio
         style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
     });
 }
-export { actorItems, equipItemToUse, findAllItemsWithSlug, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, usePhysicalItem, };
+export { actorItems, equipItemToUse, findAllItemsWithSlug, findAllItemsWithSourceId, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, usePhysicalItem, };

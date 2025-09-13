@@ -89,6 +89,25 @@ function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     return null;
 }
 
+function findAllItemsWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
+    actor: TActor,
+    uuid: string,
+    type?: TType
+): ItemInstances<TActor>[TType][] {
+    const items: ItemInstances<TActor>[TType][] = [];
+
+    for (const item of actorItems(actor, type)) {
+        if (isSupressedFeat(item)) continue;
+
+        const sourceId = item.sourceId;
+        if (sourceId === uuid) {
+            items.push(item);
+        }
+    }
+
+    return items;
+}
+
 function hasItemWithSourceId(actor: ActorPF2e, uuid: string, type?: ItemType): boolean {
     return !!findItemWithSourceId(actor, uuid, type);
 }
@@ -429,6 +448,7 @@ export {
     actorItems,
     equipItemToUse,
     findAllItemsWithSlug,
+    findAllItemsWithSourceId,
     findItemWithSlug,
     findItemWithSourceId,
     getEquipAnnotation,
