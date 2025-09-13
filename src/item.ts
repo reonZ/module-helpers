@@ -16,9 +16,6 @@ import {
     getActionGlyph,
     getDamageRollClass,
     htmlQuery,
-    isInstanceOf,
-    IsInstanceOfItem,
-    IsInstanceOfItems,
     R,
     setHasElement,
     traitSlugToObject,
@@ -109,15 +106,22 @@ function hasAnyItemWithSourceId(actor: ActorPF2e, uuids: string[], type?: ItemTy
     return false;
 }
 
-async function getItemFromUuid<T extends IsInstanceOfItem>(
+async function getItemFromUuid<T extends ItemType>(
     uuid: Maybe<string>,
-    instance?: T
-): Promise<IsInstanceOfItems[T] | null>;
-async function getItemFromUuid(uuid: Maybe<string>, instance?: string): Promise<ItemPF2e | null>;
-async function getItemFromUuid(uuid: Maybe<string>, instance?: string) {
+    type: T
+): Promise<ItemInstances<ActorPF2e>[T] | null>;
+async function getItemFromUuid(
+    uuid: Maybe<string>,
+    type: "physical"
+): Promise<PhysicalItemPF2e<ActorPF2e> | null>;
+async function getItemFromUuid(
+    uuid: Maybe<string>,
+    type?: ItemType | "physical"
+): Promise<ItemPF2e | null>;
+async function getItemFromUuid(uuid: Maybe<string>, type?: ItemType | "physical") {
     if (!uuid) return null;
     const item = await fromUuid<ItemPF2e>(uuid);
-    return item instanceof Item && (!instance || isInstanceOf(item, instance)) ? item : null;
+    return item instanceof Item && (!type || item.isOfType(type)) ? item : null;
 }
 
 function getItemSource<T extends ItemPF2e>(item: T, clearId?: boolean): T["_source"] {
@@ -133,16 +137,20 @@ function getItemSource<T extends ItemPF2e>(item: T, clearId?: boolean): T["_sour
     return source;
 }
 
-async function getItemSourceFromUuid<T extends IsInstanceOfItem>(
+async function getItemSourceFromUuid<T extends ItemType>(
     uuid: string,
-    instance?: T
-): Promise<IsInstanceOfItems[T]["_source"] | null>;
+    type: T
+): Promise<ItemInstances<ActorPF2e>[T]["_source"] | null>;
 async function getItemSourceFromUuid(
     uuid: string,
-    instance?: string
+    type: "physical"
+): Promise<PhysicalItemPF2e["_source"] | null>;
+async function getItemSourceFromUuid(
+    uuid: string,
+    type?: ItemType | "physical"
 ): Promise<ItemSourcePF2e | null>;
-async function getItemSourceFromUuid(uuid: string, instance?: string) {
-    const item = await getItemFromUuid(uuid, instance);
+async function getItemSourceFromUuid(uuid: string, type?: ItemType | "physical") {
+    const item = await getItemFromUuid(uuid, type);
     return !!item ? getItemSource(item) : null;
 }
 

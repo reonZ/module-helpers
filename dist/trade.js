@@ -1,4 +1,4 @@
-import { getActionGlyph, getPreferredName, htmlQuery, R } from ".";
+import { getActionGlyph, getItemFromUuid, getPreferredName, htmlQuery, R } from ".";
 function getTradeData(item, quantity = 1) {
     const allowedQuantity = item.quantity ?? 0;
     if (allowedQuantity < 1)
@@ -39,9 +39,9 @@ async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack 
         : targetOrUuid;
     if (!(target instanceof Actor))
         return;
-    const item = R.isString(itemOrUuid) ? await fromUuid(itemOrUuid) : itemOrUuid;
+    const item = R.isString(itemOrUuid) ? await getItemFromUuid(itemOrUuid) : itemOrUuid;
     const owner = item?.actor;
-    if (!(item instanceof Item) || !item.isOfType("physical") || owner?.uuid === target.uuid)
+    if (!item?.isOfType("physical") || owner?.uuid === target.uuid)
         return;
     const tradeData = getTradeData(item, quantity);
     if (!tradeData)

@@ -1,4 +1,4 @@
-import { createHTMLElementContent, getActionGlyph, getDamageRollClass, htmlQuery, isInstanceOf, R, setHasElement, traitSlugToObject, } from ".";
+import { createHTMLElementContent, getActionGlyph, getDamageRollClass, htmlQuery, R, setHasElement, traitSlugToObject, } from ".";
 const ITEM_CARRY_TYPES = ["attached", "dropped", "held", "stowed", "worn"];
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
@@ -61,11 +61,11 @@ function hasAnyItemWithSourceId(actor, uuids, type) {
     }
     return false;
 }
-async function getItemFromUuid(uuid, instance) {
+async function getItemFromUuid(uuid, type) {
     if (!uuid)
         return null;
     const item = await fromUuid(uuid);
-    return item instanceof Item && (!instance || isInstanceOf(item, instance)) ? item : null;
+    return item instanceof Item && (!type || item.isOfType(type)) ? item : null;
 }
 function getItemSource(item, clearId) {
     const source = item.toObject();
@@ -76,8 +76,8 @@ function getItemSource(item, clearId) {
     }
     return source;
 }
-async function getItemSourceFromUuid(uuid, instance) {
-    const item = await getItemFromUuid(uuid, instance);
+async function getItemSourceFromUuid(uuid, type) {
+    const item = await getItemFromUuid(uuid, type);
     return !!item ? getItemSource(item) : null;
 }
 function getItemSourceId(item) {

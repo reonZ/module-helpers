@@ -5,7 +5,7 @@ import {
     PhysicalItemPF2e,
     PhysicalItemSource,
 } from "foundry-pf2e";
-import { getActionGlyph, getPreferredName, htmlQuery, R } from ".";
+import { getActionGlyph, getItemFromUuid, getPreferredName, htmlQuery, R } from ".";
 
 function getTradeData(item: PhysicalItemPF2e, quantity = 1): TradeData | undefined {
     const allowedQuantity = item.quantity ?? 0;
@@ -64,11 +64,9 @@ async function giveItemToActor(
 
     if (!(target instanceof Actor)) return;
 
-    const item = R.isString(itemOrUuid) ? await fromUuid<PhysicalItemPF2e>(itemOrUuid) : itemOrUuid;
+    const item = R.isString(itemOrUuid) ? await getItemFromUuid(itemOrUuid) : itemOrUuid;
     const owner = item?.actor;
-
-    if (!(item instanceof Item) || !item.isOfType("physical") || owner?.uuid === target.uuid)
-        return;
+    if (!item?.isOfType("physical") || owner?.uuid === target.uuid) return;
 
     const tradeData = getTradeData(item, quantity);
     if (!tradeData) return;
