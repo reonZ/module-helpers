@@ -1,8 +1,13 @@
-import { AbilityItemPF2e, ActorPF2e, CreaturePF2e, FeatPF2e } from "foundry-pf2e";
+import {
+    AbilityItemPF2e,
+    ActorPF2e,
+    CreaturePF2e,
+    FeatPF2e,
+    MeleePF2e,
+    WeaponPF2e,
+} from "foundry-pf2e";
 
 declare global {
-    interface HudApi {}
-
     namespace hud {
         type StanceData = {
             effectUUID: DocumentUUID;
@@ -11,5 +16,21 @@ declare global {
             label: string;
             sourceUUID: ItemUUID;
         };
+
+        interface Api {
+            actions: {
+                randomPick: () => Promise<Notification | undefined>;
+                rollGroupPerception: () => Promise<Notification | undefined>;
+                rollRecallKnowledge: (actor: CreaturePF2e) => Promise<void>;
+                useResolve: (actor: Maybe<ActorPF2e>) => Promise<void>;
+            };
+            utils: {
+                editAvatar: (actor: ActorPF2e) => void;
+                getNpcStrikeImage: (strike: {
+                    item: WeaponPF2e | MeleePF2e;
+                    slug: string;
+                }) => ImageFilePath;
+            };
+        }
     }
 }

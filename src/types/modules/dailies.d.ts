@@ -41,7 +41,7 @@ declare global {
             staff: StaffPF2e;
         }
 
-        interface DailiesApi {
+        interface Api {
             canCastRank: (actor: CharacterPF2e, rank: ZeroToTen) => boolean | null;
             canPrepareDailies: (actor: ActorPF2e) => boolean;
             createRetrainBtn: (

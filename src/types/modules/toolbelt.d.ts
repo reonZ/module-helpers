@@ -18,7 +18,7 @@ import {
 
 declare global {
     namespace toolbelt {
-        interface GamePF2e extends MyModule.GamePF2e<ToolbeltApi> {
+        interface GamePF2e extends MyModule.GamePF2e<Api> {
             getToolSetting<K extends keyof Settings, S extends keyof Settings[K]>(
                 tool: K,
                 setting: S
@@ -45,7 +45,7 @@ declare global {
             };
         }
 
-        interface ToolbeltApi {
+        interface Api {
             actionable: {
                 getActionMacro: (action: AbilityItemPF2e | FeatPF2e) => Promise<Maybe<MacroPF2e>>;
                 getItemMacro: (item: ItemPF2e) => Promise<Maybe<MacroPF2e>>;
