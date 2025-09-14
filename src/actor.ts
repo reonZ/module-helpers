@@ -9,6 +9,8 @@ import {
 } from "foundry-pf2e";
 import { R } from ".";
 
+const PARTY_ACTOR_ID = "xxxPF2ExPARTYxxx";
+
 function actorsRespectAlliance(
     origin: ActorPF2e,
     target: ActorPF2e,
@@ -108,13 +110,14 @@ export {
     actorsRespectAlliance,
     belongToPartyAlliance,
     getActorFromUuid,
-    getDispositionColor,
     getActorMaster,
+    getDispositionColor,
     getMythicOrHeroPoints,
     hasRollOption,
     isAllyActor,
     isMerchant,
     oppositeAlliance,
+    PARTY_ACTOR_ID,
     playersCanSeeName,
 };
 export type { ActorTargetAlliance };

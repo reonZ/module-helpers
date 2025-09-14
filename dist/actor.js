@@ -1,4 +1,5 @@
 import { R } from ".";
+const PARTY_ACTOR_ID = "xxxPF2ExPARTYxxx";
 function actorsRespectAlliance(origin, target, alliance = "all") {
     return alliance === "allies"
         ? target.isAllyOf(origin)
@@ -69,4 +70,4 @@ function getActorMaster(actor) {
         game.toolbelt?.api.shareData.getMasterInMemory(actor) ??
         null);
 }
-export { actorIsPartyMember, actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getDispositionColor, getActorMaster, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, playersCanSeeName, };
+export { actorIsPartyMember, actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getActorMaster, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, PARTY_ACTOR_ID, playersCanSeeName, };
