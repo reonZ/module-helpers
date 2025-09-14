@@ -25,11 +25,23 @@ declare global {
                 useResolve: (actor: Maybe<ActorPF2e>) => Promise<void>;
             };
             utils: {
+                addStance: (
+                    actor: CreaturePF2e,
+                    sourceUUID: DocumentUUID,
+                    createMessage?: boolean
+                ) => Promise<void>;
+                canUseStances: (actor: ActorPF2e) => boolean;
                 editAvatar: (actor: ActorPF2e) => void;
                 getNpcStrikeImage: (strike: {
                     item: WeaponPF2e | MeleePF2e;
                     slug: string;
                 }) => ImageFilePath;
+                getStances: (actor: CreaturePF2e) => hud.StanceData[] | undefined;
+                toggleStance: (
+                    actor: CreaturePF2e,
+                    sourceUUID: DocumentUUID,
+                    force?: boolean
+                ) => Promise<void>;
             };
         }
     }
