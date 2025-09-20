@@ -1,4 +1,4 @@
-import { getActionGlyph, getItemFromUuid, getPreferredName, htmlQuery, R } from ".";
+import { getItemFromUuid, R } from ".";
 function getTradeData(item, quantity = 1) {
     const allowedQuantity = item.quantity ?? 0;
     if (allowedQuantity < 1)
@@ -64,40 +64,6 @@ async function giveItemToActor(itemOrUuid, targetOrUuid, quantity = 1, newStack 
     }
     return { item: newItem, giveQuantity, hasContent };
 }
-async function createTradeMessage({ cost, item, message, quantity, source, subtitle, target, userId, }) {
-    const sourceName = getPreferredName(source);
-    const targetName = target ? getPreferredName(target) : "";
-    const formattedMessageData = {
-        source: sourceName,
-        target: targetName,
-        seller: sourceName,
-        buyer: targetName,
-        quantity: quantity ?? 1,
-        item: await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.link),
-    };
-    const glyph = getActionGlyph(cost ?? (source.isOfType("loot") && target?.isOfType("loot") ? 2 : 1));
-    const flavor = await foundry.applications.handlebars.renderTemplate("./systems/pf2e/templates/chat/action/flavor.hbs", {
-        action: { title: "PF2E.Actions.Interact.Title", subtitle, glyph },
-        traits: [
-            {
-                name: "manipulate",
-                label: CONFIG.PF2E.featTraits.manipulate,
-                description: CONFIG.PF2E.traitsDescriptions.manipulate,
-            },
-        ],
-    });
-    const content = await foundry.applications.handlebars.renderTemplate("./systems/pf2e/templates/chat/action/content.hbs", {
-        imgPath: item.img,
-        message: game.i18n.format(message, formattedMessageData).replace(/\b1 × /, ""),
-    });
-    return getDocumentClass("ChatMessage").create({
-        author: userId ?? game.userId,
-        speaker: { alias: sourceName },
-        style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
-        flavor,
-        content,
-    });
-}
 /** @recursive */
 function getContainerContentSources(container, containerId) {
     return container.contents
@@ -113,23 +79,4 @@ function getContainerContentSources(container, containerId) {
     })
         .flat();
 }
-function updateItemTransferDialog(html, { button, prompt, title, noStack }) {
-    const titleElement = htmlQuery(html, ":scope > header h4");
-    if (titleElement) {
-        titleElement.innerText = title;
-    }
-    const buttonElement = htmlQuery(html, "form button");
-    if (buttonElement) {
-        buttonElement.innerText = button ?? title;
-    }
-    const questionElement = htmlQuery(html, "form > label");
-    if (questionElement) {
-        questionElement.innerText = prompt;
-    }
-    if (noStack) {
-        const input = htmlQuery(html, "[name='newStack']");
-        input?.previousElementSibling?.remove();
-        input?.remove();
-    }
-}
-export { createTradeMessage, getTradeData, giveItemToActor, updateItemTransferDialog, updateTradedItemSource, };
+export { getTradeData, giveItemToActor, updateTradedItemSource };

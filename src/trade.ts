@@ -1,11 +1,5 @@
-import {
-    ActionCost,
-    ActorPF2e,
-    ContainerPF2e,
-    PhysicalItemPF2e,
-    PhysicalItemSource,
-} from "foundry-pf2e";
-import { getActionGlyph, getItemFromUuid, getPreferredName, htmlQuery, R } from ".";
+import { ActorPF2e, ContainerPF2e, PhysicalItemPF2e, PhysicalItemSource } from "foundry-pf2e";
+import { getItemFromUuid, R } from ".";
 
 function getTradeData(item: PhysicalItemPF2e, quantity = 1): TradeData | undefined {
     const allowedQuantity = item.quantity ?? 0;
@@ -96,63 +90,6 @@ async function giveItemToActor(
     return { item: newItem as PhysicalItemPF2e, giveQuantity, hasContent };
 }
 
-async function createTradeMessage({
-    cost,
-    item,
-    message,
-    quantity,
-    source,
-    subtitle,
-    target,
-    userId,
-}: TradeMessageOptions) {
-    const sourceName = getPreferredName(source);
-    const targetName = target ? getPreferredName(target) : "";
-
-    const formattedMessageData = {
-        source: sourceName,
-        target: targetName,
-        seller: sourceName,
-        buyer: targetName,
-        quantity: quantity ?? 1,
-        item: await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.link),
-    };
-
-    const glyph = getActionGlyph(
-        cost ?? (source.isOfType("loot") && target?.isOfType("loot") ? 2 : 1)
-    );
-
-    const flavor = await foundry.applications.handlebars.renderTemplate(
-        "./systems/pf2e/templates/chat/action/flavor.hbs",
-        {
-            action: { title: "PF2E.Actions.Interact.Title", subtitle, glyph },
-            traits: [
-                {
-                    name: "manipulate",
-                    label: CONFIG.PF2E.featTraits.manipulate,
-                    description: CONFIG.PF2E.traitsDescriptions.manipulate,
-                },
-            ],
-        }
-    );
-
-    const content = await foundry.applications.handlebars.renderTemplate(
-        "./systems/pf2e/templates/chat/action/content.hbs",
-        {
-            imgPath: item.img,
-            message: game.i18n.format(message, formattedMessageData).replace(/\b1 × /, ""),
-        }
-    );
-
-    return getDocumentClass("ChatMessage").create({
-        author: userId ?? game.userId,
-        speaker: { alias: sourceName },
-        style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
-        flavor,
-        content,
-    });
-}
-
 /** @recursive */
 function getContainerContentSources(
     container: ContainerPF2e,
@@ -173,51 +110,6 @@ function getContainerContentSources(
         })
         .flat();
 }
-
-function updateItemTransferDialog(
-    html: HTMLElement,
-    { button, prompt, title, noStack }: UpdateItemTransferDialogOptions
-) {
-    const titleElement = htmlQuery(html, ":scope > header h4");
-    if (titleElement) {
-        titleElement.innerText = title;
-    }
-
-    const buttonElement = htmlQuery(html, "form button");
-    if (buttonElement) {
-        buttonElement.innerText = button ?? title;
-    }
-
-    const questionElement = htmlQuery(html, "form > label");
-    if (questionElement) {
-        questionElement.innerText = prompt;
-    }
-
-    if (noStack) {
-        const input = htmlQuery(html, "[name='newStack']");
-        input?.previousElementSibling?.remove();
-        input?.remove();
-    }
-}
-
-type UpdateItemTransferDialogOptions = {
-    title: string;
-    button?: string;
-    prompt: string;
-    noStack?: boolean;
-};
-
-type TradeMessageOptions = {
-    /** localization key */
-    cost?: string | number | null | ActionCost;
-    item: PhysicalItemPF2e;
-    message: string;
-    quantity?: number;
-    source: ActorPF2e;
-    subtitle: string;
-    target?: ActorPF2e;
-    userId?: string;
-};
 
 type ContainerContentSource = PhysicalItemSource & { _id: string; _previousId: string };
 
@@ -244,11 +136,5 @@ type GiveItemData = {
     hasContent: boolean;
 };
 
-export {
-    createTradeMessage,
-    getTradeData,
-    giveItemToActor,
-    updateItemTransferDialog,
-    updateTradedItemSource,
-};
-export type { ActorTransferItemArgs, TradeMessageOptions };
+export { getTradeData, giveItemToActor, updateTradedItemSource };
+export type { ActorTransferItemArgs };
