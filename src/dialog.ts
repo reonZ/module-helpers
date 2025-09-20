@@ -191,7 +191,7 @@ type ModuleDialogConfiguration = ApplicationConfiguration &
     };
 
 type ModuleDialogOptions<T extends DeepPartial<ApplicationConfiguration & DialogV2Configuration>> =
-    T & {
+    DeepPartial<T> & {
         skipAnimate?: boolean;
         minWidth?: string;
     };
