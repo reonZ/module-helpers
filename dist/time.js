@@ -1,4 +1,7 @@
 import { DateTime } from "luxon";
+function getWorldTime() {
+    return game.settings.get("core", "time");
+}
 function advanceTime(interval, direction) {
     const sign = direction === "+" ? 1 : -1;
     const increment = Number(interval) * sign;
@@ -33,4 +36,4 @@ function getShortDateTime() {
 function timestampToLocalTime(time) {
     return new Date(time).toLocaleString();
 }
-export { advanceTime, getShortDateTime, getShortTime, getTimeWithSeconds, timestampToLocalTime };
+export { advanceTime, getShortDateTime, getShortTime, getTimeWithSeconds, getWorldTime, timestampToLocalTime, };
