@@ -22,7 +22,7 @@ function isPrimaryOwner(actor: ActorPF2e, user = game.user): boolean {
     return user.isGM || primaryPlayerOwner(actor) === user;
 }
 
-function canObserveActor(actor: Maybe<ActorPF2e>, withParty: boolean = true) {
+function canObserveActor(actor: Maybe<ActorPF2e>, withParty: boolean = true): actor is ActorPF2e {
     if (!actor) return false;
 
     const user = game.user;
