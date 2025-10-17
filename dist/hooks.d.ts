@@ -15,6 +15,7 @@ type RegisterHookCallback = (...args: any[]) => any;
 type HookOptions = {
     onDisable?: () => void;
     onActivate?: () => void;
+    upstream?: boolean;
 };
 export { createHook, createHookList, executeWhenReady, registerUpstreamHook };
-export type { PersistentHook };
+export type { HookOptions, PersistentHook };

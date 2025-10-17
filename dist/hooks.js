@@ -17,10 +17,10 @@ function createHook(hook, listener, options = {}) {
             if (this.enabled)
                 return;
             for (const path of _hook) {
-                _ids.push({
-                    id: Hooks.on(path, listener),
-                    path,
-                });
+                const id = options.upstream
+                    ? registerUpstreamHook(path, listener)
+                    : Hooks.on(path, listener);
+                _ids.push({ id, path });
             }
             options.onActivate?.();
         },

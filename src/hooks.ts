@@ -25,10 +25,11 @@ function createHook(
             if (this.enabled) return;
 
             for (const path of _hook) {
-                _ids.push({
-                    id: Hooks.on(path, listener),
-                    path,
-                });
+                const id = options.upstream
+                    ? registerUpstreamHook(path, listener)
+                    : Hooks.on(path, listener);
+
+                _ids.push({ id, path });
             }
 
             options.onActivate?.();
@@ -114,7 +115,8 @@ type RegisterHookCallback = (...args: any[]) => any;
 type HookOptions = {
     onDisable?: () => void;
     onActivate?: () => void;
+    upstream?: boolean;
 };
 
 export { createHook, createHookList, executeWhenReady, registerUpstreamHook };
-export type { PersistentHook };
+export type { HookOptions, PersistentHook };
