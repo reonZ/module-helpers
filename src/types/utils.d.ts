@@ -1,6 +1,5 @@
 import { ActorPF2e, TokenDocumentPF2e, ValueAndMax } from "foundry-pf2e";
-
-export {};
+import { IsAny } from "type-fest";
 
 declare global {
     type Prettify<T> = { [K in keyof T]: T[K] } & {};
@@ -132,4 +131,10 @@ declare global {
     type FilterableIterable<T, F = T> = {
         filter(condition: (value: T) => boolean): F[];
     };
+
+    type NarrowedTo<T, Base> = Extract<T, Base> extends never
+        ? Base
+        : IsAny<T> extends true
+        ? Base
+        : Extract<T, Base>;
 }

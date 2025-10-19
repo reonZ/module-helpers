@@ -1,3 +1,7 @@
+import { R } from ".";
+function objectIsIn(obj, key) {
+    return key in obj && R.isPlainObject(obj["key"]);
+}
 function isInstanceOf(obj, cls) {
     if (typeof obj !== "object" || obj === null)
         return false;
@@ -9,4 +13,4 @@ function isInstanceOf(obj, cls) {
     }
     return false;
 }
-export { isInstanceOf };
+export { isInstanceOf, objectIsIn };

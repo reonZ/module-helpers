@@ -19,6 +19,15 @@ import {
     TokenPF2e,
     WeaponPF2e,
 } from "foundry-pf2e";
+import { R } from ".";
+
+function objectIsIn<
+    T extends Record<string, unknown>,
+    O extends Record<string, unknown> = Record<string, unknown>,
+    K extends string = string
+>(obj: Readonly<Record<PropertyKey, unknown>> | O, key: K): obj is NarrowedTo<O, Record<K, T>> {
+    return key in obj && R.isPlainObject(obj["key"]);
+}
 
 function isInstanceOf<T extends keyof IsInstanceOfClasses>(
     obj: any,
@@ -64,5 +73,5 @@ type IsInstanceOfItems = {
 
 type IsInstanceOfItem = keyof IsInstanceOfItems;
 
-export { isInstanceOf };
+export { isInstanceOf, objectIsIn };
 export type { IsInstanceOfItem, IsInstanceOfItems };
