@@ -22,11 +22,11 @@ import {
 import { R } from ".";
 
 function objectIsIn<
-    T extends Record<string, unknown>,
+    T,
     O extends Record<string, unknown> = Record<string, unknown>,
     K extends string = string
 >(obj: Readonly<Record<PropertyKey, unknown>> | O, key: K): obj is NarrowedTo<O, Record<K, T>> {
-    return key in obj && R.isPlainObject(obj["key"]);
+    return key in obj && R.isObjectType(obj[key]);
 }
 
 function isInstanceOf<T extends keyof IsInstanceOfClasses>(
