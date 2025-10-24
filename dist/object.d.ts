@@ -6,6 +6,7 @@ declare class MapOfArrays<T, K extends string | number = string | number> extend
     get(key: K, create?: boolean): T[] | undefined;
     remove(key: K, entry: T): T | null;
     removeBy(key: K, fn: (entry: T) => boolean): T | null;
+    map<U>(fn: (value: T[], key: K, index: number, data: this) => U): U[];
     toObject(): Record<K, T[]>;
     toJSON(): Record<K, T[]>;
 }

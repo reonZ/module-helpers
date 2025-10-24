@@ -32,6 +32,15 @@ class MapOfArrays extends Map {
         const arr = this.get(key);
         return arr?.findSplice(fn) ?? null;
     }
+    map(fn) {
+        let index = 0;
+        const transformed = [];
+        for (const [key, value] of this.entries()) {
+            transformed.push(fn(value, key, index, this));
+            index++;
+        }
+        return transformed;
+    }
     toObject() {
         return Object.fromEntries(this);
     }

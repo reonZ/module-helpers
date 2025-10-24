@@ -67,6 +67,18 @@ class MapOfArrays<T, K extends string | number = string | number> extends Map<K,
         return arr?.findSplice(fn) ?? null;
     }
 
+    map<U>(fn: (value: T[], key: K, index: number, data: this) => U): U[] {
+        let index = 0;
+        const transformed: U[] = [];
+
+        for (const [key, value] of this.entries()) {
+            transformed.push(fn(value, key, index, this));
+            index++;
+        }
+
+        return transformed;
+    }
+
     toObject(): Record<K, T[]> {
         return Object.fromEntries(this) as Record<K, T[]>;
     }
