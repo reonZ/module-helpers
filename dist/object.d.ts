@@ -1,7 +1,7 @@
 import { AbstractEffectPF2e, ActorPF2e, ArithmeticExpression, ChatMessagePF2e, ConsumablePF2e, CreatureConfig, CreaturePF2e, DamageRoll, EffectPF2e, FeatPF2e, Grouping, ItemPF2e, LootPF2e, MacroPF2e, SpellcastingEntryPF2e, SpellPF2e, TokenDocumentPF2e, TokenPF2e, WeaponPF2e } from "foundry-pf2e";
 declare class MapOfArrays<T, K extends string | number = string | number> extends Map<K, T[]> {
     constructor(entries?: readonly (readonly [K, T[]])[] | Iterable<readonly [K, T[]]> | Record<K, T[]> | null);
-    add(key: K, entry: T, create?: boolean): void;
+    add(key: K, entry: T | T[], create?: boolean): void;
     get(key: K, create: true): T[];
     get(key: K, create?: boolean): T[] | undefined;
     remove(key: K, entry: T): T | null;

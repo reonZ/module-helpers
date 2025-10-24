@@ -9,8 +9,9 @@ class MapOfArrays extends Map {
         }
     }
     add(key, entry, create = true) {
+        const entries = R.isArray(entry) ? entry : [entry];
         const arr = this.get(key, create);
-        arr?.push(entry);
+        arr?.push(...entries);
     }
     get(key, create = false) {
         const exist = super.get(key);

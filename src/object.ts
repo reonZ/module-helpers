@@ -36,9 +36,10 @@ class MapOfArrays<T, K extends string | number = string | number> extends Map<K,
         }
     }
 
-    add(key: K, entry: T, create = true) {
+    add(key: K, entry: T | T[], create = true) {
+        const entries = R.isArray(entry) ? entry : [entry];
         const arr = this.get(key, create);
-        arr?.push(entry);
+        arr?.push(...entries);
     }
 
     get(key: K, create: true): T[];
