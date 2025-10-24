@@ -1,4 +1,43 @@
 import { R } from ".";
+class MapOfArrays extends Map {
+    constructor(entries) {
+        if (entries && !(Symbol.iterator in entries)) {
+            super(Object.entries(entries));
+        }
+        else {
+            super(entries);
+        }
+    }
+    add(key, entry, create = true) {
+        const arr = this.get(key, create);
+        arr?.push(entry);
+    }
+    get(key, create = false) {
+        const exist = super.get(key);
+        if (exist || !create) {
+            return exist;
+        }
+        else {
+            const arr = [];
+            this.set(key, arr);
+            return arr;
+        }
+    }
+    remove(key, entry) {
+        const arr = this.get(key);
+        return arr?.findSplice((x) => x === entry) ?? null;
+    }
+    removeBy(key, fn) {
+        const arr = this.get(key);
+        return arr?.findSplice(fn) ?? null;
+    }
+    toObject() {
+        return Object.fromEntries(this);
+    }
+    toJSON() {
+        return this.toObject();
+    }
+}
 function objectIsIn(obj, key) {
     return key in obj && R.isObjectType(obj[key]);
 }
@@ -33,4 +72,4 @@ function gettersToData(instance) {
     }
     return obj;
 }
-export { addToObjectIfNonNullish, gettersToData, isInstanceOf, objectIsIn };
+export { addToObjectIfNonNullish, gettersToData, isInstanceOf, MapOfArrays, objectIsIn };

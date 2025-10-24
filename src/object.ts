@@ -21,6 +21,60 @@ import {
 } from "foundry-pf2e";
 import { R } from ".";
 
+class MapOfArrays<T, K extends string | number = string | number> extends Map<K, T[]> {
+    constructor(
+        entries?:
+            | readonly (readonly [K, T[]])[]
+            | Iterable<readonly [K, T[]]>
+            | Record<K, T[]>
+            | null
+    ) {
+        if (entries && !(Symbol.iterator in entries)) {
+            super(Object.entries(entries) as [K, T[]][]);
+        } else {
+            super(entries);
+        }
+    }
+
+    add(key: K, entry: T, create = true) {
+        const arr = this.get(key, create);
+        arr?.push(entry);
+    }
+
+    get(key: K, create: true): T[];
+    get(key: K, create?: boolean): T[] | undefined;
+    get(key: K, create = false) {
+        const exist = super.get(key);
+
+        if (exist || !create) {
+            return exist;
+        } else {
+            const arr: T[] = [];
+
+            this.set(key, arr);
+            return arr;
+        }
+    }
+
+    remove(key: K, entry: T): T | null {
+        const arr = this.get(key);
+        return arr?.findSplice((x) => x === entry) ?? null;
+    }
+
+    removeBy(key: K, fn: (entry: T) => boolean): T | null {
+        const arr = this.get(key);
+        return arr?.findSplice(fn) ?? null;
+    }
+
+    toObject(): PartialRecord<K, T[]> {
+        return Object.fromEntries(this) as PartialRecord<K, T[]>;
+    }
+
+    toJSON(): PartialRecord<K, T[]> {
+        return this.toObject();
+    }
+}
+
 function objectIsIn<
     T,
     O extends Record<string, unknown> = Record<string, unknown>,
@@ -102,5 +156,5 @@ type IsInstanceOfItems = {
 
 type IsInstanceOfItem = keyof IsInstanceOfItems;
 
-export { addToObjectIfNonNullish, gettersToData, isInstanceOf, objectIsIn };
+export { addToObjectIfNonNullish, gettersToData, isInstanceOf, MapOfArrays, objectIsIn };
 export type { IsInstanceOfItem, IsInstanceOfItems };
