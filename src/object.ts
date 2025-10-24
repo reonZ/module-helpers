@@ -66,11 +66,11 @@ class MapOfArrays<T, K extends string | number = string | number> extends Map<K,
         return arr?.findSplice(fn) ?? null;
     }
 
-    toObject(): PartialRecord<K, T[]> {
-        return Object.fromEntries(this) as PartialRecord<K, T[]>;
+    toObject(): Record<K, T[]> {
+        return Object.fromEntries(this) as Record<K, T[]>;
     }
 
-    toJSON(): PartialRecord<K, T[]> {
+    toJSON(): Record<K, T[]> {
         return this.toObject();
     }
 }

@@ -6,8 +6,8 @@ declare class MapOfArrays<T, K extends string | number = string | number> extend
     get(key: K, create?: boolean): T[] | undefined;
     remove(key: K, entry: T): T | null;
     removeBy(key: K, fn: (entry: T) => boolean): T | null;
-    toObject(): PartialRecord<K, T[]>;
-    toJSON(): PartialRecord<K, T[]>;
+    toObject(): Record<K, T[]>;
+    toJSON(): Record<K, T[]>;
 }
 declare function objectIsIn<T, O extends Record<string, unknown> = Record<string, unknown>, K extends string = string>(obj: Readonly<Record<PropertyKey, unknown>> | O, key: K): obj is NarrowedTo<O, Record<K, T>>;
 declare function isInstanceOf<T extends keyof IsInstanceOfClasses>(obj: any, cls: T): obj is IsInstanceOfClasses[T];
