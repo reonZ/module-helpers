@@ -46,6 +46,35 @@ function isInstanceOf(obj: any, cls: keyof IsInstanceOfClasses | string) {
     return false;
 }
 
+function addToObjectIfNonNullish<T extends Record<string, any>, E extends Record<string, any>>(
+    obj: T & Partial<E>,
+    extra: E
+): T & Partial<E> {
+    for (const [key, value] of R.entries(extra)) {
+        if (value != null) {
+            obj[key as keyof T] = value;
+        }
+    }
+
+    return obj;
+}
+
+// this returns all the getters of an instance object into a plain data object
+function gettersToData<T extends Object>(instance: T): ExtractReadonly<T> {
+    const Cls = instance.constructor as ConstructorOf<T>;
+    const keys = Object.entries(Object.getOwnPropertyDescriptors(Cls.prototype))
+        .filter(([key, descriptor]) => typeof descriptor.get === "function")
+        .map(([key]) => key) as ReadonlyKeys<T>[];
+
+    const obj = {} as ExtractReadonly<T>;
+
+    for (const key of keys) {
+        obj[key] = instance[key];
+    }
+
+    return obj;
+}
+
 type IsInstanceOfClasses = IsInstanceOfItems & {
     ActorPF2e: ActorPF2e;
     ArithmeticExpression: ArithmeticExpression;
@@ -73,5 +102,5 @@ type IsInstanceOfItems = {
 
 type IsInstanceOfItem = keyof IsInstanceOfItems;
 
-export { isInstanceOf, objectIsIn };
+export { addToObjectIfNonNullish, gettersToData, isInstanceOf, objectIsIn };
 export type { IsInstanceOfItem, IsInstanceOfItems };

@@ -13,4 +13,24 @@ function isInstanceOf(obj, cls) {
     }
     return false;
 }
-export { isInstanceOf, objectIsIn };
+function addToObjectIfNonNullish(obj, extra) {
+    for (const [key, value] of R.entries(extra)) {
+        if (value != null) {
+            obj[key] = value;
+        }
+    }
+    return obj;
+}
+// this returns all the getters of an instance object into a plain data object
+function gettersToData(instance) {
+    const Cls = instance.constructor;
+    const keys = Object.entries(Object.getOwnPropertyDescriptors(Cls.prototype))
+        .filter(([key, descriptor]) => typeof descriptor.get === "function")
+        .map(([key]) => key);
+    const obj = {};
+    for (const key of keys) {
+        obj[key] = instance[key];
+    }
+    return obj;
+}
+export { addToObjectIfNonNullish, gettersToData, isInstanceOf, objectIsIn };

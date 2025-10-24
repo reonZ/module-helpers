@@ -11,22 +11,6 @@ function joinStr(separator: string, ...path: any[]): string {
     );
 }
 
-function arraysEqual<T extends any[]>(arr1: T, arr2: any[]): arr2 is T {
-    arr1 = R.unique(arr1) as unknown as T;
-    arr2 = R.unique(arr2);
-    return arr1.length === arr2.length && arr1.every((entry) => arr2.includes(entry));
-}
-
-function includesAny(arr: any[], entries: any[]): boolean {
-    for (const entry of entries) {
-        if (arr.includes(entry)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 function roundToStep(value: number, step: number): number {
     step = value < 0 ? step * -1 : step;
     const half = step / 2;
@@ -55,14 +39,6 @@ function toggleHooksAndWrappers(entries: (Wrapper | PersistentHook)[], enabled: 
     }
 }
 
-function removeIndexFromArray<T extends any[]>(array: T, index: number, copy = true): T {
-    const usedArray = (copy ? array.slice() : array) as T;
-    if (index < 0 || index >= array.length) return usedArray;
-
-    usedArray.splice(index, 1);
-    return usedArray;
-}
-
 function rollDie(faces: number, nb = 1) {
     let total = 0;
     for (let i = 0; i < nb; i++) {
@@ -87,35 +63,6 @@ function sortByLocaleCompare<T extends Record<string, any>>(list: Array<T>, key:
     list.sort((a, b) => localeCompare(a[key], b[key]));
 }
 
-// this returns all the getters of an instance object into a plain data object
-function gettersToData<T extends Object>(instance: T): ExtractReadonly<T> {
-    const Cls = instance.constructor as ConstructorOf<T>;
-    const keys = Object.entries(Object.getOwnPropertyDescriptors(Cls.prototype))
-        .filter(([key, descriptor]) => typeof descriptor.get === "function")
-        .map(([key]) => key) as ReadonlyKeys<T>[];
-
-    const obj = {} as ExtractReadonly<T>;
-
-    for (const key of keys) {
-        obj[key] = instance[key];
-    }
-
-    return obj;
-}
-
-function addToObjectIfNonNullish<T extends Record<string, any>, E extends Record<string, any>>(
-    obj: T & Partial<E>,
-    extra: E
-): T & Partial<E> {
-    for (const [key, value] of R.entries(extra)) {
-        if (value != null) {
-            obj[key as keyof T] = value;
-        }
-    }
-
-    return obj;
-}
-
 function waitTimeout(time: number = 1): Promise<void> {
     return new Promise((resolve) => {
         setTimeout(resolve, time);
@@ -124,15 +71,10 @@ function waitTimeout(time: number = 1): Promise<void> {
 
 export {
     activateHooksAndWrappers,
-    addToObjectIfNonNullish,
-    arraysEqual,
     disableHooksAndWrappers,
-    gettersToData,
-    includesAny,
     isDecimal,
     joinStr,
     localeCompare,
-    removeIndexFromArray,
     rollDie,
     roundToStep,
     sortByLocaleCompare,

@@ -3,19 +3,6 @@ function joinStr(separator, ...path) {
     return R.pipe(path, //
     R.flat(), R.filter(R.isString), R.join(separator));
 }
-function arraysEqual(arr1, arr2) {
-    arr1 = R.unique(arr1);
-    arr2 = R.unique(arr2);
-    return arr1.length === arr2.length && arr1.every((entry) => arr2.includes(entry));
-}
-function includesAny(arr, entries) {
-    for (const entry of entries) {
-        if (arr.includes(entry)) {
-            return true;
-        }
-    }
-    return false;
-}
 function roundToStep(value, step) {
     step = value < 0 ? step * -1 : step;
     const half = step / 2;
@@ -39,13 +26,6 @@ function toggleHooksAndWrappers(entries, enabled) {
         entry.toggle(enabled);
     }
 }
-function removeIndexFromArray(array, index, copy = true) {
-    const usedArray = (copy ? array.slice() : array);
-    if (index < 0 || index >= array.length)
-        return usedArray;
-    usedArray.splice(index, 1);
-    return usedArray;
-}
 function rollDie(faces, nb = 1) {
     let total = 0;
     for (let i = 0; i < nb; i++) {
@@ -65,29 +45,9 @@ function localeCompare(a, b) {
 function sortByLocaleCompare(list, key) {
     list.sort((a, b) => localeCompare(a[key], b[key]));
 }
-// this returns all the getters of an instance object into a plain data object
-function gettersToData(instance) {
-    const Cls = instance.constructor;
-    const keys = Object.entries(Object.getOwnPropertyDescriptors(Cls.prototype))
-        .filter(([key, descriptor]) => typeof descriptor.get === "function")
-        .map(([key]) => key);
-    const obj = {};
-    for (const key of keys) {
-        obj[key] = instance[key];
-    }
-    return obj;
-}
-function addToObjectIfNonNullish(obj, extra) {
-    for (const [key, value] of R.entries(extra)) {
-        if (value != null) {
-            obj[key] = value;
-        }
-    }
-    return obj;
-}
 function waitTimeout(time = 1) {
     return new Promise((resolve) => {
         setTimeout(resolve, time);
     });
 }
-export { activateHooksAndWrappers, addToObjectIfNonNullish, arraysEqual, disableHooksAndWrappers, gettersToData, includesAny, isDecimal, joinStr, localeCompare, removeIndexFromArray, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, stringNumber, toggleHooksAndWrappers, waitTimeout, };
+export { activateHooksAndWrappers, disableHooksAndWrappers, isDecimal, joinStr, localeCompare, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, stringNumber, toggleHooksAndWrappers, waitTimeout, };

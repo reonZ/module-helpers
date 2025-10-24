@@ -2,6 +2,8 @@ import { AbstractEffectPF2e, ActorPF2e, ArithmeticExpression, ChatMessagePF2e, C
 declare function objectIsIn<T, O extends Record<string, unknown> = Record<string, unknown>, K extends string = string>(obj: Readonly<Record<PropertyKey, unknown>> | O, key: K): obj is NarrowedTo<O, Record<K, T>>;
 declare function isInstanceOf<T extends keyof IsInstanceOfClasses>(obj: any, cls: T): obj is IsInstanceOfClasses[T];
 declare function isInstanceOf<T>(obj: any, cls: string): obj is T;
+declare function addToObjectIfNonNullish<T extends Record<string, any>, E extends Record<string, any>>(obj: T & Partial<E>, extra: E): T & Partial<E>;
+declare function gettersToData<T extends Object>(instance: T): ExtractReadonly<T>;
 type IsInstanceOfClasses = IsInstanceOfItems & {
     ActorPF2e: ActorPF2e;
     ArithmeticExpression: ArithmeticExpression;
@@ -26,5 +28,5 @@ type IsInstanceOfItems = {
     WeaponPF2e: WeaponPF2e;
 };
 type IsInstanceOfItem = keyof IsInstanceOfItems;
-export { isInstanceOf, objectIsIn };
+export { addToObjectIfNonNullish, gettersToData, isInstanceOf, objectIsIn };
 export type { IsInstanceOfItem, IsInstanceOfItems };
