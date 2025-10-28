@@ -175,7 +175,9 @@ async function getItemSourceFromUuid(uuid: string, type?: ItemType | "physical")
 
 function getItemSourceId(item: ItemPF2e): ItemUUID {
     const isCompendiumItem = item._id && item.pack && !item.isEmbedded;
-    return isCompendiumItem ? item.uuid : item._stats.compendiumSource ?? item.uuid;
+    return isCompendiumItem
+        ? item.uuid
+        : item._stats.compendiumSource ?? item._stats.duplicateSource ?? item.uuid;
 }
 
 function getItemSlug(item: ItemPF2e): string {

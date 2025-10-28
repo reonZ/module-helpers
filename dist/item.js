@@ -94,7 +94,9 @@ async function getItemSourceFromUuid(uuid, type) {
 }
 function getItemSourceId(item) {
     const isCompendiumItem = item._id && item.pack && !item.isEmbedded;
-    return isCompendiumItem ? item.uuid : item._stats.compendiumSource ?? item.uuid;
+    return isCompendiumItem
+        ? item.uuid
+        : item._stats.compendiumSource ?? item._stats.duplicateSource ?? item.uuid;
 }
 function getItemSlug(item) {
     return item.slug ?? game.pf2e.system.sluggify(item._source.name);
