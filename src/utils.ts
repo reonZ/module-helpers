@@ -11,6 +11,15 @@ function joinStr(separator: string, ...path: any[]): string {
     );
 }
 
+function splitStr<T extends string>(str: string, separator = ","): T[] {
+    return R.pipe(
+        str,
+        R.split(separator),
+        R.filter(R.isString),
+        R.map((x) => x.trim() as T)
+    );
+}
+
 function roundToStep(value: number, step: number): number {
     step = value < 0 ? step * -1 : step;
     const half = step / 2;
@@ -78,6 +87,7 @@ export {
     rollDie,
     roundToStep,
     sortByLocaleCompare,
+    splitStr,
     stringBoolean,
     stringNumber,
     toggleHooksAndWrappers,

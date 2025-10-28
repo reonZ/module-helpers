@@ -3,6 +3,9 @@ function joinStr(separator, ...path) {
     return R.pipe(path, //
     R.flat(), R.filter(R.isString), R.join(separator));
 }
+function splitStr(str, separator = ",") {
+    return R.pipe(str, R.split(separator), R.filter(R.isString), R.map((x) => x.trim()));
+}
 function roundToStep(value, step) {
     step = value < 0 ? step * -1 : step;
     const half = step / 2;
@@ -50,4 +53,4 @@ function waitTimeout(time = 1) {
         setTimeout(resolve, time);
     });
 }
-export { activateHooksAndWrappers, disableHooksAndWrappers, isDecimal, joinStr, localeCompare, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, stringNumber, toggleHooksAndWrappers, waitTimeout, };
+export { activateHooksAndWrappers, disableHooksAndWrappers, isDecimal, joinStr, localeCompare, rollDie, roundToStep, sortByLocaleCompare, splitStr, stringBoolean, stringNumber, toggleHooksAndWrappers, waitTimeout, };

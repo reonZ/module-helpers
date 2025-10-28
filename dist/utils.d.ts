@@ -1,6 +1,7 @@
 import { PersistentHook } from "./hooks";
 import { Wrapper } from "./libwrapper";
 declare function joinStr(separator: string, ...path: any[]): string;
+declare function splitStr<T extends string>(str: string, separator?: string): T[];
 declare function roundToStep(value: number, step: number): number;
 declare function isDecimal(num: number): boolean;
 declare function activateHooksAndWrappers(entries: (Wrapper | PersistentHook)[]): void;
@@ -12,4 +13,4 @@ declare function stringNumber(b: number | string): `${number}`;
 declare function localeCompare(a: string, b: string): number;
 declare function sortByLocaleCompare<T extends Record<string, any>>(list: Array<T>, key: keyof T): void;
 declare function waitTimeout(time?: number): Promise<void>;
-export { activateHooksAndWrappers, disableHooksAndWrappers, isDecimal, joinStr, localeCompare, rollDie, roundToStep, sortByLocaleCompare, stringBoolean, stringNumber, toggleHooksAndWrappers, waitTimeout, };
+export { activateHooksAndWrappers, disableHooksAndWrappers, isDecimal, joinStr, localeCompare, rollDie, roundToStep, sortByLocaleCompare, splitStr, stringBoolean, stringNumber, toggleHooksAndWrappers, waitTimeout, };
