@@ -120,4 +120,13 @@ function createToggleableWrapper(type, path, callback, options = {}) {
         },
     };
 }
-export { createSharedWrapper, createToggleableWrapper, registerWrapper, unregisterWrapper };
+function createCreatureSheetWrapper(type, partialPath, callback, options = {}) {
+    const partials = R.isArray(partialPath) ? partialPath : [partialPath];
+    const paths = partials.flatMap((partial) => [
+        `CONFIG.Actor.sheetClasses.character['pf2e.CharacterSheetPF2e'].cls.prototype.${partial}`,
+        `CONFIG.Actor.sheetClasses.npc['pf2e.NPCSheetPF2e'].cls.prototype.${partial}`,
+        `CONFIG.Actor.sheetClasses.familiar['pf2e.FamiliarSheetPF2e'].cls.prototype.${partial}`,
+    ]);
+    return createToggleableWrapper(type, paths, callback, options);
+}
+export { createCreatureSheetWrapper, createSharedWrapper, createToggleableWrapper, registerWrapper, unregisterWrapper, };

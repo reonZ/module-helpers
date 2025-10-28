@@ -183,6 +183,22 @@ function createToggleableWrapper(
     };
 }
 
+function createCreatureSheetWrapper(
+    type: libWrapper.RegisterType,
+    partialPath: string | string[],
+    callback: libWrapper.RegisterCallback,
+    options: WrapperOptions = {}
+): Wrapper {
+    const partials = R.isArray(partialPath) ? partialPath : [partialPath];
+    const paths = partials.flatMap((partial) => [
+        `CONFIG.Actor.sheetClasses.character['pf2e.CharacterSheetPF2e'].cls.prototype.${partial}`,
+        `CONFIG.Actor.sheetClasses.npc['pf2e.NPCSheetPF2e'].cls.prototype.${partial}`,
+        `CONFIG.Actor.sheetClasses.familiar['pf2e.FamiliarSheetPF2e'].cls.prototype.${partial}`,
+    ]);
+
+    return createToggleableWrapper(type, paths, callback, options);
+}
+
 type SharedRegistered = {
     listener: libWrapper.RegisterCallback;
     context?: WrapperContext;
@@ -205,6 +221,11 @@ type WrapperOptions = {
 
 type WrapperContext = InstanceType<new (...args: any[]) => any>;
 
-export { createSharedWrapper, createToggleableWrapper, registerWrapper, unregisterWrapper };
-
+export {
+    createCreatureSheetWrapper,
+    createSharedWrapper,
+    createToggleableWrapper,
+    registerWrapper,
+    unregisterWrapper,
+};
 export type { Wrapper };

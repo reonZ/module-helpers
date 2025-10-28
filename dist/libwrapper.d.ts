@@ -13,6 +13,7 @@ declare function createSharedWrapper<TDocument extends ClientDocument, TWrapperC
     };
 };
 declare function createToggleableWrapper(type: libWrapper.RegisterType, path: string | string[], callback: libWrapper.RegisterCallback, options?: WrapperOptions): Wrapper;
+declare function createCreatureSheetWrapper(type: libWrapper.RegisterType, partialPath: string | string[], callback: libWrapper.RegisterCallback, options?: WrapperOptions): Wrapper;
 type Wrapper = {
     get enabled(): boolean;
     activate(): void;
@@ -25,5 +26,5 @@ type WrapperOptions = {
     onActivate?: () => void;
 };
 type WrapperContext = InstanceType<new (...args: any[]) => any>;
-export { createSharedWrapper, createToggleableWrapper, registerWrapper, unregisterWrapper };
+export { createCreatureSheetWrapper, createSharedWrapper, createToggleableWrapper, registerWrapper, unregisterWrapper, };
 export type { Wrapper };
