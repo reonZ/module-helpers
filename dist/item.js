@@ -40,7 +40,7 @@ function findItemWithSourceId(actor, uuid, type) {
     for (const item of actorItems(actor, type)) {
         if (isSupressedFeat(item))
             continue;
-        const sourceId = item.sourceId;
+        const sourceId = getItemSourceId(item);
         if (sourceId === uuid) {
             return item;
         }
@@ -52,7 +52,7 @@ function findAllItemsWithSourceId(actor, uuid, type) {
     for (const item of actorItems(actor, type)) {
         if (isSupressedFeat(item))
             continue;
-        const sourceId = item.sourceId;
+        const sourceId = getItemSourceId(item);
         if (sourceId === uuid) {
             items.push(item);
         }
@@ -66,7 +66,7 @@ function hasAnyItemWithSourceId(actor, uuids, type) {
     for (const item of actorItems(actor, type)) {
         if (isSupressedFeat(item))
             continue;
-        const sourceId = item.sourceId;
+        const sourceId = getItemSourceId(item);
         if (sourceId && uuids.includes(sourceId)) {
             return true;
         }
@@ -93,7 +93,8 @@ async function getItemSourceFromUuid(uuid, type) {
     return !!item ? getItemSource(item) : null;
 }
 function getItemSourceId(item) {
-    return item.sourceId ?? item.uuid;
+    const isCompendiumItem = item._id && item.pack && !item.isEmbedded;
+    return isCompendiumItem ? item.uuid : item._stats.compendiumSource ?? item.uuid;
 }
 function getItemSlug(item) {
     return item.slug ?? game.pf2e.system.sluggify(item._source.name);

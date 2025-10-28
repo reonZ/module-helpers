@@ -80,7 +80,7 @@ function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     for (const item of actorItems(actor, type)) {
         if (isSupressedFeat(item)) continue;
 
-        const sourceId = item.sourceId;
+        const sourceId = getItemSourceId(item);
         if (sourceId === uuid) {
             return item;
         }
@@ -99,7 +99,7 @@ function findAllItemsWithSourceId<TType extends ItemType, TActor extends ActorPF
     for (const item of actorItems(actor, type)) {
         if (isSupressedFeat(item)) continue;
 
-        const sourceId = item.sourceId;
+        const sourceId = getItemSourceId(item);
         if (sourceId === uuid) {
             items.push(item);
         }
@@ -116,7 +116,7 @@ function hasAnyItemWithSourceId(actor: ActorPF2e, uuids: string[], type?: ItemTy
     for (const item of actorItems(actor, type)) {
         if (isSupressedFeat(item)) continue;
 
-        const sourceId = item.sourceId;
+        const sourceId = getItemSourceId(item);
         if (sourceId && uuids.includes(sourceId)) {
             return true;
         }
@@ -174,7 +174,8 @@ async function getItemSourceFromUuid(uuid: string, type?: ItemType | "physical")
 }
 
 function getItemSourceId(item: ItemPF2e): ItemUUID {
-    return item.sourceId ?? item.uuid;
+    const isCompendiumItem = item._id && item.pack && !item.isEmbedded;
+    return isCompendiumItem ? item.uuid : item._stats.compendiumSource ?? item.uuid;
 }
 
 function getItemSlug(item: ItemPF2e): string {
