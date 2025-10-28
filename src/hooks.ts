@@ -9,7 +9,7 @@ function registerUpstreamHook(event: string, listener: RegisterHookCallback, onc
     return id;
 }
 
-function createHook(
+function createToggleableHook(
     hook: string | string[],
     listener: RegisterHookCallback,
     options: HookOptions = {}
@@ -61,7 +61,7 @@ function createHookList(
     hooks: { path: string | string[]; listener: RegisterHookCallback }[]
 ): PersistentHook {
     let _active = false;
-    const _hooks = hooks.map(({ path, listener }) => createHook(path, listener));
+    const _hooks = hooks.map(({ path, listener }) => createToggleableHook(path, listener));
 
     return {
         get enabled(): boolean {
@@ -118,5 +118,5 @@ type HookOptions = {
     upstream?: boolean;
 };
 
-export { createHook, createHookList, executeWhenReady, registerUpstreamHook };
+export { createHookList, createToggleableHook, executeWhenReady, registerUpstreamHook };
 export type { HookOptions, PersistentHook };

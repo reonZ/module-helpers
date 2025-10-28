@@ -6,7 +6,7 @@ function registerUpstreamHook(event, listener, once) {
     }
     return id;
 }
-function createHook(hook, listener, options = {}) {
+function createToggleableHook(hook, listener, options = {}) {
     const _ids = [];
     const _hook = Array.isArray(hook) ? hook : [hook];
     return {
@@ -46,7 +46,7 @@ function createHook(hook, listener, options = {}) {
 }
 function createHookList(hooks) {
     let _active = false;
-    const _hooks = hooks.map(({ path, listener }) => createHook(path, listener));
+    const _hooks = hooks.map(({ path, listener }) => createToggleableHook(path, listener));
     return {
         get enabled() {
             return _active;
@@ -86,4 +86,4 @@ function executeWhenReady(fn) {
         Hooks.once("ready", fn);
     }
 }
-export { createHook, createHookList, executeWhenReady, registerUpstreamHook };
+export { createHookList, createToggleableHook, executeWhenReady, registerUpstreamHook };

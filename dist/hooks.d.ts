@@ -1,5 +1,5 @@
 declare function registerUpstreamHook(event: string, listener: RegisterHookCallback, once?: boolean): number;
-declare function createHook(hook: string | string[], listener: RegisterHookCallback, options?: HookOptions): PersistentHook;
+declare function createToggleableHook(hook: string | string[], listener: RegisterHookCallback, options?: HookOptions): PersistentHook;
 declare function createHookList(hooks: {
     path: string | string[];
     listener: RegisterHookCallback;
@@ -17,5 +17,5 @@ type HookOptions = {
     onActivate?: () => void;
     upstream?: boolean;
 };
-export { createHook, createHookList, executeWhenReady, registerUpstreamHook };
+export { createHookList, createToggleableHook, executeWhenReady, registerUpstreamHook };
 export type { HookOptions, PersistentHook };
