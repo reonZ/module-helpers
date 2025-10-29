@@ -4,4 +4,5 @@ declare function isPrimaryUpdater(actor: ActorPF2e): boolean;
 declare function primaryPlayerOwner(actor: ActorPF2e): UserPF2e | null;
 declare function isPrimaryOwner(actor: ActorPF2e, user?: Active<UserPF2e>): boolean;
 declare function canObserveActor(actor: Maybe<ActorPF2e>, withParty?: boolean): actor is ActorPF2e;
-export { canObserveActor, isPrimaryOwner, isPrimaryUpdater, primaryPlayerOwner, userIsGM };
+declare function getSelectedActor(fn?: (actor: ActorPF2e) => boolean): ActorPF2e | null;
+export { canObserveActor, getSelectedActor, isPrimaryOwner, isPrimaryUpdater, primaryPlayerOwner, userIsGM, };

@@ -1,4 +1,5 @@
 import { ActorPF2e, CreaturePF2e, UserPF2e } from "foundry-pf2e";
+import { R } from ".";
 
 function getCurrentUser(): UserPF2e {
     return game.user ?? game.data.users.find((x) => x._id === game.userId);
@@ -35,4 +36,22 @@ function canObserveActor(actor: Maybe<ActorPF2e>, withParty: boolean = true): ac
     );
 }
 
-export { canObserveActor, isPrimaryOwner, isPrimaryUpdater, primaryPlayerOwner, userIsGM };
+function getSelectedActor(fn = (actor: ActorPF2e) => true): ActorPF2e | null {
+    const selected = R.only(canvas.tokens.controlled)?.actor;
+
+    if (selected && fn(selected)) {
+        return selected;
+    }
+
+    const assigned = game.user.character;
+    return assigned && fn(assigned) ? assigned : null;
+}
+
+export {
+    canObserveActor,
+    getSelectedActor,
+    isPrimaryOwner,
+    isPrimaryUpdater,
+    primaryPlayerOwner,
+    userIsGM,
+};
