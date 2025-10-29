@@ -34,6 +34,7 @@ declare global {
                 use: boolean;
             };
             betterTrade: {
+                invertTrade: boolean;
                 withContent: boolean;
             };
             heroActions: {
