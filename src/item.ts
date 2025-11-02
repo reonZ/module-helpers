@@ -180,14 +180,10 @@ function getItemSourceId(item: ItemPF2e): ItemUUID {
         : item._stats.compendiumSource ?? item._stats.duplicateSource ?? item.uuid;
 }
 
-function getItemSlug(item: ItemPF2e): string {
-    return item.slug ?? game.pf2e.system.sluggify(item._source.name);
-}
-
-function getItemOrIndexSlug(entry: CompendiumIndexData | ItemPF2e): string {
-    return entry instanceof Item
-        ? entry.slug || game.pf2e.system.sluggify(entry._source.name)
-        : game.pf2e.system.sluggify(entry.name);
+function getItemSlug(item: ItemPF2e | CompendiumIndexData): string {
+    return item instanceof Item
+        ? item.slug || game.pf2e.system.sluggify(item._source.name)
+        : game.pf2e.system.sluggify(item.name);
 }
 
 function findItemWithSlug<TType extends ItemType, TActor extends ActorPF2e>(
@@ -462,7 +458,7 @@ export {
     findItemWithSourceId,
     getEquipAnnotation,
     getItemFromUuid,
-    getItemOrIndexSlug,
+    getItemSlug,
     getItemSource,
     getItemSourceFromUuid,
     getItemSourceId,
