@@ -58,6 +58,9 @@ declare function tupleHasValue<const A extends readonly unknown[]>(array: A, val
  * https://github.com/foundryvtt/pf2e/blob/f26bfcc353ebd58efd6d1140cdb8e20688acaea8/src/module/item/spell/helpers.ts#L16
  */
 declare function createSpellAreaLabel(areaData: SpellArea): string;
+declare function sluggify(text: string, options?: {
+    camel?: "dromedary" | "bactrian";
+}): string;
 interface SplitListStringOptions {
     delimiter?: string | RegExp;
     unique?: boolean;
@@ -80,4 +83,4 @@ type ParamsFromEvent = {
     skipDialog: boolean;
     rollMode?: RollMode | "roll";
 };
-export { createSpellAreaLabel, ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, splitListString, traitSlugToObject, tupleHasValue, };
+export { createSpellAreaLabel, ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, sluggify, splitListString, traitSlugToObject, tupleHasValue, };

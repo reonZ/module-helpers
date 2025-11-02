@@ -1,4 +1,4 @@
-import { createHTMLElementContent, getActionGlyph, getDamageRollClass, htmlQuery, R, setHasElement, traitSlugToObject, } from ".";
+import { createHTMLElementContent, getActionGlyph, getDamageRollClass, htmlQuery, R, setHasElement, sluggify, traitSlugToObject, } from ".";
 const ITEM_CARRY_TYPES = ["attached", "dropped", "held", "stowed", "worn"];
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
@@ -99,9 +99,7 @@ function getItemSourceId(item) {
         : item._stats.compendiumSource ?? item._stats.duplicateSource ?? item.uuid;
 }
 function getItemSlug(item) {
-    return item instanceof Item
-        ? item.slug || game.pf2e.system.sluggify(item._source.name)
-        : game.pf2e.system.sluggify(item.name);
+    return item instanceof Item ? item.slug || sluggify(item._source.name) : sluggify(item.name);
 }
 function findItemWithSlug(actor, slug, type) {
     for (const item of actorItems(actor, type)) {
@@ -228,7 +226,7 @@ function getEquipAnnotation(item) {
     const { type, hands = 0 } = item.system.usage;
     const annotation = item.carryType === "dropped" ? "pick-up" : item.isStowed ? "retrieve" : "draw";
     const fullAnnotation = `${annotation}${hands}H`;
-    const purposeKey = game.pf2e.system.sluggify(fullAnnotation, { camel: "bactrian" });
+    const purposeKey = sluggify(fullAnnotation, { camel: "bactrian" });
     return {
         annotation,
         cost: annotation === "retrieve" ? 2 : 1,
@@ -250,7 +248,6 @@ async function equipItemToUse(actor, item, { carryType, handsHeld, fullAnnotatio
         flavor: "./systems/pf2e/templates/chat/action/flavor.hbs",
         content: "./systems/pf2e/templates/chat/action/content.hbs",
     };
-    const sluggify = game.pf2e.system.sluggify;
     const fullAnnotationKey = sluggify(fullAnnotation, { camel: "bactrian" });
     const flavorAction = {
         title: `PF2E.Actions.Interact.Title`,

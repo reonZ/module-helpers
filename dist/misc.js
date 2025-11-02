@@ -147,4 +147,7 @@ function createSpellAreaLabel(areaData) {
     const units = game.i18n.localize("PF2E.Foot.Plural");
     return game.i18n.format(formatString, { shape, size, unit, units });
 }
-export { createSpellAreaLabel, ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, splitListString, traitSlugToObject, tupleHasValue, };
+function sluggify(text, options) {
+    return game.pf2e.system.sluggify(text, options);
+}
+export { createSpellAreaLabel, ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, sluggify, splitListString, traitSlugToObject, tupleHasValue, };

@@ -191,6 +191,10 @@ function createSpellAreaLabel(areaData: SpellArea): string {
     return game.i18n.format(formatString, { shape, size, unit, units });
 }
 
+function sluggify(text: string, options?: { camel?: "dromedary" | "bactrian" }): string {
+    return game.pf2e.system.sluggify(text, options);
+}
+
 interface SplitListStringOptions {
     delimiter?: string | RegExp;
     unique?: boolean;
@@ -224,6 +228,7 @@ export {
     parseInlineParams,
     setHasElement,
     signedInteger,
+    sluggify,
     splitListString,
     traitSlugToObject,
     tupleHasValue,

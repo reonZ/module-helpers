@@ -1,4 +1,4 @@
-import { R } from ".";
+import { R, sluggify } from ".";
 function createToggleableEvent(event, selector, listener, options) {
     let enabled = false;
     const getElement = () => {
@@ -161,7 +161,7 @@ function dataToDatasetString(data) {
 function datasetToData(dataset) {
     const data = {};
     for (const [sluggifiedKey, stringValue] of R.entries(dataset)) {
-        const key = game.pf2e.system.sluggify(sluggifiedKey, { camel: "dromedary" });
+        const key = sluggify(sluggifiedKey, { camel: "dromedary" });
         try {
             data[key] = stringValue ? JSON.parse(stringValue) : undefined;
         }

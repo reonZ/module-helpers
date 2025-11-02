@@ -1,4 +1,4 @@
-import { I18n, R } from ".";
+import { I18n, R, sluggify } from ".";
 
 type PersistentEvent = {
     activate(): void;
@@ -313,7 +313,7 @@ function datasetToData<T extends Record<string, any>>(dataset: DOMStringMap): T 
     const data = {} as T;
 
     for (const [sluggifiedKey, stringValue] of R.entries(dataset)) {
-        const key = game.pf2e.system.sluggify(sluggifiedKey, { camel: "dromedary" }) as keyof T;
+        const key = sluggify(sluggifiedKey, { camel: "dromedary" }) as keyof T;
 
         try {
             data[key] = stringValue ? JSON.parse(stringValue) : undefined;

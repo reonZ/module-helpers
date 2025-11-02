@@ -18,6 +18,7 @@ import {
     htmlQuery,
     R,
     setHasElement,
+    sluggify,
     traitSlugToObject,
 } from ".";
 
@@ -181,9 +182,7 @@ function getItemSourceId(item: ItemPF2e): ItemUUID {
 }
 
 function getItemSlug(item: ItemPF2e | CompendiumIndexData): string {
-    return item instanceof Item
-        ? item.slug || game.pf2e.system.sluggify(item._source.name)
-        : game.pf2e.system.sluggify(item.name);
+    return item instanceof Item ? item.slug || sluggify(item._source.name) : sluggify(item.name);
 }
 
 function findItemWithSlug<TType extends ItemType, TActor extends ActorPF2e>(
@@ -366,7 +365,7 @@ function getEquipAnnotation(item: Maybe<PhysicalItemPF2e>): EquipAnnotationData 
     const annotation =
         item.carryType === "dropped" ? "pick-up" : item.isStowed ? "retrieve" : "draw";
     const fullAnnotation = `${annotation}${hands}H`;
-    const purposeKey = game.pf2e.system.sluggify(fullAnnotation, { camel: "bactrian" });
+    const purposeKey = sluggify(fullAnnotation, { camel: "bactrian" });
 
     return {
         annotation,
@@ -400,7 +399,6 @@ async function equipItemToUse(
         content: "./systems/pf2e/templates/chat/action/content.hbs",
     };
 
-    const sluggify = game.pf2e.system.sluggify;
     const fullAnnotationKey = sluggify(fullAnnotation, { camel: "bactrian" });
     const flavorAction = {
         title: `PF2E.Actions.Interact.Title`,
