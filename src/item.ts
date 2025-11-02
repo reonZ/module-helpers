@@ -184,6 +184,12 @@ function getItemSlug(item: ItemPF2e): string {
     return item.slug ?? game.pf2e.system.sluggify(item._source.name);
 }
 
+function getItemOrIndexSlug(entry: CompendiumIndexData | ItemPF2e): string {
+    return entry instanceof Item
+        ? entry.slug || game.pf2e.system.sluggify(entry._source.name)
+        : game.pf2e.system.sluggify(entry.name);
+}
+
 function findItemWithSlug<TType extends ItemType, TActor extends ActorPF2e>(
     actor: TActor,
     slug: string,
@@ -456,6 +462,7 @@ export {
     findItemWithSourceId,
     getEquipAnnotation,
     getItemFromUuid,
+    getItemOrIndexSlug,
     getItemSource,
     getItemSourceFromUuid,
     getItemSourceId,

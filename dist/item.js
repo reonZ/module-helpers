@@ -101,6 +101,11 @@ function getItemSourceId(item) {
 function getItemSlug(item) {
     return item.slug ?? game.pf2e.system.sluggify(item._source.name);
 }
+function getItemOrIndexSlug(entry) {
+    return entry instanceof Item
+        ? entry.slug || game.pf2e.system.sluggify(entry._source.name)
+        : game.pf2e.system.sluggify(entry.name);
+}
 function findItemWithSlug(actor, slug, type) {
     for (const item of actorItems(actor, type)) {
         if (isSupressedFeat(item))
@@ -278,4 +283,4 @@ async function equipItemToUse(actor, item, { carryType, handsHeld, fullAnnotatio
         style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
     });
 }
-export { actorItems, equipItemToUse, findAllItemsWithSlug, findAllItemsWithSourceId, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, usePhysicalItem, };
+export { actorItems, equipItemToUse, findAllItemsWithSlug, findAllItemsWithSourceId, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemOrIndexSlug, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, usePhysicalItem, };

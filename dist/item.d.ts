@@ -14,6 +14,7 @@ declare function getItemSourceFromUuid<T extends ItemType>(uuid: string, type: T
 declare function getItemSourceFromUuid(uuid: string, type: "physical"): Promise<PhysicalItemPF2e["_source"] | null>;
 declare function getItemSourceFromUuid(uuid: string, type?: ItemType | "physical"): Promise<ItemSourcePF2e | null>;
 declare function getItemSourceId(item: ItemPF2e): ItemUUID;
+declare function getItemOrIndexSlug(entry: CompendiumIndexData | ItemPF2e): string;
 declare function findItemWithSlug<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, slug: string, type?: TType): ItemInstances<TActor>[TType] | null;
 declare function findAllItemsWithSlug<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, slug: string, type?: TType): ItemInstances<TActor>[TType][];
 declare function hasItemWithSlug(actor: ActorPF2e, slug: string, type?: ItemType): boolean;
@@ -42,5 +43,5 @@ type EquipAnnotationData = {
 };
 type AuxiliaryAnnotation = "draw" | "pick-up" | "retrieve" | "sheathe";
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
-export { actorItems, equipItemToUse, findAllItemsWithSlug, findAllItemsWithSourceId, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, usePhysicalItem, };
+export { actorItems, equipItemToUse, findAllItemsWithSlug, findAllItemsWithSourceId, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemOrIndexSlug, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, usePhysicalItem, };
 export type { EquipAnnotationData };
