@@ -15,4 +15,7 @@ function renderActorSheets(type = ["ActorSheetPF2e"]) {
 function renderItemSheets(type = ["ItemSheetPF2e"]) {
     renderApplications(type);
 }
-export { renderActorSheets, renderCharacterSheets, renderItemSheets };
+function enrichHTML(content, options) {
+    return foundry.applications.ux.TextEditor.implementation.enrichHTML(content, options);
+}
+export { enrichHTML, renderActorSheets, renderCharacterSheets, renderItemSheets };

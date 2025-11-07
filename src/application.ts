@@ -24,6 +24,10 @@ function renderItemSheets(type: ItemSheetType | ItemSheetType[] = ["ItemSheetPF2
     renderApplications(type);
 }
 
+function enrichHTML(content: string | null, options?: EnrichmentOptions): Promise<string> {
+    return foundry.applications.ux.TextEditor.implementation.enrichHTML(content, options);
+}
+
 type ActorSheetType = "ActorSheetPF2e" | `${Capitalize<ActorType>}SheetPF2e`;
 
 type ItemSheetType =
@@ -31,4 +35,4 @@ type ItemSheetType =
     | "AbilitySheetPF2e"
     | `${Capitalize<Exclude<ItemType, "action">>}SheetPF2e`;
 
-export { renderActorSheets, renderCharacterSheets, renderItemSheets };
+export { enrichHTML, renderActorSheets, renderCharacterSheets, renderItemSheets };

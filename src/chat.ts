@@ -1,4 +1,5 @@
 import { ChatMessagePF2e } from "foundry-pf2e";
+import { enrichHTML } from ".";
 
 function* latestChatMessages(
     nb: number,
@@ -69,7 +70,7 @@ function createChatLink(
         link = `${link}{${label}}`;
     }
 
-    return html ? foundry.applications.ux.TextEditor.implementation.enrichHTML(link) : link;
+    return html ? enrichHTML(link) : link;
 }
 
 export {

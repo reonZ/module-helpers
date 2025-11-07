@@ -1,3 +1,4 @@
+import { enrichHTML } from ".";
 function* latestChatMessages(nb, fromMessage) {
     if (!ui.chat)
         return;
@@ -42,6 +43,6 @@ function createChatLink(docOrUuid, { label, html } = {}) {
     if (label) {
         link = `${link}{${label}}`;
     }
-    return html ? foundry.applications.ux.TextEditor.implementation.enrichHTML(link) : link;
+    return html ? enrichHTML(link) : link;
 }
 export { createChatLink, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages, };
