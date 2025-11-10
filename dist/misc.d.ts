@@ -16,6 +16,10 @@ declare function ErrorPF2e(message: string): Error;
  */
 declare function traitSlugToObject(trait: string, dictionary: Record<string, string | undefined>): TraitViewData;
 /**
+ * https://github.com/foundryvtt/pf2e/blob/002ba0bf6d15dfc0d87a96009f02fb0743fb000b/src/module/sheet/helpers.ts#L158-L161
+ */
+declare function isControlDown(event: PointerEvent | KeyboardEvent | TouchEvent | WheelEvent): boolean;
+/**
  * https://github.com/foundryvtt/pf2e/blob/07c666035850e084835e0c8c3ca365b06dcd0a75/src/util/misc.ts#L48
  */
 declare function objectHasKey<O extends object>(obj: O, key: unknown): key is keyof O;
@@ -83,4 +87,4 @@ type ParamsFromEvent = {
     skipDialog: boolean;
     rollMode?: RollMode | "roll";
 };
-export { createSpellAreaLabel, ErrorPF2e, eventToRollMode, eventToRollParams, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, sluggify, splitListString, traitSlugToObject, tupleHasValue, };
+export { createSpellAreaLabel, ErrorPF2e, eventToRollMode, eventToRollParams, isControlDown, localizer, objectHasKey, ordinalString, parseInlineParams, setHasElement, signedInteger, sluggify, splitListString, traitSlugToObject, tupleHasValue, };

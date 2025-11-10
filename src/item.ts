@@ -28,6 +28,7 @@ const ITEM_CARRY_TYPES = ["attached", "dropped", "held", "stowed", "worn"] as co
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
  */
 const PHYSICAL_ITEM_TYPES = new Set([
+    "ammo",
     "armor",
     "backpack",
     "book",
@@ -338,8 +339,7 @@ async function consumeItem(event: Event, item: ConsumablePF2e<ActorPF2e>) {
 
     if (item.system.uses.autoDestroy && uses.value <= 1) {
         const newQuantity = Math.max(item.quantity - 1, 0);
-        const isPreservedAmmo = item.category === "ammo" && item.system.rules.length > 0;
-        if (newQuantity <= 0 && !isPreservedAmmo) {
+        if (newQuantity <= 0) {
             await item.delete();
         } else {
             await item.update({
@@ -434,6 +434,10 @@ async function equipItemToUse(
     });
 }
 
+function isAreaOrAutoFireType(type: string): type is "area-fire" | "auto-fire" {
+    return R.isIncludedIn(type, ["area-fire", "auto-fire"]);
+}
+
 type EquipAnnotationData = {
     annotation: AuxiliaryAnnotation;
     cost: 1 | 2;
@@ -464,6 +468,7 @@ export {
     hasAnyItemWithSourceId,
     hasItemWithSlug,
     hasItemWithSourceId,
+    isAreaOrAutoFireType,
     isCastConsumable,
     isSupressedFeat,
     ITEM_CARRY_TYPES,

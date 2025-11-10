@@ -51,6 +51,13 @@ declare global {
                 getActionMacro: (action: AbilityItemPF2e | FeatPF2e) => Promise<Maybe<MacroPF2e>>;
                 getItemMacro: (item: ItemPF2e) => Promise<Maybe<MacroPF2e>>;
             };
+            betterInventory: {
+                mergeItems: (
+                    actor: ActorPF2e,
+                    btn?: HTMLButtonElement | HTMLAnchorElement
+                ) => Promise<void>;
+                splitItem: (item: Maybe<ItemPF2e>) => Promise<void>;
+            };
             betterMerchant: {
                 testItemsForMerchant: (
                     merchant: ActorPF2e,

@@ -4,6 +4,7 @@ const ITEM_CARRY_TYPES = ["attached", "dropped", "held", "stowed", "worn"];
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
  */
 const PHYSICAL_ITEM_TYPES = new Set([
+    "ammo",
     "armor",
     "backpack",
     "book",
@@ -200,8 +201,7 @@ async function consumeItem(event, item) {
     }
     if (item.system.uses.autoDestroy && uses.value <= 1) {
         const newQuantity = Math.max(item.quantity - 1, 0);
-        const isPreservedAmmo = item.category === "ammo" && item.system.rules.length > 0;
-        if (newQuantity <= 0 && !isPreservedAmmo) {
+        if (newQuantity <= 0) {
             await item.delete();
         }
         else {
@@ -277,4 +277,7 @@ async function equipItemToUse(actor, item, { carryType, handsHeld, fullAnnotatio
         style: CONST.CHAT_MESSAGE_STYLES.EMOTE,
     });
 }
-export { actorItems, equipItemToUse, findAllItemsWithSlug, findAllItemsWithSourceId, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSlug, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, usePhysicalItem, };
+function isAreaOrAutoFireType(type) {
+    return R.isIncludedIn(type, ["area-fire", "auto-fire"]);
+}
+export { actorItems, equipItemToUse, findAllItemsWithSlug, findAllItemsWithSourceId, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSlug, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isAreaOrAutoFireType, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, usePhysicalItem, };

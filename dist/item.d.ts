@@ -33,6 +33,7 @@ declare function getEquipAnnotation(item: Maybe<PhysicalItemPF2e>): EquipAnnotat
  * https://github.com/foundryvtt/pf2e/blob/6ff777170c93618f234929c6d483a98a37cbe363/src/module/actor/character/helpers.ts#L210
  */
 declare function equipItemToUse(actor: CharacterPF2e, item: PhysicalItemPF2e<CreaturePF2e>, { carryType, handsHeld, fullAnnotation, cost, }: Pick<EquipAnnotationData, "carryType" | "handsHeld" | "fullAnnotation" | "cost">): Promise<void>;
+declare function isAreaOrAutoFireType(type: string): type is "area-fire" | "auto-fire";
 type EquipAnnotationData = {
     annotation: AuxiliaryAnnotation;
     cost: 1 | 2;
@@ -43,5 +44,5 @@ type EquipAnnotationData = {
 };
 type AuxiliaryAnnotation = "draw" | "pick-up" | "retrieve" | "sheathe";
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
-export { actorItems, equipItemToUse, findAllItemsWithSlug, findAllItemsWithSourceId, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSlug, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, usePhysicalItem, };
+export { actorItems, equipItemToUse, findAllItemsWithSlug, findAllItemsWithSourceId, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSlug, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isAreaOrAutoFireType, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, usePhysicalItem, };
 export type { EquipAnnotationData };

@@ -51,6 +51,15 @@ function traitSlugToObject(
 }
 
 /**
+ * https://github.com/foundryvtt/pf2e/blob/002ba0bf6d15dfc0d87a96009f02fb0743fb000b/src/module/sheet/helpers.ts#L158-L161
+ */
+function isControlDown(event: PointerEvent | KeyboardEvent | TouchEvent | WheelEvent): boolean {
+    return foundry.helpers.interaction.KeyboardManager.CONTROL_KEY_STRING === "⌘"
+        ? event.metaKey
+        : event.ctrlKey;
+}
+
+/**
  * https://github.com/foundryvtt/pf2e/blob/07c666035850e084835e0c8c3ca365b06dcd0a75/src/util/misc.ts#L48
  */
 function objectHasKey<O extends object>(obj: O, key: unknown): key is keyof O {
@@ -222,6 +231,7 @@ export {
     ErrorPF2e,
     eventToRollMode,
     eventToRollParams,
+    isControlDown,
     localizer,
     objectHasKey,
     ordinalString,
