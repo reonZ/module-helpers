@@ -154,7 +154,9 @@ function dataToDatasetString(data) {
         if (R.isNullish(value))
             return;
         const sluggifiedKey = key.replace(/\B([A-Z])/g, "-$1").toLowerCase();
-        const stringified = R.isObjectType(value) ? JSON.stringify(value) : value;
+        const stringified = R.isObjectType(value)
+            ? foundry.utils.escapeHTML(JSON.stringify(value))
+            : value;
         return `data-${sluggifiedKey}='${stringified}'`;
     }), R.filter(R.isTruthy), R.join(" "));
 }
