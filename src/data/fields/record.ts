@@ -150,6 +150,21 @@ class KeyedRecordField<
     }
 }
 
+function createRecordFieldStringKey<T extends string>({
+    choices,
+}: {
+    choices?: T[] | ReadonlyArray<T>;
+} = {}): RecordFieldStringKey<T> {
+    return new fields.StringField({
+        required: true,
+        nullable: false,
+        blank: false,
+        choices,
+    });
+}
+
+type RecordFieldStringKey<T extends string> = fields.StringField<T, T, true, false, false>;
+
 type RecordFieldModelProp<
     TKeyField extends
         | fields.StringField<string, string, true, false, false>
@@ -179,4 +194,5 @@ type RecordFieldSourceProp<
           | Record<SourceFromDataField<TKeyField>, SourceFromDataField<TValueField>>
           | Partial<Record<SourceFromDataField<TKeyField>, SourceFromDataField<TValueField>>>;
 
-export { KeyedRecordField };
+export { createRecordFieldStringKey, KeyedRecordField };
+export type { RecordFieldStringKey };

@@ -72,4 +72,12 @@ class KeyedRecordField extends fields.ObjectField {
         return data;
     }
 }
-export { KeyedRecordField };
+function createRecordFieldStringKey({ choices, } = {}) {
+    return new fields.StringField({
+        required: true,
+        nullable: false,
+        blank: false,
+        choices,
+    });
+}
+export { createRecordFieldStringKey, KeyedRecordField };

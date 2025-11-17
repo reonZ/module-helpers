@@ -15,8 +15,13 @@ declare class KeyedRecordField<TKeyField extends fields.StringField<string, stri
     protected _validateType(values: unknown, options?: DataFieldValidationOptions): boolean | validation.DataModelValidationFailure | void;
     initialize(values: object | null | undefined, model: ConstructorOf<foundry.abstract.DataModel>, options?: ObjectFieldOptions<RecordFieldSourceProp<TKeyField, TValueField>, TRequired, TNullable, THasInitial>): MaybeSchemaProp<RecordFieldModelProp<TKeyField, TValueField, TDense>, TRequired, TNullable, THasInitial>;
 }
+declare function createRecordFieldStringKey<T extends string>({ choices, }?: {
+    choices?: T[] | ReadonlyArray<T>;
+}): RecordFieldStringKey<T>;
+type RecordFieldStringKey<T extends string> = fields.StringField<T, T, true, false, false>;
 type RecordFieldModelProp<TKeyField extends fields.StringField<string, string, true, false, false> | fields.NumberField<number, number, true, false, false>, TValueField extends fields.DataField, TDense extends boolean = false> = TDense extends true ? Record<ModelPropFromDataField<TKeyField>, ModelPropFromDataField<TValueField>> : TDense extends false ? Partial<Record<ModelPropFromDataField<TKeyField>, ModelPropFromDataField<TValueField>>> : Record<ModelPropFromDataField<TKeyField>, ModelPropFromDataField<TValueField>> | Partial<Record<ModelPropFromDataField<TKeyField>, ModelPropFromDataField<TValueField>>>;
 type RecordFieldSourceProp<TKeyField extends fields.StringField<string, string, true, false, false> | fields.NumberField<number, number, true, false, false>, TValueField extends fields.DataField, 
 /** Whether this is to be treated as a "dense" record; i.e., any valid key should return a value */
 TDense extends boolean = false> = TDense extends true ? Record<SourceFromDataField<TKeyField>, SourceFromDataField<TValueField>> : TDense extends false ? Partial<Record<SourceFromDataField<TKeyField>, SourceFromDataField<TValueField>>> : Record<SourceFromDataField<TKeyField>, SourceFromDataField<TValueField>> | Partial<Record<SourceFromDataField<TKeyField>, SourceFromDataField<TValueField>>>;
-export { KeyedRecordField };
+export { createRecordFieldStringKey, KeyedRecordField };
+export type { RecordFieldStringKey };
