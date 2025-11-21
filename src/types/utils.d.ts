@@ -20,9 +20,13 @@ declare global {
 
     type EventType = keyof HTMLElementEventMap;
 
-    type SelectOption<V extends string = string> = { value: V; label?: string };
-    type SelectOptions<V extends string = string> = SelectOption<V>[];
-    type RequiredSelectOptions<V extends string = string> = Required<SelectOption<V>>[];
+    type SelectOption<V extends string | number = string | number> = { value: V; label?: string };
+
+    type SelectOptions<V extends string | number = string | number> = SelectOption<V>[];
+
+    type RequiredSelectOptions<V extends string | number = string | number> = Required<
+        SelectOption<V>
+    >[];
 
     type Merge<T extends object> = {
         [k in T extends any ? keyof T : never]?: T extends { [l in k]?: infer V } ? V : never;
