@@ -1,6 +1,6 @@
 import { ItemPF2e, RollNotePF2e, RollNoteSource, TokenDocumentPF2e } from "foundry-pf2e";
 declare function rollDamageFromFormula(formula: string, { actionName, extraRollOptions, item, notes, origin, skipDialog, target, toolbelt, }: RollDamageOptions): Promise<ChatMessage>;
-declare function getTargetToken(target: TargetDocuments): TokenDocumentPF2e | undefined;
+declare function getTargetToken(target: Maybe<TargetDocuments>): TokenDocumentPF2e | undefined;
 type RollDamageOptions = {
     actionName?: string;
     extraRollOptions?: string[];

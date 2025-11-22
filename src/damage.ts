@@ -35,7 +35,7 @@ async function rollDamageFromFormula(
         R.filter(R.isTruthy)
     );
 
-    const targetToken = target ? getTargetToken(target) : undefined;
+    const targetToken = getTargetToken(target);
     const context: DamageDamageContextFlag = {
         type: "damage-roll",
         sourceType: "attack",
@@ -121,7 +121,8 @@ async function rollDamageFromFormula(
     });
 }
 
-function getTargetToken(target: TargetDocuments): TokenDocumentPF2e | undefined {
+function getTargetToken(target: Maybe<TargetDocuments>): TokenDocumentPF2e | undefined {
+    if (!target) return undefined;
     return target.token ?? target.actor.token ?? target.actor.getActiveTokens().shift()?.document;
 }
 

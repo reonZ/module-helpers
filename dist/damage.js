@@ -3,7 +3,7 @@ async function rollDamageFromFormula(formula, { actionName, extraRollOptions = [
     const { actor, token } = origin ?? {};
     const traits = R.filter(item?.system.traits.value ?? [], (trait) => trait in CONFIG.PF2E.actionTraits);
     const options = R.pipe([traits, actor?.getRollOptions(), item?.getRollOptions("item"), extraRollOptions], R.flat(), R.filter(R.isTruthy));
-    const targetToken = target ? getTargetToken(target) : undefined;
+    const targetToken = getTargetToken(target);
     const context = {
         type: "damage-roll",
         sourceType: "attack",
@@ -71,6 +71,8 @@ async function rollDamageFromFormula(formula, { actionName, extraRollOptions = [
     });
 }
 function getTargetToken(target) {
+    if (!target)
+        return undefined;
     return target.token ?? target.actor.token ?? target.actor.getActiveTokens().shift()?.document;
 }
 export { getTargetToken, rollDamageFromFormula };
