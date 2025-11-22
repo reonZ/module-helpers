@@ -43,9 +43,10 @@ function generateFormInput(type, i18n, inputConfig) {
         if (configs.options.length <= 1) {
             configs.disabled = true;
         }
+        const options = arrayToSelectOptions(configs.options, _i18n);
         return fields.createSelectInput({
             ...configs,
-            options: arrayToSelectOptions(configs.options, _i18n),
+            options: configs.sort ? R.sortBy(options, R.prop("label")) : options,
         });
     }
 }

@@ -14,6 +14,7 @@ type CreateNumberInputConfig = BaseCreateInputConfig<NumberInputConfig>;
 type CreateTextInputConfig = BaseCreateInputConfig<FormInputConfig<string>>;
 type CreateSelectInputConfig = Omit<BaseCreateInputConfig<SelectInputConfig>, "options"> & {
     options: IterableSelectOptions[] | ReadonlyArray<IterableSelectOptions>;
+    sort?: boolean;
 };
 type CreateGroupInputConfigMap = {
     checkbox: CreateCheckboxInputConfig;

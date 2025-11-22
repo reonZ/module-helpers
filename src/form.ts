@@ -62,9 +62,11 @@ function generateFormInput<T extends FormGroupType>(
             configs.disabled = true;
         }
 
+        const options = arrayToSelectOptions(configs.options, _i18n);
+
         return fields.createSelectInput({
             ...configs,
-            options: arrayToSelectOptions(configs.options, _i18n),
+            options: configs.sort ? R.sortBy(options, R.prop("label")) : options,
         });
     }
 }
@@ -114,6 +116,7 @@ type CreateTextInputConfig = BaseCreateInputConfig<FormInputConfig<string>>;
 
 type CreateSelectInputConfig = Omit<BaseCreateInputConfig<SelectInputConfig>, "options"> & {
     options: IterableSelectOptions[] | ReadonlyArray<IterableSelectOptions>;
+    sort?: boolean;
 };
 
 type CreateGroupInputConfigMap = {
