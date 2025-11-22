@@ -15,6 +15,7 @@ declare function isInstanceOf<T extends keyof IsInstanceOfClasses>(obj: any, cls
 declare function isInstanceOf<T>(obj: any, cls: string): obj is T;
 declare function addToObjectIfNonNullish<T extends Record<string, any>, E extends Record<string, any>>(obj: T & Partial<E>, extra: E): T & Partial<E>;
 declare function gettersToData<T extends Object>(instance: T): ExtractReadonly<T>;
+declare function onceDecorator(): (target: any, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
 type IsInstanceOfClasses = IsInstanceOfItems & {
     ActorPF2e: ActorPF2e;
     ArithmeticExpression: ArithmeticExpression;
@@ -39,5 +40,5 @@ type IsInstanceOfItems = {
     WeaponPF2e: WeaponPF2e;
 };
 type IsInstanceOfItem = keyof IsInstanceOfItems;
-export { addToObjectIfNonNullish, gettersToData, isInstanceOf, MapOfArrays, objectIsIn };
+export { addToObjectIfNonNullish, gettersToData, isInstanceOf, MapOfArrays, objectIsIn, onceDecorator, };
 export type { IsInstanceOfItem, IsInstanceOfItems };

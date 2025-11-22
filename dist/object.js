@@ -82,4 +82,18 @@ function gettersToData(instance) {
     }
     return obj;
 }
-export { addToObjectIfNonNullish, gettersToData, isInstanceOf, MapOfArrays, objectIsIn };
+// decorator to assure the method is only ever called once
+function onceDecorator() {
+    return function (target, propertyKey, descriptor) {
+        let processed = false;
+        const originalMethod = descriptor.value;
+        descriptor.value = function (...args) {
+            if (processed)
+                return;
+            processed = true;
+            return originalMethod.apply(this, args);
+        };
+        return descriptor;
+    };
+}
+export { addToObjectIfNonNullish, gettersToData, isInstanceOf, MapOfArrays, objectIsIn, onceDecorator, };

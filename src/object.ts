@@ -142,6 +142,22 @@ function gettersToData<T extends Object>(instance: T): ExtractReadonly<T> {
     return obj;
 }
 
+// decorator to assure the method is only ever called once
+function onceDecorator() {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        let processed = false;
+        const originalMethod = descriptor.value;
+
+        descriptor.value = function (...args: any[]) {
+            if (processed) return;
+            processed = true;
+            return originalMethod.apply(this, args);
+        };
+
+        return descriptor;
+    };
+}
+
 type IsInstanceOfClasses = IsInstanceOfItems & {
     ActorPF2e: ActorPF2e;
     ArithmeticExpression: ArithmeticExpression;
@@ -169,5 +185,12 @@ type IsInstanceOfItems = {
 
 type IsInstanceOfItem = keyof IsInstanceOfItems;
 
-export { addToObjectIfNonNullish, gettersToData, isInstanceOf, MapOfArrays, objectIsIn };
+export {
+    addToObjectIfNonNullish,
+    gettersToData,
+    isInstanceOf,
+    MapOfArrays,
+    objectIsIn,
+    onceDecorator,
+};
 export type { IsInstanceOfItem, IsInstanceOfItems };
