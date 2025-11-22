@@ -5,6 +5,7 @@ import {
     ItemPF2e,
     RollNotePF2e,
     RollNoteSource,
+    TokenDocumentPF2e,
 } from "foundry-pf2e";
 import { getDamageRollClass, R } from ".";
 
@@ -34,10 +35,7 @@ async function rollDamageFromFormula(
         R.filter(R.isTruthy)
     );
 
-    const targetToken = target
-        ? target.token ?? target.actor.token ?? target.actor.getActiveTokens().shift()?.document
-        : undefined;
-
+    const targetToken = target ? getTargetToken(target) : undefined;
     const context: DamageDamageContextFlag = {
         type: "damage-roll",
         sourceType: "attack",
@@ -67,10 +65,12 @@ async function rollDamageFromFormula(
     };
 
     if (targetToken || toolbelt) {
+        const targetUUID = targetToken?.uuid;
         const toolbeltFlag: toolbelt.targetHelper.MessageFlag = toolbelt ?? {};
 
-        if (targetToken) {
-            toolbeltFlag.targets = [targetToken.uuid];
+        if (targetUUID && !toolbeltFlag.targets?.includes(targetUUID)) {
+            toolbeltFlag.targets ??= [];
+            toolbeltFlag.targets.push(targetUUID);
         }
 
         flags["pf2e-toolbelt"] = {
@@ -121,6 +121,10 @@ async function rollDamageFromFormula(
     });
 }
 
+function getTargetToken(target: TargetDocuments): TokenDocumentPF2e | undefined {
+    return target.token ?? target.actor.token ?? target.actor.getActiveTokens().shift()?.document;
+}
+
 type RollDamageOptions = {
     actionName?: string;
     extraRollOptions?: string[];
@@ -134,8 +138,8 @@ type RollDamageOptions = {
 
 type RollDamageToolbeltFlag = Pick<
     toolbelt.targetHelper.MessageFlag,
-    "author" | "saveVariants" | "options" | "private" | "traits" | "item"
+    "author" | "saveVariants" | "options" | "private" | "traits" | "item" | "targets"
 >;
 
-export { rollDamageFromFormula };
+export { getTargetToken, rollDamageFromFormula };
 export type { RollDamageOptions };

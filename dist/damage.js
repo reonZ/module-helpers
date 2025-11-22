@@ -3,9 +3,7 @@ async function rollDamageFromFormula(formula, { actionName, extraRollOptions = [
     const { actor, token } = origin ?? {};
     const traits = R.filter(item?.system.traits.value ?? [], (trait) => trait in CONFIG.PF2E.actionTraits);
     const options = R.pipe([traits, actor?.getRollOptions(), item?.getRollOptions("item"), extraRollOptions], R.flat(), R.filter(R.isTruthy));
-    const targetToken = target
-        ? target.token ?? target.actor.token ?? target.actor.getActiveTokens().shift()?.document
-        : undefined;
+    const targetToken = target ? getTargetToken(target) : undefined;
     const context = {
         type: "damage-roll",
         sourceType: "attack",
@@ -32,9 +30,11 @@ async function rollDamageFromFormula(formula, { actionName, extraRollOptions = [
         },
     };
     if (targetToken || toolbelt) {
+        const targetUUID = targetToken?.uuid;
         const toolbeltFlag = toolbelt ?? {};
-        if (targetToken) {
-            toolbeltFlag.targets = [targetToken.uuid];
+        if (targetUUID && !toolbeltFlag.targets?.includes(targetUUID)) {
+            toolbeltFlag.targets ??= [];
+            toolbeltFlag.targets.push(targetUUID);
         }
         flags["pf2e-toolbelt"] = {
             targetHelper: toolbeltFlag,
@@ -70,4 +70,7 @@ async function rollDamageFromFormula(formula, { actionName, extraRollOptions = [
         flags,
     });
 }
-export { rollDamageFromFormula };
+function getTargetToken(target) {
+    return target.token ?? target.actor.token ?? target.actor.getActiveTokens().shift()?.document;
+}
+export { getTargetToken, rollDamageFromFormula };
