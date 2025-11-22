@@ -9,6 +9,20 @@ function subtractPoint(a: Point, b: Point): Point {
     };
 }
 
+function multiplyPointBy(point: Point, value: number): Point {
+    return {
+        x: point.x * value,
+        y: point.y * value,
+    };
+}
+
+function dividePointBy(point: Point, value: number): Point {
+    return {
+        x: point.x / value,
+        y: point.y / value,
+    };
+}
+
 function addToPoint({ x, y }: Point, value: number): Point {
     return {
         x: x + value,
@@ -59,7 +73,9 @@ export {
     addToPoint,
     calculateMidPoint,
     distanceToPoint,
+    dividePointBy,
     drawCircleMask,
     drawRectangleMask,
+    multiplyPointBy,
     subtractPoint,
 };

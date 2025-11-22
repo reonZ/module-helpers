@@ -7,6 +7,18 @@ function subtractPoint(a, b) {
         y: a.y - b.y,
     };
 }
+function multiplyPointBy(point, value) {
+    return {
+        x: point.x * value,
+        y: point.y * value,
+    };
+}
+function dividePointBy(point, value) {
+    return {
+        x: point.x / value,
+        y: point.y / value,
+    };
+}
 function addToPoint({ x, y }, value) {
     return {
         x: x + value,
@@ -38,4 +50,4 @@ function drawCircleMask(x, y, radius) {
     mask.endFill();
     return mask;
 }
-export { addToPoint, calculateMidPoint, distanceToPoint, drawCircleMask, drawRectangleMask, subtractPoint, };
+export { addToPoint, calculateMidPoint, distanceToPoint, dividePointBy, drawCircleMask, drawRectangleMask, multiplyPointBy, subtractPoint, };
