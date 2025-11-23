@@ -5,6 +5,7 @@ declare const MODULE: {
     readonly isDebug: boolean;
     Error(str: string): Error;
     error(str: string, error?: Error): void;
+    assert(condition: boolean, error: string): void;
     log(...args: any[]): void;
     group(label: string): void;
     groupEnd(): void;

@@ -46,6 +46,11 @@ const MODULE = {
 
         console.error(message);
     },
+    assert(condition: boolean, error: string) {
+        if (!condition) {
+            throw this.Error(error);
+        }
+    },
     log(...args: any[]) {
         if (_MODULE.groupLog) {
             console.log(...args);
