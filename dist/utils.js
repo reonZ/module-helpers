@@ -1,7 +1,7 @@
 import * as R from "remeda";
 function joinStr(separator, ...path) {
     return R.pipe(path, //
-    R.flat(), R.filter(R.isString), R.join(separator));
+    R.flat(), R.filter((x) => R.isString(x) && !!x), R.join(separator));
 }
 function splitStr(str, separator = ",") {
     return R.pipe(str, R.split(separator), R.filter(R.isString), R.map((x) => x.trim()));

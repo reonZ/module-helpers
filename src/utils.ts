@@ -6,7 +6,7 @@ function joinStr(separator: string, ...path: any[]): string {
     return R.pipe(
         path, //
         R.flat(),
-        R.filter(R.isString),
+        R.filter((x) => R.isString(x) && !!x),
         R.join(separator)
     );
 }
