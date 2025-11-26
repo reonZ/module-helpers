@@ -104,11 +104,13 @@ async function waitDialog({
             title: title ?? localize(i18n, "title", data ?? {}),
         },
         render: (event, dialog) => {
-            if (focus) {
-                htmlQuery(dialog.element, `[name="${focus}"]`)?.focus();
-            } else {
-                htmlQuery(dialog.element, `input[type="text"]`)?.focus();
-            }
+            requestAnimationFrame(() => {
+                if (focus) {
+                    htmlQuery(dialog.element, `[name="${focus}"]`)?.focus();
+                } else {
+                    htmlQuery(dialog.element, `input[type="text"]`)?.focus();
+                }
+            });
 
             if (onRender) {
                 onRender(event, dialog);
