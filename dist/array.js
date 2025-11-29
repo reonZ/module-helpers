@@ -20,4 +20,12 @@ function includesAny(arr, entries) {
     }
     return false;
 }
-export { arraysEqual, includesAny, removeIndexFromArray };
+function includesAll(arr, entries) {
+    for (const entry of entries) {
+        if (!arr.includes(entry)) {
+            return false;
+        }
+    }
+    return true;
+}
+export { arraysEqual, includesAll, includesAny, removeIndexFromArray };

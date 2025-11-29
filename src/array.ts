@@ -27,4 +27,14 @@ function includesAny(arr: any[], entries: any[]): boolean {
     return false;
 }
 
-export { arraysEqual, includesAny, removeIndexFromArray };
+function includesAll(arr: any[], entries: any[]): boolean {
+    for (const entry of entries) {
+        if (!arr.includes(entry)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+export { arraysEqual, includesAll, includesAny, removeIndexFromArray };
