@@ -8,6 +8,7 @@ export * from "./chat";
 export * from "./check";
 export * from "./combat";
 export * from "./compendium";
+export * from "./custom-elements";
 export * from "./damage";
 export * from "./degree-of-success";
 export * from "./dialog";
