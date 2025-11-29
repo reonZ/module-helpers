@@ -15,28 +15,24 @@ class ExtendedTextInputElement extends appElements.AbstractFormInputElement {
         this.#inputElement = this._primaryInput = document.createElement("input");
         this.#inputElement.type = "text";
         this.#inputElement.placeholder = this.getAttribute("placeholder") || "";
-        const elements = [this.#inputElement];
-        if (this.getAttribute("clear") === "true") {
-            this.#clearElement = createHTMLElement("a", {
-                classes: ["clear-tags"],
-                content: `<i class="fa-solid fa-circle-x"></i>`,
-                dataset: {
-                    tooltip: this.getAttribute("clear-tooltip") || undefined,
-                },
-            });
-            elements.push(this.#clearElement);
-        }
-        return elements;
+        this.#clearElement = createHTMLElement("a", {
+            classes: ["clear-tags"],
+            content: `<i class="fa-solid fa-circle-x"></i>`,
+            dataset: {
+                tooltip: this.getAttribute("clear-tooltip") || undefined,
+            },
+        });
+        return [this.#inputElement, this.#clearElement];
     }
     _setValue(value) {
         this._value = R.isString(value) ? value : "";
     }
     _toggleDisabled(disabled) {
-        this.#clearElement?.classList.toggle("disabled", disabled);
+        this.#clearElement.classList.toggle("disabled", disabled);
         this.#inputElement.disabled = disabled;
     }
     _activateListeners() {
-        this.#clearElement?.addEventListener("click", this.#onClickClear.bind(this));
+        this.#clearElement.addEventListener("click", this.#onClickClear.bind(this));
         this.#inputElement.addEventListener("blur", this.#onBlur.bind(this));
         this.#inputElement.addEventListener("change", this.#onChange.bind(this));
         this.#inputElement.addEventListener("focus", this.#onFocus.bind(this));
@@ -95,6 +91,7 @@ class ExtendedMultiSelectElement extends appElements.HTMLMultiSelectElement {
     #modeElement;
     #mode;
     #modes;
+    #placeholderElement;
     static MODES = {
         and: `<span>&</span>`,
         or: `<i class="fa-solid fa-greater-than-equal"></i>`,
@@ -146,7 +143,16 @@ class ExtendedMultiSelectElement extends appElements.HTMLMultiSelectElement {
                 tooltip: this.getAttribute("mode-tooltip") || undefined,
             },
         });
-        return [...elements, this.#modeElement, this.#clearElement];
+        elements.push(this.#modeElement, this.#clearElement);
+        const placeholder = this.getAttribute("placeholder");
+        if (placeholder) {
+            this.#placeholderElement = createHTMLElement("div", {
+                classes: ["placeholder"],
+                content: placeholder,
+            });
+            elements.push(this.#placeholderElement);
+        }
+        return elements;
     }
     _toggleDisabled(disabled) {
         super._toggleDisabled(disabled);

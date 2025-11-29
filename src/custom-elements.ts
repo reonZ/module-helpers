@@ -3,7 +3,7 @@ import appElements = foundry.applications.elements;
 import { R } from ".";
 
 class ExtendedTextInputElement extends appElements.AbstractFormInputElement<string, string> {
-    #clearElement?: HTMLAnchorElement;
+    #clearElement!: HTMLAnchorElement;
     #inputElement!: HTMLInputElement;
     #input: string;
 
@@ -21,21 +21,15 @@ class ExtendedTextInputElement extends appElements.AbstractFormInputElement<stri
         this.#inputElement.type = "text";
         this.#inputElement.placeholder = this.getAttribute("placeholder") || "";
 
-        const elements: HTMLElement[] = [this.#inputElement];
+        this.#clearElement = createHTMLElement("a", {
+            classes: ["clear-tags"],
+            content: `<i class="fa-solid fa-circle-x"></i>`,
+            dataset: {
+                tooltip: this.getAttribute("clear-tooltip") || undefined,
+            },
+        });
 
-        if (this.getAttribute("clear") === "true") {
-            this.#clearElement = createHTMLElement("a", {
-                classes: ["clear-tags"],
-                content: `<i class="fa-solid fa-circle-x"></i>`,
-                dataset: {
-                    tooltip: this.getAttribute("clear-tooltip") || undefined,
-                },
-            });
-
-            elements.push(this.#clearElement);
-        }
-
-        return elements;
+        return [this.#inputElement, this.#clearElement];
     }
 
     protected _setValue(value: unknown): void {
@@ -43,12 +37,12 @@ class ExtendedTextInputElement extends appElements.AbstractFormInputElement<stri
     }
 
     protected _toggleDisabled(disabled: boolean): void {
-        this.#clearElement?.classList.toggle("disabled", disabled);
+        this.#clearElement.classList.toggle("disabled", disabled);
         this.#inputElement.disabled = disabled;
     }
 
     _activateListeners(): void {
-        this.#clearElement?.addEventListener("click", this.#onClickClear.bind(this));
+        this.#clearElement.addEventListener("click", this.#onClickClear.bind(this));
 
         this.#inputElement.addEventListener("blur", this.#onBlur.bind(this));
         this.#inputElement.addEventListener("change", this.#onChange.bind(this));
@@ -120,10 +114,8 @@ class ExtendedMultiSelectElement extends appElements.HTMLMultiSelectElement {
     #clearElement!: HTMLAnchorElement;
     #modeElement!: HTMLAnchorElement;
     #mode: MultiSelectTagsMode;
-    #modes: {
-        and: string;
-        or: string;
-    };
+    #modes: { and: string; or: string };
+    #placeholderElement?: HTMLElement;
 
     static MODES: Record<MultiSelectTagsMode, string> = {
         and: `<span>&</span>`,
@@ -192,7 +184,19 @@ class ExtendedMultiSelectElement extends appElements.HTMLMultiSelectElement {
             },
         });
 
-        return [...elements, this.#modeElement, this.#clearElement];
+        elements.push(this.#modeElement, this.#clearElement);
+
+        const placeholder = this.getAttribute("placeholder");
+        if (placeholder) {
+            this.#placeholderElement = createHTMLElement("div", {
+                classes: ["placeholder"],
+                content: placeholder,
+            });
+
+            elements.push(this.#placeholderElement);
+        }
+
+        return elements;
     }
 
     protected _toggleDisabled(disabled: boolean): void {
