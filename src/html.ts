@@ -311,8 +311,9 @@ function dataToDatasetString(data: DatasetData): string {
     );
 }
 
-function datasetToData<T extends Record<string, any>>(dataset: DOMStringMap): T {
+function datasetToData<T extends Record<string, any>>(elOrDataset: DOMStringMap | HTMLElement): T {
     const data = {} as T;
+    const dataset = elOrDataset instanceof DOMStringMap ? elOrDataset : elOrDataset.dataset;
 
     for (const [sluggifiedKey, stringValue] of R.entries(dataset)) {
         const key = sluggify(sluggifiedKey, { camel: "dromedary" }) as keyof T;

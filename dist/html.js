@@ -160,8 +160,9 @@ function dataToDatasetString(data) {
         return `data-${sluggifiedKey}='${stringified}'`;
     }), R.filter(R.isTruthy), R.join(" "));
 }
-function datasetToData(dataset) {
+function datasetToData(elOrDataset) {
     const data = {};
+    const dataset = elOrDataset instanceof DOMStringMap ? elOrDataset : elOrDataset.dataset;
     for (const [sluggifiedKey, stringValue] of R.entries(dataset)) {
         const key = sluggify(sluggifiedKey, { camel: "dromedary" });
         try {

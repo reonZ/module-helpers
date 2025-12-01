@@ -31,7 +31,7 @@ declare function htmlQueryIn<E extends HTMLElement = HTMLElement>(child: MaybeHT
 declare function arrayToSelectOptions(entries: Iterable<IterableSelectOptions>, i18n?: I18n): WithRequired<SelectOption, "label">[];
 declare function assignStyle(el: HTMLElement, style: Partial<CSSStyleDeclaration>): void;
 declare function dataToDatasetString(data: DatasetData): string;
-declare function datasetToData<T extends Record<string, any>>(dataset: DOMStringMap): T;
+declare function datasetToData<T extends Record<string, any>>(elOrDataset: DOMStringMap | HTMLElement): T;
 declare function firstElementWithText(el: Maybe<Element>): HTMLElement | null;
 declare function getInputValue(el: HTMLInputElement): string | number | boolean;
 /**
