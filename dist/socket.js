@@ -1,4 +1,4 @@
-import { assignStyle, MODULE, R, sharedLocalize, userIsGM } from ".";
+import { assignStyle, isValidTargetDocuments, MODULE, R, sharedLocalize, userIsGM } from ".";
 const EMITING_STYLE = {
     alignItems: "center",
     background: "linear-gradient(90deg, #00000000 0%, #0000001a 20%, #00000066 50%, #0000001a 80%, #00000000 100%)",
@@ -99,30 +99,43 @@ function createEmitable(prefix, callback) {
 async function convertToCallOptions(options) {
     const callOptions = {};
     await Promise.all(R.entries(options).map(async ([key, value]) => {
-        if (!R.isString(value)) {
-            callOptions[key] = value;
-            return;
-        }
-        try {
-            const parseResult = foundry.utils.parseUuid(value);
-            if (parseResult?.documentId &&
-                parseResult.type &&
-                ["Item", "Actor", "Token", "ChatMessage", "RollTable"].includes(parseResult.type)) {
-                callOptions[key] = await fromUuid(value);
-            }
-            else {
-                callOptions[key] = value;
-            }
-        }
-        catch {
-            callOptions[key] = value;
-        }
+        callOptions[key] = await convertToCallOption(value);
     }));
     return callOptions;
 }
-function convertToEmitOptions(options) {
-    return R.mapValues(options, (value) => {
-        return value instanceof foundry.abstract.Document ? value.uuid : value;
-    });
+function convertToCallOption(value) {
+    if (!R.isString(value)) {
+        return value;
+    }
+    try {
+        const parseResult = foundry.utils.parseUuid(value);
+        if (parseResult?.documentId && parseResult.type && parseResult.type in foundry.documents) {
+            return fromUuid(value);
+        }
+        else {
+            value;
+        }
+    }
+    catch {
+        value;
+    }
 }
-export { createEmitable, displayEmiting, socketEmit, socketOff, socketOn };
+function convertToEmitOptions(options) {
+    return R.mapValues(options, convertToEmitOption);
+}
+function convertToEmitOption(value) {
+    if (value instanceof foundry.abstract.Document) {
+        return value.uuid;
+    }
+    if (value instanceof Token) {
+        return value.document.uuid;
+    }
+    if (isValidTargetDocuments(value)) {
+        return {
+            actor: value.actor.uuid,
+            token: value.token?.uuid,
+        };
+    }
+    return value;
+}
+export { convertToCallOption, convertToEmitOption, createEmitable, displayEmiting, socketEmit, socketOff, socketOn, };

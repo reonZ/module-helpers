@@ -1,4 +1,4 @@
-import { assignStyle, MODULE, R, sharedLocalize, userIsGM } from ".";
+import { assignStyle, isValidTargetDocuments, MODULE, R, sharedLocalize, userIsGM } from ".";
 
 const EMITING_STYLE: Partial<CSSStyleDeclaration> = {
     alignItems: "center",
@@ -120,38 +120,52 @@ async function convertToCallOptions(options: Record<string, any>): Promise<Recor
 
     await Promise.all(
         R.entries(options).map(async ([key, value]) => {
-            if (!R.isString(value)) {
-                callOptions[key] = value;
-                return;
-            }
-
-            try {
-                const parseResult = foundry.utils.parseUuid(value);
-
-                if (
-                    parseResult?.documentId &&
-                    parseResult.type &&
-                    ["Item", "Actor", "Token", "ChatMessage", "RollTable"].includes(
-                        parseResult.type
-                    )
-                ) {
-                    callOptions[key] = await fromUuid(value);
-                } else {
-                    callOptions[key] = value;
-                }
-            } catch {
-                callOptions[key] = value;
-            }
+            callOptions[key] = await convertToCallOption(value);
         })
     );
 
     return callOptions;
 }
 
+function convertToCallOption(value: unknown) {
+    if (!R.isString(value)) {
+        return value;
+    }
+
+    try {
+        const parseResult = foundry.utils.parseUuid(value);
+
+        if (parseResult?.documentId && parseResult.type && parseResult.type in foundry.documents) {
+            return fromUuid(value);
+        } else {
+            value;
+        }
+    } catch {
+        value;
+    }
+}
+
 function convertToEmitOptions<T extends Record<string, any>>(options: T): EmitablePacket<T> {
-    return R.mapValues(options, (value) => {
-        return value instanceof foundry.abstract.Document ? value.uuid : value;
-    }) as EmitablePacket<T>;
+    return R.mapValues(options, convertToEmitOption) as EmitablePacket<T>;
+}
+
+function convertToEmitOption(value: unknown) {
+    if (value instanceof foundry.abstract.Document) {
+        return value.uuid;
+    }
+
+    if (value instanceof Token) {
+        return value.document.uuid;
+    }
+
+    if (isValidTargetDocuments(value)) {
+        return {
+            actor: value.actor.uuid,
+            token: value.token?.uuid,
+        };
+    }
+
+    return value;
 }
 
 type WithSocketOptionsRequired<
@@ -191,4 +205,12 @@ type EmitablePacket<TOptions extends Record<string, any>> = WithSocketOptions<TO
     __type__: string;
 };
 
-export { createEmitable, displayEmiting, socketEmit, socketOff, socketOn };
+export {
+    convertToCallOption,
+    convertToEmitOption,
+    createEmitable,
+    displayEmiting,
+    socketEmit,
+    socketOff,
+    socketOn,
+};
