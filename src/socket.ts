@@ -59,7 +59,7 @@ function createEmitable<T extends Record<string, any>>(
     const onSocket = async (packet: EmitablePacket<T>, userId: string) => {
         if (packet.__type__ !== prefix || !game.user.isActiveGM) return;
 
-        const callOptions = (await convertToCallOptions(packet)) as T;
+        const callOptions = await convertToCallOptions(packet);
         callback(callOptions, userId);
     };
 
@@ -115,36 +115,49 @@ function createEmitable<T extends Record<string, any>>(
 
 async function convertToCallOptions<T extends EmitableOptions>(
     options: EmitablePacket<T>
-): Promise<EmitablePacketOptions<T>> {
-    const __converted__ = options.__converter__;
+): Promise<T> {
+    const __converter__ = options.__converter__;
+    const __source__ = options.__source__;
 
     // @ts-expect-error
     delete options.__converter__;
     // @ts-expect-error
+    delete options.__source__;
+    // @ts-expect-error
     delete options.__type__;
 
-    return Promise.all(
+    await Promise.all(R.entries(options).map(async () => {}));
+
+    const converted = (__source__ === "array" ? [] : {}) as T;
+
+    await Promise.all(
         R.entries(options).map(async ([key, value]) => {
-            switch (__converted__[key]) {
-                case "document": {
-                    return fromUuid(value);
-                }
-
-                case "target": {
-                    return convertTargetFromPacket(value);
-                }
-
-                case "token": {
-                    const tokenDocument = await fromUuid<TokenDocumentPF2e>(value);
-                    return tokenDocument?.object;
-                }
-
-                default: {
-                    return value;
-                }
-            }
+            converted[key as keyof typeof converted] = await convertToCallOption(
+                value,
+                __converter__[key]
+            );
         })
-    ) as Promise<EmitablePacketOptions<T>>;
+    );
+
+    return converted;
+}
+
+async function convertToCallOption(value: any, __converter__: EmitableConverter): Promise<any> {
+    switch (__converter__) {
+        case "document": {
+            return fromUuid(value);
+        }
+        case "target": {
+            return convertTargetFromPacket(value);
+        }
+        case "token": {
+            const tokenDocument = await fromUuid<TokenDocumentPF2e>(value);
+            return tokenDocument?.object;
+        }
+        default: {
+            return value;
+        }
+    }
 }
 
 async function convertTargetFromPacket(target: {
@@ -161,7 +174,7 @@ async function convertTargetFromPacket(target: {
 }
 
 function convertToEmitOptions<T extends EmitableOptions>(options: T): EmitablePacket<T> {
-    const __converter__: EmitableConverted = {};
+    const __converter__: EmitableConverters = {};
 
     const convertedOptions = R.mapValues(options, (value, key): unknown => {
         if (value instanceof foundry.abstract.Document) {
@@ -187,6 +200,7 @@ function convertToEmitOptions<T extends EmitableOptions>(options: T): EmitablePa
     }) as EmitablePacket<T>;
 
     convertedOptions.__converter__ = __converter__;
+    convertedOptions.__source__ = R.isArray(options) ? "array" : "object";
 
     return convertedOptions;
 }
@@ -202,10 +216,13 @@ type Emitable<T> = {
 
 type EmitablePacket<T extends EmitableOptions> = EmitablePacketOptions<T> & {
     __type__: string;
-    __converter__: EmitableConverted;
+    __converter__: EmitableConverters;
+    __source__: "array" | "object";
 };
 
-type EmitableConverted = Record<string, "document" | "target" | "token" | undefined>;
+type EmitableConverter = "document" | "target" | "token" | undefined;
+
+type EmitableConverters = Record<string, EmitableConverter>;
 
 type EmitableOptions = Record<string, any> | any[];
 
@@ -223,4 +240,4 @@ export {
     socketOff,
     socketOn,
 };
-export type { EmitableConverted, EmitablePacket };
+export type { EmitableConverters as EmitableConverted, EmitablePacket };

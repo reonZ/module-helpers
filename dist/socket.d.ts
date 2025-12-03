@@ -3,7 +3,7 @@ declare function socketOff<T extends object = object>(callback: SocketCallback<T
 declare function socketEmit<T extends object = object>(packet: T): void;
 declare function displayEmiting(): void;
 declare function createEmitable<T extends Record<string, any>>(prefix: string, callback: (options: T, userId: string) => void | Promise<void>): Emitable<T>;
-declare function convertToCallOptions<T extends EmitableOptions>(options: EmitablePacket<T>): Promise<EmitablePacketOptions<T>>;
+declare function convertToCallOptions<T extends EmitableOptions>(options: EmitablePacket<T>): Promise<T>;
 declare function convertTargetFromPacket(target: {
     actor: string;
     token?: string;
@@ -19,10 +19,12 @@ type Emitable<T> = {
 };
 type EmitablePacket<T extends EmitableOptions> = EmitablePacketOptions<T> & {
     __type__: string;
-    __converter__: EmitableConverted;
+    __converter__: EmitableConverters;
+    __source__: "array" | "object";
 };
-type EmitableConverted = Record<string, "document" | "target" | "token" | undefined>;
+type EmitableConverter = "document" | "target" | "token" | undefined;
+type EmitableConverters = Record<string, EmitableConverter>;
 type EmitableOptions = Record<string, any> | any[];
 type EmitablePacketOptions<T extends EmitableOptions> = T extends Array<infer V> ? Record<string, V> : T;
 export { convertTargetFromPacket, convertToCallOptions, convertToEmitOptions, createEmitable, displayEmiting, socketEmit, socketOff, socketOn, };
-export type { EmitableConverted, EmitablePacket };
+export type { EmitableConverters as EmitableConverted, EmitablePacket };

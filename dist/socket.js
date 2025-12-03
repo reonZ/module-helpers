@@ -43,7 +43,7 @@ function createEmitable(prefix, callback) {
     const onSocket = async (packet, userId) => {
         if (packet.__type__ !== prefix || !game.user.isActiveGM)
             return;
-        const callOptions = (await convertToCallOptions(packet));
+        const callOptions = await convertToCallOptions(packet);
         callback(callOptions, userId);
     };
     const emit = (options) => {
@@ -95,28 +95,37 @@ function createEmitable(prefix, callback) {
     };
 }
 async function convertToCallOptions(options) {
-    const __converted__ = options.__converter__;
+    const __converter__ = options.__converter__;
+    const __source__ = options.__source__;
     // @ts-expect-error
     delete options.__converter__;
     // @ts-expect-error
+    delete options.__source__;
+    // @ts-expect-error
     delete options.__type__;
-    return Promise.all(R.entries(options).map(async ([key, value]) => {
-        switch (__converted__[key]) {
-            case "document": {
-                return fromUuid(value);
-            }
-            case "target": {
-                return convertTargetFromPacket(value);
-            }
-            case "token": {
-                const tokenDocument = await fromUuid(value);
-                return tokenDocument?.object;
-            }
-            default: {
-                return value;
-            }
-        }
+    await Promise.all(R.entries(options).map(async () => { }));
+    const converted = (__source__ === "array" ? [] : {});
+    await Promise.all(R.entries(options).map(async ([key, value]) => {
+        converted[key] = await convertToCallOption(value, __converter__[key]);
     }));
+    return converted;
+}
+async function convertToCallOption(value, __converter__) {
+    switch (__converter__) {
+        case "document": {
+            return fromUuid(value);
+        }
+        case "target": {
+            return convertTargetFromPacket(value);
+        }
+        case "token": {
+            const tokenDocument = await fromUuid(value);
+            return tokenDocument?.object;
+        }
+        default: {
+            return value;
+        }
+    }
 }
 async function convertTargetFromPacket(target) {
     const actor = await fromUuid(target.actor);
@@ -148,6 +157,7 @@ function convertToEmitOptions(options) {
         return value;
     });
     convertedOptions.__converter__ = __converter__;
+    convertedOptions.__source__ = R.isArray(options) ? "array" : "object";
     return convertedOptions;
 }
 export { convertTargetFromPacket, convertToCallOptions, convertToEmitOptions, createEmitable, displayEmiting, socketEmit, socketOff, socketOn, };
