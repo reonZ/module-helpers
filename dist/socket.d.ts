@@ -3,7 +3,7 @@ declare function socketOff<T extends object = object>(callback: SocketCallback<T
 declare function socketEmit<T extends object = object>(packet: T): void;
 declare function displayEmiting(): void;
 declare function createEmitable<T extends Record<string, any>>(prefix: string, callback: (options: T, userId: string) => void | Promise<void>): Emitable<T>;
-declare function convertToCallOption(value: unknown): unknown;
+declare function convertToCallOption(value: unknown): Promise<unknown>;
 declare function convertToEmitOption(value: unknown): any;
 type WithSocketOptionsRequired<TOptions extends Record<string, any>, TRequired = RequiredFieldsOnly<TOptions>> = TRequired extends Record<infer TKey, any> ? {
     [k in TKey]: TRequired[k] extends ClientDocument ? TRequired[k] | string : TRequired[k];

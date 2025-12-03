@@ -127,7 +127,7 @@ async function convertToCallOptions(options: Record<string, any>): Promise<Recor
     return callOptions;
 }
 
-function convertToCallOption(value: unknown) {
+async function convertToCallOption(value: unknown) {
     if (!R.isString(value)) {
         return value;
     }
@@ -138,10 +138,10 @@ function convertToCallOption(value: unknown) {
         if (parseResult?.documentId && parseResult.type && parseResult.type in foundry.documents) {
             return fromUuid(value);
         } else {
-            value;
+            return value;
         }
     } catch {
-        value;
+        return value;
     }
 }
 

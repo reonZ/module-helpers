@@ -103,7 +103,7 @@ async function convertToCallOptions(options) {
     }));
     return callOptions;
 }
-function convertToCallOption(value) {
+async function convertToCallOption(value) {
     if (!R.isString(value)) {
         return value;
     }
@@ -113,11 +113,11 @@ function convertToCallOption(value) {
             return fromUuid(value);
         }
         else {
-            value;
+            return value;
         }
     }
     catch {
-        value;
+        return value;
     }
 }
 function convertToEmitOptions(options) {
