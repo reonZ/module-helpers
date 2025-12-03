@@ -1,3 +1,4 @@
+import { ActorPF2e, TokenDocumentPF2e } from "foundry-pf2e";
 import { assignStyle, isValidTargetDocuments, MODULE, R, sharedLocalize, userIsGM } from ".";
 
 const EMITING_STYLE: Partial<CSSStyleDeclaration> = {
@@ -55,16 +56,14 @@ function createEmitable<T extends Record<string, any>>(
 ): Emitable<T> {
     let _enabled = false;
 
-    const onSocket = async (packet: WithPartial<EmitablePacket<T>, "__type__">, userId: string) => {
+    const onSocket = async (packet: EmitablePacket<T>, userId: string) => {
         if (packet.__type__ !== prefix || !game.user.isActiveGM) return;
-
-        delete packet.__type__;
 
         const callOptions = (await convertToCallOptions(packet)) as T;
         callback(callOptions, userId);
     };
 
-    const emit = (options: WithSocketOptions<T>) => {
+    const emit = (options: T) => {
         if (!game.users.activeGM) {
             ui.notifications.error(sharedLocalize("emiting.noGm"));
             return;
@@ -82,12 +81,11 @@ function createEmitable<T extends Record<string, any>>(
         get enabled(): boolean {
             return _enabled;
         },
-        async call(options: WithSocketOptions<T>): Promise<void> {
+        async call(options: T): Promise<void> {
             if (!R.isPlainObject(options)) return;
 
-            if (game.user.isGM) {
-                const callOptions = (await convertToCallOptions(options)) as T;
-                return callback(callOptions, game.userId);
+            if (game.user.isActiveGM) {
+                return callback(options, game.userId);
             } else {
                 emit(options);
             }
@@ -115,102 +113,108 @@ function createEmitable<T extends Record<string, any>>(
     };
 }
 
-async function convertToCallOptions(options: Record<string, any>): Promise<Record<string, any>> {
-    const callOptions: Record<string, any> = {};
+async function convertToCallOptions<T extends EmitableOptions>(
+    options: EmitablePacket<T>
+): Promise<EmitablePacketOptions<T>> {
+    const __converted__ = options.__converter__;
 
-    await Promise.all(
+    // @ts-expect-error
+    delete options.__converter__;
+    // @ts-expect-error
+    delete options.__type__;
+
+    return Promise.all(
         R.entries(options).map(async ([key, value]) => {
-            callOptions[key] = await convertToCallOption(value);
+            switch (__converted__[key]) {
+                case "document": {
+                    return fromUuid(value);
+                }
+
+                case "target": {
+                    return convertTargetFromPacket(value);
+                }
+
+                case "token": {
+                    const tokenDocument = await fromUuid<TokenDocumentPF2e>(value);
+                    return tokenDocument?.object;
+                }
+
+                default: {
+                    return value;
+                }
+            }
         })
-    );
-
-    return callOptions;
+    ) as Promise<EmitablePacketOptions<T>>;
 }
 
-async function convertToCallOption(value: unknown) {
-    if (!R.isString(value)) {
-        return value;
-    }
+async function convertTargetFromPacket({ actor, token }: { actor: string; token?: string }) {
+    return {
+        actor: await fromUuid<ActorPF2e>(actor),
+        token: token ? await fromUuid<TokenDocumentPF2e>(token) : undefined,
+    };
+}
 
-    try {
-        const parseResult = foundry.utils.parseUuid(value);
+function convertToEmitOptions<T extends EmitableOptions>(options: T): EmitablePacket<T> {
+    const __converter__: EmitableConverted = {};
 
-        if (parseResult?.documentId && parseResult.type && parseResult.type in foundry.documents) {
-            return fromUuid(value);
-        } else {
-            return value;
+    const convertedOptions = R.mapValues(options, (value, key): unknown => {
+        if (value instanceof foundry.abstract.Document) {
+            __converter__[key] = "document";
+            return value.uuid;
         }
-    } catch {
+
+        if (value instanceof foundry.canvas.placeables.Token) {
+            __converter__[key] = "token";
+            return value.document.uuid;
+        }
+
+        if (isValidTargetDocuments(value)) {
+            __converter__[key] = "target";
+
+            return {
+                actor: value.actor.uuid,
+                token: value.token?.uuid,
+            };
+        }
+
         return value;
-    }
+    }) as EmitablePacket<T>;
+
+    convertedOptions.__converter__ = __converter__;
+
+    return convertedOptions;
 }
 
-function convertToEmitOptions<T extends Record<string, any>>(options: T): EmitablePacket<T> {
-    return R.mapValues(options, convertToEmitOption) as EmitablePacket<T>;
-}
-
-function convertToEmitOption(value: unknown) {
-    if (value instanceof foundry.abstract.Document) {
-        return value.uuid;
-    }
-
-    if (value instanceof Token) {
-        return value.document.uuid;
-    }
-
-    if (isValidTargetDocuments(value)) {
-        return {
-            actor: value.actor.uuid,
-            token: value.token?.uuid,
-        };
-    }
-
-    return value;
-}
-
-type WithSocketOptionsRequired<
-    TOptions extends Record<string, any>,
-    TRequired = RequiredFieldsOnly<TOptions>
-> = TRequired extends Record<infer TKey, any>
-    ? {
-          [k in TKey]: TRequired[k] extends ClientDocument ? TRequired[k] | string : TRequired[k];
-      }
-    : never;
-
-type WithSocketOptionsPartial<
-    TOptions extends Record<string, any>,
-    TPartial = PartialFieldsOnly<TOptions>
-> = TPartial extends Partial<Record<infer TKey, any>>
-    ? {
-          [k in TKey]?: NonNullable<TPartial[k]> extends ClientDocument
-              ? TPartial[k] | string | null
-              : TPartial[k];
-      }
-    : never;
-
-type WithSocketOptions<TOptions extends Record<string, any>> = Prettify<
-    WithSocketOptionsRequired<TOptions> & WithSocketOptionsPartial<TOptions>
->;
-
-type Emitable<TOptions extends Record<string, any>> = {
+type Emitable<T> = {
     get enabled(): boolean;
-    call: (options: WithSocketOptions<TOptions>) => Promise<void>;
-    emit: (options: WithSocketOptions<TOptions>) => void;
+    call: (options: T) => Promise<void>;
+    emit: (options: T) => void;
     activate(): void;
     disable(): void;
     toggle(enabled?: boolean): void;
 };
 
-type EmitablePacket<TOptions extends Record<string, any>> = WithSocketOptions<TOptions> & {
+type EmitablePacket<T extends EmitableOptions> = EmitablePacketOptions<T> & {
     __type__: string;
+    __converter__: EmitableConverted;
 };
 
+type EmitableConverted = Record<string, "document" | "target" | "token" | undefined>;
+
+type EmitableOptions = Record<string, any> | any[];
+
+type EmitablePacketOptions<T extends EmitableOptions> = T extends Array<infer V>
+    ? Record<string, V>
+    : T;
+
 export {
-    convertToCallOption,
-    convertToEmitOption,
+    convertTargetFromPacket,
+    convertToCallOptions,
+    convertToEmitOptions,
     createEmitable,
     displayEmiting,
     socketEmit,
     socketOff,
     socketOn,
 };
+export type { EmitableConverted, EmitablePacket };

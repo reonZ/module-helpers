@@ -43,7 +43,6 @@ function createEmitable(prefix, callback) {
     const onSocket = async (packet, userId) => {
         if (packet.__type__ !== prefix || !game.user.isActiveGM)
             return;
-        delete packet.__type__;
         const callOptions = (await convertToCallOptions(packet));
         callback(callOptions, userId);
     };
@@ -64,9 +63,8 @@ function createEmitable(prefix, callback) {
         async call(options) {
             if (!R.isPlainObject(options))
                 return;
-            if (game.user.isGM) {
-                const callOptions = (await convertToCallOptions(options));
-                return callback(callOptions, game.userId);
+            if (game.user.isActiveGM) {
+                return callback(options, game.userId);
             }
             else {
                 emit(options);
@@ -97,45 +95,56 @@ function createEmitable(prefix, callback) {
     };
 }
 async function convertToCallOptions(options) {
-    const callOptions = {};
-    await Promise.all(R.entries(options).map(async ([key, value]) => {
-        callOptions[key] = await convertToCallOption(value);
+    const __converted__ = options.__converter__;
+    // @ts-expect-error
+    delete options.__converter__;
+    // @ts-expect-error
+    delete options.__type__;
+    return Promise.all(R.entries(options).map(async ([key, value]) => {
+        switch (__converted__[key]) {
+            case "document": {
+                return fromUuid(value);
+            }
+            case "target": {
+                return convertTargetFromPacket(value);
+            }
+            case "token": {
+                const tokenDocument = await fromUuid(value);
+                return tokenDocument?.object;
+            }
+            default: {
+                return value;
+            }
+        }
     }));
-    return callOptions;
 }
-async function convertToCallOption(value) {
-    if (!R.isString(value)) {
-        return value;
-    }
-    try {
-        const parseResult = foundry.utils.parseUuid(value);
-        if (parseResult?.documentId && parseResult.type && parseResult.type in foundry.documents) {
-            return fromUuid(value);
-        }
-        else {
-            return value;
-        }
-    }
-    catch {
-        return value;
-    }
+async function convertTargetFromPacket({ actor, token }) {
+    return {
+        actor: await fromUuid(actor),
+        token: token ? await fromUuid(token) : undefined,
+    };
 }
 function convertToEmitOptions(options) {
-    return R.mapValues(options, convertToEmitOption);
+    const __converter__ = {};
+    const convertedOptions = R.mapValues(options, (value, key) => {
+        if (value instanceof foundry.abstract.Document) {
+            __converter__[key] = "document";
+            return value.uuid;
+        }
+        if (value instanceof foundry.canvas.placeables.Token) {
+            __converter__[key] = "token";
+            return value.document.uuid;
+        }
+        if (isValidTargetDocuments(value)) {
+            __converter__[key] = "target";
+            return {
+                actor: value.actor.uuid,
+                token: value.token?.uuid,
+            };
+        }
+        return value;
+    });
+    convertedOptions.__converter__ = __converter__;
+    return convertedOptions;
 }
-function convertToEmitOption(value) {
-    if (value instanceof foundry.abstract.Document) {
-        return value.uuid;
-    }
-    if (value instanceof Token) {
-        return value.document.uuid;
-    }
-    if (isValidTargetDocuments(value)) {
-        return {
-            actor: value.actor.uuid,
-            token: value.token?.uuid,
-        };
-    }
-    return value;
-}
-export { convertToCallOption, convertToEmitOption, createEmitable, displayEmiting, socketEmit, socketOff, socketOn, };
+export { convertTargetFromPacket, convertToCallOptions, convertToEmitOptions, createEmitable, displayEmiting, socketEmit, socketOff, socketOn, };
