@@ -118,10 +118,13 @@ async function convertToCallOptions(options) {
         }
     }));
 }
-async function convertTargetFromPacket({ actor, token }) {
+async function convertTargetFromPacket(target) {
+    const actor = await fromUuid(target.actor);
+    if (!(actor instanceof Actor))
+        return;
     return {
-        actor: await fromUuid(actor),
-        token: token ? await fromUuid(token) : undefined,
+        actor,
+        token: (target.token && (await fromUuid(target.token))) || undefined,
     };
 }
 function convertToEmitOptions(options) {

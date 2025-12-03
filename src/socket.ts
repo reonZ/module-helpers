@@ -147,10 +147,16 @@ async function convertToCallOptions<T extends EmitableOptions>(
     ) as Promise<EmitablePacketOptions<T>>;
 }
 
-async function convertTargetFromPacket({ actor, token }: { actor: string; token?: string }) {
+async function convertTargetFromPacket(target: {
+    actor: string;
+    token?: string;
+}): Promise<TargetDocuments | undefined> {
+    const actor = await fromUuid<ActorPF2e>(target.actor);
+    if (!(actor instanceof Actor)) return;
+
     return {
-        actor: await fromUuid<ActorPF2e>(actor),
-        token: token ? await fromUuid<TokenDocumentPF2e>(token) : undefined,
+        actor,
+        token: (target.token && (await fromUuid<TokenDocumentPF2e>(target.token))) || undefined,
     };
 }
 
