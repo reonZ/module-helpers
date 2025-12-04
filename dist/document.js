@@ -45,10 +45,19 @@ function isUuidOf(uuid, type) {
     const result = foundry.utils.parseUuid(uuid);
     return !!result?.type && types.includes(result.type) && !!result.documentId;
 }
+/**
+ * It also auto converts Token into TokenDocument directly in the provided obj
+ */
 function isValidTargetDocuments(target) {
-    return (R.isPlainObject(target) &&
-        target.actor instanceof Actor &&
-        (!target.token || target.token instanceof TokenDocument));
+    if (!R.isPlainObject(target))
+        return false;
+    if (!(target.actor instanceof Actor))
+        return false;
+    target.token =
+        target.token instanceof foundry.canvas.placeables.Token
+            ? target.token.document
+            : target.token;
+    return !target.token || target.token instanceof TokenDocument;
 }
 /**
  * https://github.com/foundryvtt/pf2e/blob/89892b6fafec1456a0358de8c6d7b102e3fe2da2/src/module/actor/item-transfer.ts#L117

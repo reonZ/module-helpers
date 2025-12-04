@@ -9,6 +9,9 @@ declare function deleteInMemory(obj: ClientDocument | Token, ...path: string[]):
 declare function isClientDocument<T>(doc: T): doc is Extract<T, ClientDocument>;
 declare function isScriptMacro(doc: any): doc is MacroPF2e;
 declare function isUuidOf(uuid: string, type: DocumentType | DocumentType[] | ReadonlyArray<DocumentType>): uuid is DocumentUUID;
+/**
+ * It also auto converts Token into TokenDocument directly in the provided obj
+ */
 declare function isValidTargetDocuments(target: unknown): target is TargetDocuments;
 /**
  * https://github.com/foundryvtt/pf2e/blob/89892b6fafec1456a0358de8c6d7b102e3fe2da2/src/module/actor/item-transfer.ts#L117
