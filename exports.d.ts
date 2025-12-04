@@ -13,6 +13,7 @@ export type * from "foundry-pf2e/foundry/common/data/validation-failure.d.ts";
 export type * from "foundry-pf2e/foundry/common/utils/event-emiiter.ts";
 export type * from "foundry-pf2e/foundry/client-esm/applications/api/module.d.ts";
 export type * from "foundry-pf2e/foundry/client-esm/applications/module.d.ts";
+export type * from "foundry-pf2e/foundry/client/pixi/core/interaction/mouse-handler.js";
 
 export type * from "foundry-pf2e/pf2e/global.d.ts";
 export type * from "foundry-pf2e/pf2e/module/active-effect.d.ts";
