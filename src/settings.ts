@@ -76,10 +76,9 @@ function registerSetting(key: string, options: RegisterSettingOptions) {
     if ((options.gmOnly && !isGM) || (options.playerOnly && isGM)) return;
 
     if ("choices" in options && Array.isArray(options.choices)) {
-        options.choices = R.mapToObj(options.choices, (choice) => [
-            choice,
-            settingPath(key, "choices", choice),
-        ]);
+        options.choices = R.fromKeys(options.choices, (choice) =>
+            settingPath(key, "choices", choice)
+        );
     }
 
     options.name ??= settingPath(key, "name");

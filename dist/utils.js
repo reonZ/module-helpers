@@ -53,4 +53,9 @@ function waitTimeout(time = 1) {
         setTimeout(resolve, time);
     });
 }
-export { activateHooksAndWrappers, disableHooksAndWrappers, isDecimal, joinStr, localeCompare, rollDie, roundToStep, sortByLocaleCompare, splitStr, stringBoolean, stringNumber, toggleHooksAndWrappers, waitTimeout, };
+function mapToObjByKey(arr, key) {
+    return R.pipe(arr, R.map((entry) => {
+        return [entry[key], entry];
+    }), R.fromEntries());
+}
+export { activateHooksAndWrappers, disableHooksAndWrappers, isDecimal, joinStr, localeCompare, mapToObjByKey, rollDie, roundToStep, sortByLocaleCompare, splitStr, stringBoolean, stringNumber, toggleHooksAndWrappers, waitTimeout, };

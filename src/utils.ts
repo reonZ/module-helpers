@@ -78,12 +78,26 @@ function waitTimeout(time: number = 1): Promise<void> {
     });
 }
 
+function mapToObjByKey<
+    T extends Record<string, any>,
+    K extends ExtractKeysForType<T, string> = ExtractKeysForType<T, string>
+>(arr: T[], key: K): Record<T[K], T> {
+    return R.pipe(
+        arr,
+        R.map((entry) => {
+            return [entry[key], entry] as const;
+        }),
+        R.fromEntries()
+    );
+}
+
 export {
     activateHooksAndWrappers,
     disableHooksAndWrappers,
     isDecimal,
     joinStr,
     localeCompare,
+    mapToObjByKey,
     rollDie,
     roundToStep,
     sortByLocaleCompare,
