@@ -82,6 +82,10 @@ declare global {
         ? BooleanConstructor
         : ConstructorOf<T>;
 
+    type ExtractKeysForType<T extends Record<string, any>, V> = {
+        [K in keyof T]-?: T[K] extends V ? K : never;
+    }[keyof T];
+
     type ExtractSelectionOption<
         T extends ReadonlyArray<string | { value: string; label: string }>
     > = T[number] extends string
