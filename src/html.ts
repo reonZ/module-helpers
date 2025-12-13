@@ -293,6 +293,15 @@ function assignStyle(el: HTMLElement, style: Partial<CSSStyleDeclaration>) {
     Object.assign(el.style, style);
 }
 
+function setStyleProperties(
+    el: HTMLElement,
+    properties: Record<string, string | number | boolean>
+) {
+    for (const [property, value] of R.entries(properties)) {
+        el.style.setProperty(property, String(value));
+    }
+}
+
 function dataToDatasetString(data: DatasetData): string {
     return R.pipe(
         !R.isArray(data) ? R.entries(data) : data,
@@ -450,6 +459,7 @@ export {
     htmlQuery,
     htmlQueryAll,
     htmlQueryIn,
+    setStyleProperties,
     toggleSummary,
 };
 

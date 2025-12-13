@@ -149,6 +149,11 @@ function arrayToSelectOptions(entries, i18n) {
 function assignStyle(el, style) {
     Object.assign(el.style, style);
 }
+function setStyleProperties(el, properties) {
+    for (const [property, value] of R.entries(properties)) {
+        el.style.setProperty(property, String(value));
+    }
+}
 function dataToDatasetString(data) {
     return R.pipe(!R.isArray(data) ? R.entries(data) : data, R.map(([key, value]) => {
         if (R.isNullish(value))
@@ -235,4 +240,4 @@ function addEnterKeyListeners(html, inputType = "all") {
         }
     });
 }
-export { addEnterKeyListeners, addListener, addListenerAll, arrayToSelectOptions, assignStyle, createButtonElement, createHTMLElement, createHTMLElementContent, createInputElement, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, toggleSummary, };
+export { addEnterKeyListeners, addListener, addListenerAll, arrayToSelectOptions, assignStyle, createButtonElement, createHTMLElement, createHTMLElementContent, createInputElement, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, setStyleProperties, toggleSummary, };
