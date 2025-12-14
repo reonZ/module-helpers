@@ -33,6 +33,11 @@ declare global {
                 spell: boolean;
                 use: boolean;
             };
+            anonymous: {
+                action: boolean;
+                spell: boolean;
+                traits: "disabled" | "all" | "blacklist";
+            };
             betterTrade: {
                 invertTrade: boolean;
                 withContent: boolean;
