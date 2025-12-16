@@ -22,7 +22,7 @@ type BaseDialogOptions = {
     position?: Partial<ApplicationPosition>;
     skipAnimate?: boolean;
     minWidth?: string;
-    title?: string;
+    title?: string | Record<string, any>;
 };
 type ConfirmDialogOptions = BaseDialogOptions & {
     content?: string;

@@ -53,7 +53,7 @@ disabled, focus, i18n, minWidth, no, onRender, position = {}, returnOnFalse, ski
         position,
         skipAnimate,
         window: {
-            title: title ?? localize(i18n, "title", data ?? {}),
+            title: generateDialogTitle(i18n, title, data),
         },
         render: (event, dialog) => {
             requestAnimationFrame(() => {
@@ -83,7 +83,7 @@ async function confirmDialog(i18n, { classes = [], content, data = {}, minWidth,
         position,
         skipAnimate,
         window: {
-            title: title ?? localize(i18n, "title", data),
+            title: generateDialogTitle(i18n, title, data),
         },
         yes: {
             default: !!yes?.default,
@@ -114,6 +114,11 @@ function createFormData(html, { expand = false, disabled, readonly } = {}) {
         data[element.name] = element.files?.[0];
     }
     return expand ? foundry.utils.expandObject(data) : data;
+}
+function generateDialogTitle(i18n, title, data) {
+    return R.isString(title)
+        ? title
+        : localize(i18n, "title", R.isObjectType(title) ? title : data ?? {});
 }
 async function generateDialogContent(content, i18n, data) {
     if (R.isString(content)) {

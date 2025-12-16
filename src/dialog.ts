@@ -104,7 +104,7 @@ async function waitDialog({
         position,
         skipAnimate,
         window: {
-            title: title ?? localize(i18n, "title", data ?? {}),
+            title: generateDialogTitle(i18n, title, data),
         },
         render: (event, dialog) => {
             requestAnimationFrame(() => {
@@ -149,7 +149,7 @@ async function confirmDialog(
         position,
         skipAnimate,
         window: {
-            title: title ?? localize(i18n, "title", data),
+            title: generateDialogTitle(i18n, title, data),
         },
         yes: {
             default: !!yes?.default,
@@ -198,6 +198,16 @@ function createFormData(
     return expand ? (foundry.utils.expandObject(data) as Record<string, unknown>) : data;
 }
 
+function generateDialogTitle(
+    i18n: string,
+    title: string | Record<string, any> | undefined,
+    data: Record<string, any> | undefined
+): string {
+    return R.isString(title)
+        ? title
+        : localize(i18n, "title", R.isObjectType(title) ? title : data ?? {});
+}
+
 async function generateDialogContent(
     content: string | CreateFormGroupParams[],
     i18n: string,
@@ -238,7 +248,7 @@ type BaseDialogOptions = {
     position?: Partial<ApplicationPosition>;
     skipAnimate?: boolean;
     minWidth?: string;
-    title?: string;
+    title?: string | Record<string, any>;
 };
 
 type ConfirmDialogOptions = BaseDialogOptions & {
