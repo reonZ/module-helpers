@@ -9,6 +9,13 @@ declare function waitDialog<T extends Record<string, any>, K extends keyof T>(op
 }): Promise<T | Pick<T, K> | null>;
 declare function confirmDialog(i18n: string, { classes, content, data, minWidth, no, position, skipAnimate, title, yes, }?: ConfirmDialogOptions): Promise<boolean | null>;
 declare function promptDialog(key: string, data?: Record<string, string>): Promise<any>;
+declare function createFormData<E extends HTMLFormElement>(html: E, options?: CreateFormDataOptions): Record<string, unknown>;
+declare function createFormData<E extends HTMLElement | HTMLFormElement>(html: E, options?: CreateFormDataOptions): Record<string, unknown> | null;
+type CreateFormDataOptions = {
+    expand?: boolean;
+    disabled?: boolean;
+    readonly?: boolean;
+};
 type BaseDialogOptions = {
     classes?: string[];
     data?: Record<string, any>;
@@ -42,4 +49,4 @@ type WaitDialogOptions = BaseDialogOptions & {
         callback?: foundry.applications.api.DialogV2ButtonCallback;
     };
 };
-export { confirmDialog, promptDialog, waitDialog };
+export { confirmDialog, createFormData, promptDialog, waitDialog };

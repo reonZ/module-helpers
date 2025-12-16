@@ -9,7 +9,6 @@ import {
     DialogV2RenderCallback,
 } from "foundry-pf2e/foundry/client-esm/applications/api/dialog.js";
 import {
-    createFormData,
     CreateFormGroupParams,
     createFormTemplate,
     htmlQuery,
@@ -38,6 +37,10 @@ class ModuleDialog extends DialogV2 {
         super._replaceHTML(result, content, options);
         content.style.minWidth = this.options.minWidth ?? "400px";
     }
+}
+
+interface ModuleDialog extends DialogV2 {
+    options: ModuleDialogConfiguration;
 }
 
 async function waitDialog<T extends Record<string, any>>(
@@ -166,6 +169,35 @@ async function promptDialog(key: string, data: Record<string, string> = {}) {
     });
 }
 
+function createFormData<E extends HTMLFormElement>(
+    html: E,
+    options?: CreateFormDataOptions
+): Record<string, unknown>;
+function createFormData<E extends HTMLElement | HTMLFormElement>(
+    html: E,
+    options?: CreateFormDataOptions
+): Record<string, unknown> | null;
+function createFormData(
+    html: HTMLElement | HTMLFormElement,
+    { expand = false, disabled, readonly }: CreateFormDataOptions = {}
+): Record<string, unknown> | null {
+    const form = html instanceof HTMLFormElement ? html : htmlQuery(html, "form");
+    if (!form) return null;
+
+    const formData = new foundry.applications.ux.FormDataExtended(form, { disabled, readonly });
+    const data = R.mapValues(formData.object, (value) => {
+        return typeof value === "string" ? value.trim() : value;
+    });
+
+    for (const element of form.elements) {
+        if (!(element instanceof HTMLInputElement) || element.type !== "file") continue;
+
+        data[element.name] = element.files?.[0];
+    }
+
+    return expand ? (foundry.utils.expandObject(data) as Record<string, unknown>) : data;
+}
+
 async function generateDialogContent(
     content: string | CreateFormGroupParams[],
     i18n: string,
@@ -182,9 +214,11 @@ async function generateDialogContent(
     return createFormTemplate(i18n, content);
 }
 
-interface ModuleDialog extends DialogV2 {
-    options: ModuleDialogConfiguration;
-}
+type CreateFormDataOptions = {
+    expand?: boolean;
+    disabled?: boolean;
+    readonly?: boolean;
+};
 
 type ModuleDialogConfiguration = ApplicationConfiguration &
     DialogV2Configuration & {
@@ -227,4 +261,4 @@ type WaitDialogOptions = BaseDialogOptions & {
     };
 };
 
-export { confirmDialog, promptDialog, waitDialog };
+export { confirmDialog, createFormData, promptDialog, waitDialog };

@@ -1,6 +1,4 @@
 import { I18n, I18nCreateArgs, IterableSelectOptions } from ".";
-declare function createFormData<E extends HTMLFormElement>(html: E, options?: CreateFormDataOptions): Record<string, unknown>;
-declare function createFormData<E extends HTMLElement | HTMLFormElement>(html: E, options?: CreateFormDataOptions): Record<string, unknown> | null;
 declare function arrayToSelectOptions(entries: Iterable<IterableSelectOptions>, i18n?: I18n): WithRequired<SelectOption, "label">[];
 declare function createFormTemplate(i18n: I18nCreateArgs, groups: CreateFormGroupParams[]): string;
 type FormGroupType = "checkbox" | "number" | "text" | "select";
@@ -32,10 +30,5 @@ type CreateFormGroupConfig = Partial<FormGroupConfig> & {
     i18n?: I18nCreateArgs;
 };
 type CreateFormGroupParams = FormGroupParams<"checkbox"> | FormGroupParams<"number"> | FormGroupParams<"text"> | FormGroupParams<"select">;
-type CreateFormDataOptions = {
-    expand?: boolean;
-    disabled?: boolean;
-    readonly?: boolean;
-};
-export { arrayToSelectOptions, createFormData, createFormTemplate };
+export { arrayToSelectOptions, createFormTemplate };
 export type { CreateFormGroupParams, FormGroupType };

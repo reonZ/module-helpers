@@ -1,20 +1,5 @@
-import { htmlQuery, I18n, R } from ".";
+import { I18n, R } from ".";
 var fields = foundry.applications.fields;
-function createFormData(html, { expand = false, disabled, readonly } = {}) {
-    const form = html instanceof HTMLFormElement ? html : htmlQuery(html, "form");
-    if (!form)
-        return null;
-    const formData = new foundry.applications.ux.FormDataExtended(form, { disabled, readonly });
-    const data = R.mapValues(formData.object, (value) => {
-        return typeof value === "string" ? value.trim() : value;
-    });
-    for (const element of form.elements) {
-        if (!(element instanceof HTMLInputElement) || element.type !== "file")
-            continue;
-        data[element.name] = element.files?.[0];
-    }
-    return expand ? foundry.utils.expandObject(data) : data;
-}
 function generateFormInput(type, i18n, inputConfig) {
     const _i18n = I18n.from(inputConfig.i18n) ?? i18n;
     if (type === "checkbox") {
@@ -79,4 +64,4 @@ function createFormTemplate(i18n, groups) {
         return createFormGroup(type, inputConfig, config);
     }), R.join(""));
 }
-export { arrayToSelectOptions, createFormData, createFormTemplate };
+export { arrayToSelectOptions, createFormTemplate };

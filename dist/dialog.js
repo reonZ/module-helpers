@@ -1,4 +1,4 @@
-import { createFormData, createFormTemplate, htmlQuery, localize, localizeIfExist, MODULE, R, render, templateLocalize, } from ".";
+import { createFormTemplate, htmlQuery, localize, localizeIfExist, MODULE, R, render, templateLocalize, } from ".";
 var DialogV2 = foundry.applications.api.DialogV2;
 class ModuleDialog extends DialogV2 {
     get skipAnimate() {
@@ -100,6 +100,21 @@ async function promptDialog(key, data = {}) {
         },
     });
 }
+function createFormData(html, { expand = false, disabled, readonly } = {}) {
+    const form = html instanceof HTMLFormElement ? html : htmlQuery(html, "form");
+    if (!form)
+        return null;
+    const formData = new foundry.applications.ux.FormDataExtended(form, { disabled, readonly });
+    const data = R.mapValues(formData.object, (value) => {
+        return typeof value === "string" ? value.trim() : value;
+    });
+    for (const element of form.elements) {
+        if (!(element instanceof HTMLInputElement) || element.type !== "file")
+            continue;
+        data[element.name] = element.files?.[0];
+    }
+    return expand ? foundry.utils.expandObject(data) : data;
+}
 async function generateDialogContent(content, i18n, data) {
     if (R.isString(content)) {
         if (R.isObjectType(data)) {
@@ -111,4 +126,4 @@ async function generateDialogContent(content, i18n, data) {
     }
     return createFormTemplate(i18n, content);
 }
-export { confirmDialog, promptDialog, waitDialog };
+export { confirmDialog, createFormData, promptDialog, waitDialog };
