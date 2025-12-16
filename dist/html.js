@@ -134,18 +134,6 @@ function htmlQueryIn(child, parentSelector, siblingSelector) {
     const parent = htmlClosest(child, parentSelector);
     return htmlQuery(parent, siblingSelector);
 }
-function arrayToSelectOptions(entries, i18n) {
-    const newEntries = [];
-    for (const entry of entries) {
-        const newEntry = typeof entry === "string" ? { value: entry, label: entry } : entry;
-        newEntries.push({
-            ...newEntry,
-            label: i18n?.localizeIfExist(newEntry.label ?? newEntry.value) ??
-                game.i18n.localize(newEntry.label ?? newEntry.value),
-        });
-    }
-    return newEntries;
-}
 function assignStyle(el, style) {
     Object.assign(el.style, style);
 }
@@ -240,4 +228,4 @@ function addEnterKeyListeners(html, inputType = "all") {
         }
     });
 }
-export { addEnterKeyListeners, addListener, addListenerAll, arrayToSelectOptions, assignStyle, createButtonElement, createHTMLElement, createHTMLElementContent, createInputElement, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, setStyleProperties, toggleSummary, };
+export { addEnterKeyListeners, addListener, addListenerAll, assignStyle, createButtonElement, createHTMLElement, createHTMLElementContent, createInputElement, createToggleableEvent, datasetToData, dataToDatasetString, firstElementWithText, getInputValue, htmlClosest, htmlQuery, htmlQueryAll, htmlQueryIn, setStyleProperties, toggleSummary, };

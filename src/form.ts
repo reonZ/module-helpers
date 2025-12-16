@@ -1,4 +1,4 @@
-import { arrayToSelectOptions, htmlQuery, I18n, I18nCreateArgs, IterableSelectOptions, R } from ".";
+import { htmlQuery, I18n, I18nCreateArgs, IterableSelectOptions, R } from ".";
 import fields = foundry.applications.fields;
 
 function createFormData<E extends HTMLFormElement>(
@@ -69,6 +69,25 @@ function generateFormInput<T extends FormGroupType>(
             options: configs.sort ? R.sortBy(options, R.prop("label")) : options,
         });
     }
+}
+
+function arrayToSelectOptions(
+    entries: Iterable<IterableSelectOptions>,
+    i18n?: I18n
+): WithRequired<SelectOption, "label">[] {
+    const newEntries: WithRequired<SelectOption, "label">[] = [];
+
+    for (const entry of entries) {
+        const newEntry = typeof entry === "string" ? { value: entry, label: entry } : entry;
+        newEntries.push({
+            ...newEntry,
+            label:
+                i18n?.localizeIfExist(newEntry.label ?? newEntry.value) ??
+                game.i18n.localize(newEntry.label ?? newEntry.value),
+        });
+    }
+
+    return newEntries;
 }
 
 function createFormGroup<T extends FormGroupType>(
@@ -148,5 +167,5 @@ type CreateFormDataOptions = {
     readonly?: boolean;
 };
 
-export { createFormData, createFormTemplate };
+export { arrayToSelectOptions, createFormData, createFormTemplate };
 export type { CreateFormGroupParams, FormGroupType };

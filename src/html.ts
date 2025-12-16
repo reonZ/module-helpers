@@ -1,4 +1,4 @@
-import { I18n, R, sluggify } from ".";
+import { R, sluggify } from ".";
 
 type PersistentEvent = {
     activate(): void;
@@ -270,25 +270,6 @@ function htmlQueryIn(
     return htmlQuery(parent, siblingSelector);
 }
 
-function arrayToSelectOptions(
-    entries: Iterable<IterableSelectOptions>,
-    i18n?: I18n
-): WithRequired<SelectOption, "label">[] {
-    const newEntries: WithRequired<SelectOption, "label">[] = [];
-
-    for (const entry of entries) {
-        const newEntry = typeof entry === "string" ? { value: entry, label: entry } : entry;
-        newEntries.push({
-            ...newEntry,
-            label:
-                i18n?.localizeIfExist(newEntry.label ?? newEntry.value) ??
-                game.i18n.localize(newEntry.label ?? newEntry.value),
-        });
-    }
-
-    return newEntries;
-}
-
 function assignStyle(el: HTMLElement, style: Partial<CSSStyleDeclaration>) {
     Object.assign(el.style, style);
 }
@@ -444,7 +425,6 @@ export {
     addEnterKeyListeners,
     addListener,
     addListenerAll,
-    arrayToSelectOptions,
     assignStyle,
     createButtonElement,
     createHTMLElement,

@@ -1,4 +1,4 @@
-import { arrayToSelectOptions, htmlQuery, I18n, R } from ".";
+import { htmlQuery, I18n, R } from ".";
 var fields = foundry.applications.fields;
 function createFormData(html, { expand = false, disabled, readonly } = {}) {
     const form = html instanceof HTMLFormElement ? html : htmlQuery(html, "form");
@@ -50,6 +50,18 @@ function generateFormInput(type, i18n, inputConfig) {
         });
     }
 }
+function arrayToSelectOptions(entries, i18n) {
+    const newEntries = [];
+    for (const entry of entries) {
+        const newEntry = typeof entry === "string" ? { value: entry, label: entry } : entry;
+        newEntries.push({
+            ...newEntry,
+            label: i18n?.localizeIfExist(newEntry.label ?? newEntry.value) ??
+                game.i18n.localize(newEntry.label ?? newEntry.value),
+        });
+    }
+    return newEntries;
+}
 function createFormGroup(type, inputConfig, groupConfig) {
     const i18n = I18n.from(groupConfig.i18n);
     groupConfig.input = generateFormInput(type, i18n, inputConfig);
@@ -67,4 +79,4 @@ function createFormTemplate(i18n, groups) {
         return createFormGroup(type, inputConfig, config);
     }), R.join(""));
 }
-export { createFormData, createFormTemplate };
+export { arrayToSelectOptions, createFormData, createFormTemplate };
