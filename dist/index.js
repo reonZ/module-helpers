@@ -17,7 +17,6 @@ export * from "./distance";
 export * from "./document";
 export * from "./effect";
 export * from "./flags";
-export * from "./form";
 export * from "./handlebars";
 export * from "./hooks";
 export * from "./html";

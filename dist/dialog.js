@@ -1,4 +1,4 @@
-import { createFormTemplate, htmlQuery, localize, localizeIfExist, MODULE, R, render, templateLocalize, } from ".";
+import { htmlQuery, localize, localizeIfExist, MODULE, R, render, templateLocalize } from ".";
 var DialogV2 = foundry.applications.api.DialogV2;
 class ModuleDialog extends DialogV2 {
     get skipAnimate() {
@@ -48,7 +48,7 @@ disabled, focus, i18n, minWidth, no, onRender, position = {}, returnOnFalse, ski
             },
         ],
         classes,
-        content: await generateDialogContent(content, i18n, data),
+        content: await generateDialogContent(content, data),
         minWidth,
         position,
         skipAnimate,
@@ -74,7 +74,7 @@ disabled, focus, i18n, minWidth, no, onRender, position = {}, returnOnFalse, ski
 async function confirmDialog(i18n, { classes = [], content, data = {}, minWidth, no, position = {}, skipAnimate, title, yes, } = {}) {
     const options = {
         classes,
-        content: await generateDialogContent(content ?? localize(i18n, "content", data), i18n),
+        content: content ?? localize(i18n, "content", data),
         minWidth,
         no: {
             default: !yes?.default,
@@ -120,15 +120,12 @@ function generateDialogTitle(i18n, title, data) {
         ? title
         : localize(i18n, "title", R.isObjectType(title) ? title : data ?? {});
 }
-async function generateDialogContent(content, i18n, data) {
-    if (R.isString(content)) {
-        if (R.isObjectType(data)) {
-            return render(content, data);
-        }
-        else {
-            return content.startsWith("<") ? content : `<div>${content}</div>`;
-        }
+async function generateDialogContent(content, data) {
+    if (R.isObjectType(data)) {
+        return render(content, data);
     }
-    return createFormTemplate(i18n, content);
+    else {
+        return content.startsWith("<") ? content : `<div>${content}</div>`;
+    }
 }
 export { confirmDialog, createFormData, promptDialog, waitDialog };

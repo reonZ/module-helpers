@@ -1,6 +1,5 @@
 import { ApplicationPosition } from "foundry-pf2e/foundry/client-esm/applications/_types.js";
 import { DialogV2RenderCallback } from "foundry-pf2e/foundry/client-esm/applications/api/dialog.js";
-import { CreateFormGroupParams } from ".";
 declare function waitDialog<T extends Record<string, any>>(options: WaitDialogOptions & {
     returnOnFalse?: never;
 }): Promise<T | false | null>;
@@ -33,7 +32,7 @@ type ConfirmDialogOptions = BaseDialogOptions & {
     };
 };
 type WaitDialogOptions = BaseDialogOptions & {
-    content: string | CreateFormGroupParams[];
+    content: string;
     disabled?: boolean;
     focus?: string;
     i18n: string;

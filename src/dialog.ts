@@ -8,17 +8,7 @@ import {
     DialogV2Configuration,
     DialogV2RenderCallback,
 } from "foundry-pf2e/foundry/client-esm/applications/api/dialog.js";
-import {
-    CreateFormGroupParams,
-    createFormTemplate,
-    htmlQuery,
-    localize,
-    localizeIfExist,
-    MODULE,
-    R,
-    render,
-    templateLocalize,
-} from ".";
+import { htmlQuery, localize, localizeIfExist, MODULE, R, render, templateLocalize } from ".";
 import DialogV2 = foundry.applications.api.DialogV2;
 
 class ModuleDialog extends DialogV2 {
@@ -99,7 +89,7 @@ async function waitDialog({
             },
         ],
         classes,
-        content: await generateDialogContent(content, i18n, data),
+        content: await generateDialogContent(content, data),
         minWidth,
         position,
         skipAnimate,
@@ -140,7 +130,7 @@ async function confirmDialog(
 ): Promise<boolean | null> {
     const options: ModuleDialogOptions<DialogConfirmOptions> = {
         classes,
-        content: await generateDialogContent(content ?? localize(i18n, "content", data), i18n),
+        content: content ?? localize(i18n, "content", data),
         minWidth,
         no: {
             default: !yes?.default,
@@ -208,20 +198,12 @@ function generateDialogTitle(
         : localize(i18n, "title", R.isObjectType(title) ? title : data ?? {});
 }
 
-async function generateDialogContent(
-    content: string | CreateFormGroupParams[],
-    i18n: string,
-    data?: Record<string, any>
-): Promise<string> {
-    if (R.isString(content)) {
-        if (R.isObjectType(data)) {
-            return render(content, data);
-        } else {
-            return content.startsWith("<") ? content : `<div>${content}</div>`;
-        }
+async function generateDialogContent(content: string, data?: Record<string, any>): Promise<string> {
+    if (R.isObjectType(data)) {
+        return render(content, data);
+    } else {
+        return content.startsWith("<") ? content : `<div>${content}</div>`;
     }
-
-    return createFormTemplate(i18n, content);
 }
 
 type CreateFormDataOptions = {
@@ -258,7 +240,7 @@ type ConfirmDialogOptions = BaseDialogOptions & {
 };
 
 type WaitDialogOptions = BaseDialogOptions & {
-    content: string | CreateFormGroupParams[];
+    content: string;
     disabled?: boolean;
     focus?: string;
     i18n: string;
