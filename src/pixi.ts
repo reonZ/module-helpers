@@ -9,6 +9,13 @@ function subtractPoint(a: Point, b: Point): Point {
     };
 }
 
+function addPoints(a: Point, b: Point): Point {
+    return {
+        x: a.x + b.x,
+        y: a.y + b.y,
+    };
+}
+
 function multiplyPointBy(point: Point, value: number): Point {
     return {
         x: point.x * value,
@@ -70,6 +77,7 @@ function drawCircleMask(x: number, y: number, radius: number): PIXI.Graphics {
 }
 
 export {
+    addPoints,
     addToPoint,
     calculateMidPoint,
     distanceToPoint,
