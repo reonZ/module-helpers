@@ -233,7 +233,7 @@ function registerCustomElements(...tags: CustomElementTag[]) {
 
         try {
             window.customElements.define(tag, CUSTOM_ELEMENTS[tag]);
-        } catch (error) {
+        } catch (error: any) {
             MODULE.error(`an error occured while registering a custom element: ${tag}`, error);
         }
     }

@@ -1,5 +1,4 @@
 import { getSetting, joinStr, localize, R } from ".";
-import * as html from "./html";
 const _MODULE = {
     id: "",
     groupLog: false,
@@ -93,8 +92,6 @@ const MODULE = {
         for (const [key, value] of R.entries(_MODULE.expose.debug)) {
             foundry.utils.setProperty(window, key, value);
         }
-        foundry.utils.setProperty(window, "R", R);
-        foundry.utils.setProperty(window, "debugHTML", html);
     },
     path(...path) {
         const joined = joinStr(".", ...path);

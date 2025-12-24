@@ -110,7 +110,7 @@ function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(
         });
 
         return model as any;
-    } catch (error) {
+    } catch (error: any) {
         const name = Model.name;
         const joinPath = joinStr(".", ...sourcePath);
 
@@ -134,7 +134,7 @@ function getDataFlagArray<T extends foundry.abstract.DataModel, D extends Docume
         R.map((data): foundry.abstract.DataModel | undefined => {
             try {
                 return R.isPlainObject(data) ? new Model(data) : undefined;
-            } catch (error) {
+            } catch (error: any) {
                 const name = Model.name;
                 const joinPath = joinStr(".", ...path);
 
