@@ -104,7 +104,7 @@ abstract class zDocument<TSchema extends zDocumentSource = zDocumentSource> {
     }
 
     #initializeSource(source: z.core.$ZodLooseShape) {
-        source.id = zID().parse(source.id);
+        source.id = zID.parse(source.id);
 
         for (const [key, field] of R.entries(this._schema.shape)) {
             if (!(key in source)) {
