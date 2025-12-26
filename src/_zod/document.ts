@@ -31,7 +31,7 @@ abstract class zDocument<TSchema extends zDocumentSource = zDocumentSource> {
         });
 
         Object.seal(this._schema);
-        Object.seal(this._source);
+        // Object.seal(this._source);
 
         this._initialize();
     }

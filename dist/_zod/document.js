@@ -22,7 +22,7 @@ class zDocument {
             writable: false,
         });
         Object.seal(this._schema);
-        Object.seal(this._source);
+        // Object.seal(this._source);
         this._initialize();
     }
     get invalid() {
