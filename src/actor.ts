@@ -1,6 +1,7 @@
 import {
     ActorAlliance,
     ActorPF2e,
+    ActorSizePF2e,
     CharacterPF2e,
     CreaturePF2e,
     FamiliarPF2e,
@@ -103,6 +104,14 @@ function getActorMaster(actor: Maybe<ActorPF2e>): ActorPF2e | null {
     );
 }
 
+function getActorSize(actor: CreaturePF2e): ActorSizePF2e {
+    const ActorSizeCls = actor.system.traits.size.constructor as typeof ActorSizePF2e;
+    return new ActorSizeCls({
+        value: actor.system.traits.naturalSize ?? actor.size,
+        smallIsMedium: true,
+    });
+}
+
 type ActorTargetAlliance = "all" | "allies" | "enemies";
 
 export {
@@ -111,6 +120,7 @@ export {
     belongToPartyAlliance,
     getActorFromUuid,
     getActorMaster,
+    getActorSize,
     getDispositionColor,
     getMythicOrHeroPoints,
     hasRollOption,

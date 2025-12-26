@@ -1,4 +1,4 @@
-import { ActorAlliance, ActorPF2e, CharacterPF2e, LootPF2e, ValueAndMax } from "foundry-pf2e";
+import { ActorAlliance, ActorPF2e, ActorSizePF2e, CharacterPF2e, CreaturePF2e, LootPF2e, ValueAndMax } from "foundry-pf2e";
 declare const PARTY_ACTOR_ID = "xxxPF2ExPARTYxxx";
 declare function actorsRespectAlliance(origin: ActorPF2e, target: ActorPF2e, alliance?: ActorTargetAlliance): boolean;
 declare function getDispositionColor(actor?: ActorPF2e | null): Color;
@@ -14,6 +14,7 @@ declare function getMythicOrHeroPoints(actor: CharacterPF2e): ValueAndMax & {
 };
 declare function isMerchant(actor: Maybe<ActorPF2e>): actor is LootPF2e;
 declare function getActorMaster(actor: Maybe<ActorPF2e>): ActorPF2e | null;
+declare function getActorSize(actor: CreaturePF2e): ActorSizePF2e;
 type ActorTargetAlliance = "all" | "allies" | "enemies";
-export { actorIsPartyMember, actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getActorMaster, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, PARTY_ACTOR_ID, playersCanSeeName, };
+export { actorIsPartyMember, actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getActorMaster, getActorSize, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, PARTY_ACTOR_ID, playersCanSeeName, };
 export type { ActorTargetAlliance };

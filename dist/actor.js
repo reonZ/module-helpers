@@ -70,4 +70,11 @@ function getActorMaster(actor) {
         game.toolbelt?.api.shareData.getMasterInMemory(actor) ??
         null);
 }
-export { actorIsPartyMember, actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getActorMaster, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, PARTY_ACTOR_ID, playersCanSeeName, };
+function getActorSize(actor) {
+    const ActorSizeCls = actor.system.traits.size.constructor;
+    return new ActorSizeCls({
+        value: actor.system.traits.naturalSize ?? actor.size,
+        smallIsMedium: true,
+    });
+}
+export { actorIsPartyMember, actorsRespectAlliance, belongToPartyAlliance, getActorFromUuid, getActorMaster, getActorSize, getDispositionColor, getMythicOrHeroPoints, hasRollOption, isAllyActor, isMerchant, oppositeAlliance, PARTY_ACTOR_ID, playersCanSeeName, };
