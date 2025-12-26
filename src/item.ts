@@ -484,6 +484,7 @@ export {
     isSupressedFeat,
     ITEM_CARRY_TYPES,
     itemIsOfType,
+    PHYSICAL_ITEM_TYPES,
     usePhysicalItem,
 };
 export type { EquipAnnotationData };
