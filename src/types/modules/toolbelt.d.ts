@@ -49,6 +49,12 @@ declare global {
                 enabled: boolean;
                 playerRequest: boolean;
             };
+            targetHelper: {
+                checks: boolean;
+                enabled: boolean;
+                small: boolean;
+                targets: boolean;
+            };
         }
 
         interface Api {
@@ -98,10 +104,10 @@ declare global {
                 getSlavesInMemory(actor: CreaturePF2e, idOnly?: true): Set<ActorUUID> | undefined;
             };
             targetHelper: {
-                getMessageTargets: (message: ChatMessagePF2e) => string[];
+                getMessageTargets: (message: ChatMessagePF2e) => TokenDocumentUUID[];
                 setMessageFlagTargets: (
                     updates: Record<string, any>,
-                    targets: string[]
+                    targets: TokenDocumentUUID[]
                 ) => Record<string, any>;
             };
         }
