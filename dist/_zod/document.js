@@ -68,7 +68,6 @@ class zDocument {
     }
     update(changes) {
         const flattened = foundry.utils.flattenObject(changes);
-        // TODO we want to move the cursor on the shape and see if anything is readonly
         for (const [key, value] of R.entries(flattened)) {
             if (value === undefined) {
                 foundry.utils.deleteProperty(this._source, key);

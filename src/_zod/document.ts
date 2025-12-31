@@ -82,7 +82,6 @@ abstract class zDocument<TSchema extends zDocumentSource = zDocumentSource> {
     update(changes: DeepPartial<z.input<TSchema>> & { [k: string]: any }): this {
         const flattened = foundry.utils.flattenObject(changes) as Record<string, any>;
 
-        // TODO we want to move the cursor on the shape and see if anything is readonly
         for (const [key, value] of R.entries(flattened)) {
             if (value === undefined) {
                 foundry.utils.deleteProperty(this._source, key);
