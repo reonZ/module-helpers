@@ -1,5 +1,10 @@
 import { z } from "..";
-const zID = z.string().trim().length(16).default(foundry.utils.randomID).readonly();
+const zID = z
+    .string()
+    .trim()
+    .refine(foundry.data.validators.isValidId)
+    .default(foundry.utils.randomID)
+    .readonly();
 const zPosition = z
     .object({
     x: z.number().default(0),
