@@ -7,7 +7,7 @@ const zPosition = z
         x: z.number().default(0),
         y: z.number().default(0),
     })
-    .default({ x: 0, y: 0 });
+    .default(() => ({ x: 0, y: 0 }));
 
 const zString = z.string().trim().min(1);
 

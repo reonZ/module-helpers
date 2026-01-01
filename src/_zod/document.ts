@@ -103,6 +103,8 @@ abstract class zDocument<TSchema extends zDocumentSource = zDocumentSource> {
     }
 
     #initializeSource(source: z.core.$ZodLooseShape) {
+        console.log(foundry.utils.deepClone(source));
+
         source.id = zID.parse(source.id);
 
         for (const [key, field] of R.entries(this._schema.shape)) {
@@ -110,6 +112,8 @@ abstract class zDocument<TSchema extends zDocumentSource = zDocumentSource> {
                 source[key] = field.parse(undefined);
             }
         }
+
+        console.log(foundry.utils.deepClone(source));
 
         return source;
     }

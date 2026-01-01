@@ -88,12 +88,14 @@ class zDocument {
         return foundry.utils.deepClone(this._source);
     }
     #initializeSource(source) {
+        console.log(foundry.utils.deepClone(source));
         source.id = zID.parse(source.id);
         for (const [key, field] of R.entries(this._schema.shape)) {
             if (!(key in source)) {
                 source[key] = field.parse(undefined);
             }
         }
+        console.log(foundry.utils.deepClone(source));
         return source;
     }
 }
