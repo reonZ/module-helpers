@@ -31,9 +31,8 @@ type ConfirmDialogOptions = BaseDialogOptions & {
         default?: true;
     };
 };
-type WaitDialogOptions = BaseDialogOptions & {
+type WaitDialogOptions = BaseDialogOptions & CreateFormDataOptions & {
     content: string;
-    disabled?: boolean;
     focus?: string;
     i18n: string;
     no?: {

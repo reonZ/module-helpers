@@ -34,35 +34,35 @@ interface ModuleDialog extends DialogV2 {
 }
 
 async function waitDialog<T extends Record<string, any>>(
-    options: WaitDialogOptions & { returnOnFalse?: never }
+    options: WaitDialogOptions & { returnOnFalse?: never },
 ): Promise<T | false | null>;
 async function waitDialog<T extends Record<string, any>, K extends keyof T>(
-    options: WaitDialogOptions & { returnOnFalse: K[] }
+    options: WaitDialogOptions & { returnOnFalse: K[] },
 ): Promise<T | Pick<T, K> | null>;
-async function waitDialog({
-    classes = [],
-    content,
-    data,
-    // return value of disabled inputs too
-    disabled,
-    focus,
-    i18n,
-    minWidth,
-    no,
-    onRender,
-    position = {},
-    returnOnFalse,
-    skipAnimate,
-    title,
-    yes,
-}: WaitDialogOptions & { returnOnFalse?: string[] }) {
+async function waitDialog(options: WaitDialogOptions & { returnOnFalse?: string[] }) {
+    const {
+        classes = [],
+        content,
+        data,
+        focus,
+        i18n,
+        minWidth,
+        no,
+        onRender,
+        position = {},
+        returnOnFalse,
+        skipAnimate,
+        title,
+        yes,
+    } = options;
+
     if (data) {
         data.i18n = templateLocalize(i18n);
     }
 
     classes.push(MODULE.id);
 
-    const options: ModuleDialogOptions<DialogWaitOptions> = {
+    const dialogOptions: ModuleDialogOptions<DialogWaitOptions> = {
         buttons: [
             {
                 action: "yes",
@@ -72,7 +72,7 @@ async function waitDialog({
                 callback:
                     yes?.callback ??
                     (async (event, btn, dialog) => {
-                        return createFormData(dialog.element, { disabled });
+                        return createFormData(dialog.element, options);
                     }),
             },
             {
@@ -83,7 +83,7 @@ async function waitDialog({
                 callback: async (event, btn, dialog) => {
                     if (!returnOnFalse) return false;
 
-                    const data = createFormData(dialog.element, { disabled });
+                    const data = createFormData(dialog.element, options);
                     return data ? R.pick(data, returnOnFalse) : null;
                 },
             },
@@ -111,7 +111,7 @@ async function waitDialog({
         },
     };
 
-    return ModuleDialog.wait(options);
+    return ModuleDialog.wait(dialogOptions);
 }
 
 async function confirmDialog(
@@ -126,7 +126,7 @@ async function confirmDialog(
         skipAnimate,
         title,
         yes,
-    }: ConfirmDialogOptions = {}
+    }: ConfirmDialogOptions = {},
 ): Promise<boolean | null> {
     const options: ModuleDialogOptions<DialogConfirmOptions> = {
         classes,
@@ -161,15 +161,15 @@ async function promptDialog(key: string, data: Record<string, string> = {}) {
 
 function createFormData<E extends HTMLFormElement>(
     html: E,
-    options?: CreateFormDataOptions
+    options?: CreateFormDataOptions,
 ): Record<string, unknown>;
 function createFormData<E extends HTMLElement | HTMLFormElement>(
     html: E,
-    options?: CreateFormDataOptions
+    options?: CreateFormDataOptions,
 ): Record<string, unknown> | null;
 function createFormData(
     html: HTMLElement | HTMLFormElement,
-    { expand = false, disabled, readonly }: CreateFormDataOptions = {}
+    { expand = false, disabled, readonly }: CreateFormDataOptions = {},
 ): Record<string, unknown> | null {
     const form = html instanceof HTMLFormElement ? html : htmlQuery(html, "form");
     if (!form) return null;
@@ -191,11 +191,11 @@ function createFormData(
 function generateDialogTitle(
     i18n: string,
     title: string | Record<string, any> | undefined,
-    data: Record<string, any> | undefined
+    data: Record<string, any> | undefined,
 ): string {
     return R.isString(title)
         ? title
-        : localize(i18n, "title", R.isObjectType(title) ? title : data ?? {});
+        : localize(i18n, "title", R.isObjectType(title) ? title : (data ?? {}));
 }
 
 async function generateDialogContent(content: string, data?: Record<string, any>): Promise<string> {
@@ -239,18 +239,18 @@ type ConfirmDialogOptions = BaseDialogOptions & {
     yes?: { label?: string; default?: true };
 };
 
-type WaitDialogOptions = BaseDialogOptions & {
-    content: string;
-    disabled?: boolean;
-    focus?: string;
-    i18n: string;
-    no?: { label?: string; icon?: string; default?: true };
-    onRender?: DialogV2RenderCallback;
-    yes?: {
-        label?: string;
-        icon?: string;
-        callback?: foundry.applications.api.DialogV2ButtonCallback;
+type WaitDialogOptions = BaseDialogOptions &
+    CreateFormDataOptions & {
+        content: string;
+        focus?: string;
+        i18n: string;
+        no?: { label?: string; icon?: string; default?: true };
+        onRender?: DialogV2RenderCallback;
+        yes?: {
+            label?: string;
+            icon?: string;
+            callback?: foundry.applications.api.DialogV2ButtonCallback;
+        };
     };
-};
 
 export { confirmDialog, createFormData, promptDialog, waitDialog };

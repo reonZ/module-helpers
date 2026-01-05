@@ -15,14 +15,13 @@ class ModuleDialog extends DialogV2 {
         content.style.minWidth = this.options.minWidth ?? "400px";
     }
 }
-async function waitDialog({ classes = [], content, data, 
-// return value of disabled inputs too
-disabled, focus, i18n, minWidth, no, onRender, position = {}, returnOnFalse, skipAnimate, title, yes, }) {
+async function waitDialog(options) {
+    const { classes = [], content, data, focus, i18n, minWidth, no, onRender, position = {}, returnOnFalse, skipAnimate, title, yes, } = options;
     if (data) {
         data.i18n = templateLocalize(i18n);
     }
     classes.push(MODULE.id);
-    const options = {
+    const dialogOptions = {
         buttons: [
             {
                 action: "yes",
@@ -31,7 +30,7 @@ disabled, focus, i18n, minWidth, no, onRender, position = {}, returnOnFalse, ski
                 default: !no?.default,
                 callback: yes?.callback ??
                     (async (event, btn, dialog) => {
-                        return createFormData(dialog.element, { disabled });
+                        return createFormData(dialog.element, options);
                     }),
             },
             {
@@ -42,7 +41,7 @@ disabled, focus, i18n, minWidth, no, onRender, position = {}, returnOnFalse, ski
                 callback: async (event, btn, dialog) => {
                     if (!returnOnFalse)
                         return false;
-                    const data = createFormData(dialog.element, { disabled });
+                    const data = createFormData(dialog.element, options);
                     return data ? R.pick(data, returnOnFalse) : null;
                 },
             },
@@ -69,7 +68,7 @@ disabled, focus, i18n, minWidth, no, onRender, position = {}, returnOnFalse, ski
             }
         },
     };
-    return ModuleDialog.wait(options);
+    return ModuleDialog.wait(dialogOptions);
 }
 async function confirmDialog(i18n, { classes = [], content, data = {}, minWidth, no, position = {}, skipAnimate, title, yes, } = {}) {
     const options = {
@@ -118,7 +117,7 @@ function createFormData(html, { expand = false, disabled, readonly } = {}) {
 function generateDialogTitle(i18n, title, data) {
     return R.isString(title)
         ? title
-        : localize(i18n, "title", R.isObjectType(title) ? title : data ?? {});
+        : localize(i18n, "title", R.isObjectType(title) ? title : (data ?? {}));
 }
 async function generateDialogContent(content, data) {
     if (R.isObjectType(data)) {
