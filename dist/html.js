@@ -187,6 +187,9 @@ function firstElementWithText(el) {
     return null;
 }
 function getInputValue(el) {
+    if (el instanceof HTMLSelectElement) {
+        return el.value;
+    }
     return el.nodeName === "RANGE-PICKER" || ["number", "range"].includes(el.type)
         ? el.valueAsNumber
         : el.type === "checkbox"
