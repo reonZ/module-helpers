@@ -27,7 +27,7 @@ class MapOfArrays<T, K extends string | number = string | number> extends Map<K,
             | readonly (readonly [K, T[]])[]
             | Iterable<readonly [K, T[]]>
             | Record<K, T[]>
-            | null
+            | null,
     ) {
         if (entries && !(Symbol.iterator in entries)) {
             super(Object.entries(entries) as [K, T[]][]);
@@ -91,14 +91,14 @@ class MapOfArrays<T, K extends string | number = string | number> extends Map<K,
 function objectIsIn<
     T,
     O extends Record<string, unknown> = Record<string, unknown>,
-    K extends string = string
+    K extends string = string,
 >(obj: Readonly<Record<PropertyKey, unknown>> | O, key: K): obj is NarrowedTo<O, Record<K, T>> {
     return key in obj && R.isObjectType(obj[key]);
 }
 
 function isInstanceOf<T extends keyof IsInstanceOfClasses>(
     obj: any,
-    cls: T
+    cls: T,
 ): obj is IsInstanceOfClasses[T];
 function isInstanceOf<T>(obj: any, cls: string): obj is T;
 function isInstanceOf(obj: any, cls: keyof IsInstanceOfClasses | string) {
@@ -115,7 +115,7 @@ function isInstanceOf(obj: any, cls: keyof IsInstanceOfClasses | string) {
 
 function addToObjectIfNonNullish<T extends Record<string, any>, E extends Record<string, any>>(
     obj: T & Partial<E>,
-    extra: E
+    extra: E,
 ): T & Partial<E> {
     for (const [key, value] of R.entries(extra)) {
         if (value != null) {
@@ -140,6 +140,18 @@ function gettersToData<T extends Object>(instance: T): ExtractReadonly<T> {
     }
 
     return obj;
+}
+
+function purgeObject(obj: any): any {
+    if (R.isArray(obj)) {
+        const newObj = R.pipe(obj, R.map(purgeObject), R.filter(R.isNonNullish));
+        return newObj.length ? newObj : undefined;
+    } else if (R.isObjectType(obj)) {
+        const newObj = R.pipe(obj, R.mapValues(purgeObject), R.pickBy(R.isNonNullish));
+        return foundry.utils.isEmpty(newObj) ? undefined : newObj;
+    } else {
+        return obj === "" ? undefined : obj;
+    }
 }
 
 type IsInstanceOfClasses = IsInstanceOfItems & {
@@ -169,5 +181,12 @@ type IsInstanceOfItems = {
 
 type IsInstanceOfItem = keyof IsInstanceOfItems;
 
-export { addToObjectIfNonNullish, gettersToData, isInstanceOf, MapOfArrays, objectIsIn };
+export {
+    addToObjectIfNonNullish,
+    gettersToData,
+    isInstanceOf,
+    MapOfArrays,
+    objectIsIn,
+    purgeObject,
+};
 export type { IsInstanceOfItem, IsInstanceOfItems };

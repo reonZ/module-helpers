@@ -82,4 +82,17 @@ function gettersToData(instance) {
     }
     return obj;
 }
-export { addToObjectIfNonNullish, gettersToData, isInstanceOf, MapOfArrays, objectIsIn };
+function purgeObject(obj) {
+    if (R.isArray(obj)) {
+        const newObj = R.pipe(obj, R.map(purgeObject), R.filter(R.isNonNullish));
+        return newObj.length ? newObj : undefined;
+    }
+    else if (R.isObjectType(obj)) {
+        const newObj = R.pipe(obj, R.mapValues(purgeObject), R.pickBy(R.isNonNullish));
+        return foundry.utils.isEmpty(newObj) ? undefined : newObj;
+    }
+    else {
+        return obj === "" ? undefined : obj;
+    }
+}
+export { addToObjectIfNonNullish, gettersToData, isInstanceOf, MapOfArrays, objectIsIn, purgeObject, };
