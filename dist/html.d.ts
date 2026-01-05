@@ -32,7 +32,7 @@ declare function setStyleProperties(el: HTMLElement, properties: Record<string, 
 declare function dataToDatasetString(data: DatasetData): string;
 declare function datasetToData<T extends Record<string, any>>(elOrDataset: DOMStringMap | HTMLElement): T;
 declare function firstElementWithText(el: Maybe<Element>): HTMLElement | null;
-declare function getInputValue(el: HTMLInputElement): string | number | boolean;
+declare function getInputValue(el: HTMLInputElement | HTMLSelectElement): string | number | boolean;
 /**
  * repurposed version of
  * https://github.com/foundryvtt/pf2e/blob/c0cfa1f4c266d7d843966b50a9fd1a34d42b2051/src/module/actor/sheet/item-summary-renderer.ts#L25

@@ -10,19 +10,19 @@ function createToggleableEvent<TEvent extends keyof DocumentEventMap>(
     event: TEvent,
     selector: null,
     listener: (ev: DocumentEventMap[TEvent]) => any,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
 ): PersistentEvent;
 function createToggleableEvent<TEvent extends keyof HTMLElementEventMap>(
     event: TEvent,
     selector: string,
     listener: (ev: HTMLElementEventMap[TEvent]) => any,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
 ): PersistentEvent;
 function createToggleableEvent(
     event: EventType,
     selector: string | null,
     listener: (ev: Event) => any,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
 ) {
     let enabled = false;
 
@@ -56,7 +56,7 @@ function createToggleableEvent(
 
 function createHTMLElement<K extends keyof HTMLElementTagNameMap>(
     nodeName: K,
-    { classes = [], dataset = {}, content, id, style }: CreateHTMLElementOptions = {}
+    { classes = [], dataset = {}, content, id, style }: CreateHTMLElementOptions = {},
 ): HTMLElementTagNameMap[K] {
     const element = document.createElement(nodeName);
 
@@ -96,7 +96,7 @@ function createInputElement(
     type: "text" | "number" | "radio" | "checkbox",
     name: string,
     value: string | number | boolean,
-    options?: CreateHTMLInputElementOptions
+    options?: CreateHTMLInputElementOptions,
 ): HTMLInputElement {
     const input = createHTMLElement("input", options);
 
@@ -141,11 +141,11 @@ function createHTMLElementContent(options?: CreateHTMLElementOptions): HTMLEleme
 
 function htmlQuery<K extends keyof HTMLElementTagNameMap>(
     parent: MaybeHTML,
-    selectors: K
+    selectors: K,
 ): HTMLElementTagNameMap[K] | null;
 function htmlQuery<E extends HTMLElement = HTMLElement>(
     parent: MaybeHTML,
-    selectors: string
+    selectors: string,
 ): E | null;
 function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null;
 function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null {
@@ -155,11 +155,11 @@ function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null {
 
 function htmlQueryAll<K extends keyof HTMLElementTagNameMap>(
     parent: MaybeHTML,
-    selectors: K
+    selectors: K,
 ): HTMLElementTagNameMap[K][];
 function htmlQueryAll<E extends HTMLElement = HTMLElement>(
     parent: MaybeHTML,
-    selectors: string
+    selectors: string,
 ): E[];
 function htmlQueryAll(parent: MaybeHTML, selectors: string): HTMLElement[];
 function htmlQueryAll(parent: MaybeHTML, selectors: string): HTMLElement[] {
@@ -234,12 +234,12 @@ function addListenerAll(
 
 function htmlClosest<K extends keyof HTMLElementTagNameMap>(
     child: MaybeHTML,
-    selectors: K
+    selectors: K,
 ): HTMLElementTagNameMap[K] | null;
 function htmlClosest(child: MaybeHTML, selectors: string): HTMLElement | null;
 function htmlClosest<E extends HTMLElement = HTMLElement>(
     child: MaybeHTML,
-    selectors: string
+    selectors: string,
 ): E | null;
 function htmlClosest(child: MaybeHTML, selectors: string): HTMLElement | null {
     if (!(child instanceof Element)) return null;
@@ -249,22 +249,22 @@ function htmlClosest(child: MaybeHTML, selectors: string): HTMLElement | null {
 function htmlQueryIn<K extends keyof HTMLElementTagNameMap>(
     child: MaybeHTML,
     parentSelector: string,
-    siblingSelector: K
+    siblingSelector: K,
 ): HTMLElementTagNameMap[K] | null;
 function htmlQueryIn(
     child: MaybeHTML,
     parentSelector: string,
-    siblingSelector: string
+    siblingSelector: string,
 ): HTMLElement | null;
 function htmlQueryIn<E extends HTMLElement = HTMLElement>(
     child: MaybeHTML,
     parentSelector: string,
-    siblingSelector: string
+    siblingSelector: string,
 ): E | null;
 function htmlQueryIn(
     child: MaybeHTML,
     parentSelector: string,
-    siblingSelector: string
+    siblingSelector: string,
 ): HTMLElement | null {
     const parent = htmlClosest(child, parentSelector);
     return htmlQuery(parent, siblingSelector);
@@ -276,7 +276,7 @@ function assignStyle(el: HTMLElement, style: Partial<CSSStyleDeclaration>) {
 
 function setStyleProperties(
     el: HTMLElement,
-    properties: Record<string, string | number | boolean>
+    properties: Record<string, string | number | boolean>,
 ) {
     for (const [property, value] of R.entries(properties)) {
         el.style.setProperty(property, String(value));
@@ -297,7 +297,7 @@ function dataToDatasetString(data: DatasetData): string {
             return `data-${sluggifiedKey}='${stringified}'`;
         }),
         R.filter(R.isTruthy),
-        R.join(" ")
+        R.join(" "),
     );
 }
 
@@ -340,12 +340,16 @@ function firstElementWithText(el: Maybe<Element>): HTMLElement | null {
     return null;
 }
 
-function getInputValue(el: HTMLInputElement) {
+function getInputValue(el: HTMLInputElement | HTMLSelectElement) {
+    if (el instanceof HTMLSelectElement) {
+        return el.value;
+    }
+
     return el.nodeName === "RANGE-PICKER" || ["number", "range"].includes(el.type)
         ? el.valueAsNumber
         : el.type === "checkbox"
-        ? el.checked
-        : el.value.trim();
+          ? el.checked
+          : el.value.trim();
 }
 
 /**
@@ -359,7 +363,7 @@ async function toggleSummary(summaryElem: HTMLElement) {
         await gsap.fromTo(
             summaryElem,
             { height: 0, opacity: 0, hidden: false },
-            { height: "auto", opacity: 1, duration }
+            { height: "auto", opacity: 1, duration },
         );
     } else {
         await gsap.to(summaryElem, {
@@ -416,7 +420,7 @@ type ListenerCallbackArgs<E extends HTMLElement, TEvent extends EventType> =
 
 type ListenerCallback<TElement extends HTMLElement, TEvent extends EventType> = (
     element: TElement,
-    event: HTMLElementEventMap[TEvent]
+    event: HTMLElementEventMap[TEvent],
 ) => void;
 
 type IterableSelectOptions = SelectOption | string | FormSelectOption;
