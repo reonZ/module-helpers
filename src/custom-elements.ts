@@ -1,6 +1,6 @@
+import { MODULE, R } from ".";
 import { createHTMLElement } from "./html";
 import appElements = foundry.applications.elements;
-import { MODULE, R } from ".";
 
 class ExtendedTextInputElement extends appElements.AbstractFormInputElement<string, string> {
     #clearElement!: HTMLAnchorElement;
@@ -151,7 +151,7 @@ class ExtendedMultiSelectElement extends appElements.HTMLMultiSelectElement {
                 detail: this.#mode,
                 bubbles: true,
                 cancelable: true,
-            })
+            }),
         );
     }
 
@@ -229,13 +229,17 @@ const CUSTOM_ELEMENTS = {
 
 function registerCustomElements(...tags: CustomElementTag[]) {
     for (const tag of tags) {
-        if (!(tag in CUSTOM_ELEMENTS) || window.customElements.get(tag)) continue;
+        if (!(tag in CUSTOM_ELEMENTS)) continue;
+        registerCustomElement(tag, CUSTOM_ELEMENTS[tag]);
+    }
+}
 
-        try {
-            window.customElements.define(tag, CUSTOM_ELEMENTS[tag]);
-        } catch (error: any) {
-            MODULE.error(`an error occured while registering a custom element: ${tag}`, error);
-        }
+function registerCustomElement(tag: string, element: CustomElementConstructor) {
+    try {
+        if (window.customElements.get(tag)) return;
+        window.customElements.define(tag, element);
+    } catch (error: any) {
+        MODULE.error(`an error occurred while registering a custom element: ${tag}`, error);
     }
 }
 
@@ -245,5 +249,5 @@ type CustomElementTag = keyof typeof CUSTOM_ELEMENTS;
 
 type ExtendedMultiSelectModeEvent = CustomEvent<0 | 1>;
 
-export { ExtendedMultiSelectElement, ExtendedTextInputElement, registerCustomElements };
+export { ExtendedMultiSelectElement, ExtendedTextInputElement, registerCustomElements, registerCustomElement };
 export type { ExtendedMultiSelectModeEvent, MultiSelectTagsMode };

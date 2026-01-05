@@ -1,6 +1,6 @@
+import { MODULE, R } from ".";
 import { createHTMLElement } from "./html";
 var appElements = foundry.applications.elements;
-import { MODULE, R } from ".";
 class ExtendedTextInputElement extends appElements.AbstractFormInputElement {
     #clearElement;
     #inputElement;
@@ -178,14 +178,19 @@ const CUSTOM_ELEMENTS = {
 };
 function registerCustomElements(...tags) {
     for (const tag of tags) {
-        if (!(tag in CUSTOM_ELEMENTS) || window.customElements.get(tag))
+        if (!(tag in CUSTOM_ELEMENTS))
             continue;
-        try {
-            window.customElements.define(tag, CUSTOM_ELEMENTS[tag]);
-        }
-        catch (error) {
-            MODULE.error(`an error occured while registering a custom element: ${tag}`, error);
-        }
+        registerCustomElement(tag, CUSTOM_ELEMENTS[tag]);
     }
 }
-export { ExtendedMultiSelectElement, ExtendedTextInputElement, registerCustomElements };
+function registerCustomElement(tag, element) {
+    try {
+        if (window.customElements.get(tag))
+            return;
+        window.customElements.define(tag, element);
+    }
+    catch (error) {
+        MODULE.error(`an error occurred while registering a custom element: ${tag}`, error);
+    }
+}
+export { ExtendedMultiSelectElement, ExtendedTextInputElement, registerCustomElements, registerCustomElement };

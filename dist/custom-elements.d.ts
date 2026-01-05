@@ -30,8 +30,9 @@ declare const CUSTOM_ELEMENTS: {
     "extended-text-input": typeof ExtendedTextInputElement;
 };
 declare function registerCustomElements(...tags: CustomElementTag[]): void;
+declare function registerCustomElement(tag: string, element: CustomElementConstructor): void;
 type MultiSelectTagsMode = (typeof TAGS_MODES)[number];
 type CustomElementTag = keyof typeof CUSTOM_ELEMENTS;
 type ExtendedMultiSelectModeEvent = CustomEvent<0 | 1>;
-export { ExtendedMultiSelectElement, ExtendedTextInputElement, registerCustomElements };
+export { ExtendedMultiSelectElement, ExtendedTextInputElement, registerCustomElements, registerCustomElement };
 export type { ExtendedMultiSelectModeEvent, MultiSelectTagsMode };
