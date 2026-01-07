@@ -76,10 +76,7 @@ function panToToken(token: TokenPF2e | TokenDocumentPF2e, control?: boolean) {
     canvas.animatePan(token.center);
 }
 
-function getFirstActiveToken(
-    actor: ActorPF2e,
-    { linked, scene }: { linked?: boolean; scene?: ScenePF2e | null } = {}
-) {
+function getFirstActiveToken(actor: ActorPF2e, { linked, scene }: { linked?: boolean; scene?: ScenePF2e | null } = {}) {
     const predicate = (token: TokenDocumentPF2e) => !linked || token.actorLink;
     return actor.token ?? getFirstTokenThatMatches(actor, predicate, scene);
 }
@@ -87,7 +84,7 @@ function getFirstActiveToken(
 function getFirstTokenThatMatches(
     actor: ActorPF2e,
     predicate: (token: TokenDocumentPF2e) => boolean,
-    scene: Maybe<ScenePF2e> = game.scenes.current
+    scene: Maybe<ScenePF2e> = game.scenes.current,
 ) {
     if (!scene) return null;
 
@@ -100,17 +97,23 @@ function getFirstTokenThatMatches(
     return null;
 }
 
-function hasTokenThatMatches(
-    actor: ActorPF2e,
-    predicate: (token: TokenDocumentPF2e) => boolean
-): boolean {
+function hasTokenThatMatches(actor: ActorPF2e, predicate: (token: TokenDocumentPF2e) => boolean): boolean {
     return !!getFirstTokenThatMatches(actor, predicate);
+}
+
+function getTokenDocument(token: unknown): TokenDocumentPF2e | undefined {
+    return token instanceof foundry.canvas.placeables.Token
+        ? token.document
+        : token instanceof TokenDocument
+          ? token
+          : undefined;
 }
 
 export {
     emitTokenHover,
     getFirstActiveToken,
     getFirstTokenThatMatches,
+    getTokenDocument,
     hasTokenThatMatches,
     panToToken,
     pingToken,

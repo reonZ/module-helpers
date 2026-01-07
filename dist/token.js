@@ -81,4 +81,11 @@ function getFirstTokenThatMatches(actor, predicate, scene = game.scenes.current)
 function hasTokenThatMatches(actor, predicate) {
     return !!getFirstTokenThatMatches(actor, predicate);
 }
-export { emitTokenHover, getFirstActiveToken, getFirstTokenThatMatches, hasTokenThatMatches, panToToken, pingToken, positionTokenFromCoords, selectTokens, };
+function getTokenDocument(token) {
+    return token instanceof foundry.canvas.placeables.Token
+        ? token.document
+        : token instanceof TokenDocument
+            ? token
+            : undefined;
+}
+export { emitTokenHover, getFirstActiveToken, getFirstTokenThatMatches, getTokenDocument, hasTokenThatMatches, panToToken, pingToken, positionTokenFromCoords, selectTokens, };

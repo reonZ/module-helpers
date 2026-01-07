@@ -10,4 +10,5 @@ declare function getFirstActiveToken(actor: ActorPF2e, { linked, scene }?: {
 }): TokenDocumentPF2e<ScenePF2e | null> | null;
 declare function getFirstTokenThatMatches(actor: ActorPF2e, predicate: (token: TokenDocumentPF2e) => boolean, scene?: Maybe<ScenePF2e>): TokenDocumentPF2e<ScenePF2e | null> | null;
 declare function hasTokenThatMatches(actor: ActorPF2e, predicate: (token: TokenDocumentPF2e) => boolean): boolean;
-export { emitTokenHover, getFirstActiveToken, getFirstTokenThatMatches, hasTokenThatMatches, panToToken, pingToken, positionTokenFromCoords, selectTokens, };
+declare function getTokenDocument(token: unknown): TokenDocumentPF2e | undefined;
+export { emitTokenHover, getFirstActiveToken, getFirstTokenThatMatches, getTokenDocument, hasTokenThatMatches, panToToken, pingToken, positionTokenFromCoords, selectTokens, };
