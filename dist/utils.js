@@ -58,4 +58,7 @@ function mapToObjByKey(arr, key) {
         return [entry[key], entry];
     }), R.fromEntries());
 }
-export { activateHooksAndWrappers, disableHooksAndWrappers, isDecimal, joinStr, localeCompare, mapToObjByKey, rollDie, roundToStep, sortByLocaleCompare, splitStr, stringBoolean, stringNumber, toggleHooksAndWrappers, waitTimeout, };
+function isIterable(obj) {
+    return R.isObjectType(obj) && Symbol.iterator in obj && typeof obj[Symbol.iterator] === "function";
+}
+export { activateHooksAndWrappers, disableHooksAndWrappers, isDecimal, isIterable, joinStr, localeCompare, mapToObjByKey, rollDie, roundToStep, sortByLocaleCompare, splitStr, stringBoolean, stringNumber, toggleHooksAndWrappers, waitTimeout, };

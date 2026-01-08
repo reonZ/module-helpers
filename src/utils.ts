@@ -7,7 +7,7 @@ function joinStr(separator: string, ...path: any[]): string {
         path, //
         R.flat(),
         R.filter((x) => R.isString(x) && !!x),
-        R.join(separator)
+        R.join(separator),
     );
 }
 
@@ -16,7 +16,7 @@ function splitStr<T extends string>(str: string, separator = ","): T[] {
         str,
         R.split(separator),
         R.filter(R.isString),
-        R.map((x) => x.trim() as T)
+        R.map((x) => x.trim() as T),
     );
 }
 
@@ -80,21 +80,26 @@ function waitTimeout(time: number = 1): Promise<void> {
 
 function mapToObjByKey<
     T extends Record<string, any>,
-    K extends ExtractKeysForType<T, string> = ExtractKeysForType<T, string>
+    K extends ExtractKeysForType<T, string> = ExtractKeysForType<T, string>,
 >(arr: T[], key: K): Record<T[K], T> {
     return R.pipe(
         arr,
         R.map((entry) => {
             return [entry[key], entry] as const;
         }),
-        R.fromEntries()
+        R.fromEntries(),
     );
+}
+
+function isIterable(obj: unknown): obj is IterableIterator<any> {
+    return R.isObjectType(obj) && Symbol.iterator in obj && typeof obj[Symbol.iterator] === "function";
 }
 
 export {
     activateHooksAndWrappers,
     disableHooksAndWrappers,
     isDecimal,
+    isIterable,
     joinStr,
     localeCompare,
     mapToObjByKey,
