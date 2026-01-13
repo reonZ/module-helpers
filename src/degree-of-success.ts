@@ -1,12 +1,19 @@
-import {
-    CheckRoll,
-    DegreeOfSuccessString,
-    StatisticDifficultyClass,
-    ZeroToThree,
-} from "foundry-pf2e";
+import { CheckRoll, DegreeOfSuccessString, StatisticDifficultyClass, ZeroToThree } from "foundry-pf2e";
 import { Die } from "foundry-pf2e/foundry/client-esm/dice/terms/die.js";
 import { NumericTerm } from "foundry-pf2e/foundry/client-esm/dice/terms/numeric-term.js";
-import { DEGREE_STRINGS } from "./check";
+
+const DEGREE_STRINGS = ["criticalFailure", "failure", "success", "criticalSuccess"] as const;
+
+const DEGREE_VALUES: Record<ZeroToThree | DegreeOfSuccessString, ZeroToThree> = {
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    criticalFailure: 0,
+    failure: 1,
+    success: 2,
+    criticalSuccess: 3,
+};
 
 const DEGREE_ADJUSTMENT_AMOUNTS = {
     LOWER_BY_TWO: -2,
@@ -44,17 +51,13 @@ class DegreeOfSuccess {
     constructor(
         roll: Rolled<CheckRoll> | RollBrief,
         dc: CheckDC | number,
-        dosAdjustments: DegreeAdjustmentsRecord | null = null
+        dosAdjustments: DegreeAdjustmentsRecord | null = null,
     ) {
         if (roll instanceof Roll) {
             this.dieResult =
                 (roll.isDeterministic
-                    ? roll.terms.find(
-                          (t): t is NumericTerm => t instanceof foundry.dice.terms.NumericTerm
-                      )
-                    : roll.dice.find(
-                          (d): d is Die => d instanceof foundry.dice.terms.Die && d.faces === 20
-                      )
+                    ? roll.terms.find((t): t is NumericTerm => t instanceof foundry.dice.terms.NumericTerm)
+                    : roll.dice.find((d): d is Die => d instanceof foundry.dice.terms.Die && d.faces === 20)
                 )?.total ?? 1;
             this.rollTotal = roll.total;
         } else {
@@ -78,7 +81,7 @@ class DegreeOfSuccess {
 
     #getDegreeAdjustment(
         degree: DegreeOfSuccessIndex,
-        adjustments: DegreeAdjustmentsRecord | null
+        adjustments: DegreeAdjustmentsRecord | null,
     ): { label: string; amount: DegreeAdjustmentAmount } | null {
         if (!adjustments) return null;
 
@@ -87,14 +90,8 @@ class DegreeOfSuccess {
             if (
                 amount &&
                 label &&
-                !(
-                    degree === DegreeOfSuccess.CRITICAL_SUCCESS &&
-                    amount === DEGREE_ADJUSTMENT_AMOUNTS.INCREASE
-                ) &&
-                !(
-                    degree === DegreeOfSuccess.CRITICAL_FAILURE &&
-                    amount === DEGREE_ADJUSTMENT_AMOUNTS.LOWER
-                ) &&
+                !(degree === DegreeOfSuccess.CRITICAL_SUCCESS && amount === DEGREE_ADJUSTMENT_AMOUNTS.INCREASE) &&
+                !(degree === DegreeOfSuccess.CRITICAL_FAILURE && amount === DEGREE_ADJUSTMENT_AMOUNTS.LOWER) &&
                 (outcome === "all" || DEGREE_STRINGS.indexOf(outcome) === degree)
             ) {
                 return { label, amount };
@@ -106,7 +103,7 @@ class DegreeOfSuccess {
 
     #adjustDegreeOfSuccess(
         amount: DegreeAdjustmentAmount,
-        degreeOfSuccess: DegreeOfSuccessIndex
+        degreeOfSuccess: DegreeOfSuccessIndex,
     ): DegreeOfSuccessIndex {
         switch (amount) {
             case "criticalFailure":
@@ -151,10 +148,21 @@ class DegreeOfSuccess {
     }
 }
 
+function degreeOfSuccessNumber(value: string | number): ZeroToThree | undefined {
+    return DEGREE_VALUES[value as ZeroToThree];
+}
+
+function degreeOfSuccessString(value: number): DegreeOfSuccessString | undefined {
+    return DEGREE_STRINGS.at(value);
+}
+
+function isDegreeOfSuccessValue(value: string | number): value is ZeroToThree | DegreeOfSuccessString {
+    return value in DEGREE_VALUES;
+}
+
 type RollBrief = { dieValue: number; modifier: number };
 
-type DegreeAdjustmentAmount =
-    (typeof DEGREE_ADJUSTMENT_AMOUNTS)[keyof typeof DEGREE_ADJUSTMENT_AMOUNTS];
+type DegreeAdjustmentAmount = (typeof DEGREE_ADJUSTMENT_AMOUNTS)[keyof typeof DEGREE_ADJUSTMENT_AMOUNTS];
 
 type DegreeAdjustmentsRecord = {
     [key in "all" | DegreeOfSuccessString]?: { label: string; amount: DegreeAdjustmentAmount };
@@ -171,4 +179,12 @@ interface CheckDC {
 
 type DegreeOfSuccessIndex = ZeroToThree;
 
-export { DegreeOfSuccess };
+export {
+    DEGREE_ADJUSTMENT_AMOUNTS,
+    DEGREE_STRINGS,
+    DEGREE_VALUES,
+    DegreeOfSuccess,
+    degreeOfSuccessNumber,
+    degreeOfSuccessString,
+    isDegreeOfSuccessValue,
+};

@@ -1,4 +1,14 @@
-import { DEGREE_STRINGS } from "./check";
+const DEGREE_STRINGS = ["criticalFailure", "failure", "success", "criticalSuccess"];
+const DEGREE_VALUES = {
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    criticalFailure: 0,
+    failure: 1,
+    success: 2,
+    criticalSuccess: 3,
+};
 const DEGREE_ADJUSTMENT_AMOUNTS = {
     LOWER_BY_TWO: -2,
     LOWER: -1,
@@ -55,10 +65,8 @@ class DegreeOfSuccess {
             const { label, amount } = adjustments[outcome] ?? {};
             if (amount &&
                 label &&
-                !(degree === DegreeOfSuccess.CRITICAL_SUCCESS &&
-                    amount === DEGREE_ADJUSTMENT_AMOUNTS.INCREASE) &&
-                !(degree === DegreeOfSuccess.CRITICAL_FAILURE &&
-                    amount === DEGREE_ADJUSTMENT_AMOUNTS.LOWER) &&
+                !(degree === DegreeOfSuccess.CRITICAL_SUCCESS && amount === DEGREE_ADJUSTMENT_AMOUNTS.INCREASE) &&
+                !(degree === DegreeOfSuccess.CRITICAL_FAILURE && amount === DEGREE_ADJUSTMENT_AMOUNTS.LOWER) &&
                 (outcome === "all" || DEGREE_STRINGS.indexOf(outcome) === degree)) {
                 return { label, amount };
             }
@@ -106,4 +114,13 @@ class DegreeOfSuccess {
         return this.#adjustDegreeByDieValue(DegreeOfSuccess.FAILURE);
     }
 }
-export { DegreeOfSuccess };
+function degreeOfSuccessNumber(value) {
+    return DEGREE_VALUES[value];
+}
+function degreeOfSuccessString(value) {
+    return DEGREE_STRINGS.at(value);
+}
+function isDegreeOfSuccessValue(value) {
+    return value in DEGREE_VALUES;
+}
+export { DEGREE_ADJUSTMENT_AMOUNTS, DEGREE_STRINGS, DEGREE_VALUES, DegreeOfSuccess, degreeOfSuccessNumber, degreeOfSuccessString, isDegreeOfSuccessValue, };

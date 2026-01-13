@@ -1,34 +1,7 @@
-import { AbilityTrait, DegreeOfSuccessString, ZeroToThree } from "foundry-pf2e";
+import { AbilityTrait } from "foundry-pf2e";
 import { R, splitListString } from ".";
 
-const DEGREE_VALUES: Record<ZeroToThree | DegreeOfSuccessString, ZeroToThree> = {
-    0: 0,
-    1: 1,
-    2: 2,
-    3: 3,
-    criticalFailure: 0,
-    failure: 1,
-    success: 2,
-    criticalSuccess: 3,
-};
-
 const SAVE_TYPES = ["fortitude", "reflex", "will"] as const;
-
-const DEGREE_STRINGS = ["criticalFailure", "failure", "success", "criticalSuccess"] as const;
-
-function isDegreeOfSuccessValue(
-    value: string | number
-): value is ZeroToThree | DegreeOfSuccessString {
-    return value in DEGREE_VALUES;
-}
-
-function degreeOfSuccessNumber(value: string | number): ZeroToThree | undefined {
-    return DEGREE_VALUES[value as ZeroToThree];
-}
-
-function degreeOfSuccessString(value: number): DegreeOfSuccessString | undefined {
-    return DEGREE_STRINGS.at(value);
-}
 
 /**
  * modified version of
@@ -38,29 +11,18 @@ function degreeOfSuccessString(value: number): DegreeOfSuccessString | undefined
  */
 function getExtraRollOptions(
     { traits, options }: { traits?: string[] | string; options?: string[] | string } = {},
-    isBasic?: boolean
+    isBasic?: boolean,
 ): string[] {
-    const maybeTraits = R.isString(traits) ? splitListString(traits) : traits ?? [];
-    const additionalTraits = maybeTraits.filter(
-        (t): t is AbilityTrait => t in CONFIG.PF2E.actionTraits
-    );
+    const maybeTraits = R.isString(traits) ? splitListString(traits) : (traits ?? []);
+    const additionalTraits = maybeTraits.filter((t): t is AbilityTrait => t in CONFIG.PF2E.actionTraits);
 
-    const allOptions = R.isString(options) ? splitListString(options) : options?.slice() ?? [];
+    const allOptions = R.isString(options) ? splitListString(options) : (options?.slice() ?? []);
 
     if (isBasic && !allOptions.includes("damaging-effect")) {
         allOptions.push("damaging-effect");
     }
 
-    return R.unique(
-        [maybeTraits, additionalTraits.map((t) => `item:trait:${t}`), allOptions].flat()
-    );
+    return R.unique([maybeTraits, additionalTraits.map((t) => `item:trait:${t}`), allOptions].flat());
 }
 
-export {
-    DEGREE_STRINGS,
-    degreeOfSuccessNumber,
-    degreeOfSuccessString,
-    getExtraRollOptions,
-    isDegreeOfSuccessValue,
-    SAVE_TYPES,
-};
+export { SAVE_TYPES, getExtraRollOptions };

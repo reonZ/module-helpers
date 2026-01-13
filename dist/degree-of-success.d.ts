@@ -1,4 +1,6 @@
 import { CheckRoll, DegreeOfSuccessString, StatisticDifficultyClass, ZeroToThree } from "foundry-pf2e";
+declare const DEGREE_STRINGS: readonly ["criticalFailure", "failure", "success", "criticalSuccess"];
+declare const DEGREE_VALUES: Record<ZeroToThree | DegreeOfSuccessString, ZeroToThree>;
 declare const DEGREE_ADJUSTMENT_AMOUNTS: {
     readonly LOWER_BY_TWO: -2;
     readonly LOWER: -1;
@@ -35,6 +37,9 @@ declare class DegreeOfSuccess {
     static readonly SUCCESS = 2;
     static readonly CRITICAL_SUCCESS = 3;
 }
+declare function degreeOfSuccessNumber(value: string | number): ZeroToThree | undefined;
+declare function degreeOfSuccessString(value: number): DegreeOfSuccessString | undefined;
+declare function isDegreeOfSuccessValue(value: string | number): value is ZeroToThree | DegreeOfSuccessString;
 type RollBrief = {
     dieValue: number;
     modifier: number;
@@ -55,4 +60,4 @@ interface CheckDC {
     visible?: boolean;
 }
 type DegreeOfSuccessIndex = ZeroToThree;
-export { DegreeOfSuccess };
+export { DEGREE_ADJUSTMENT_AMOUNTS, DEGREE_STRINGS, DEGREE_VALUES, DegreeOfSuccess, degreeOfSuccessNumber, degreeOfSuccessString, isDegreeOfSuccessValue, };
