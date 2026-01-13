@@ -11,5 +11,6 @@ declare function getActionIcon(action: ActionIconType, fallback: ImageFilePath |
 declare function getActionIcon(action: ActionIconType): ImageFilePath;
 declare function isDefaultActionIcon(img: string, action: string | ActionCost | null): boolean;
 declare function useAction(event: Event, item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e>): Promise<unknown>;
+declare function applySelfEffect(item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e>): Promise<void>;
 type ActionIconType = string | number | ActionCost | null;
-export { getActionGlyph, getActionIcon, isDefaultActionIcon, useAction };
+export { applySelfEffect, getActionGlyph, getActionIcon, isDefaultActionIcon, useAction };

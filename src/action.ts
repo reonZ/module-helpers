@@ -1,4 +1,4 @@
-import { AbilityItemPF2e, ActionCost, ActorPF2e, FeatPF2e } from "foundry-pf2e";
+import { AbilityItemPF2e, ActionCost, ActorPF2e, EffectSource, FeatPF2e } from "foundry-pf2e";
 
 /**
  * https://github.com/foundryvtt/pf2e/blob/89892b6fafec1456a0358de8c6d7b102e3fe2da2/src/util/misc.ts#L188C1-L199C3
@@ -38,8 +38,7 @@ const actionImgMap: Record<string, ImageFilePath> = {
 function getActionGlyph(action: string | number | null | ActionCost): string {
     if (!action && action !== 0) return "";
 
-    const value =
-        typeof action !== "object" ? action : action.type === "action" ? action.value : action.type;
+    const value = typeof action !== "object" ? action : action.type === "action" ? action.value : action.type;
     const sanitized = String(value ?? "")
         .toLowerCase()
         .trim();
@@ -51,18 +50,14 @@ function getActionGlyph(action: string | number | null | ActionCost): string {
  * https://github.com/foundryvtt/pf2e/blob/37b0dcab08141b3e9e4e0f44e51df9f4dfd52a71/src/util/misc.ts#L173
  */
 function getActionIcon(action: ActionIconType, fallback: ImageFilePath): ImageFilePath;
-function getActionIcon(
-    action: ActionIconType,
-    fallback: ImageFilePath | null
-): ImageFilePath | null;
+function getActionIcon(action: ActionIconType, fallback: ImageFilePath | null): ImageFilePath | null;
 function getActionIcon(action: ActionIconType): ImageFilePath;
 function getActionIcon(
     action: ActionIconType,
-    fallback: ImageFilePath | null = "systems/pf2e/icons/actions/Empty.webp"
+    fallback: ImageFilePath | null = "systems/pf2e/icons/actions/Empty.webp",
 ): ImageFilePath | null {
     if (action === null) return actionImgMap.passive;
-    const value =
-        typeof action !== "object" ? action : action.type === "action" ? action.value : action.type;
+    const value = typeof action !== "object" ? action : action.type === "action" ? action.value : action.type;
     const sanitized = String(value ?? "")
         .toLowerCase()
         .trim();
@@ -79,7 +74,20 @@ async function useAction(event: Event, item: AbilityItemPF2e<ActorPF2e> | FeatPF
         : undefined;
 
     const use = async () => {
-        return game.pf2e.rollItemMacro(item.uuid, event);
+        if (item.crafting) {
+            return game.pf2e.rollItemMacro(item.uuid, event);
+        }
+
+        if (item.system.frequency && item.system.frequency.value > 0) {
+            const newValue = item.system.frequency.value - 1;
+            await item.update({ "system.frequency.value": newValue });
+        }
+
+        if (item.system.selfEffect) {
+            await applySelfEffect(item);
+        }
+
+        return item.toMessage(event);
     };
 
     if (!macro) {
@@ -98,6 +106,40 @@ async function useAction(event: Event, item: AbilityItemPF2e<ActorPF2e> | FeatPF
     });
 }
 
+async function applySelfEffect(item: AbilityItemPF2e<ActorPF2e> | FeatPF2e<ActorPF2e>) {
+    const effect = item.system.selfEffect && (await fromUuid(item.system.selfEffect.uuid));
+    if (!effect) return;
+
+    const actor = item.actor;
+    const token = actor.getActiveTokens(true, true).shift() ?? null;
+    const traits = item.system.traits.value?.filter(
+        (trait) => trait in CONFIG.PF2E.Item.documentClasses.effect.validTraits,
+    );
+
+    const effectSource: EffectSource = foundry.utils.mergeObject(effect.toObject(), {
+        _id: null,
+        system: {
+            context: {
+                origin: {
+                    actor: actor.uuid,
+                    token: token?.uuid ?? null,
+                    item: item.uuid,
+                    spellcasting: null,
+                    rollOptions: item.getOriginData().rollOptions,
+                },
+                target: {
+                    actor: actor.uuid,
+                    token: token?.uuid ?? null,
+                },
+                roll: null,
+            },
+            traits: { value: traits },
+        },
+    });
+
+    await actor.createEmbeddedDocuments("Item", [effectSource]);
+}
+
 type ActionIconType = string | number | ActionCost | null;
 
-export { getActionGlyph, getActionIcon, isDefaultActionIcon, useAction };
+export { applySelfEffect, getActionGlyph, getActionIcon, isDefaultActionIcon, useAction };

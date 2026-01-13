@@ -57,7 +57,17 @@ async function useAction(event, item) {
         ? await game.toolbelt?.api.actionable.getActionMacro(item)
         : undefined;
     const use = async () => {
-        return game.pf2e.rollItemMacro(item.uuid, event);
+        if (item.crafting) {
+            return game.pf2e.rollItemMacro(item.uuid, event);
+        }
+        if (item.system.frequency && item.system.frequency.value > 0) {
+            const newValue = item.system.frequency.value - 1;
+            await item.update({ "system.frequency.value": newValue });
+        }
+        if (item.system.selfEffect) {
+            await applySelfEffect(item);
+        }
+        return item.toMessage(event);
     };
     if (!macro) {
         return use();
@@ -73,4 +83,33 @@ async function useAction(event, item) {
         },
     });
 }
-export { getActionGlyph, getActionIcon, isDefaultActionIcon, useAction };
+async function applySelfEffect(item) {
+    const effect = item.system.selfEffect && (await fromUuid(item.system.selfEffect.uuid));
+    if (!effect)
+        return;
+    const actor = item.actor;
+    const token = actor.getActiveTokens(true, true).shift() ?? null;
+    const traits = item.system.traits.value?.filter((trait) => trait in CONFIG.PF2E.Item.documentClasses.effect.validTraits);
+    const effectSource = foundry.utils.mergeObject(effect.toObject(), {
+        _id: null,
+        system: {
+            context: {
+                origin: {
+                    actor: actor.uuid,
+                    token: token?.uuid ?? null,
+                    item: item.uuid,
+                    spellcasting: null,
+                    rollOptions: item.getOriginData().rollOptions,
+                },
+                target: {
+                    actor: actor.uuid,
+                    token: token?.uuid ?? null,
+                },
+                roll: null,
+            },
+            traits: { value: traits },
+        },
+    });
+    await actor.createEmbeddedDocuments("Item", [effectSource]);
+}
+export { applySelfEffect, getActionGlyph, getActionIcon, isDefaultActionIcon, useAction };
