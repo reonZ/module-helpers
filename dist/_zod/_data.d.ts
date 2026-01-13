@@ -5,4 +5,5 @@ declare const zPosition: z.ZodDefault<z.ZodObject<{
     y: z.ZodDefault<z.ZodNumber>;
 }, z.z.core.$strip>>;
 declare const zString: z.ZodString;
-export { zID, zPosition, zString };
+declare const zRecord: z.ZodRecord<z.ZodString, z.ZodUnknown>;
+export { zID, zPosition, zRecord, zString };

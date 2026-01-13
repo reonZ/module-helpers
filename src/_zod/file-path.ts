@@ -17,7 +17,7 @@ function zFilePath(options: zFilePathOptions | FileCategory[]): z.ZodCustom<File
      * @see {@link foundry.data.fields.FilePathField#_validateType}
      */
     return z.custom<FilePath>(
-        (value) => {
+        (value): boolean => {
             if (!R.isString(value)) return false;
 
             // Wildcard or virtual paths
@@ -27,8 +27,7 @@ function zFilePath(options: zFilePathOptions | FileCategory[]): z.ZodCustom<File
             // Allowed extension or base64
             return categories.some((c) => {
                 const category = CONST.FILE_CATEGORIES[c];
-                if (foundry.data.validators.hasFileExtension(value, Object.keys(category)))
-                    return true;
+                if (foundry.data.validators.hasFileExtension(value, Object.keys(category))) return true;
                 return foundry.data.validators.isBase64Data(value, Object.values(category));
             });
         },
@@ -38,7 +37,7 @@ function zFilePath(options: zFilePathOptions | FileCategory[]): z.ZodCustom<File
                 if (base64) err += " or provide valid base64 data";
                 return err;
             },
-        }
+        },
     );
 }
 
