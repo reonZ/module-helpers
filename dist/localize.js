@@ -1,4 +1,9 @@
 import { MODULE, R } from ".";
+function foundryLocalizeIfExist(key) {
+    if (game.i18n.has(key, true)) {
+        return game.i18n.localize(key);
+    }
+}
 function getLocalizeData(...args) {
     const data = R.isObjectType(args.at(-1)) ? args.pop() : undefined;
     const path = localizePath(...args);
@@ -40,4 +45,4 @@ function warning(...args) {
 function error(...args) {
     return notify("error", ...args);
 }
-export { error, info, localize, localizeIfExist, localizePath, notify, sharedLocalize, success, warning, };
+export { error, foundryLocalizeIfExist, info, localize, localizeIfExist, localizePath, notify, sharedLocalize, success, warning, };

@@ -1,3 +1,4 @@
+declare function foundryLocalizeIfExist(key: string): string | undefined;
 declare function localize(...args: LocalizeArgs): string;
 declare function sharedLocalize(key: CollapseOf<LEVIKTIMES>): string;
 declare function localizeIfExist(...args: LocalizeArgs): string | undefined;
@@ -10,5 +11,5 @@ declare function error(...args: NotificationArgs): Notification;
 type LocalizeData = Record<string, any>;
 type NotificationArgs = LocalizeArgs | [...LocalizeArgs, string | LocalizeData | boolean];
 type LocalizeArgs = string[] | [...string[], string | LocalizeData];
-export { error, info, localize, localizeIfExist, localizePath, notify, sharedLocalize, success, warning, };
+export { error, foundryLocalizeIfExist, info, localize, localizeIfExist, localizePath, notify, sharedLocalize, success, warning, };
 export type { LocalizeArgs, LocalizeData, NotificationArgs };

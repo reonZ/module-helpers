@@ -1,5 +1,11 @@
 import { MODULE, R } from ".";
 
+function foundryLocalizeIfExist(key: string): string | undefined {
+    if (game.i18n.has(key, true)) {
+        return game.i18n.localize(key);
+    }
+}
+
 function getLocalizeData(...args: LocalizeArgs): { path: string; data?: LocalizeData } {
     const data = R.isObjectType(args.at(-1)) ? (args.pop() as LocalizeData) : undefined;
     const path = localizePath(...(args as string[]));
@@ -30,10 +36,7 @@ function localizePath(...path: string[]): string {
     return MODULE.path(...path);
 }
 
-function notify(
-    type: "info" | "warning" | "error" | "success",
-    ...args: NotificationArgs
-): Notification {
+function notify(type: "info" | "warning" | "error" | "success", ...args: NotificationArgs): Notification {
     const permanent = R.isBoolean(args.at(-1)) ? (args.pop() as boolean) : false;
     const str = localize(...(args as LocalizeArgs));
     return ui.notifications.notify(str, type, { permanent });
@@ -63,6 +66,7 @@ type LocalizeArgs = string[] | [...string[], string | LocalizeData];
 
 export {
     error,
+    foundryLocalizeIfExist,
     info,
     localize,
     localizeIfExist,
