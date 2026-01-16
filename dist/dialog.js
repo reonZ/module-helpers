@@ -56,11 +56,9 @@ async function waitDialog(options) {
         },
         render: (event, dialog) => {
             requestAnimationFrame(() => {
+                htmlQuery(dialog.element, `input[type="text"]`)?.focus();
                 if (focus) {
                     htmlQuery(dialog.element, `[name="${focus}"]`)?.focus();
-                }
-                else {
-                    htmlQuery(dialog.element, `input[type="text"]`)?.focus();
                 }
             });
             if (onRender) {
@@ -115,9 +113,7 @@ function createFormData(html, { expand = false, disabled, readonly } = {}) {
     return expand ? foundry.utils.expandObject(data) : data;
 }
 function generateDialogTitle(i18n, title, data) {
-    return R.isString(title)
-        ? title
-        : localize(i18n, "title", R.isObjectType(title) ? title : (data ?? {}));
+    return R.isString(title) ? title : localize(i18n, "title", R.isObjectType(title) ? title : (data ?? {}));
 }
 async function generateDialogContent(content, data) {
     if (R.isObjectType(data)) {

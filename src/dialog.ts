@@ -98,10 +98,10 @@ async function waitDialog(options: WaitDialogOptions & { returnOnFalse?: string[
         },
         render: (event, dialog) => {
             requestAnimationFrame(() => {
+                htmlQuery(dialog.element, `input[type="text"]`)?.focus();
+
                 if (focus) {
                     htmlQuery(dialog.element, `[name="${focus}"]`)?.focus();
-                } else {
-                    htmlQuery(dialog.element, `input[type="text"]`)?.focus();
                 }
             });
 
@@ -159,10 +159,7 @@ async function promptDialog(key: string, data: Record<string, string> = {}) {
     });
 }
 
-function createFormData<E extends HTMLFormElement>(
-    html: E,
-    options?: CreateFormDataOptions,
-): Record<string, unknown>;
+function createFormData<E extends HTMLFormElement>(html: E, options?: CreateFormDataOptions): Record<string, unknown>;
 function createFormData<E extends HTMLElement | HTMLFormElement>(
     html: E,
     options?: CreateFormDataOptions,
@@ -193,9 +190,7 @@ function generateDialogTitle(
     title: string | Record<string, any> | undefined,
     data: Record<string, any> | undefined,
 ): string {
-    return R.isString(title)
-        ? title
-        : localize(i18n, "title", R.isObjectType(title) ? title : (data ?? {}));
+    return R.isString(title) ? title : localize(i18n, "title", R.isObjectType(title) ? title : (data ?? {}));
 }
 
 async function generateDialogContent(content: string, data?: Record<string, any>): Promise<string> {
@@ -218,11 +213,10 @@ type ModuleDialogConfiguration = ApplicationConfiguration &
         minWidth?: string;
     };
 
-type ModuleDialogOptions<T extends DeepPartial<ApplicationConfiguration & DialogV2Configuration>> =
-    DeepPartial<T> & {
-        skipAnimate?: boolean;
-        minWidth?: string;
-    };
+type ModuleDialogOptions<T extends DeepPartial<ApplicationConfiguration & DialogV2Configuration>> = DeepPartial<T> & {
+    skipAnimate?: boolean;
+    minWidth?: string;
+};
 
 type BaseDialogOptions = {
     classes?: string[];
