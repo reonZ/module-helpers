@@ -26,7 +26,7 @@ function unsetFlag<D extends Document>(doc: D, ...path: string[]): Promise<D> {
 function updateFlag<T extends Record<string, unknown>, D extends foundry.abstract.Document>(
     doc: D,
     updates: T,
-    operation?: Partial<DatabaseUpdateOperation<D>>
+    operation?: Partial<DatabaseUpdateOperation<D>>,
 ) {
     return doc.update({ flags: { [MODULE.id]: updates } }, operation);
 }
@@ -51,19 +51,13 @@ function deleteFlagProperty<T extends object>(obj: T, ...path: string[]): T {
     return obj;
 }
 
-function setFlagProperties<T extends object>(
-    obj: T,
-    ...args: [...string[], properties: Record<string, any>]
-): T {
+function setFlagProperties<T extends object>(obj: T, ...args: [...string[], properties: Record<string, any>]): T {
     const properties = args.pop();
     foundry.utils.setProperty(obj, flagPath(...(args as string[])), properties);
     return obj;
 }
 
-function updateSourceFlag<T extends Document>(
-    doc: T,
-    ...args: [...string[], any]
-): DeepPartial<T["_source"]> {
+function updateSourceFlag<T extends Document>(doc: T, ...args: [...string[], any]): DeepPartial<T["_source"]> {
     const value = args.pop();
     return doc.updateSource({ [flagPath(...args)]: value });
 }
@@ -114,10 +108,12 @@ function getDataFlag<T extends foundry.abstract.DataModel, D extends Document>(
         const name = Model.name;
         const joinPath = joinStr(".", ...sourcePath);
 
-        MODULE.error(
-            `An error occured while trying the create a '${name}' DataModel at path: '${joinPath}'`,
-            error
-        );
+        if (MODULE.isDebug) {
+            MODULE.error(
+                `An error occured while trying the create a '${name}' DataModel at path: '${joinPath}'`,
+                error,
+            );
+        }
     }
 }
 
@@ -140,11 +136,11 @@ function getDataFlagArray<T extends foundry.abstract.DataModel, D extends Docume
 
                 MODULE.error(
                     `An error occured while trying the create a '${name}' DataModel in the array at path: '${joinPath}'`,
-                    error
+                    error,
                 );
             }
         }),
-        R.filter((model): model is foundry.abstract.DataModel => !!model && !model.invalid)
+        R.filter((model): model is foundry.abstract.DataModel => !!model && !model.invalid),
     );
 
     Object.defineProperty(models, "setFlag", {

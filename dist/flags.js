@@ -80,7 +80,9 @@ function getDataFlag(doc, Model, ...args) {
     catch (error) {
         const name = Model.name;
         const joinPath = joinStr(".", ...sourcePath);
-        MODULE.error(`An error occured while trying the create a '${name}' DataModel at path: '${joinPath}'`, error);
+        if (MODULE.isDebug) {
+            MODULE.error(`An error occured while trying the create a '${name}' DataModel at path: '${joinPath}'`, error);
+        }
     }
 }
 function getDataFlagArray(doc, Model, ...path) {
