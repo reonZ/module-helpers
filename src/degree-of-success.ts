@@ -1,6 +1,7 @@
 import { CheckRoll, DegreeOfSuccessString, StatisticDifficultyClass, ZeroToThree } from "foundry-pf2e";
 import { Die } from "foundry-pf2e/foundry/client-esm/dice/terms/die.js";
 import { NumericTerm } from "foundry-pf2e/foundry/client-esm/dice/terms/numeric-term.js";
+import { R } from ".";
 
 const DEGREE_STRINGS = ["criticalFailure", "failure", "success", "criticalSuccess"] as const;
 
@@ -148,7 +149,7 @@ class DegreeOfSuccess {
     }
 }
 
-function degreeOfSuccessNumber(value: string | number): ZeroToThree | undefined {
+function degreeOfSuccessNumber(value: string | number | undefined): ZeroToThree | undefined {
     return DEGREE_VALUES[value as ZeroToThree];
 }
 
@@ -156,8 +157,8 @@ function degreeOfSuccessString(value: number): DegreeOfSuccessString | undefined
     return DEGREE_STRINGS.at(value);
 }
 
-function isDegreeOfSuccessValue(value: string | number): value is ZeroToThree | DegreeOfSuccessString {
-    return value in DEGREE_VALUES;
+function isDegreeOfSuccessValue(value: unknown): value is ZeroToThree | DegreeOfSuccessString {
+    return (R.isString(value) || R.isNumber(value)) && value in DEGREE_VALUES;
 }
 
 type RollBrief = { dieValue: number; modifier: number };

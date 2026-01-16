@@ -37,9 +37,9 @@ declare class DegreeOfSuccess {
     static readonly SUCCESS = 2;
     static readonly CRITICAL_SUCCESS = 3;
 }
-declare function degreeOfSuccessNumber(value: string | number): ZeroToThree | undefined;
+declare function degreeOfSuccessNumber(value: string | number | undefined): ZeroToThree | undefined;
 declare function degreeOfSuccessString(value: number): DegreeOfSuccessString | undefined;
-declare function isDegreeOfSuccessValue(value: string | number): value is ZeroToThree | DegreeOfSuccessString;
+declare function isDegreeOfSuccessValue(value: unknown): value is ZeroToThree | DegreeOfSuccessString;
 type RollBrief = {
     dieValue: number;
     modifier: number;

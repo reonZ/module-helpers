@@ -1,3 +1,4 @@
+import { R } from ".";
 const DEGREE_STRINGS = ["criticalFailure", "failure", "success", "criticalSuccess"];
 const DEGREE_VALUES = {
     0: 0,
@@ -121,6 +122,6 @@ function degreeOfSuccessString(value) {
     return DEGREE_STRINGS.at(value);
 }
 function isDegreeOfSuccessValue(value) {
-    return value in DEGREE_VALUES;
+    return (R.isString(value) || R.isNumber(value)) && value in DEGREE_VALUES;
 }
 export { DEGREE_ADJUSTMENT_AMOUNTS, DEGREE_STRINGS, DEGREE_VALUES, DegreeOfSuccess, degreeOfSuccessNumber, degreeOfSuccessString, isDegreeOfSuccessValue, };
