@@ -1,3 +1,4 @@
+import { R } from ".";
 import { isInstanceOf } from "./object";
 function selectTokens(tokens) {
     canvas.tokens.releaseAll();
@@ -88,4 +89,12 @@ function getTokenDocument(token) {
             ? token
             : undefined;
 }
-export { emitTokenHover, getFirstActiveToken, getFirstTokenThatMatches, getTokenDocument, hasTokenThatMatches, panToToken, pingToken, positionTokenFromCoords, selectTokens, };
+function getTargetToken(target) {
+    if (!target)
+        return undefined;
+    return target.token ?? target.actor.token ?? getFirstActiveToken(target.actor) ?? undefined;
+}
+function getTargetsTokensUUIDs(targets) {
+    return R.pipe(targets, R.map((target) => getTargetToken(target)?.uuid), R.filter(R.isTruthy));
+}
+export { emitTokenHover, getFirstActiveToken, getFirstTokenThatMatches, getTargetToken, getTargetsTokensUUIDs, getTokenDocument, hasTokenThatMatches, panToToken, pingToken, positionTokenFromCoords, selectTokens, };

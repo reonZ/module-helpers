@@ -1,4 +1,4 @@
-import { getDamageRollClass, R } from ".";
+import { R, getDamageRollClass, getTargetToken } from ".";
 async function rollDamageFromFormula(formula, { actionName, extraRollOptions = [], item, notes = [], origin, skipDialog = false, target, toolbelt, }) {
     const { actor, token } = origin ?? {};
     const traits = R.filter(item?.system.traits.value ?? [], (trait) => trait in CONFIG.PF2E.actionTraits);
@@ -70,9 +70,4 @@ async function rollDamageFromFormula(formula, { actionName, extraRollOptions = [
         flags,
     });
 }
-function getTargetToken(target) {
-    if (!target)
-        return undefined;
-    return target.token ?? target.actor.token ?? target.actor.getActiveTokens().shift()?.document;
-}
-export { getTargetToken, rollDamageFromFormula };
+export { rollDamageFromFormula };

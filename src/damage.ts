@@ -5,9 +5,8 @@ import {
     ItemPF2e,
     RollNotePF2e,
     RollNoteSource,
-    TokenDocumentPF2e,
 } from "foundry-pf2e";
-import { getDamageRollClass, R } from ".";
+import { R, getDamageRollClass, getTargetToken } from ".";
 
 async function rollDamageFromFormula(
     formula: string,
@@ -20,19 +19,19 @@ async function rollDamageFromFormula(
         skipDialog = false,
         target,
         toolbelt,
-    }: RollDamageOptions
+    }: RollDamageOptions,
 ): Promise<ChatMessage> {
     const { actor, token } = origin ?? {};
 
     const traits = R.filter(
         item?.system.traits.value ?? [],
-        (trait): trait is AbilityTrait => trait in CONFIG.PF2E.actionTraits
+        (trait): trait is AbilityTrait => trait in CONFIG.PF2E.actionTraits,
     );
 
     const options = R.pipe(
         [traits, actor?.getRollOptions(), item?.getRollOptions("item"), extraRollOptions],
         R.flat(),
-        R.filter(R.isTruthy)
+        R.filter(R.isTruthy),
     );
 
     const targetToken = getTargetToken(target);
@@ -89,7 +88,7 @@ async function rollDamageFromFormula(
             const tooltip = traitDescriptions[tag];
             return `<span class="tag" data-trait="${tag}" data-tooltip="${tooltip}">${label}</span>`;
         }),
-        R.join("")
+        R.join(""),
     );
     flavor += `</div><hr>`;
 
@@ -105,7 +104,7 @@ async function rollDamageFromFormula(
                 content += note.text;
 
                 return `<li class="roll-note">${content}</li>`;
-            })
+            }),
         );
         flavor += `</ul>`;
     }
@@ -119,11 +118,6 @@ async function rollDamageFromFormula(
         speaker,
         flags,
     });
-}
-
-function getTargetToken(target: Maybe<TargetDocuments>): TokenDocumentPF2e | undefined {
-    if (!target) return undefined;
-    return target.token ?? target.actor.token ?? target.actor.getActiveTokens().shift()?.document;
 }
 
 type RollDamageOptions = {
@@ -142,5 +136,5 @@ type RollDamageToolbeltFlag = Pick<
     "author" | "saveVariants" | "options" | "private" | "traits" | "item" | "targets"
 >;
 
-export { getTargetToken, rollDamageFromFormula };
+export { rollDamageFromFormula };
 export type { RollDamageOptions };

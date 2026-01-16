@@ -1,6 +1,7 @@
 import { ActorPF2e, ScenePF2e, TokenDocumentPF2e, TokenPF2e } from "foundry-pf2e";
-import { isInstanceOf } from "./object";
 import { PingOptions } from "foundry-pf2e/foundry/client/pixi/board.js";
+import { R } from ".";
+import { isInstanceOf } from "./object";
 
 function selectTokens(tokens: (TokenPF2e | TokenDocumentPF2e)[]) {
     canvas.tokens.releaseAll();
@@ -109,10 +110,25 @@ function getTokenDocument(token: unknown): TokenDocumentPF2e | undefined {
           : undefined;
 }
 
+function getTargetToken(target: Maybe<TargetDocuments>): TokenDocumentPF2e | undefined {
+    if (!target) return undefined;
+    return target.token ?? target.actor.token ?? getFirstActiveToken(target.actor) ?? undefined;
+}
+
+function getTargetsTokensUUIDs(targets: TargetDocuments[]): TokenDocumentUUID[] {
+    return R.pipe(
+        targets,
+        R.map((target) => getTargetToken(target)?.uuid),
+        R.filter(R.isTruthy),
+    );
+}
+
 export {
     emitTokenHover,
     getFirstActiveToken,
     getFirstTokenThatMatches,
+    getTargetToken,
+    getTargetsTokensUUIDs,
     getTokenDocument,
     hasTokenThatMatches,
     panToToken,
