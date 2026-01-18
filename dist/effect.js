@@ -80,19 +80,20 @@ function createCustomCondition(options) {
         name: name || `${game.i18n.localize("TYPES.Item.effect")}: ${condition.name}`,
         img: img || condition.img,
         rules: [rule],
+        show: false,
     });
 }
-function createCustomEffect({ duration, img, name, rules, slug, unidentified, }) {
+function createCustomEffect({ duration, img, itemSlug, name, rules, show, unidentified, }) {
     const system = {
         unidentified,
         duration,
-        tokenIcon: { show: false },
+        tokenIcon: { show },
     };
     if (rules?.length) {
         system.rules = rules;
     }
-    if (slug) {
-        system.slug = slug;
+    if (itemSlug) {
+        system.slug = itemSlug;
     }
     if (duration?.origin) {
         const { actor, token } = duration.origin;

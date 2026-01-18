@@ -15,13 +15,13 @@ declare function createPersistentDamageSource(formula: string, damageType: Damag
 };
 declare function createConditionSource(slug: ConditionSlug, counter?: number): PreCreate<ConditionSource> | undefined;
 declare function createCustomCondition(options: CustomConditionOptions): PreCreate<EffectSource> | undefined;
-declare function createCustomEffect({ duration, img, name, rules, slug, unidentified, }: CustomEffectOptions): PreCreate<EffectSource>;
+declare function createCustomEffect({ duration, img, itemSlug, name, rules, show, unidentified, }: CustomEffectOptions): PreCreate<EffectSource>;
 type CustomPersistentDamageOptions = Omit<WithPartial<CustomEffectOptions, "name" | "img">, "slug"> & {
     die: string;
     type: DamageType;
     dc: number;
 };
-type CustomConditionOptions = Omit<WithPartial<CustomEffectOptions, "img" | "name">, "rules" | "slug"> & {
+type CustomConditionOptions = Omit<WithPartial<CustomEffectOptions, "name">, "rules" | "show"> & {
     slug: ConditionSlug;
     counter?: number;
     alterations?: Record<string, JSONValue>[];
@@ -31,10 +31,11 @@ type CustomEffectDuration = DurationData & {
 };
 type CustomEffectOptions = {
     duration?: CustomEffectDuration;
-    img: ImageFilePath;
+    img?: ImageFilePath;
     name: string;
     rules?: RuleElementSource[];
-    slug?: string;
+    show?: boolean;
+    itemSlug?: string;
     unidentified?: boolean;
 };
 interface EffectsPanelViewData {
@@ -52,4 +53,4 @@ interface EffectViewData {
     remaining: string | null;
 }
 export { createConditionSource, createCustomCondition, createCustomEffect, createCustomPersistentDamage, createPersistentDamageSource, };
-export type { CustomConditionOptions, CustomEffectDuration, CustomEffectOptions, EffectsPanelViewData, };
+export type { CustomConditionOptions, CustomEffectDuration, CustomEffectOptions, EffectsPanelViewData };

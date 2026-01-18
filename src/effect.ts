@@ -32,7 +32,7 @@ const PERSISTENT_DAMAGE_IMAGES: Partial<Record<DamageType, ImageFilePath>> = {
 };
 
 function createCustomPersistentDamage(
-    options: CustomPersistentDamageOptions
+    options: CustomPersistentDamageOptions,
 ): PreCreate<EffectSource | ConditionSource> | undefined {
     const { die: formula, type: damageType, dc } = options;
 
@@ -51,17 +51,13 @@ function createCustomPersistentDamage(
 }
 
 function createPersistentDamageSource(formula: string, damageType: DamageType, dc = 15) {
-    const baseConditionSource =
-        game.pf2e.ConditionManager.getCondition("persistent-damage").toObject();
+    const baseConditionSource = game.pf2e.ConditionManager.getCondition("persistent-damage").toObject();
     return foundry.utils.mergeObject(baseConditionSource, {
         system: { persistent: { formula, damageType, dc } },
     });
 }
 
-function createConditionSource(
-    slug: ConditionSlug,
-    counter = 1
-): PreCreate<ConditionSource> | undefined {
+function createConditionSource(slug: ConditionSlug, counter = 1): PreCreate<ConditionSource> | undefined {
     const condition = game.pf2e.ConditionManager.conditions.get(slug);
     if (!condition) return;
 
@@ -74,9 +70,7 @@ function createConditionSource(
     return source;
 }
 
-function createCustomCondition(
-    options: CustomConditionOptions
-): PreCreate<EffectSource> | undefined {
+function createCustomCondition(options: CustomConditionOptions): PreCreate<EffectSource> | undefined {
     const { alterations = [], counter = 1, img, name, slug } = options;
     const condition = game.pf2e.ConditionManager.conditions.get(slug);
     if (!condition) return;
@@ -112,29 +106,31 @@ function createCustomCondition(
         name: name || `${game.i18n.localize("TYPES.Item.effect")}: ${condition.name}`,
         img: img || condition.img,
         rules: [rule],
+        show: false,
     });
 }
 
 function createCustomEffect({
     duration,
     img,
+    itemSlug,
     name,
     rules,
-    slug,
+    show,
     unidentified,
 }: CustomEffectOptions): PreCreate<EffectSource> {
     const system: DeepPartial<EffectSource["system"]> = {
         unidentified,
         duration,
-        tokenIcon: { show: false },
+        tokenIcon: { show },
     };
 
     if (rules?.length) {
         system.rules = rules;
     }
 
-    if (slug) {
-        system.slug = slug;
+    if (itemSlug) {
+        system.slug = itemSlug;
     }
 
     if (duration?.origin) {
@@ -160,19 +156,13 @@ function createCustomEffect({
     };
 }
 
-type CustomPersistentDamageOptions = Omit<
-    WithPartial<CustomEffectOptions, "name" | "img">,
-    "slug"
-> & {
+type CustomPersistentDamageOptions = Omit<WithPartial<CustomEffectOptions, "name" | "img">, "slug"> & {
     die: string;
     type: DamageType;
     dc: number;
 };
 
-type CustomConditionOptions = Omit<
-    WithPartial<CustomEffectOptions, "img" | "name">,
-    "rules" | "slug"
-> & {
+type CustomConditionOptions = Omit<WithPartial<CustomEffectOptions, "name">, "rules" | "show"> & {
     slug: ConditionSlug;
     counter?: number;
     alterations?: Record<string, JSONValue>[];
@@ -184,10 +174,11 @@ type CustomEffectDuration = DurationData & {
 
 type CustomEffectOptions = {
     duration?: CustomEffectDuration;
-    img: ImageFilePath;
+    img?: ImageFilePath;
     name: string;
     rules?: RuleElementSource[];
-    slug?: string;
+    show?: boolean;
+    itemSlug?: string;
     unidentified?: boolean;
 };
 
@@ -212,9 +203,4 @@ export {
     createCustomPersistentDamage,
     createPersistentDamageSource,
 };
-export type {
-    CustomConditionOptions,
-    CustomEffectDuration,
-    CustomEffectOptions,
-    EffectsPanelViewData,
-};
+export type { CustomConditionOptions, CustomEffectDuration, CustomEffectOptions, EffectsPanelViewData };
