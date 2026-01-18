@@ -95,6 +95,16 @@ function isIterable(obj: unknown): obj is IterableIterator<any> {
     return R.isObjectType(obj) && Symbol.iterator in obj && typeof obj[Symbol.iterator] === "function";
 }
 
+function recordToSelectOptions(record: Record<string, string>): { value: string; label: string }[] {
+    return R.pipe(
+        record,
+        R.entries(),
+        R.map(([value, label]) => {
+            return { value, label };
+        }),
+    );
+}
+
 export {
     activateHooksAndWrappers,
     disableHooksAndWrappers,
@@ -103,6 +113,7 @@ export {
     joinStr,
     localeCompare,
     mapToObjByKey,
+    recordToSelectOptions,
     rollDie,
     roundToStep,
     sortByLocaleCompare,

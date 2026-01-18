@@ -15,4 +15,8 @@ declare function sortByLocaleCompare<T extends Record<string, any>>(list: Array<
 declare function waitTimeout(time?: number): Promise<void>;
 declare function mapToObjByKey<T extends Record<string, any>, K extends ExtractKeysForType<T, string> = ExtractKeysForType<T, string>>(arr: T[], key: K): Record<T[K], T>;
 declare function isIterable(obj: unknown): obj is IterableIterator<any>;
-export { activateHooksAndWrappers, disableHooksAndWrappers, isDecimal, isIterable, joinStr, localeCompare, mapToObjByKey, rollDie, roundToStep, sortByLocaleCompare, splitStr, stringBoolean, stringNumber, toggleHooksAndWrappers, waitTimeout, };
+declare function recordToSelectOptions(record: Record<string, string>): {
+    value: string;
+    label: string;
+}[];
+export { activateHooksAndWrappers, disableHooksAndWrappers, isDecimal, isIterable, joinStr, localeCompare, mapToObjByKey, recordToSelectOptions, rollDie, roundToStep, sortByLocaleCompare, splitStr, stringBoolean, stringNumber, toggleHooksAndWrappers, waitTimeout, };
