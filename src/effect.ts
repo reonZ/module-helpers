@@ -5,6 +5,7 @@ import {
     ConditionSource,
     DamageType,
     DurationData,
+    EffectBadgeSource,
     EffectSource,
     GrantItemSource,
     PersistentSourceData,
@@ -111,6 +112,7 @@ function createCustomCondition(options: CustomConditionOptions): PreCreate<Effec
 }
 
 function createCustomEffect({
+    badge,
     duration,
     img,
     itemSlug,
@@ -118,7 +120,7 @@ function createCustomEffect({
     rules,
     show,
     unidentified,
-}: CustomEffectOptions): PreCreate<EffectSource> {
+}: CustomEffectOptions): WithRequired<PreCreate<EffectSource>, "system"> {
     const system: DeepPartial<EffectSource["system"]> = {
         unidentified,
         duration,
@@ -131,6 +133,10 @@ function createCustomEffect({
 
     if (itemSlug) {
         system.slug = itemSlug;
+    }
+
+    if (badge) {
+        system.badge = badge;
     }
 
     if (duration?.origin) {
@@ -156,13 +162,16 @@ function createCustomEffect({
     };
 }
 
-type CustomPersistentDamageOptions = Omit<WithPartial<CustomEffectOptions, "name" | "img">, "slug"> & {
+type CustomPersistentDamageOptions = Omit<
+    WithPartial<CustomEffectOptions, "name" | "img">,
+    "badge" | "rules" | "show"
+> & {
     die: string;
     type: DamageType;
     dc: number;
 };
 
-type CustomConditionOptions = Omit<WithPartial<CustomEffectOptions, "name">, "rules" | "show"> & {
+type CustomConditionOptions = Omit<WithPartial<CustomEffectOptions, "name">, "badge" | "rules" | "show"> & {
     slug: ConditionSlug;
     counter?: number;
     alterations?: Record<string, JSONValue>[];
@@ -173,6 +182,7 @@ type CustomEffectDuration = DurationData & {
 };
 
 type CustomEffectOptions = {
+    badge?: EffectBadgeSource;
     duration?: CustomEffectDuration;
     img?: ImageFilePath;
     name: string;
