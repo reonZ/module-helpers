@@ -64,8 +64,8 @@ function createChatLink(
     return html ? enrichHTML(link) : link;
 }
 
-function getMessageContext(message: ChatMessagePF2e): ChatContextFlag | undefined {
-    return message.getFlag(SYSTEM.id, "context") as ChatContextFlag | undefined;
+function getMessageContext<T extends ChatContextFlag | undefined>(message: ChatMessagePF2e): T {
+    return message.getFlag(SYSTEM.id, "context") as T;
 }
 
 export {

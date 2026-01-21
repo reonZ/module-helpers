@@ -11,5 +11,5 @@ declare function createChatLink(docOrUuid: ClientDocument | string, options: {
     label?: string;
     html?: false;
 }): string;
-declare function getMessageContext(message: ChatMessagePF2e): ChatContextFlag | undefined;
+declare function getMessageContext<T extends ChatContextFlag | undefined>(message: ChatMessagePF2e): T;
 export { createChatLink, getMessageContext, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages, };
