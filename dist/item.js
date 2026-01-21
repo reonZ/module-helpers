@@ -1,4 +1,4 @@
-import { createHTMLElementContent, getActionGlyph, getDamageRollClass, htmlQuery, R, setHasElement, sluggify, traitSlugToObject, } from ".";
+import { R, SYSTEM, createHTMLElementContent, getActionGlyph, getDamageRollClass, htmlQuery, includesAny, setHasElement, sluggify, traitSlugToObject, } from ".";
 /**
  * https://github.com/foundryvtt/pf2e/blob/1465f7190b2b8454094c50fa6d06e9902e0a3c41/src/module/item/base/data/values.ts#L23-L31
  */
@@ -106,9 +106,7 @@ async function getItemSourceFromUuid(uuid, type) {
 }
 function getItemSourceId(item) {
     const isCompendiumItem = item._id && item.pack && !item.isEmbedded;
-    return isCompendiumItem
-        ? item.uuid
-        : item._stats.compendiumSource ?? item._stats.duplicateSource ?? item.uuid;
+    return isCompendiumItem ? item.uuid : (item._stats.compendiumSource ?? item._stats.duplicateSource ?? item.uuid);
 }
 function getItemSlug(item) {
     return item instanceof Item ? item.slug || sluggify(item._source.name) : sluggify(item.name);
@@ -141,7 +139,7 @@ function hasItemWithSlug(actor, slug, type) {
 }
 function itemIsOfType(item, ...types) {
     return (typeof item.name === "string" &&
-        types.some((t) => t === "physical" ? setHasElement(PHYSICAL_ITEM_TYPES, item.type) : item.type === t));
+        types.some((t) => (t === "physical" ? setHasElement(PHYSICAL_ITEM_TYPES, item.type) : item.type === t)));
 }
 function isCastConsumable(item) {
     return ["wand", "scroll"].includes(item.category) && !!item.system.spell;
@@ -154,9 +152,7 @@ async function usePhysicalItem(event, item) {
     const macro = game.toolbelt?.getToolSetting("actionable", "item")
         ? await game.toolbelt.api.actionable.getItemMacro(item)
         : undefined;
-    const use = isConsumable
-        ? () => consumeItem(event, item)
-        : () => game.pf2e.rollItemMacro(item.uuid, event);
+    const use = isConsumable ? () => consumeItem(event, item) : () => game.pf2e.rollItemMacro(item.uuid, event);
     if (macro) {
         // we let the macro handle item consumption
         return macro.execute({
@@ -180,7 +176,7 @@ async function consumeItem(event, item) {
     const actor = item.actor;
     const speaker = ChatMessage.getSpeaker({ actor });
     const flags = {
-        pf2e: {
+        [SYSTEM.id]: {
             origin: {
                 sourceId: item.sourceId,
                 uuid: item.uuid,
@@ -256,8 +252,8 @@ async function equipItemToUse(actor, item, { carryType, handsHeld, fullAnnotatio
     if (!game.combat)
         return;
     const templates = {
-        flavor: "./systems/pf2e/templates/chat/action/flavor.hbs",
-        content: "./systems/pf2e/templates/chat/action/content.hbs",
+        flavor: `./systems/${SYSTEM.id}/templates/chat/action/flavor.hbs`,
+        content: `./systems/${SYSTEM.id}/templates/chat/action/content.hbs`,
     };
     const fullAnnotationKey = sluggify(fullAnnotation, { camel: "bactrian" });
     const flavorAction = {
@@ -291,4 +287,7 @@ async function equipItemToUse(actor, item, { carryType, handsHeld, fullAnnotatio
 function isAreaOrAutoFireType(type) {
     return R.isIncludedIn(type, ["area-fire", "auto-fire"]);
 }
-export { actorItems, equipItemToUse, findAllItemsWithSlug, findAllItemsWithSourceId, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSlug, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isAreaOrAutoFireType, isCastConsumable, isSupressedFeat, ITEM_CARRY_TYPES, itemIsOfType, PHYSICAL_ITEM_TYPES, usePhysicalItem, };
+function isSF2eItem(item) {
+    return includesAny(item._source.system.traits.value, ["tech", "analog"]);
+}
+export { ITEM_CARRY_TYPES, PHYSICAL_ITEM_TYPES, actorItems, equipItemToUse, findAllItemsWithSlug, findAllItemsWithSourceId, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSlug, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isAreaOrAutoFireType, isCastConsumable, isSF2eItem, isSupressedFeat, itemIsOfType, usePhysicalItem, };

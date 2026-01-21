@@ -12,14 +12,15 @@ import {
     ZeroToTwo,
 } from "foundry-pf2e";
 import {
+    R,
+    SYSTEM,
     createHTMLElementContent,
     getActionGlyph,
     getDamageRollClass,
     htmlQuery,
-    R,
+    includesAny,
     setHasElement,
     sluggify,
-    SYSTEM,
     traitSlugToObject,
 } from ".";
 
@@ -428,6 +429,10 @@ function isAreaOrAutoFireType(type: string): type is "area-fire" | "auto-fire" {
     return R.isIncludedIn(type, ["area-fire", "auto-fire"]);
 }
 
+function isSF2eItem<T extends PhysicalItemPF2e>(item: T): boolean {
+    return includesAny(item._source.system.traits.value, ["tech", "analog"]);
+}
+
 type EquipAnnotationData = {
     annotation: AuxiliaryAnnotation;
     cost: 1 | 2;
@@ -442,6 +447,8 @@ type AuxiliaryAnnotation = "draw" | "pick-up" | "retrieve" | "sheathe";
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
 
 export {
+    ITEM_CARRY_TYPES,
+    PHYSICAL_ITEM_TYPES,
     actorItems,
     equipItemToUse,
     findAllItemsWithSlug,
@@ -460,10 +467,9 @@ export {
     hasItemWithSourceId,
     isAreaOrAutoFireType,
     isCastConsumable,
+    isSF2eItem,
     isSupressedFeat,
-    ITEM_CARRY_TYPES,
     itemIsOfType,
-    PHYSICAL_ITEM_TYPES,
     usePhysicalItem,
 };
 export type { EquipAnnotationData };
