@@ -1,5 +1,5 @@
 import { ChatMessagePF2e } from "foundry-pf2e";
-import { enrichHTML } from ".";
+import { SYSTEM, enrichHTML } from ".";
 
 function* latestChatMessages(nb: number, fromMessage?: ChatMessagePF2e): Generator<ChatMessagePF2e, void, undefined> {
     if (!ui.chat) return;
@@ -35,12 +35,12 @@ async function refreshLatestMessages(nb: number) {
 }
 
 function isActionMessage(message: ChatMessagePF2e): boolean {
-    const type = message.getFlag(game.system.id, "origin.type") as string | undefined;
+    const type = message.getFlag(SYSTEM.id, "origin.type") as string | undefined;
     return !!type && ["feat", "action"].includes(type);
 }
 
 function isSpellMessage(message: ChatMessagePF2e): boolean {
-    return typeof message.getFlag(game.system.id, "casting.id") === "string";
+    return typeof message.getFlag(SYSTEM.id, "casting.id") === "string";
 }
 
 function createChatLink(docOrUuid: ClientDocument | string, options?: { label?: string; html: true }): Promise<string>;

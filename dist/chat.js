@@ -1,4 +1,4 @@
-import { enrichHTML } from ".";
+import { SYSTEM, enrichHTML } from ".";
 function* latestChatMessages(nb, fromMessage) {
     if (!ui.chat)
         return;
@@ -28,11 +28,11 @@ async function refreshLatestMessages(nb) {
     }
 }
 function isActionMessage(message) {
-    const type = message.getFlag(game.system.id, "origin.type");
+    const type = message.getFlag(SYSTEM.id, "origin.type");
     return !!type && ["feat", "action"].includes(type);
 }
 function isSpellMessage(message) {
-    return typeof message.getFlag(game.system.id, "casting.id") === "string";
+    return typeof message.getFlag(SYSTEM.id, "casting.id") === "string";
 }
 function createChatLink(docOrUuid, { label, html } = {}) {
     const isDocument = docOrUuid instanceof foundry.abstract.Document;

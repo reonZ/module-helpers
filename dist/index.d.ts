@@ -39,6 +39,7 @@ export * from "./socket";
 export * from "./spell-consumable";
 export * from "./spell";
 export * from "./spellcasting";
+export * from "./system";
 export * from "./template";
 export * from "./text-editor";
 export * from "./time";
