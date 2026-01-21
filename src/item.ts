@@ -19,6 +19,7 @@ import {
     R,
     setHasElement,
     sluggify,
+    SYSTEM,
     traitSlugToObject,
 } from ".";
 
@@ -291,7 +292,7 @@ async function consumeItem(event: Event, item: ConsumablePF2e<ActorPF2e>) {
     const actor = item.actor;
     const speaker = ChatMessage.getSpeaker({ actor });
     const flags = {
-        pf2e: {
+        [SYSTEM.id]: {
             origin: {
                 sourceId: item.sourceId,
                 uuid: item.uuid,
@@ -384,8 +385,8 @@ async function equipItemToUse(
     if (!game.combat) return;
 
     const templates = {
-        flavor: "./systems/pf2e/templates/chat/action/flavor.hbs",
-        content: "./systems/pf2e/templates/chat/action/content.hbs",
+        flavor: `./systems/${SYSTEM.id}/templates/chat/action/flavor.hbs`,
+        content: `./systems/${SYSTEM.id}/templates/chat/action/content.hbs`,
     };
 
     const fullAnnotationKey = sluggify(fullAnnotation, { camel: "bactrian" });
