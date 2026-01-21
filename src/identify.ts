@@ -30,7 +30,7 @@ function getMagicTraditions(item: PhysicalItemPF2e): Set<MagicTradition> {
 function getIdentifyMagicDCs(
     item: PhysicalItemPF2e,
     baseDC: number,
-    notMatchingTraditionModifier: number
+    notMatchingTraditionModifier: number,
 ): IdentifyMagicDCs {
     const result = {
         occult: baseDC,
@@ -62,11 +62,8 @@ function getItemIdentificationDCs(
     item: PhysicalItemPF2e,
     { pwol = false, notMatchingTraditionModifier }: IdentifyItemOptions = {
         pwol: game.pf2e.settings.variants.pwol.enabled,
-        notMatchingTraditionModifier: game.settings.get(
-            "pf2e",
-            "identifyMagicNotMatchingTraditionModifier"
-        ),
-    }
+        notMatchingTraditionModifier: game.settings.get("pf2e", "identifyMagicNotMatchingTraditionModifier"),
+    },
 ): IdentifyMagicDCs | IdentifyAlchemyDCs {
     const baseDC = calculateDC(item.level, { pwol });
     const rarity = getDcRarity(item);
@@ -96,10 +93,7 @@ class IdentifyItemPopup extends appv1.api.FormApplication<PhysicalItemPF2e> {
 
     dcs = getItemIdentificationDCs(this.object, {
         pwol: game.pf2e.settings.variants.pwol.enabled,
-        notMatchingTraditionModifier: game.settings.get(
-            "pf2e",
-            "identifyMagicNotMatchingTraditionModifier"
-        ),
+        notMatchingTraditionModifier: game.settings.get("pf2e", "identifyMagicNotMatchingTraditionModifier"),
     });
 
     override async getData(): Promise<IdentifyPopupData> {
@@ -117,11 +111,7 @@ class IdentifyItemPopup extends appv1.api.FormApplication<PhysicalItemPF2e> {
         const item = this.object;
         const identifiedName = item.system.identification.identified.name;
         const dcs: Record<string, number> = this.dcs;
-        const action = item.isMagical
-            ? "identify-magic"
-            : item.isAlchemical
-            ? "identify-alchemy"
-            : "recall-knowledge";
+        const action = item.isMagical ? "identify-magic" : item.isAlchemical ? "identify-alchemy" : "recall-knowledge";
 
         const path = "systems/pf2e/templates/actors/identify-item-chat-skill-checks.hbs";
         const content = await foundry.applications.handlebars.renderTemplate(path, {
@@ -149,10 +139,7 @@ class IdentifyItemPopup extends appv1.api.FormApplication<PhysicalItemPF2e> {
         });
     }
 
-    protected override async _updateObject(
-        _event: Event,
-        formData: Record<string, unknown>
-    ): Promise<void> {
+    protected override async _updateObject(_event: Event, formData: Record<string, unknown>): Promise<void> {
         const status = formData["status"];
         if (status === "identified") {
             return this.object.setIdentificationStatus(status);
