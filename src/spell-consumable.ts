@@ -37,10 +37,7 @@ const SPELL_CONSUMABLE_NAME_TEMPLATES = {
 /**
  * https://github.com/foundryvtt/pf2e/blob/4cbdaa37d6c33e9519561bae2c59a23e0288cbce/src/module/item/consumable/spell-consumables.ts#L44
  */
-function getIdForSpellConsumable(
-    type: SpellConsumableItemType,
-    heightenedLevel: number
-): string | null {
+function getIdForSpellConsumable(type: SpellConsumableItemType, heightenedLevel: number): string | null {
     switch (type) {
         case "cantripDeck5":
             return CANTRIP_DECK_ID;
@@ -54,11 +51,7 @@ function getIdForSpellConsumable(
 /**
  * https://github.com/foundryvtt/pf2e/blob/4cbdaa37d6c33e9519561bae2c59a23e0288cbce/src/module/item/consumable/spell-consumables.ts#L55
  */
-function getNameForSpellConsumable(
-    type: SpellConsumableItemType,
-    spellName: string,
-    heightenedLevel: number
-): string {
+function getNameForSpellConsumable(type: SpellConsumableItemType, spellName: string, heightenedLevel: number): string {
     const templateId = SPELL_CONSUMABLE_NAME_TEMPLATES[type] || `${type} of {name} (Level {level})`;
     return game.i18n.format(templateId, { name: spellName, level: heightenedLevel });
 }
@@ -84,7 +77,7 @@ async function createConsumableFromSpell(
         temp?: boolean;
         itemName?: string;
         itemImg?: ImageFilePath;
-    }
+    },
 ): Promise<ConsumableSource> {
     const pack = game.packs.find((p) => p.collection === "pf2e.equipment-srd");
     const itemId = getIdForSpellConsumable(type, heightenedLevel);
@@ -98,10 +91,7 @@ async function createConsumableFromSpell(
     const traits = consumableSource.system.traits;
     traits.value = R.unique([...traits.value, ...spell.system.traits.value]);
     traits.rarity = spell.rarity;
-    if (
-        traits.value.includes("magical") &&
-        traits.value.some((t) => setHasElement(MAGIC_TRADITIONS, t))
-    ) {
+    if (traits.value.includes("magical") && traits.value.some((t) => setHasElement(MAGIC_TRADITIONS, t))) {
         traits.value.splice(traits.value.indexOf("magical"), 1);
     }
     traits.value.sort();
@@ -109,15 +99,13 @@ async function createConsumableFromSpell(
     consumableSource.name = getNameForSpellConsumable(
         (itemName ?? type) as SpellConsumableItemType,
         spell.name,
-        heightenedLevel
+        heightenedLevel,
     );
     const description = consumableSource.system.description.value;
 
     consumableSource.system.description.value = (() => {
         const paragraphElement = document.createElement("p");
-        paragraphElement.append(
-            spell.sourceId ? `@UUID[${spell.sourceId}]{${spell.name}}` : spell.description
-        );
+        paragraphElement.append(spell.sourceId ? `@UUID[${spell.sourceId}]{${spell.name}}` : spell.description);
 
         const containerElement = document.createElement("div");
         const hrElement = document.createElement("hr");
@@ -135,7 +123,7 @@ async function createConsumableFromSpell(
                 _id: foundry.utils.randomID(),
                 system: { location: { value: null, heightenedLevel } },
             },
-            { inplace: false }
+            { inplace: false },
         );
     }
 
