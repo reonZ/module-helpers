@@ -1,4 +1,4 @@
-import { ChatMessagePF2e } from "foundry-pf2e";
+import { ChatContextFlag, ChatMessagePF2e } from "foundry-pf2e";
 declare function latestChatMessages(nb: number, fromMessage?: ChatMessagePF2e): Generator<ChatMessagePF2e, void, undefined>;
 declare function refreshLatestMessages(nb: number): Promise<void>;
 declare function isActionMessage(message: ChatMessagePF2e): boolean;
@@ -11,4 +11,5 @@ declare function createChatLink(docOrUuid: ClientDocument | string, options: {
     label?: string;
     html?: false;
 }): string;
-export { createChatLink, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages };
+declare function getMessageContext(message: ChatMessagePF2e): ChatContextFlag | undefined;
+export { createChatLink, getMessageContext, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages, };

@@ -1,4 +1,4 @@
-import { ChatMessagePF2e } from "foundry-pf2e";
+import { ChatContextFlag, ChatMessagePF2e } from "foundry-pf2e";
 import { SYSTEM, enrichHTML } from ".";
 
 function* latestChatMessages(nb: number, fromMessage?: ChatMessagePF2e): Generator<ChatMessagePF2e, void, undefined> {
@@ -64,4 +64,15 @@ function createChatLink(
     return html ? enrichHTML(link) : link;
 }
 
-export { createChatLink, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages };
+function getMessageContext(message: ChatMessagePF2e): ChatContextFlag | undefined {
+    return message.getFlag(SYSTEM.id, "context") as ChatContextFlag | undefined;
+}
+
+export {
+    createChatLink,
+    getMessageContext,
+    isActionMessage,
+    isSpellMessage,
+    latestChatMessages,
+    refreshLatestMessages,
+};

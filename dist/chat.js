@@ -45,4 +45,7 @@ function createChatLink(docOrUuid, { label, html } = {}) {
     }
     return html ? enrichHTML(link) : link;
 }
-export { createChatLink, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages };
+function getMessageContext(message) {
+    return message.getFlag(SYSTEM.id, "context");
+}
+export { createChatLink, getMessageContext, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages, };
