@@ -1,5 +1,5 @@
 import { HelperDelegate, HelperOptions } from "handlebars";
-import { htmlQuery, joinStr, localize, LocalizeData, MODULE, R } from ".";
+import { htmlQuery, joinStr, localize, LocalizeData, MODULE, R, SYSTEM } from ".";
 
 function templatePath(...path: string[]): string {
     return `modules/${MODULE.id}/templates/${joinStr("/", path)}.hbs`;
@@ -10,10 +10,7 @@ function imagePath(...args: [...string[], "svg" | "webp"]): ImageFilePath {
     return `modules/${MODULE.id}/images/${joinStr("/", args)}.${ext}` as ImageFilePath;
 }
 
-function render<TData extends RenderTemplateData>(
-    template: string,
-    data = {} as TData
-): Promise<string> {
+function render<TData extends RenderTemplateData>(template: string, data = {} as TData): Promise<string> {
     template = template.replace(/\./, "/");
 
     if (R.isString(data.i18n)) {
@@ -21,6 +18,8 @@ function render<TData extends RenderTemplateData>(
     } else if (!("i18n" in data)) {
         data.i18n = templateLocalize(template.replace(/\//, "."));
     }
+
+    data.isSF2e ??= SYSTEM.isSF2e;
 
     const path = templatePath(template);
     return foundry.applications.handlebars.renderTemplate(path, data);
@@ -112,19 +111,11 @@ function postSyncElement(newElement: HTMLElement, state: SyncElementState) {
 
 type SyncElementState = { focus?: string; scrollPositions: [HTMLElement, number][] };
 
-type RenderTemplateData = Record<string, any> & { i18n?: string | TemplateLocalize };
+type RenderTemplateData = Record<string, any> & { i18n?: string | TemplateLocalize; isSF2e?: boolean };
 
 type TemplateLocalize = ReturnType<typeof templateLocalize>;
 
 type TemplateToolipOptions = LocalizeData & { localize?: boolean };
 
-export {
-    imagePath,
-    preSyncElement,
-    render,
-    postSyncElement,
-    templateLocalize,
-    templatePath,
-    templateTooltip,
-};
+export { imagePath, preSyncElement, render, postSyncElement, templateLocalize, templatePath, templateTooltip };
 export type { RenderTemplateData, SyncElementState, TemplateLocalize };

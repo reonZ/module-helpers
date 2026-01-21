@@ -14,10 +14,11 @@ type SyncElementState = {
 };
 type RenderTemplateData = Record<string, any> & {
     i18n?: string | TemplateLocalize;
+    isSF2e?: boolean;
 };
 type TemplateLocalize = ReturnType<typeof templateLocalize>;
 type TemplateToolipOptions = LocalizeData & {
     localize?: boolean;
 };
-export { imagePath, preSyncElement, render, postSyncElement, templateLocalize, templatePath, templateTooltip, };
+export { imagePath, preSyncElement, render, postSyncElement, templateLocalize, templatePath, templateTooltip };
 export type { RenderTemplateData, SyncElementState, TemplateLocalize };

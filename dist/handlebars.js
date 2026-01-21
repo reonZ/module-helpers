@@ -1,4 +1,4 @@
-import { htmlQuery, joinStr, localize, MODULE, R } from ".";
+import { htmlQuery, joinStr, localize, MODULE, R, SYSTEM } from ".";
 function templatePath(...path) {
     return `modules/${MODULE.id}/templates/${joinStr("/", path)}.hbs`;
 }
@@ -14,6 +14,7 @@ function render(template, data = {}) {
     else if (!("i18n" in data)) {
         data.i18n = templateLocalize(template.replace(/\//, "."));
     }
+    data.isSF2e ??= SYSTEM.isSF2e;
     const path = templatePath(template);
     return foundry.applications.handlebars.renderTemplate(path, data);
 }
@@ -83,4 +84,4 @@ function postSyncElement(newElement, state) {
         el.scrollTop = scrollTop;
     }
 }
-export { imagePath, preSyncElement, render, postSyncElement, templateLocalize, templatePath, templateTooltip, };
+export { imagePath, preSyncElement, render, postSyncElement, templateLocalize, templatePath, templateTooltip };
