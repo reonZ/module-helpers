@@ -20,6 +20,8 @@ function render<TData extends RenderTemplateData>(template: string, data = {} as
     }
 
     data.isSF2e ??= SYSTEM.isSF2e;
+    data.systemId = SYSTEM.id;
+    data.systemPartial = (path: string) => `systems/${SYSTEM.id}/templates/${path}`;
 
     const path = templatePath(template);
     return foundry.applications.handlebars.renderTemplate(path, data);
@@ -111,7 +113,12 @@ function postSyncElement(newElement: HTMLElement, state: SyncElementState) {
 
 type SyncElementState = { focus?: string; scrollPositions: [HTMLElement, number][] };
 
-type RenderTemplateData = Record<string, any> & { i18n?: string | TemplateLocalize; isSF2e?: boolean };
+type RenderTemplateData = Record<string, any> & {
+    i18n?: string | TemplateLocalize;
+    isSF2e?: boolean;
+    systemId?: "pf2e" | "sf2e";
+    systemPartial?: (path: string) => string;
+};
 
 type TemplateLocalize = ReturnType<typeof templateLocalize>;
 

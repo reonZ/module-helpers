@@ -15,6 +15,8 @@ type SyncElementState = {
 type RenderTemplateData = Record<string, any> & {
     i18n?: string | TemplateLocalize;
     isSF2e?: boolean;
+    systemId?: "pf2e" | "sf2e";
+    systemPartial?: (path: string) => string;
 };
 type TemplateLocalize = ReturnType<typeof templateLocalize>;
 type TemplateToolipOptions = LocalizeData & {

@@ -15,6 +15,8 @@ function render(template, data = {}) {
         data.i18n = templateLocalize(template.replace(/\//, "."));
     }
     data.isSF2e ??= SYSTEM.isSF2e;
+    data.systemId = SYSTEM.id;
+    data.systemPartial = (path) => `systems/${SYSTEM.id}/templates/${path}`;
     const path = templatePath(template);
     return foundry.applications.handlebars.renderTemplate(path, data);
 }
