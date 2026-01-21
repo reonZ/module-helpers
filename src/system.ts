@@ -1,6 +1,6 @@
 const SYSTEM = {
-    get id(): "pf2e" | "sf2e" {
-        return game.system.id as "pf2e" | "sf2e";
+    get id(): SystemId {
+        return game.system.id as SystemId;
     },
     get isPF2e(): boolean {
         return this.id === "pf2e";
@@ -11,6 +11,11 @@ const SYSTEM = {
     path<T extends string>(tail: T): () => `systems/${SystemId}/${T}` {
         return (): `systems/${SystemId}/${T}` => {
             return `systems/${this.id}/${tail}`;
+        };
+    },
+    uuid<P extends CompendiumUUID, S extends CompendiumUUID>(pf2e: P, sf2e: S): () => P | S {
+        return (): P | S => {
+            return this.isSF2e ? sf2e : pf2e;
         };
     },
 };

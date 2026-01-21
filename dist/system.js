@@ -13,5 +13,10 @@ const SYSTEM = {
             return `systems/${this.id}/${tail}`;
         };
     },
+    uuid(pf2e, sf2e) {
+        return () => {
+            return this.isSF2e ? sf2e : pf2e;
+        };
+    },
 };
 export { SYSTEM };
