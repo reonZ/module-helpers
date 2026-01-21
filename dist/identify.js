@@ -1,4 +1,4 @@
-import { adjustDCByRarity, calculateDC, MAGIC_TRADITIONS, R, setHasElement } from ".";
+import { adjustDCByRarity, calculateDC, MAGIC_TRADITIONS, R, setHasElement, SYSTEM } from ".";
 var appv1 = foundry.appv1;
 /**
  * https://github.com/foundryvtt/pf2e/blob/0191f1fdac24c3903a939757a315043d1fcbfa59/src/module/item/identification.ts#L29
@@ -44,7 +44,7 @@ function getIdentifyMagicDCs(item, baseDC, notMatchingTraditionModifier) {
  */
 function getItemIdentificationDCs(item, { pwol = false, notMatchingTraditionModifier } = {
     pwol: game.pf2e.settings.variants.pwol.enabled,
-    notMatchingTraditionModifier: game.settings.get("pf2e", "identifyMagicNotMatchingTraditionModifier"),
+    notMatchingTraditionModifier: game.settings.get(SYSTEM.id, "identifyMagicNotMatchingTraditionModifier"),
 }) {
     const baseDC = calculateDC(item.level, { pwol });
     const rarity = getDcRarity(item);
@@ -66,15 +66,12 @@ class IdentifyItemPopup extends appv1.api.FormApplication {
             ...super.defaultOptions,
             id: "identify-item",
             title: game.i18n.localize("PF2E.identification.Identify"),
-            template: "systems/pf2e/templates/actors/identify-item.hbs",
+            template: `systems/${SYSTEM.id}/templates/actors/identify-item.hbs`,
             width: "auto",
             classes: ["identify-popup"],
         };
     }
-    dcs = getItemIdentificationDCs(this.object, {
-        pwol: game.pf2e.settings.variants.pwol.enabled,
-        notMatchingTraditionModifier: game.settings.get("pf2e", "identifyMagicNotMatchingTraditionModifier"),
-    });
+    dcs = getItemIdentificationDCs(this.object);
     async getData() {
         const item = this.object;
         return {
@@ -84,17 +81,13 @@ class IdentifyItemPopup extends appv1.api.FormApplication {
             dcs: this.dcs,
         };
     }
-    // we extracted that part from activateListeners so it can be called from thirdt party
+    // we extracted that part from activateListeners so it can be called from third party
     async postSkillChecks() {
         const item = this.object;
         const identifiedName = item.system.identification.identified.name;
         const dcs = this.dcs;
-        const action = item.isMagical
-            ? "identify-magic"
-            : item.isAlchemical
-                ? "identify-alchemy"
-                : "recall-knowledge";
-        const path = "systems/pf2e/templates/actors/identify-item-chat-skill-checks.hbs";
+        const action = item.isMagical ? "identify-magic" : item.isAlchemical ? "identify-alchemy" : "recall-knowledge";
+        const path = `systems/${SYSTEM.id}/templates/actors/identify-item-chat-skill-checks.hbs`;
         const content = await foundry.applications.handlebars.renderTemplate(path, {
             identifiedName,
             action,

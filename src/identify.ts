@@ -6,7 +6,7 @@ import {
     PhysicalItemPF2e,
     Rarity,
 } from "foundry-pf2e";
-import { adjustDCByRarity, calculateDC, MAGIC_TRADITIONS, R, setHasElement } from ".";
+import { adjustDCByRarity, calculateDC, MAGIC_TRADITIONS, R, setHasElement, SYSTEM } from ".";
 import appv1 = foundry.appv1;
 
 /**
@@ -62,7 +62,7 @@ function getItemIdentificationDCs(
     item: PhysicalItemPF2e,
     { pwol = false, notMatchingTraditionModifier }: IdentifyItemOptions = {
         pwol: game.pf2e.settings.variants.pwol.enabled,
-        notMatchingTraditionModifier: game.settings.get("pf2e", "identifyMagicNotMatchingTraditionModifier"),
+        notMatchingTraditionModifier: game.settings.get(SYSTEM.id, "identifyMagicNotMatchingTraditionModifier"),
     },
 ): IdentifyMagicDCs | IdentifyAlchemyDCs {
     const baseDC = calculateDC(item.level, { pwol });
@@ -85,16 +85,13 @@ class IdentifyItemPopup extends appv1.api.FormApplication<PhysicalItemPF2e> {
             ...super.defaultOptions,
             id: "identify-item",
             title: game.i18n.localize("PF2E.identification.Identify"),
-            template: "systems/pf2e/templates/actors/identify-item.hbs",
+            template: `systems/${SYSTEM.id}/templates/actors/identify-item.hbs`,
             width: "auto",
             classes: ["identify-popup"],
         };
     }
 
-    dcs = getItemIdentificationDCs(this.object, {
-        pwol: game.pf2e.settings.variants.pwol.enabled,
-        notMatchingTraditionModifier: game.settings.get("pf2e", "identifyMagicNotMatchingTraditionModifier"),
-    });
+    dcs = getItemIdentificationDCs(this.object);
 
     override async getData(): Promise<IdentifyPopupData> {
         const item = this.object;
@@ -106,14 +103,14 @@ class IdentifyItemPopup extends appv1.api.FormApplication<PhysicalItemPF2e> {
         };
     }
 
-    // we extracted that part from activateListeners so it can be called from thirdt party
+    // we extracted that part from activateListeners so it can be called from third party
     async postSkillChecks() {
         const item = this.object;
         const identifiedName = item.system.identification.identified.name;
         const dcs: Record<string, number> = this.dcs;
         const action = item.isMagical ? "identify-magic" : item.isAlchemical ? "identify-alchemy" : "recall-knowledge";
 
-        const path = "systems/pf2e/templates/actors/identify-item-chat-skill-checks.hbs";
+        const path = `systems/${SYSTEM.id}/templates/actors/identify-item-chat-skill-checks.hbs`;
         const content = await foundry.applications.handlebars.renderTemplate(path, {
             identifiedName,
             action,
