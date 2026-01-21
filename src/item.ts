@@ -52,14 +52,14 @@ const PHYSICAL_ITEM_TYPES = new Set([
 
 function* actorItems<TType extends ItemType, TActor extends ActorPF2e>(
     actor: TActor,
-    type?: TType | TType[]
+    type?: TType | TType[],
 ): Generator<ItemInstances<TActor>[TType]> {
     const types =
         R.isArray(type) && type.length
             ? type
             : typeof type === "string"
-            ? [type]
-            : R.keys(CONFIG.PF2E.Item.documentClasses);
+              ? [type]
+              : R.keys(CONFIG.PF2E.Item.documentClasses);
 
     for (const type of types) {
         for (const item of actor.itemTypes[type]) {
@@ -73,7 +73,7 @@ function isSupressedFeat<TActor extends ActorPF2e | null>(item: ItemPF2e<TActor>
 }
 
 function isItemEntry(
-    item: Maybe<ClientDocument | CompendiumIndexData>
+    item: Maybe<ClientDocument | CompendiumIndexData>,
 ): item is (CompendiumIndexData & { type: ItemType }) | ItemPF2e {
     return R.isObjectType(item) && "type" in item && item.type in CONFIG.PF2E.Item.documentClasses;
 }
@@ -86,7 +86,7 @@ function itemTypeFromUuid<TType extends ItemType>(uuid: string) {
 function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     actor: TActor,
     uuid: string,
-    type?: TType
+    type?: TType,
 ): ItemInstances<TActor>[TType] | null {
     type ??= itemTypeFromUuid(uuid);
 
@@ -105,7 +105,7 @@ function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
 function findAllItemsWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     actor: TActor,
     uuid: string,
-    type?: TType
+    type?: TType,
 ): ItemInstances<TActor>[TType][] {
     const items: ItemInstances<TActor>[TType][] = [];
 
@@ -140,16 +140,10 @@ function hasAnyItemWithSourceId(actor: ActorPF2e, uuids: string[], type?: ItemTy
 
 async function getItemFromUuid<T extends ItemType>(
     uuid: Maybe<string>,
-    type: T
+    type: T,
 ): Promise<ItemInstances<ActorPF2e>[T] | null>;
-async function getItemFromUuid(
-    uuid: Maybe<string>,
-    type: "physical"
-): Promise<PhysicalItemPF2e<ActorPF2e> | null>;
-async function getItemFromUuid(
-    uuid: Maybe<string>,
-    type?: ItemType | "physical"
-): Promise<ItemPF2e | null>;
+async function getItemFromUuid(uuid: Maybe<string>, type: "physical"): Promise<PhysicalItemPF2e<ActorPF2e> | null>;
+async function getItemFromUuid(uuid: Maybe<string>, type?: ItemType | "physical"): Promise<ItemPF2e | null>;
 async function getItemFromUuid(uuid: Maybe<string>, type?: ItemType | "physical") {
     if (!uuid) return null;
     const item = await fromUuid<ItemPF2e>(uuid);
@@ -171,16 +165,10 @@ function getItemSource<T extends ItemPF2e>(item: T, clearId?: boolean): T["_sour
 
 async function getItemSourceFromUuid<T extends ItemType>(
     uuid: string,
-    type: T
+    type: T,
 ): Promise<ItemInstances<ActorPF2e>[T]["_source"] | null>;
-async function getItemSourceFromUuid(
-    uuid: string,
-    type: "physical"
-): Promise<PhysicalItemPF2e["_source"] | null>;
-async function getItemSourceFromUuid(
-    uuid: string,
-    type?: ItemType | "physical"
-): Promise<ItemSourcePF2e | null>;
+async function getItemSourceFromUuid(uuid: string, type: "physical"): Promise<PhysicalItemPF2e["_source"] | null>;
+async function getItemSourceFromUuid(uuid: string, type?: ItemType | "physical"): Promise<ItemSourcePF2e | null>;
 async function getItemSourceFromUuid(uuid: string, type?: ItemType | "physical") {
     const item = await getItemFromUuid(uuid, type);
     return !!item ? getItemSource(item) : null;
@@ -188,9 +176,7 @@ async function getItemSourceFromUuid(uuid: string, type?: ItemType | "physical")
 
 function getItemSourceId(item: ItemPF2e): ItemUUID {
     const isCompendiumItem = item._id && item.pack && !item.isEmbedded;
-    return isCompendiumItem
-        ? item.uuid
-        : item._stats.compendiumSource ?? item._stats.duplicateSource ?? item.uuid;
+    return isCompendiumItem ? item.uuid : (item._stats.compendiumSource ?? item._stats.duplicateSource ?? item.uuid);
 }
 
 function getItemSlug(item: ItemPF2e | CompendiumIndexData): string {
@@ -200,7 +186,7 @@ function getItemSlug(item: ItemPF2e | CompendiumIndexData): string {
 function findItemWithSlug<TType extends ItemType, TActor extends ActorPF2e>(
     actor: TActor,
     slug: string,
-    type?: TType
+    type?: TType,
 ): ItemInstances<TActor>[TType] | null {
     for (const item of actorItems(actor, type)) {
         if (isSupressedFeat(item)) continue;
@@ -217,7 +203,7 @@ function findItemWithSlug<TType extends ItemType, TActor extends ActorPF2e>(
 function findAllItemsWithSlug<TType extends ItemType, TActor extends ActorPF2e>(
     actor: TActor,
     slug: string,
-    type?: TType
+    type?: TType,
 ): ItemInstances<TActor>[TType][] {
     const items: ItemInstances<TActor>[TType][] = [];
 
@@ -250,18 +236,16 @@ function itemIsOfType<TParent extends ActorPF2e | null, TType extends "physical"
 ): item is TType extends "physical"
     ? PhysicalItemPF2e<TParent> | PhysicalItemPF2e<TParent>["_source"]
     : TType extends ItemType
-    ? ItemInstances<TParent>[TType] | ItemInstances<TParent>[TType]["_source"]
-    : never;
+      ? ItemInstances<TParent>[TType] | ItemInstances<TParent>[TType]["_source"]
+      : never;
 function itemIsOfType<TParent extends ActorPF2e | null>(
     item: ItemOrSource,
-    type: "physical"
+    type: "physical",
 ): item is PhysicalItemPF2e<TParent> | PhysicalItemPF2e["_source"];
 function itemIsOfType(item: ItemOrSource, ...types: string[]): boolean {
     return (
         typeof item.name === "string" &&
-        types.some((t) =>
-            t === "physical" ? setHasElement(PHYSICAL_ITEM_TYPES, item.type) : item.type === t
-        )
+        types.some((t) => (t === "physical" ? setHasElement(PHYSICAL_ITEM_TYPES, item.type) : item.type === t))
     );
 }
 
@@ -269,10 +253,7 @@ function isCastConsumable(item: ConsumablePF2e): boolean {
     return ["wand", "scroll"].includes(item.category) && !!item.system.spell;
 }
 
-async function usePhysicalItem(
-    event: Event,
-    item: EquipmentPF2e<ActorPF2e> | ConsumablePF2e<ActorPF2e>
-) {
+async function usePhysicalItem(event: Event, item: EquipmentPF2e<ActorPF2e> | ConsumablePF2e<ActorPF2e>) {
     const isConsumable = item.isOfType("consumable");
 
     if (isConsumable && isCastConsumable(item)) {
@@ -283,9 +264,7 @@ async function usePhysicalItem(
         ? await game.toolbelt.api.actionable.getItemMacro(item)
         : undefined;
 
-    const use = isConsumable
-        ? () => consumeItem(event, item)
-        : () => game.pf2e.rollItemMacro(item.uuid, event);
+    const use = isConsumable ? () => consumeItem(event, item) : () => game.pf2e.rollItemMacro(item.uuid, event);
 
     if (macro) {
         // we let the macro handle item consumption
@@ -373,8 +352,7 @@ function getEquipAnnotation(item: Maybe<PhysicalItemPF2e>): EquipAnnotationData 
     if (!item || item.isEquipped) return;
 
     const { type, hands = 0 } = item.system.usage;
-    const annotation =
-        item.carryType === "dropped" ? "pick-up" : item.isStowed ? "retrieve" : "draw";
+    const annotation = item.carryType === "dropped" ? "pick-up" : item.isStowed ? "retrieve" : "draw";
     const fullAnnotation = `${annotation}${hands}H`;
     const purposeKey = sluggify(fullAnnotation, { camel: "bactrian" });
 
@@ -400,7 +378,7 @@ async function equipItemToUse(
         handsHeld,
         fullAnnotation,
         cost,
-    }: Pick<EquipAnnotationData, "carryType" | "handsHeld" | "fullAnnotation" | "cost">
+    }: Pick<EquipAnnotationData, "carryType" | "handsHeld" | "fullAnnotation" | "cost">,
 ) {
     await actor.changeCarryType(item, { carryType, handsHeld });
     if (!game.combat) return;
