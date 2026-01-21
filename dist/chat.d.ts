@@ -11,4 +11,4 @@ declare function createChatLink(docOrUuid: ClientDocument | string, options: {
     label?: string;
     html?: false;
 }): string;
-export { createChatLink, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages, };
+export { createChatLink, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages };

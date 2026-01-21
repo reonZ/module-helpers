@@ -28,11 +28,11 @@ async function refreshLatestMessages(nb) {
     }
 }
 function isActionMessage(message) {
-    const type = message.getFlag("pf2e", "origin.type");
+    const type = message.getFlag(game.system.id, "origin.type");
     return !!type && ["feat", "action"].includes(type);
 }
 function isSpellMessage(message) {
-    return typeof message.getFlag("pf2e", "casting.id") === "string";
+    return typeof message.getFlag(game.system.id, "casting.id") === "string";
 }
 function createChatLink(docOrUuid, { label, html } = {}) {
     const isDocument = docOrUuid instanceof foundry.abstract.Document;
@@ -45,4 +45,4 @@ function createChatLink(docOrUuid, { label, html } = {}) {
     }
     return html ? enrichHTML(link) : link;
 }
-export { createChatLink, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages, };
+export { createChatLink, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages };
