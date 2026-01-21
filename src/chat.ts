@@ -1,10 +1,7 @@
 import { ChatMessagePF2e } from "foundry-pf2e";
 import { enrichHTML } from ".";
 
-function* latestChatMessages(
-    nb: number,
-    fromMessage?: ChatMessagePF2e
-): Generator<ChatMessagePF2e, void, undefined> {
+function* latestChatMessages(nb: number, fromMessage?: ChatMessagePF2e): Generator<ChatMessagePF2e, void, undefined> {
     if (!ui.chat) return;
 
     const messages = game.messages.contents;
@@ -46,17 +43,11 @@ function isSpellMessage(message: ChatMessagePF2e): boolean {
     return typeof message.getFlag("pf2e", "casting.id") === "string";
 }
 
+function createChatLink(docOrUuid: ClientDocument | string, options?: { label?: string; html: true }): Promise<string>;
+function createChatLink(docOrUuid: ClientDocument | string, options: { label?: string; html?: false }): string;
 function createChatLink(
     docOrUuid: ClientDocument | string,
-    options?: { label?: string; html: true }
-): Promise<string>;
-function createChatLink(
-    docOrUuid: ClientDocument | string,
-    options: { label?: string; html?: false }
-): string;
-function createChatLink(
-    docOrUuid: ClientDocument | string,
-    { label, html }: { label?: string; html?: boolean } = {}
+    { label, html }: { label?: string; html?: boolean } = {},
 ): Promisable<string> {
     const isDocument = docOrUuid instanceof foundry.abstract.Document;
 
@@ -73,10 +64,4 @@ function createChatLink(
     return html ? enrichHTML(link) : link;
 }
 
-export {
-    createChatLink,
-    isActionMessage,
-    isSpellMessage,
-    latestChatMessages,
-    refreshLatestMessages,
-};
+export { createChatLink, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages };
