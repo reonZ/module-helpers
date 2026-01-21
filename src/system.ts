@@ -8,6 +8,11 @@ const SYSTEM = {
     get isSF2e(): boolean {
         return this.id === "sf2e";
     },
+    path<T extends string>(tail: T): () => `systems/${SystemId}/${T}` {
+        return (): `systems/${SystemId}/${T}` => {
+            return `systems/${this.id}/${tail}`;
+        };
+    },
 };
 
 export { SYSTEM };

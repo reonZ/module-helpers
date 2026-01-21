@@ -8,5 +8,10 @@ const SYSTEM = {
     get isSF2e() {
         return this.id === "sf2e";
     },
+    path(tail) {
+        return () => {
+            return `systems/${this.id}/${tail}`;
+        };
+    },
 };
 export { SYSTEM };
