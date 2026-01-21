@@ -89,10 +89,10 @@ function getTokenDocument(token) {
             ? token
             : undefined;
 }
-function getTargetToken(target) {
+function getTargetToken(target, options) {
     if (!target)
         return undefined;
-    return target.token ?? target.actor.token ?? getFirstActiveToken(target.actor) ?? undefined;
+    return target.token ?? target.actor.token ?? getFirstActiveToken(target.actor, options) ?? undefined;
 }
 function getTargetsTokensUUIDs(targets) {
     return R.pipe(targets, R.map((target) => getTargetToken(target)?.uuid), R.filter(R.isTruthy));

@@ -77,7 +77,7 @@ function panToToken(token: TokenPF2e | TokenDocumentPF2e, control?: boolean) {
     canvas.animatePan(token.center);
 }
 
-function getFirstActiveToken(actor: ActorPF2e, { linked, scene }: { linked?: boolean; scene?: ScenePF2e | null } = {}) {
+function getFirstActiveToken(actor: ActorPF2e, { linked, scene }: FirstActiveTokenOptions = {}) {
     const predicate = (token: TokenDocumentPF2e) => !linked || token.actorLink;
     return actor.token ?? getFirstTokenThatMatches(actor, predicate, scene);
 }
@@ -110,9 +110,12 @@ function getTokenDocument(token: unknown): TokenDocumentPF2e | undefined {
           : undefined;
 }
 
-function getTargetToken(target: Maybe<TargetDocuments>): TokenDocumentPF2e | undefined {
+function getTargetToken(
+    target: Maybe<TargetDocuments>,
+    options?: FirstActiveTokenOptions,
+): TokenDocumentPF2e | undefined {
     if (!target) return undefined;
-    return target.token ?? target.actor.token ?? getFirstActiveToken(target.actor) ?? undefined;
+    return target.token ?? target.actor.token ?? getFirstActiveToken(target.actor, options) ?? undefined;
 }
 
 function getTargetsTokensUUIDs(targets: TargetDocuments[]): TokenDocumentUUID[] {
@@ -122,6 +125,11 @@ function getTargetsTokensUUIDs(targets: TargetDocuments[]): TokenDocumentUUID[] 
         R.filter(R.isTruthy),
     );
 }
+
+type FirstActiveTokenOptions = {
+    linked?: boolean;
+    scene?: ScenePF2e | null;
+};
 
 export {
     emitTokenHover,
