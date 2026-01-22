@@ -4,6 +4,9 @@ export * as z from "zod";
 export * from "./_zod";
 export * from "./data";
 
+export * from "./system";
+export * from "./module";
+
 export * from "./action";
 export * from "./actor";
 export * from "./application";
@@ -30,7 +33,6 @@ export * from "./keybinds";
 export * from "./libwrapper";
 export * from "./localize";
 export * from "./misc";
-export * from "./module";
 export * from "./notes";
 export * from "./object";
 export * from "./pixi";
@@ -41,7 +43,6 @@ export * from "./socket";
 export * from "./spell-consumable";
 export * from "./spell";
 export * from "./spellcasting";
-export * from "./system";
 export * from "./template";
 export * from "./text-editor";
 export * from "./time";
