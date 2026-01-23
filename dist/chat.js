@@ -46,6 +46,6 @@ function createChatLink(docOrUuid, { label, html } = {}) {
     return html ? enrichHTML(link) : link;
 }
 function getMessageContext(message) {
-    return message.getFlag(SYSTEM.id, "context");
+    return SYSTEM.getFlag(message, "context");
 }
 export { createChatLink, getMessageContext, isActionMessage, isSpellMessage, latestChatMessages, refreshLatestMessages, };

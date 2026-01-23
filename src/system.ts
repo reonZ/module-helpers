@@ -19,8 +19,8 @@ const SYSTEM = {
             return this.isSF2e ? sf2e : pf2e;
         };
     },
-    getFlag(obj: foundry.abstract.Document, ...path: string[]): unknown {
-        return obj.getFlag(this.id, joinStr(".", ...path));
+    getFlag<T extends unknown>(obj: foundry.abstract.Document, ...path: string[]): T {
+        return obj.getFlag(this.id, joinStr(".", ...path)) as T;
     },
     getPack<T extends PackContent>(name: string): CompendiumCollection<T> | undefined {
         return game.packs.get(`${SYSTEM.id}.${name}`);
