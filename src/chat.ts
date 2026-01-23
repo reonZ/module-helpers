@@ -35,12 +35,12 @@ async function refreshLatestMessages(nb: number) {
 }
 
 function isActionMessage(message: ChatMessagePF2e): boolean {
-    const type = message.getFlag(SYSTEM.id, "origin.type") as string | undefined;
+    const type = SYSTEM.getFlag(message, "origin.type") as string | undefined;
     return !!type && ["feat", "action"].includes(type);
 }
 
 function isSpellMessage(message: ChatMessagePF2e): boolean {
-    return typeof message.getFlag(SYSTEM.id, "casting.id") === "string";
+    return typeof SYSTEM.getFlag(message, "casting.id") === "string";
 }
 
 function createChatLink(docOrUuid: ClientDocument | string, options?: { label?: string; html: true }): Promise<string>;

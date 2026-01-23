@@ -1,3 +1,4 @@
+import { joinStr } from ".";
 const SYSTEM = {
     get id() {
         return game.system.id;
@@ -15,6 +16,9 @@ const SYSTEM = {
         return () => {
             return this.isSF2e ? sf2e : pf2e;
         };
+    },
+    getFlag(obj, ...path) {
+        return obj.getFlag(this.id, joinStr(".", ...path));
     },
     getPack(name) {
         return game.packs.get(`${SYSTEM.id}.${name}`);

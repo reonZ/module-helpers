@@ -28,11 +28,11 @@ async function refreshLatestMessages(nb) {
     }
 }
 function isActionMessage(message) {
-    const type = message.getFlag(SYSTEM.id, "origin.type");
+    const type = SYSTEM.getFlag(message, "origin.type");
     return !!type && ["feat", "action"].includes(type);
 }
 function isSpellMessage(message) {
-    return typeof message.getFlag(SYSTEM.id, "casting.id") === "string";
+    return typeof SYSTEM.getFlag(message, "casting.id") === "string";
 }
 function createChatLink(docOrUuid, { label, html } = {}) {
     const isDocument = docOrUuid instanceof foundry.abstract.Document;

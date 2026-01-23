@@ -1,4 +1,5 @@
 import { GamePF2e } from "foundry-pf2e";
+import { joinStr } from ".";
 
 const SYSTEM = {
     get id(): SystemId {
@@ -17,6 +18,9 @@ const SYSTEM = {
         return (): P | S => {
             return this.isSF2e ? sf2e : pf2e;
         };
+    },
+    getFlag(obj: foundry.abstract.Document, ...path: string[]): unknown {
+        return obj.getFlag(this.id, joinStr(".", ...path));
     },
     getPack<T extends PackContent>(name: string): CompendiumCollection<T> | undefined {
         return game.packs.get(`${SYSTEM.id}.${name}`);
