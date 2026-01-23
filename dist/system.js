@@ -16,6 +16,9 @@ const SYSTEM = {
             return this.isSF2e ? sf2e : pf2e;
         };
     },
+    getPack(name) {
+        return game.packs.get(`${SYSTEM.id}.${name}`);
+    },
     getPath(tail) {
         return `systems/${this.id}/${tail}`;
     },
