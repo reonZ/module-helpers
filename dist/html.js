@@ -147,9 +147,7 @@ function dataToDatasetString(data) {
         if (R.isNullish(value))
             return;
         const sluggifiedKey = key.replace(/\B([A-Z])/g, "-$1").toLowerCase();
-        const stringified = R.isObjectType(value)
-            ? foundry.utils.escapeHTML(JSON.stringify(value))
-            : value;
+        const stringified = R.isObjectType(value) ? foundry.utils.escapeHTML(JSON.stringify(value)) : value;
         return `data-${sluggifiedKey}='${stringified}'`;
     }), R.filter(R.isTruthy), R.join(" "));
 }
@@ -167,14 +165,14 @@ function datasetToData(elOrDataset) {
     }
     return data;
 }
-function firstElementWithText(el) {
+function firstElementWithText(el, skipEmpty = true) {
     if (!(el instanceof HTMLElement))
         return null;
     const childNodes = el.childNodes;
     if (!childNodes.length)
         return null;
     for (const child of childNodes) {
-        if (child.nodeType === Node.TEXT_NODE) {
+        if (child.nodeType === Node.TEXT_NODE && (!skipEmpty || child.textContent?.trim())) {
             return el;
         }
     }

@@ -143,10 +143,7 @@ function htmlQuery<K extends keyof HTMLElementTagNameMap>(
     parent: MaybeHTML,
     selectors: K,
 ): HTMLElementTagNameMap[K] | null;
-function htmlQuery<E extends HTMLElement = HTMLElement>(
-    parent: MaybeHTML,
-    selectors: string,
-): E | null;
+function htmlQuery<E extends HTMLElement = HTMLElement>(parent: MaybeHTML, selectors: string): E | null;
 function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null;
 function htmlQuery(parent: MaybeHTML, selectors: string): HTMLElement | null {
     if (!(parent instanceof Element)) return null;
@@ -157,10 +154,7 @@ function htmlQueryAll<K extends keyof HTMLElementTagNameMap>(
     parent: MaybeHTML,
     selectors: K,
 ): HTMLElementTagNameMap[K][];
-function htmlQueryAll<E extends HTMLElement = HTMLElement>(
-    parent: MaybeHTML,
-    selectors: string,
-): E[];
+function htmlQueryAll<E extends HTMLElement = HTMLElement>(parent: MaybeHTML, selectors: string): E[];
 function htmlQueryAll(parent: MaybeHTML, selectors: string): HTMLElement[];
 function htmlQueryAll(parent: MaybeHTML, selectors: string): HTMLElement[] {
     if (!(parent instanceof Element || parent instanceof Document)) return [];
@@ -237,10 +231,7 @@ function htmlClosest<K extends keyof HTMLElementTagNameMap>(
     selectors: K,
 ): HTMLElementTagNameMap[K] | null;
 function htmlClosest(child: MaybeHTML, selectors: string): HTMLElement | null;
-function htmlClosest<E extends HTMLElement = HTMLElement>(
-    child: MaybeHTML,
-    selectors: string,
-): E | null;
+function htmlClosest<E extends HTMLElement = HTMLElement>(child: MaybeHTML, selectors: string): E | null;
 function htmlClosest(child: MaybeHTML, selectors: string): HTMLElement | null {
     if (!(child instanceof Element)) return null;
     return child.closest<HTMLElement>(selectors);
@@ -251,21 +242,13 @@ function htmlQueryIn<K extends keyof HTMLElementTagNameMap>(
     parentSelector: string,
     siblingSelector: K,
 ): HTMLElementTagNameMap[K] | null;
-function htmlQueryIn(
-    child: MaybeHTML,
-    parentSelector: string,
-    siblingSelector: string,
-): HTMLElement | null;
+function htmlQueryIn(child: MaybeHTML, parentSelector: string, siblingSelector: string): HTMLElement | null;
 function htmlQueryIn<E extends HTMLElement = HTMLElement>(
     child: MaybeHTML,
     parentSelector: string,
     siblingSelector: string,
 ): E | null;
-function htmlQueryIn(
-    child: MaybeHTML,
-    parentSelector: string,
-    siblingSelector: string,
-): HTMLElement | null {
+function htmlQueryIn(child: MaybeHTML, parentSelector: string, siblingSelector: string): HTMLElement | null {
     const parent = htmlClosest(child, parentSelector);
     return htmlQuery(parent, siblingSelector);
 }
@@ -274,10 +257,7 @@ function assignStyle(el: HTMLElement, style: Partial<CSSStyleDeclaration>) {
     Object.assign(el.style, style);
 }
 
-function setStyleProperties(
-    el: HTMLElement,
-    properties: Record<string, string | number | boolean>,
-) {
+function setStyleProperties(el: HTMLElement, properties: Record<string, string | number | boolean>) {
     for (const [property, value] of R.entries(properties)) {
         el.style.setProperty(property, String(value));
     }
@@ -290,9 +270,7 @@ function dataToDatasetString(data: DatasetData): string {
             if (R.isNullish(value)) return;
 
             const sluggifiedKey = key.replace(/\B([A-Z])/g, "-$1").toLowerCase();
-            const stringified = R.isObjectType(value)
-                ? foundry.utils.escapeHTML(JSON.stringify(value))
-                : value;
+            const stringified = R.isObjectType(value) ? foundry.utils.escapeHTML(JSON.stringify(value)) : value;
 
             return `data-${sluggifiedKey}='${stringified}'`;
         }),
@@ -318,14 +296,14 @@ function datasetToData<T extends Record<string, any>>(elOrDataset: DOMStringMap 
     return data;
 }
 
-function firstElementWithText(el: Maybe<Element>): HTMLElement | null {
+function firstElementWithText(el: Maybe<Element>, skipEmpty = true): HTMLElement | null {
     if (!(el instanceof HTMLElement)) return null;
 
     const childNodes = el.childNodes;
     if (!childNodes.length) return null;
 
     for (const child of childNodes) {
-        if (child.nodeType === Node.TEXT_NODE) {
+        if (child.nodeType === Node.TEXT_NODE && (!skipEmpty || child.textContent?.trim())) {
             return el;
         }
     }

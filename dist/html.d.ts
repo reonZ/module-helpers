@@ -31,7 +31,7 @@ declare function assignStyle(el: HTMLElement, style: Partial<CSSStyleDeclaration
 declare function setStyleProperties(el: HTMLElement, properties: Record<string, string | number | boolean>): void;
 declare function dataToDatasetString(data: DatasetData): string;
 declare function datasetToData<T extends Record<string, any>>(elOrDataset: DOMStringMap | HTMLElement): T;
-declare function firstElementWithText(el: Maybe<Element>): HTMLElement | null;
+declare function firstElementWithText(el: Maybe<Element>, skipEmpty?: boolean): HTMLElement | null;
 declare function getInputValue(el: HTMLInputElement | HTMLSelectElement): string | number | boolean;
 /**
  * repurposed version of
