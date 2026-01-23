@@ -9,14 +9,15 @@ const SYSTEM = {
         return this.id === "sf2e";
     },
     path(tail) {
-        return () => {
-            return `systems/${this.id}/${tail}`;
-        };
+        return () => this.getPath(tail);
     },
     uuid(pf2e, sf2e) {
         return () => {
             return this.isSF2e ? sf2e : pf2e;
         };
+    },
+    getPath(tail) {
+        return `systems/${this.id}/${tail}`;
     },
 };
 export { SYSTEM };
