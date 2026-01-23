@@ -4,7 +4,7 @@ import { AbilityItemPF2e, ActionCost, ActorPF2e, FeatPF2e } from "foundry-pf2e";
  */
 declare function getActionGlyph(action: string | number | null | ActionCost): string;
 /**
- * https://github.com/foundryvtt/pf2e/blob/37b0dcab08141b3e9e4e0f44e51df9f4dfd52a71/src/util/misc.ts#L173
+ * https://github.com/foundryvtt/pf2e/blob/6e5481af7bb1e1b9d28d35fb3ad324511c5170d1/src/module/sheet/helpers.ts#L304
  */
 declare function getActionIcon(action: ActionIconType, fallback: ImageFilePath): ImageFilePath;
 declare function getActionIcon(action: ActionIconType, fallback: ImageFilePath | null): ImageFilePath | null;
