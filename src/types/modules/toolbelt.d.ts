@@ -19,10 +19,7 @@ import {
 declare global {
     namespace toolbelt {
         interface GamePF2e extends MyModule.GamePF2e<Api> {
-            getToolSetting<K extends keyof Settings, S extends keyof Settings[K]>(
-                tool: K,
-                setting: S
-            ): Settings[K][S];
+            getToolSetting<K extends keyof Settings, S extends keyof Settings[K]>(tool: K, setting: S): Settings[K][S];
         }
 
         interface Settings {
@@ -40,7 +37,6 @@ declare global {
             };
             betterTrade: {
                 invertTrade: boolean;
-                withContent: boolean;
             };
             heroActions: {
                 enabled: boolean;
@@ -63,30 +59,20 @@ declare global {
                 getItemMacro: (item: ItemPF2e) => Promise<Maybe<MacroPF2e>>;
             };
             betterInventory: {
-                mergeItems: (
-                    actor: ActorPF2e,
-                    btn?: HTMLButtonElement | HTMLAnchorElement
-                ) => Promise<void>;
+                mergeItems: (actor: ActorPF2e, btn?: HTMLButtonElement | HTMLAnchorElement) => Promise<void>;
                 splitItem: (item: Maybe<ItemPF2e>) => Promise<void>;
             };
             betterMerchant: {
-                testItemsForMerchant: (
-                    merchant: ActorPF2e,
-                    items: ItemPF2e[]
-                ) => betterMerchant.TestItemData[];
+                testItemsForMerchant: (merchant: ActorPF2e, items: ItemPF2e[]) => betterMerchant.TestItemData[];
             };
             heroActions: {
                 canTrade: () => boolean;
                 discardHeroActions: (actor: CharacterPF2e, uuids: string[] | string) => void;
                 drawHeroActions: (actor: CharacterPF2e) => Promise<void>;
                 getDeckTable: () => Promise<RollTable | undefined>;
-                getHeroActionDetails: (
-                    uuid: string
-                ) => Promise<heroActions.HeroActionDetails | undefined>;
+                getHeroActionDetails: (uuid: string) => Promise<heroActions.HeroActionDetails | undefined>;
                 getHeroActions: (actor: CharacterPF2e) => heroActions.HeroAction[];
-                getHeroActionsTemplateData: (
-                    actor: CharacterPF2e
-                ) => heroActions.HeroActionsTemplateData | undefined;
+                getHeroActionsTemplateData: (actor: CharacterPF2e) => heroActions.HeroActionsTemplateData | undefined;
                 giveHeroActions: (actor: CharacterPF2e) => Promise<void>;
                 removeHeroActions: () => Promise<void>;
                 sendActionToChat: (actor: CharacterPF2e, uuid: string) => Promise<void>;
@@ -107,7 +93,7 @@ declare global {
                 getMessageTargets: (message: ChatMessagePF2e) => TokenDocumentUUID[];
                 setMessageFlagTargets: (
                     updates: Record<string, any>,
-                    targets: TokenDocumentUUID[]
+                    targets: TokenDocumentUUID[],
                 ) => Record<string, any>;
             };
         }
