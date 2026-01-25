@@ -1,4 +1,4 @@
-import { ActorPF2e, CharacterPF2e, ConsumablePF2e, CreaturePF2e, EquipmentPF2e, ItemInstances, ItemPF2e, ItemSourcePF2e, ItemType, PhysicalItemPF2e, ZeroToTwo } from "foundry-pf2e";
+import { ActorPF2e, CharacterPF2e, ConsumablePF2e, CreaturePF2e, EquipmentPF2e, ItemInstances, ItemPF2e, ItemSourcePF2e, ItemType, PhysicalItemPF2e, WeaponPF2e, ZeroToTwo } from "foundry-pf2e";
 /**
  * https://github.com/foundryvtt/pf2e/blob/1465f7190b2b8454094c50fa6d06e9902e0a3c41/src/module/item/base/data/values.ts#L23-L31
  */
@@ -7,10 +7,17 @@ declare const ITEM_CARRY_TYPES: readonly ["attached", "dropped", "held", "implan
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/physical/values.ts#L1
  */
 declare const PHYSICAL_ITEM_TYPES: Set<"ammo" | "armor" | "book" | "consumable" | "backpack" | "equipment" | "shield" | "treasure" | "weapon">;
-declare function actorItems<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, type?: TType | TType[]): Generator<ItemInstances<TActor>[TType]>;
+declare const ATTACHABLE_TYPES: {
+    readonly ammo: readonly ["weapon"];
+    readonly equipment: readonly ["weapon", "armor", "shield"];
+    readonly weapon: readonly ["shield"];
+};
+type AttachableType = keyof typeof ATTACHABLE_TYPES;
+type AttachToType<T extends AttachableType> = (typeof ATTACHABLE_TYPES)[T][number];
+declare function actorItems<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, type?: TType | TType[]): Generator<ActorItemInstances<TType extends AttachableType ? TType | AttachToType<TType> : TType, TActor>>;
 declare function isSupressedFeat<TActor extends ActorPF2e | null>(item: ItemPF2e<TActor>): boolean;
-declare function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, uuid: string, type?: TType): ItemInstances<TActor>[TType] | null;
-declare function findAllItemsWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, uuid: string, type?: TType): ItemInstances<TActor>[TType][];
+declare function getActorWeapons<TActor extends ActorPF2e>(actor: TActor): WeaponPF2e<TActor>[];
+declare function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, uuid: string, type?: TType): ActorItemInstances<TType, TActor> | null;
 declare function hasItemWithSourceId(actor: ActorPF2e, uuid: string, type?: ItemType): boolean;
 declare function hasAnyItemWithSourceId(actor: ActorPF2e, uuids: string[], type?: ItemType): boolean;
 declare function getItemFromUuid<T extends ItemType>(uuid: Maybe<string>, type: T): Promise<ItemInstances<ActorPF2e>[T] | null>;
@@ -22,8 +29,7 @@ declare function getItemSourceFromUuid(uuid: string, type: "physical"): Promise<
 declare function getItemSourceFromUuid(uuid: string, type?: ItemType | "physical"): Promise<ItemSourcePF2e | null>;
 declare function getItemSourceId(item: ItemPF2e): ItemUUID;
 declare function getItemSlug(item: ItemPF2e | CompendiumIndexData): string;
-declare function findItemWithSlug<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, slug: string, type?: TType): ItemInstances<TActor>[TType] | null;
-declare function findAllItemsWithSlug<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, slug: string, type?: TType): ItemInstances<TActor>[TType][];
+declare function findItemWithSlug<TType extends ItemType, TActor extends ActorPF2e>(actor: TActor, slug: string, type?: TType): ActorItemInstances<TType, TActor> | null;
 declare function hasItemWithSlug(actor: ActorPF2e, slug: string, type?: ItemType): boolean;
 /**
  * https://github.com/foundryvtt/pf2e/blob/95e941aecaf1fa6082825b206b0ac02345d10538/src/module/item/helpers.ts#L13
@@ -52,5 +58,6 @@ type EquipAnnotationData = {
 };
 type AuxiliaryAnnotation = "draw" | "pick-up" | "retrieve" | "sheathe";
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
-export { ITEM_CARRY_TYPES, PHYSICAL_ITEM_TYPES, actorItems, equipItemToUse, findAllItemsWithSlug, findAllItemsWithSourceId, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSlug, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isAreaOrAutoFireType, isCastConsumable, isSF2eItem, isSupressedFeat, itemIsOfType, usePhysicalItem, };
+type ActorItemInstances<TType extends ItemType, TActor extends ActorPF2e> = ItemInstances<TActor>[TType extends "weapon" | "shield" ? TType | "weapon" | "equipment" : TType];
+export { ITEM_CARRY_TYPES, PHYSICAL_ITEM_TYPES, actorItems, equipItemToUse, findItemWithSlug, findItemWithSourceId, getActorWeapons, getEquipAnnotation, getItemFromUuid, getItemSlug, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isAreaOrAutoFireType, isCastConsumable, isSF2eItem, isSupressedFeat, itemIsOfType, usePhysicalItem, };
 export type { EquipAnnotationData };

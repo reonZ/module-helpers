@@ -9,6 +9,7 @@ import {
     ItemSourcePF2e,
     ItemType,
     PhysicalItemPF2e,
+    WeaponPF2e,
     ZeroToTwo,
 } from "foundry-pf2e";
 import {
@@ -52,20 +53,43 @@ const PHYSICAL_ITEM_TYPES = new Set([
     "weapon",
 ] as const);
 
+const ATTACHABLE_TYPES = {
+    ammo: ["weapon"],
+    equipment: ["weapon", "armor", "shield"],
+    weapon: ["shield"],
+} as const;
+
+type AttachableType = keyof typeof ATTACHABLE_TYPES;
+type AttachToType<T extends AttachableType> = (typeof ATTACHABLE_TYPES)[T][number];
+
 function* actorItems<TType extends ItemType, TActor extends ActorPF2e>(
     actor: TActor,
     type?: TType | TType[],
-): Generator<ItemInstances<TActor>[TType]> {
-    const types =
-        R.isArray(type) && type.length
-            ? type
-            : typeof type === "string"
-              ? [type]
-              : R.keys(CONFIG.PF2E.Item.documentClasses);
+): Generator<ActorItemInstances<TType extends AttachableType ? TType | AttachToType<TType> : TType, TActor>> {
+    const types = R.isArray(type) ? type : type ? [type] : R.keys(CONFIG.PF2E.Item.documentClasses);
 
-    for (const type of types) {
-        for (const item of actor.itemTypes[type]) {
-            yield item as ItemInstances<TActor>[TType];
+    // we must add parent types for subitems lookup
+    const attachables = type && types.filter((t): t is AttachableType => t in ATTACHABLE_TYPES);
+    if (attachables?.length) {
+        for (const attachType of attachables) {
+            for (const attachToType of ATTACHABLE_TYPES[attachType]) {
+                if (!types.includes(attachToType)) {
+                    types.push(attachToType);
+                }
+            }
+        }
+    }
+
+    for (const itemType of types) {
+        for (const item of actor.itemTypes[itemType]) {
+            yield item as any;
+
+            // we also yield subitems because they are unnaccessible otherwise
+            if ("subitems" in item) {
+                for (const subitem of item.subitems) {
+                    yield subitem as any;
+                }
+            }
         }
     }
 }
@@ -74,53 +98,30 @@ function isSupressedFeat<TActor extends ActorPF2e | null>(item: ItemPF2e<TActor>
     return item.isOfType("feat") && item.suppressed;
 }
 
-function isItemEntry(
-    item: Maybe<ClientDocument | CompendiumIndexData>,
-): item is (CompendiumIndexData & { type: ItemType }) | ItemPF2e {
-    return R.isObjectType(item) && "type" in item && item.type in CONFIG.PF2E.Item.documentClasses;
-}
-
-function itemTypeFromUuid<TType extends ItemType>(uuid: string) {
-    const item = fromUuidSync(uuid);
-    return isItemEntry(item) ? (item.type as TType) : undefined;
+function getActorWeapons<TActor extends ActorPF2e>(actor: TActor): WeaponPF2e<TActor>[] {
+    return [
+        ...actor.itemTypes.weapon,
+        ...actor.itemTypes.shield.flatMap((shield) =>
+            shield.subitems.filter((item): item is WeaponPF2e<TActor> => item.isOfType("weapon")),
+        ),
+    ];
 }
 
 function findItemWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
     actor: TActor,
     uuid: string,
     type?: TType,
-): ItemInstances<TActor>[TType] | null {
-    type ??= itemTypeFromUuid(uuid);
-
+): ActorItemInstances<TType, TActor> | null {
     for (const item of actorItems(actor, type)) {
         if (isSupressedFeat(item)) continue;
 
         const sourceId = getItemSourceId(item);
         if (sourceId === uuid) {
-            return item;
+            return item as any;
         }
     }
 
     return null;
-}
-
-function findAllItemsWithSourceId<TType extends ItemType, TActor extends ActorPF2e>(
-    actor: TActor,
-    uuid: string,
-    type?: TType,
-): ItemInstances<TActor>[TType][] {
-    const items: ItemInstances<TActor>[TType][] = [];
-
-    for (const item of actorItems(actor, type)) {
-        if (isSupressedFeat(item)) continue;
-
-        const sourceId = getItemSourceId(item);
-        if (sourceId === uuid) {
-            items.push(item);
-        }
-    }
-
-    return items;
 }
 
 function hasItemWithSourceId(actor: ActorPF2e, uuid: string, type?: ItemType): boolean {
@@ -189,36 +190,17 @@ function findItemWithSlug<TType extends ItemType, TActor extends ActorPF2e>(
     actor: TActor,
     slug: string,
     type?: TType,
-): ItemInstances<TActor>[TType] | null {
+): ActorItemInstances<TType, TActor> | null {
     for (const item of actorItems(actor, type)) {
         if (isSupressedFeat(item)) continue;
 
         const itemSlug = getItemSlug(item);
         if (itemSlug === slug) {
-            return item;
+            return item as any;
         }
     }
 
     return null;
-}
-
-function findAllItemsWithSlug<TType extends ItemType, TActor extends ActorPF2e>(
-    actor: TActor,
-    slug: string,
-    type?: TType,
-): ItemInstances<TActor>[TType][] {
-    const items: ItemInstances<TActor>[TType][] = [];
-
-    for (const item of actorItems(actor, type)) {
-        if (isSupressedFeat(item)) continue;
-
-        const itemSlug = getItemSlug(item);
-        if (itemSlug === slug) {
-            items.push(item);
-        }
-    }
-
-    return items;
 }
 
 function hasItemWithSlug(actor: ActorPF2e, slug: string, type?: ItemType): boolean {
@@ -446,15 +428,20 @@ type AuxiliaryAnnotation = "draw" | "pick-up" | "retrieve" | "sheathe";
 
 type ItemOrSource = PreCreate<ItemSourcePF2e> | CompendiumIndexData | ItemPF2e;
 
+type ActorItemInstances<TType extends ItemType, TActor extends ActorPF2e> = ItemInstances<TActor>[TType extends
+    | "weapon"
+    | "shield"
+    ? TType | "weapon" | "equipment"
+    : TType];
+
 export {
     ITEM_CARRY_TYPES,
     PHYSICAL_ITEM_TYPES,
     actorItems,
     equipItemToUse,
-    findAllItemsWithSlug,
-    findAllItemsWithSourceId,
     findItemWithSlug,
     findItemWithSourceId,
+    getActorWeapons,
     getEquipAnnotation,
     getItemFromUuid,
     getItemSlug,

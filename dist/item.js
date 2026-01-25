@@ -25,30 +25,46 @@ const PHYSICAL_ITEM_TYPES = new Set([
     "treasure",
     "weapon",
 ]);
+const ATTACHABLE_TYPES = {
+    ammo: ["weapon"],
+    equipment: ["weapon", "armor", "shield"],
+    weapon: ["shield"],
+};
 function* actorItems(actor, type) {
-    const types = R.isArray(type) && type.length
-        ? type
-        : typeof type === "string"
-            ? [type]
-            : R.keys(CONFIG.PF2E.Item.documentClasses);
-    for (const type of types) {
-        for (const item of actor.itemTypes[type]) {
+    const types = R.isArray(type) ? type : type ? [type] : R.keys(CONFIG.PF2E.Item.documentClasses);
+    // we must add parent types for subitems lookup
+    const attachables = type && types.filter((t) => t in ATTACHABLE_TYPES);
+    if (attachables?.length) {
+        for (const attachType of attachables) {
+            for (const attachToType of ATTACHABLE_TYPES[attachType]) {
+                if (!types.includes(attachToType)) {
+                    types.push(attachToType);
+                }
+            }
+        }
+    }
+    for (const itemType of types) {
+        for (const item of actor.itemTypes[itemType]) {
             yield item;
+            // we also yield subitems because they are unnaccessible otherwise
+            if ("subitems" in item) {
+                for (const subitem of item.subitems) {
+                    yield subitem;
+                }
+            }
         }
     }
 }
 function isSupressedFeat(item) {
     return item.isOfType("feat") && item.suppressed;
 }
-function isItemEntry(item) {
-    return R.isObjectType(item) && "type" in item && item.type in CONFIG.PF2E.Item.documentClasses;
-}
-function itemTypeFromUuid(uuid) {
-    const item = fromUuidSync(uuid);
-    return isItemEntry(item) ? item.type : undefined;
+function getActorWeapons(actor) {
+    return [
+        ...actor.itemTypes.weapon,
+        ...actor.itemTypes.shield.flatMap((shield) => shield.subitems.filter((item) => item.isOfType("weapon"))),
+    ];
 }
 function findItemWithSourceId(actor, uuid, type) {
-    type ??= itemTypeFromUuid(uuid);
     for (const item of actorItems(actor, type)) {
         if (isSupressedFeat(item))
             continue;
@@ -58,18 +74,6 @@ function findItemWithSourceId(actor, uuid, type) {
         }
     }
     return null;
-}
-function findAllItemsWithSourceId(actor, uuid, type) {
-    const items = [];
-    for (const item of actorItems(actor, type)) {
-        if (isSupressedFeat(item))
-            continue;
-        const sourceId = getItemSourceId(item);
-        if (sourceId === uuid) {
-            items.push(item);
-        }
-    }
-    return items;
 }
 function hasItemWithSourceId(actor, uuid, type) {
     return !!findItemWithSourceId(actor, uuid, type);
@@ -121,18 +125,6 @@ function findItemWithSlug(actor, slug, type) {
         }
     }
     return null;
-}
-function findAllItemsWithSlug(actor, slug, type) {
-    const items = [];
-    for (const item of actorItems(actor, type)) {
-        if (isSupressedFeat(item))
-            continue;
-        const itemSlug = getItemSlug(item);
-        if (itemSlug === slug) {
-            items.push(item);
-        }
-    }
-    return items;
 }
 function hasItemWithSlug(actor, slug, type) {
     return !!findItemWithSlug(actor, slug, type);
@@ -290,4 +282,4 @@ function isAreaOrAutoFireType(type) {
 function isSF2eItem(item) {
     return includesAny(item._source.system.traits.value, ["tech", "analog"]);
 }
-export { ITEM_CARRY_TYPES, PHYSICAL_ITEM_TYPES, actorItems, equipItemToUse, findAllItemsWithSlug, findAllItemsWithSourceId, findItemWithSlug, findItemWithSourceId, getEquipAnnotation, getItemFromUuid, getItemSlug, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isAreaOrAutoFireType, isCastConsumable, isSF2eItem, isSupressedFeat, itemIsOfType, usePhysicalItem, };
+export { ITEM_CARRY_TYPES, PHYSICAL_ITEM_TYPES, actorItems, equipItemToUse, findItemWithSlug, findItemWithSourceId, getActorWeapons, getEquipAnnotation, getItemFromUuid, getItemSlug, getItemSource, getItemSourceFromUuid, getItemSourceId, getItemTypeLabel, hasAnyItemWithSourceId, hasItemWithSlug, hasItemWithSourceId, isAreaOrAutoFireType, isCastConsumable, isSF2eItem, isSupressedFeat, itemIsOfType, usePhysicalItem, };
