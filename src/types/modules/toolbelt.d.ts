@@ -84,6 +84,18 @@ declare global {
                 openTracker: (item?: ItemPF2e) => void;
                 requestIdentify: (item: Maybe<ItemPF2e>, skipNotify?: boolean) => void;
             };
+            mergeDamage: {
+                injectDamageMessage: (
+                    targetMessage: ChatMessagePF2e,
+                    originMessage: ChatMessagePF2e,
+                    options?: { updateMessages?: boolean },
+                ) => Promise<{ rolls: RollJSON[] } | undefined>;
+                mergeDamageMessages: (
+                    targetMessage: ChatMessagePF2e,
+                    originMessage: ChatMessagePF2e,
+                    options?: { updateMessages?: boolean },
+                ) => Promise<ChatMessagePF2e | undefined>;
+            };
             shareData: {
                 getMasterInMemory: (actor: CreaturePF2e) => CreaturePF2e | undefined;
                 getSlavesInMemory(actor: CreaturePF2e, idOnly: false): CreaturePF2e[];
