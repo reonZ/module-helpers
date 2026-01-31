@@ -14,8 +14,12 @@ function isPrimaryUpdater(actor: ActorPF2e): boolean {
 }
 
 function primaryPlayerOwner(actor: ActorPF2e): UserPF2e | null {
-    return game.users.getDesignatedUser(
-        (user) => user.active && !user.isGM && actor.testUserPermission(user, "OWNER")
+    // even though we want a player, assigned users take priority
+    const assigned = game.users.getDesignatedUser((user) => user.active && user.character === (actor as Actor));
+
+    return (
+        assigned ??
+        game.users.getDesignatedUser((user) => user.active && !user.isGM && actor.testUserPermission(user, "OWNER"))
     );
 }
 
@@ -47,11 +51,4 @@ function getSelectedActor(fn = (actor: ActorPF2e) => true): ActorPF2e | null {
     return assigned && fn(assigned) ? assigned : null;
 }
 
-export {
-    canObserveActor,
-    getSelectedActor,
-    isPrimaryOwner,
-    isPrimaryUpdater,
-    primaryPlayerOwner,
-    userIsGM,
-};
+export { canObserveActor, getSelectedActor, isPrimaryOwner, isPrimaryUpdater, primaryPlayerOwner, userIsGM };
