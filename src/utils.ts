@@ -95,7 +95,9 @@ function isIterable(obj: unknown): obj is IterableIterator<any> {
     return R.isObjectType(obj) && Symbol.iterator in obj && typeof obj[Symbol.iterator] === "function";
 }
 
-function recordToSelectOptions(record: Record<string, string>): { value: string; label: string }[] {
+function recordToSelectOptions(
+    record: Record<string, string | undefined>,
+): { value: string; label: string | undefined }[] {
     return R.pipe(
         record,
         R.entries(),
