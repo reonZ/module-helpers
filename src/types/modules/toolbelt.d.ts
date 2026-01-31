@@ -3,8 +3,10 @@ import {
     ActorPF2e,
     CharacterPF2e,
     ChatMessagePF2e,
+    CheckRoll,
     CoinsPF2e,
     CreaturePF2e,
+    DegreeAdjustmentAmount,
     DegreeAdjustmentsRecord,
     DegreeOfSuccessString,
     FeatPF2e,
@@ -14,6 +16,7 @@ import {
     PhysicalItemPF2e,
     RollNoteSource,
     SaveType,
+    TokenDocumentPF2e,
 } from "foundry-pf2e";
 
 declare global {
@@ -144,17 +147,25 @@ declare global {
 
             type MessageTargetSave = {
                 die: number;
-                dosAdjustments: DegreeAdjustmentsRecord | undefined;
-                modifiers: { label: string; modifier: number }[];
+                dosAdjustments?: DegreeAdjustmentsRecord | undefined;
+                modifiers: { label: string; modifier: number; slug: string }[];
                 notes: RollNoteSource[];
                 private: boolean;
                 rerolled?: "hero" | "mythic" | "new" | "lower" | "higher";
                 roll: string;
-                significantModifiers: modifiersMatter.SignificantModifier[] | undefined;
+                significantModifiers?: modifiersMatter.SignificantModifier[] | undefined;
                 statistic: SaveType;
                 success: DegreeOfSuccessString;
                 unadjustedOutcome?: DegreeOfSuccessString | null;
                 value: number;
+            };
+
+            type RollSaveHook = {
+                roll: Rolled<CheckRoll>;
+                message: ChatMessagePF2e;
+                rollMessage: ChatMessagePF2e;
+                target: TokenDocumentPF2e;
+                data: MessageTargetSave;
             };
 
             type MessageTargetApplied = Record<`${number}` | number, boolean>;
