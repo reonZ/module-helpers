@@ -149,8 +149,8 @@ class DegreeOfSuccess {
     }
 }
 
-function degreeOfSuccessNumber(value: string | number | undefined): ZeroToThree | undefined {
-    return DEGREE_VALUES[value as ZeroToThree];
+function degreeOfSuccessNumber(value: Maybe<string | number>): ZeroToThree | undefined {
+    return DEGREE_VALUES[value as ZeroToThree | DegreeOfSuccessString];
 }
 
 function degreeOfSuccessString(value: number): DegreeOfSuccessString | undefined {
