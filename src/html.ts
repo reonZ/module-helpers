@@ -327,7 +327,7 @@ function getInputValue(el: HTMLInputElement | HTMLSelectElement) {
         ? el.valueAsNumber
         : el.type === "checkbox"
           ? el.checked
-          : el.value.trim();
+          : el.value;
 }
 
 /**
