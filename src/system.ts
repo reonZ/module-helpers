@@ -14,7 +14,7 @@ const SYSTEM = {
     path<T extends string>(tail: T): () => `systems/${SystemId}/${T}` {
         return () => this.getPath(tail);
     },
-    uuid<P extends CompendiumUUID, S extends CompendiumUUID>(pf2e: P, sf2e: S): () => P | S {
+    uuid<P extends DocumentUUID, S extends DocumentUUID = P>(pf2e: P, sf2e: S): () => P | S {
         return (): P | S => {
             return this.isSF2e ? sf2e : pf2e;
         };
